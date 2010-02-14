@@ -1,11 +1,11 @@
-;;;_ emviewer/testhelp.el --- Emviewer testhelp
+;;;_ loal.el --- Lists of Alists functionality
 
 ;;;_. Headers
 ;;;_ , License
 ;; Copyright (C) 2010  Tom Breton (Tehom)
 
 ;; Author: Tom Breton (Tehom) <tehom@panix.com>
-;; Keywords: 
+;; Keywords: lisp, maint
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -32,51 +32,49 @@
 (when (not (fboundp 'rtest:deftest))
     (defmacro rtest:deftest (&rest dummy))
     (defmacro rtest:if-avail (&rest dummy)))
-(require 'emviewer)
-(require 'tester/tester)
 
 ;;;_. Body
+;;;_ , Types
+;;;_  . loal:single-alist
+(deftype loal:single-alist ()
+   (require 'deep-type-checker)
+   '(repeat (list symbol t)))
+;;;_  . loal
+(deftype loal ()
+   '(repeat loal:single-alist))
 
-(defun emtest:ts:run-test (form)
+;;;_ , Functions
+;;;_  . loal:assq Get data
+(defun loal:assq (key data-lol)
+   ""
+   (check-type data-lol loal)
+   (catch 'loal:assq
+      (dolist (data data-lol)
+	 (let*
+	    ((found (assq key data)))
+	    (if found (throw 'loal:assq found))))))
+
+;;;_  . loal:val
+(defun loal:val (key data-list &optional default)
    ""
    
-   ;;First validate that form is right.  There should be a type for
-   ;;this, in test-support for emt-define.  For now, expect a string.
-   (check-type form
-      (list string t))
-   
-   (emt:test:ts:run-test form #'emtest:ts:run-test:callback))
+   (let
+      ((cell (loal:assq key data-list)))
+      (if cell
+	 (second cell)
+	 default)))
 
-;;;_ , The callback 
-;;Maybe should be anonymous
-(defun emtest:ts:run-test:callback (report)
+;;;_  . loal:acons
+(defun loal:acons (key value data-lol)
    ""
    
-   (check-type report emt:testral:report)
-   (emtest:viewer:receive report))
-
-;;;_ , emtest:viewer:emviewer:ts:with-mock-viewer
-
-(defmacro emtest:viewer:emviewer:ts:with-mock-viewer 
-   (&rest body)
-   ""
-   
-   `(with-temp-buffer
-       (let
-	  (
-	     emtest:viewer:emviewer:receiver
-	     emtest:viewer:emviewer:chewie
-	     emtest:viewer:emviewer:result-root
-	     (emtest:viewer:emviewer:report-buffer
-		(current-buffer)))
-
-	  ,@body)))
+   (cons (list (list key value)) data-lol))
 
 
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'emviewer/testhelp)
+(provide 'loal)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -84,4 +82,4 @@
 ;;;_  + End:
 
 ;;;_ , End
-;;; emviewer/testhelp.el ends here
+;;; loal.el ends here

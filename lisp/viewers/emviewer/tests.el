@@ -36,7 +36,7 @@
     (defmacro rtest:if-avail (&rest dummy)))
 
 (require 'emviewer/testhelp) ;;For `emtest:ts:run-test'
-
+(require 'emt-persist)
 ;;;_. Body
 
 ;;Testing will be mostly separate for the formatters - maybe chewie
@@ -44,63 +44,216 @@
 ;;A test helper could take (object data formatter
 ;;persist-id-of-expectation)
 
-;;For overall, we may not need much testing since it's mostly
-;;liveness.  But we can use a temp buffer, just be sure the
-;;ewoc/wookie/chewie does not outlive it.
-
-;;let `emtest:viewer:emviewer:result-root' and
-;;`emtest:viewer:emviewer:chewie' as nil, make a temp buffer for
-;;`emtest:viewer:emviewer:report-buffer', then call setup.
-;;Then run `emtest:viewer:receive'.
-;;This is getting more complex than simply using an ADT instead of globals.
-
-;;$$TESTME.
-
-;;Hard to do regression testing, so manual testing for the moment.
-;;TO control the buffer, let `emtest:viewer:emviewer:report-buffer'
-;;But that requires altering `emtest:viewer:setup-if-needed', which
-;;may not be what is wanted.  But controlling the chewie may make more
-;;sense.  A chewie should not be in a temp buffer unless it's temp
-;;too.  See above for thoughts.
 
 
-'
-(emtest:viewer:receive
-   (emt:eg (type report)(name just-test-runner)))
 
-;;Says OK because we don't summarize badnesses yet.
-'  
-(emtest:viewer:receive
-   (emt:eg (type report)(role original-add)(what-test test-1)))
 
-'
-(emtest:viewer:receive
-   (emt:eg (type report)(what-test test-2)))
 
 ;;End-to-end viewing.  
-'
-(emt:test:ts:run-test 
-   '("Situation: testing an example" 
-       (error "An example error")) 
-   #'emtest:viewer:receive)
-'  ;;To show the result
-(pp
-   (let 
-      ((l))
-      (emt:test:ts:run-test 
-	 '("Situation: testing an example" 
-	     (error "An example error")) 
-	 #'(lambda (r)
-	      (push r l)))
-      l))
+;; '
+;; (emt:test:ts:run-test 
+;;    '("Situation: testing an example" 
+;;        (error "An example error")) 
+;;    #'emtest:viewer:receive)
+;; '  ;;To show the result
+;; (pp
+;;    (let 
+;;       ((l))
+;;       (emt:test:ts:run-test 
+;; 	 '("Situation: testing an example" 
+;; 	     (error "An example error")) 
+;; 	 #'(lambda (r)
+;; 	      (push r l)))
+;;       l))
+
+
+;; '
+;; (emtest:ts:run-test
+;;    '("Situation: testing an example" 
+;;        (error "An example error")))
+
+
+;;ABOUT PERSISTING
 
 
 '
-(emtest:ts:run-test
-   '("Situation: testing an example" 
-       (error "An example error")))
+(emt:persist
+   "dbid:5e14830f-e495-4d41-8fab-0fc9a1a9c4e9")
+
+;;Generated automatically.
+'  ;;Makes an id.
+(emt:persist 
+    "dbid:yygeryl0jwe0"
+    '(persist
+	"~/projects/emtest/lisp/viewers/emviewer/persist"))
+
+;;To get the value (New function extracted from
+;;`emt:funcall-handle-persistence-x')
+'(emt:persist:value id)
+
+;;How to manually set this to persist?  The old stuff was too hairy.
+;;We're going to do it more simply now - the persist places a note and
+;;either raises an error or returns the object.  Errors can cause
+;;re-running if other values are available.  The error itself should
+;;indicate that as far as the id can tell it.
+
+;;They use an old idea of extracting from a "call" with multiple args,
+;;and they want structured objects.
+
+;;To set it (This under the hood, not strongly related to the "usable"
+;;stuff we did before).  $$FIXME:  This still inserts each object twice.
+'(emt:db:set id 'correct-answer 
+	 (emt:extract-got call arg-ix))
 
 
+
+;;Could use use-local-map to set up a keymap for convenience.
+;;Font lock - since it won't work non-interactively (?)
+;;abort-recursive-edit - already on a key
+;;accept buffer-string - an exploration of what we'll do later.
+;;And then we need to store id, but since we're in a recursive edit,
+;;it's available.
+
+
+(defun emt:emviewer:th:check-buffer-string (id)
+   ""
+   
+   ;;Can set the current result to persist by:
+   '(emt:db:set id 'correct-answer (buffer-string))
+
+   ;;This works, after having set the persisting object.
+   (let
+      ((contents-matches-p
+	  (equal
+	     (buffer-string)
+	     (condition-case err
+		(emt:persist:value id)
+		;;For now, can't be more specific than `error'
+		(error
+		   (message "Couldn't get persisting value")
+		   (recursive-edit))))))
+
+      (unless contents-matches-p
+	 (message "Buffer string does not match")
+	 ;;This is just for my manual handling.
+      
+	 ;;Font-locking via here doesn't work.
+	 (recursive-edit))
+   
+      ;;Would like this + definition to be the whole form, but for now
+      ;;we can't.
+      (assert
+	 (progn contents-matches-p)
+	 t))
+   t)
+
+(rtest:deftest emviewer
+
+   (  "Situation: Just the test runner."
+      (emtest:viewer:emviewer:ts:with-mock-viewer
+	 (emtest:viewer:receive
+	    (emt:eg (type report)(name just-test-runner)))
+
+	 (emt:emviewer:th:check-buffer-string
+	    (emt:persist 
+	       "dbid:yygeryl0jwe0"
+	       '(persist
+		   "~/projects/emtest/lisp/viewers/emviewer/persist")))))
+      
+   ("Situation: Report one test-1."
+      (emtest:viewer:emviewer:ts:with-mock-viewer
+	 (emtest:viewer:receive
+	    (emt:eg (type report)(role original-add)(what-test test-1)))
+
+	 (emt:emviewer:th:check-buffer-string
+	    (emt:persist "dbid:mf660gq0jwe0"
+	       '(persist
+		   "~/projects/emtest/lisp/viewers/emviewer/persist")))))
+
+
+   ("Situation: Report test-2."
+      (emtest:viewer:emviewer:ts:with-mock-viewer
+	 (emtest:viewer:receive
+	    (emt:eg (type report)(what-test test-2)))
+
+	 (emt:emviewer:th:check-buffer-string
+	    (emt:persist "dbid:l7w6gjq0jwe0"
+	       '(persist
+		   "~/projects/emtest/lisp/viewers/emviewer/persist")))))
+   
+
+   ("End to end test"
+
+      ;;And capture the intermediate result stuff - gotta rewrite,
+      ;;basically like above or like rewriting "receive" and also
+      ;;testing it with set=.
+      (emtest:viewer:emviewer:ts:with-mock-viewer
+	 (emtest:ts:run-test
+	    '("Situation: testing an example" 
+		(error "An example error")))
+
+	 (emt:emviewer:th:check-buffer-string
+	    (emt:persist "dbid:6y9kxjq0jwe0"
+	       '(persist
+		   "~/projects/emtest/lisp/viewers/emviewer/persist")))))
+   
+   
+   )
+(emt:deftest-3
+   ((of 'emviewer))
+
+   ;;Tests of just the viewer.
+   (()
+      (emtest:viewer:emviewer:ts:with-mock-viewer
+	 (emtest:viewer:receive
+	    (emt:eg (type report)(name just-test-runner)))
+
+	 (emt:emviewer:th:check-buffer-string
+	    (emt:persist 
+	       "dbid:yygeryl0jwe0"
+	       '(persist
+		   "~/projects/emtest/lisp/viewers/emviewer/persist")))))
+   
+   (()
+      (emtest:viewer:emviewer:ts:with-mock-viewer
+	 (emtest:viewer:receive
+	    (emt:eg (type report)(role original-add)(what-test test-1)))
+
+	 (emt:emviewer:th:check-buffer-string
+	    (emt:persist "dbid:mf660gq0jwe0"
+	       '(persist
+		   "~/projects/emtest/lisp/viewers/emviewer/persist")))))
+
+
+   (()
+      (emtest:viewer:emviewer:ts:with-mock-viewer
+	 (emtest:viewer:receive
+	    (emt:eg (type report)(what-test test-2)))
+
+	 (emt:emviewer:th:check-buffer-string
+	    (emt:persist "dbid:l7w6gjq0jwe0"
+	       '(persist
+		   "~/projects/emtest/lisp/viewers/emviewer/persist")))))
+   
+   ;;End to end test
+   (()
+
+      ;;And capture the intermediate result stuff - gotta rewrite,
+      ;;basically like above or like rewriting "receive" and also
+      ;;testing it with set=.
+      (emtest:viewer:emviewer:ts:with-mock-viewer
+	 (emtest:ts:run-test
+	    '("Situation: testing an example" 
+		(error "An example error")))
+
+	 (emt:emviewer:th:check-buffer-string
+	    (emt:persist "dbid:6y9kxjq0jwe0"
+	       '(persist
+		   "~/projects/emtest/lisp/viewers/emviewer/persist")))))
+   
+
+
+   )
 
 ;;;_. Footers
 ;;;_ , Provides

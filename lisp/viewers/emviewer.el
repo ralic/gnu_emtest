@@ -24,8 +24,8 @@
 
 ;;;_ , Commentary:
 
-;; This file coordinates the use of `receive' and `chewie' to give
-;; emtest a dynamic viewer.
+;; This file coordinates the use of several complementary formatting
+;; and display modules to give emtest a dynamic viewer.
 
 ;;;_ , Requires
 
@@ -33,20 +33,35 @@
     (defmacro rtest:deftest (&rest dummy))
     (defmacro rtest:if-avail (&rest dummy)))
 
-(require 'chewie)
+(require 'chewie)  ;;May be replaced by 'wookie
 (require 'receive)
+(require 'pathtree)
+(require 'emformat)
 
 ;;;_. Body
 ;;;_ , Config
 
 (defconst emtest:viewer:emviewer:report-buffer-name 
-   "*Emtest Report (chewie)*")
+   "*Emtest Report (emviewer)*")
+;;;_ , Types
+;;$$USEME in place of the many globals
+(defstruct emtest:viewer:emviewer
+   "An emviewer object"
+   (report-buffer () :type (satisfies bufferp))
+   result-root
+   chewie  ;;May be replaced by wookie
+   receiver)
+
 ;;;_ , Globals
-;;Using globals because I don't anticipate needing more than 1 active
-;;emtest viewer.
+;;Other than tests, everything uses this emviewer object.
+;;NOT IN USE YET
+(defconst emtest:viewer:*emviewer* 
+   nil
+   "Global Emviewer object" )
 (defconst emtest:viewer:emviewer:report-buffer nil 
    "" )
 ;;result object from receive.  Now it should live here.
+;;$$RENAME ME emtest:viewer:emviewer:pathtree
 (defconst emtest:viewer:emviewer:result-root nil 
    "" )
 (defconst emtest:viewer:emviewer:chewie nil 
@@ -54,9 +69,11 @@
 (defconst emtest:viewer:emviewer:receiver 
    nil ;;Should be made by setup.  Of type `emt:receive:data'
    "" )
-;;;_ , emtest:viewer:receive-cb
+;;;_ , Pathtree callback functions 
+;;;_  . emtest:viewer:receive-cb
 (defun emtest:viewer:receive-cb (presentation-path cell)
-   ""
+   "Emviewer callback that `receive' gets.
+It just tells a pathtree to add this node."
    ;;This interface really does need its own callback.
    (emt:pathtree:add/replace-node
       ;;The pathtree root
@@ -64,20 +81,140 @@
       ;;The path
       presentation-path
       ;;The data
-      (make-emt:view:suite-newstyle :cell cell)
-      ;;The refresh callback
-      #'(lambda (obj)
-	   (chewie:freshen-obj
-	      emtest:viewer:emviewer:chewie 
-	      obj))))
+      (make-emt:view:suite-newstyle :cell cell)))
+;;;_  . emtest:viewer:pathtree-cb
+
+;;Except for summarizing, this isn't very specific to emviewer.
+;;$$SIMPLIFYME This could be a general framework, except for the
+;;`cond' statement.  That general framework would belong in pathtree.
+;;Expand how much we farm off to pathtree utils.
+(defun emtest:viewer:pathtree-cb (obj)
+   ""
+   (check-type obj emt:view:pathtree-node)
+
+   (let* 
+      ((dirty-flags (emt:view:pathtree-node-dirtinesses obj))
+	 (new-dirty-nodes '()))
+      (flet
+	 (  (undirty (flag)
+	       (setq dirty-flags
+		  (delete* flag dirty-flags)))
+	    (undirty-car (flag)
+	       (setq dirty-flags
+		  (delete* 
+		     flag
+		     dirty-flags 
+		     :test #'emt:view:pathtree:util:match-as-car)))
+	    (new-dirty (flag)
+	       (push flag dirty-flags))
+	    (new-dirty-node (flag node)
+	       (push flag (emt:view:pathtree-node-dirtinesses node))
+	       (push node new-dirty-nodes)))
+	 
+	 
+	 
+	 
+      ;;Clauses generally delete their flag, but not always.  Each
+      ;;clause returns a list of nodes to continue on.
+      ;;Maybe encap this as a clause-building cond relative.
+      ;;Maybe let each clause push or append-in the nodes it
+      ;;wants to be rerun.
+      (cond
+	 ((null dirty-flags) '())
+	 ((or
+	     (member 'new dirty-flags)
+	     ;;Treated the same, for now anyways.
+	     (emt:view:pathtree:util:member-as-car 
+		'replaced 
+		dirty-flags))
+	    (undirty 'new)
+	    '(setq dirty-flags
+	       (delete* 'new dirty-flags))
+	    (undirty-car 'replaced)
+	    '(setq dirty-flags
+	       (delete* 
+		  'replaced 
+		  dirty-flags 
+		  :test #'emt:view:pathtree:util:match-as-car))
+
+	    ;;Dirty display is implied by dirty summary.
+	    (new-dirty 'summary)
+	    '(push 'summary dirty-flags)
+	    (let
+	       ((parent (emt:view:pathtree-node-parent obj)))
+	       (when parent
+		  ;;Parent's summary or display may be dirty now.
+		  ;;And parent's display is dirty, but that's implied
+		  ;;by summary being dirty.
+		  (new-dirty-node 'summary parent)
+		  '(push 'summary 
+		     (emt:view:pathtree-node-dirtinesses
+			parent))
+		  '(push parent new-dirty-nodes))))
+	 
+	 ((member 'summary dirty-flags)
+	    (if 
+	       ;;If any children have yet to be summarized,
+	       ;;delay
+	       (some
+		  #'(lambda (child)
+		       (member 'summary 
+			  (emt:view:pathtree-node-dirtinesses child)))
+		  (emt:view:pathtree-node-children obj))
+	       (list obj)
+	       (let
+		  ((parent (emt:view:pathtree-node-parent obj)))
+		  (undirty 'summary)
+		  '(setq dirty-flags
+		     (delete* 'summary dirty-flags))
+		  ;;Do summarization
+		  (emt:receive:sum-node-badnesses obj)
+		  (when parent
+		     ;;Mark the parent (if any) as needing to be
+		     ;;summarized.
+		     (new-dirty-node 'summary parent)
+		     '(push 'summary 
+			(emt:view:pathtree-node-dirtinesses
+			   parent))
+		     '(push parent new-dirty-nodes))
+		  ;;Now we'll display it
+		  (new-dirty 'display)
+		  '(push 'display dirty-flags))))
+	 
+	 ((member 'display dirty-flags)
+	    ;;Shouldn't have dirty summary because that would have
+	    ;;been caught by the previous clause.
+	    (assert (not (member 'summary dirty-flags)) t)
+	    (undirty 'display)
+	    '(setq dirty-flags
+	       (delete* 'display dirty-flags))
+	    (chewie:freshen-obj
+	       emtest:viewer:emviewer:chewie 
+	       obj))))
+      
+      (setf 
+	 (emt:view:pathtree-node-dirtinesses obj) dirty-flags)
+      
+
+      ;;Return the nodes we newly know are dirty.  If dirty-flags is
+      ;;non-nil, that includes this node.
+      (if dirty-flags
+	 (cons obj new-dirty-nodes)
+	 new-dirty-nodes)))
+
 
 ;;;_ , Setup emtest:viewer:setup-if-needed
 (defun emtest:viewer:setup-if-needed ()
    ""
    (unless emtest:viewer:emviewer:result-root
       (setq emtest:viewer:emviewer:result-root
-	 (emt:pathtree:make-empty-tree-newstyle)))
-
+	 (emt:pathtree:make-empty-tree-newstyle
+	    #'emtest:viewer:pathtree-cb
+	    ;;Default makes the base type
+	    #'(lambda ()
+		 (make-emt:view:presentable))
+	    'emt:view:suite-newstyle)))
+   
    (unless emtest:viewer:emviewer:chewie
       (unless emtest:viewer:emviewer:report-buffer
 	 (setq 
@@ -92,7 +229,9 @@
 	       emtest:viewer:emviewer:result-root
 	       '()
 	       #'emtest:viewer:fmt:top
-	       emtest:viewer:emviewer:report-buffer))))
+	       emtest:viewer:emviewer:report-buffer))
+	 ;;For now, anyways.
+	 (outline-mode)))
    (unless 
       emtest:viewer:emviewer:receiver
       (setq emtest:viewer:emviewer:receiver
@@ -106,240 +245,14 @@
 ;;;_ , emtest:viewer:receive
 
 ;;This is the callback for emtest to use.  For now, this is always the
-;;receiver callback that emtest uses.  Later, customization could
-;;control what is used.
+;;one.  Later, customization could control what is used.
 (defun emtest:viewer:receive (report)
    ""
+   (check-type report emt:testral:report)
    (emtest:viewer:setup-if-needed)
    (emt:receive:newstyle emtest:viewer:emviewer:receiver report)
+   (emt:pathtree:freshen emtest:viewer:emviewer:result-root)
    (pop-to-buffer emtest:viewer:emviewer:report-buffer))
-;;;_ , Utilities
-;;;_  . defstruct**
-;;Use `emt-match:define-struct-governor' as the skeleton of a general
-;;struct parser?  It would take a callback.
-(defmacro defstruct** (name fields)
-   ""
-   ;;Parse name for :conc-name and :predicate
-   ;;Store that info too.
-   ;;Particulars?  Name?
-   `(defstruct ,name ,@fields
-       
-       ))
-;;;_  . A specialized definer for TESTRAL note types (Not yet)
-
-;;;_  . etypecase-w/accessor (Impossible right now)
-;;Impossible because conc-name is not available.  Could define a
-;;defstruct variant to set it in the information (And predicate name)
-;;And maybe formatter for here.
-(defmacro etypecase-w/accessor (obj accessor-sym &rest cases)
-   "
-ACCESSOR-SYM will be available as a macro in each case, bound to the
-respective object."
-   
-   `(etypecase ,obj
-       ,@(mapcar
-	    #'(lambda (case)
-		 `(macrolet 
-		     ;;$$FIXME Don't let field-sym be captured
-		     ((,accessor-sym (field-sym)
-			 ,(etypecase-w/accessor-x
-			     ;;$$FIXME Don't let obj be evaluated twice.
-			     case 'field-sym ,obj)))
-		     ,case))
-	    cases)))
-;;;_   , etypecase-w/accessor-x Helper (Impossible right now)
-(defun etypecase-w/accessor-x (case field-sym obj)
-   ""
-   ;;$$FINISHME
-   (let*
-      ((type-sym (car case)))
-      ;;If type-sym is a symbol and not null or t, proceed
-      ;;CT a function call name.
-      ;;$$FIXME:  Would use conc-name but it's not available.  So this
-      ;;can't work.  Maybe another defstruct* macro to store that
-      ;;information?  Check whether that exists anywhere.
-      `(,(intern (concat (symbol-name type-sym) "-" (symbol-name field-sym)))
-	  ,obj)))
-;;;_   , Tests
-;;$$WRITEME
-
-;;;_ , Format functions
-
-;;;_  . emtest:viewer:fmt:top
-(defun emtest:viewer:fmt:top (view-node data-list)
-   "
-SUITE must be an emt:view:pathtree-node-data.
-DATA-LIST must be a list of alists."
-
-   (check-type view-node emt:view:pathtree-node)
-   ;;Temporary hack.  This will really entwine with pathtree dirtiness
-   ;;and updates.  Or wookie dirtiness?
-   (emt:receive:sum-node-badnesses view-node)
-
-   ;;WRITEME Get depth from data-list, build a new one that we'll pass
-   ;;down.
-   (let
-      ((suite (emt:view:pathtree-node-data view-node))
-	 (name
-	    (emt:view:pathtree-node-name view-node))
-	 (children
-	    (emt:view:pathtree-node-children view-node))
-	 (depth
-	    (chewie:loal-val 'depth data-list 0)))
-      (etypecase suite
-	 (null
-	    ;;For the top level.
-	    (list*
-	       "Emtest" "\n"
-	       (chewie:formatmap 
-		  ;;Formatting for each child
-		  #'(lambda (obj data &rest d)
-		       (list
-			  "\n*\n"
-			  `(dynamic ,obj 
-			      ,(chewie:loal-acons 'depth (1+ depth) data)
-			      ,#'emtest:viewer:fmt:top)))
-		  children
-		  :separator '("\n")
-		  :data-lol data-list)))
-	 
-
-	 (emt:view:suite-newstyle
-	    (let*
-	       (
-		  (cell (emt:view:suite-newstyle-cell suite))
-		  ;;$$RENAME ELSEWHERE - Naming is muddled here.
-		  ;;"suite" appears with two different meanings.
-		  (object
-		     (emt:receive:suite-newstyle-suite cell)))
-	       (etypecase object
-		  (emt:testral:test-runner-info
-		     (list*
-			"Suites tested in " name "\n"
-			(chewie:formatmap 
-			   ;;Formatting for each child
-			   #'(lambda (obj data &rest d)
-				(list
-				   "\n"
-				   (make-string (1+ depth) ?*)
-				   "\n"
-				   `(dynamic ,obj 
-				       ,(chewie:loal-acons 'depth (1+ depth) data)
-				       ,#'emtest:viewer:fmt:top)))
-			   children
-			   :data-lol data-list
-			   :separator '("\n"))))
-		  
-		  (emt:testral:suite
-		     (append
-			(list
-			   "Results for suite " name "\n")
-
-			;;(emt:receive:suite-newstyle-how-to-run cell)
-			;;`how-to-run' informs a button.
-
-			;;(emt:testral:suite-badnesses object) is only
-			;;about badnesses arising directly from this
-			;;suite, eg "Couldn't even run it".  It's
-			;;separate.
-
-			(emtest:viewer:fmt:sum-badnesses
-			   (emt:view:suite-newstyle-sum-badnesses suite)
-			   data)
-
-
-			;;Info shows nothing for now.  It has no
-			;;canonical fields yet.
-			;;Use `emtest:viewer:fmt:info'
-
-			(etypecase (emt:testral:suite-contents object)
-			   (emt:testral:runform-list
-			      (chewie:formatmap 
-				 ;;Formatting for each child
-				 #'(lambda (obj data &rest d)
-				      (list
-					 "\n"
-					 (make-string (1+ depth) ?*)
-					 "\n"
-					 `(dynamic ,obj 
-					     ,(chewie:loal-acons 
-						 'depth (1+ depth) data)
-					     ,#'emtest:viewer:fmt:top)))
-				 children
-				 :data-lol data-list
-				 :separator '("\n")
-				 :els=0 '("No child suites")))
-			   (emt:testral:note-list
-			      (chewie:formatmap
-				 #'emtest:viewer:fmt:TESTRAL
-				 (emt:testral:note-list-notes
-				    (emt:testral:suite-contents object))
-				 :data-lol data-list
-				 :separator '("\n")
-				 :els=0 '("No notes")))
-			   (null
-			      '("No known contents")))
-
-			)))))
-
-	 ;;For the various TESTRAL expansions.
-	 ;;For now, these aren't even relevant yet.
-	 (emt:view:TESTRAL
-	    '("Testral data"))
-	 
-	 (emt:view:TESTRAL-unexpanded
-	    '("Unexpanded TESTRAL data"))
-	 
-	 )))
-
-
-;;;_  . emtest:viewer:fmt:TESTRAL (TESTRAL note formatter)
-(defun emtest:viewer:fmt:TESTRAL (obj data &rest d)
-   ""
-   
-   (let*
-      ()
-      (etypecase obj
-	 ;;This is the only one that will actually carry over in the
-	 ;;long term, the others just inform structure.
-	 (emt:testral:alone
-	    (typecase obj
-
-	       (emt:testral:error-raised
-		  `("\n"
-		      "Error raised: "
-		      ,(prin1-to-string
-			 (emt:testral:error-raised-err obj))
-		      "\n"))
-	       (t '("A TESTRAL note (alone)""\n"))))
-	 
-	 (emt:testral:push
-	    '("Begin a TESTRAL span"))
-	 
-	 (emt:testral:pop
-	    '("End a TESTRAL span"))
-	 (emt:testral:separate
-	    '("Separate args")))))
-
-;;;_  . emtest:viewer:fmt:info (Suite info formatter)
-(defun emtest:viewer:fmt:info (obj data &rest d)
-   ""
-   
-   (let*
-      ()
-      '("Information: None" "\n")
-      ))
-
-;;;_  . emtest:viewer:fmt:sum-badnesses
-(defun emtest:viewer:fmt:sum-badnesses (obj data &rest d)
-   ""
-   
-   (let*
-      ()
-      (if obj
-	 ;;Punt for now.
-	 '("Something failed""\n")
-	 '("All OK""\n"))))
 
 
 ;;;_. Footers

@@ -1,11 +1,11 @@
-;;;_ emviewer/testhelp.el --- Emviewer testhelp
+;;;_ pathtree/testhelp.el --- Testhelp for pathtree
 
 ;;;_. Headers
 ;;;_ , License
 ;; Copyright (C) 2010  Tom Breton (Tehom)
 
 ;; Author: Tom Breton (Tehom) <tehom@panix.com>
-;; Keywords: 
+;; Keywords: lisp, internal
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -32,51 +32,17 @@
 (when (not (fboundp 'rtest:deftest))
     (defmacro rtest:deftest (&rest dummy))
     (defmacro rtest:if-avail (&rest dummy)))
-(require 'emviewer)
-(require 'tester/tester)
-
+(require 'emt-match)
+(require 'pathtree)
 ;;;_. Body
 
-(defun emtest:ts:run-test (form)
-   ""
-   
-   ;;First validate that form is right.  There should be a type for
-   ;;this, in test-support for emt-define.  For now, expect a string.
-   (check-type form
-      (list string t))
-   
-   (emt:test:ts:run-test form #'emtest:ts:run-test:callback))
-
-;;;_ , The callback 
-;;Maybe should be anonymous
-(defun emtest:ts:run-test:callback (report)
-   ""
-   
-   (check-type report emt:testral:report)
-   (emtest:viewer:receive report))
-
-;;;_ , emtest:viewer:emviewer:ts:with-mock-viewer
-
-(defmacro emtest:viewer:emviewer:ts:with-mock-viewer 
-   (&rest body)
-   ""
-   
-   `(with-temp-buffer
-       (let
-	  (
-	     emtest:viewer:emviewer:receiver
-	     emtest:viewer:emviewer:chewie
-	     emtest:viewer:emviewer:result-root
-	     (emtest:viewer:emviewer:report-buffer
-		(current-buffer)))
-
-	  ,@body)))
-
+(emt-match:define-struct-governor emt:view:pathtree-node
+   name path parent children data)
 
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'emviewer/testhelp)
+(provide 'pathtree/testhelp)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -84,4 +50,4 @@
 ;;;_  + End:
 
 ;;;_ , End
-;;; emviewer/testhelp.el ends here
+;;; testhelp.el ends here
