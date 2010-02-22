@@ -1,4 +1,4 @@
-;;;_ hiformat.el --- Hi-level formatting functionality for Emtest
+;;;_ viewers/hiformat.el --- Hi-level formatting functionality for Emtest
 
 ;;;_. Headers
 ;;;_ , License
@@ -52,17 +52,17 @@ The type only demands a function, so it's mostly for
    "A format list"
    (repeat
       (or
-	 string ;;$$EXPANDME  The input type to loformat
+	 ;;This may change from `string', because it should be
+	 ;;covariant with input type to loformat.
+	 string 
 	 (list 
-	    (member dynamic) ;;Ie, what chewie provides.
-	    t ;;Covariant with formatter input.
-	    ;;$$FIXED This is an entire loal object not a
-	    ;;`loal:single-alist' 
+	    (member dynamic) ;;What chewie provides.
+	    t ;;Covariant with formatter input type
 	    loal
 	    hiformat:xformer))))
 
 ;;;_ , Functions
-;;;_  . chewie:formatlist Map over a list
+;;;_  . hiformat:map Map over a list
 ;;Perhaps more generally with a function to get next element.
 
 (defun* hiformat:map (func list &key data-loal separator els=0 els=1)
@@ -123,7 +123,7 @@ ELS=1 must be a function taking 3 args (same signature as FUNC).
 
    ;;Data includes "index", "first", "last" (but may include other
    ;;elements) Can't neatly test that without creating "subset" for
-   ;;emt-match.
+   ;;emtm.
    '
    (  "Situation: WRITEME.
 Response: WRITEME."
@@ -243,7 +243,7 @@ Response: The ELS=1 function is called instead of the usual function."
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'hiformat)
+(provide 'viewers/hiformat)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -251,4 +251,4 @@ Response: The ELS=1 function is called instead of the usual function."
 ;;;_  + End:
 
 ;;;_ , End
-;;; hiformat.el ends here
+;;; viewers/hiformat.el ends here

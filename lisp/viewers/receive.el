@@ -1,4 +1,4 @@
-;;;_ receive.el --- Receive and organize test results, for Emtest
+;;;_ viewers/receive.el --- Receive and organize test results, for Emtest
 
 ;;;_. Headers
 ;;;_ , License
@@ -34,33 +34,33 @@
     (defmacro rtest:if-avail (&rest dummy)))
 
 (rtest:if-avail
-   (require 't/data/testral-types)
-   (require 'emt-match))
+   (require 'common/testral-types/testhelp)
+   (require 'tester/testhelp/match))
 
 ;;;_. Body
 ;;;_ , Receive reports alist
 ;;;_  . Structure holding parameters for alist receive
-(defstruct emt:receive:data
+(defstruct emtvr:data
    ""
    alist
    tree-insert-cb
    tree-remove-cb)
 
-;;;_  . emt:receive:make-empty-alist
+;;;_  . emtvr:make-empty-alist
 ;;Maybe the only ctor
-(defun emt:receive:make-empty-alist (insert remove)
+(defun emtvr:make-empty-alist (insert remove)
    ""
    
-   (make-emt:receive:data
+   (make-emtvr:data
       :alist '()
       :tree-insert-cb insert
       :tree-remove-cb remove))
 
 
-;;;_  . emt:receive:newstyle
-(defun emt:receive:newstyle (receiver report)
+;;;_  . emtvr:newstyle
+(defun emtvr:newstyle (receiver report)
    ""
-   (check-type receiver emt:receive:data)
+   (check-type receiver emtvr:data)
    (let
       (  (testrun-id 
 	    (emt:testral:report-testrun-id report))
@@ -71,10 +71,10 @@
       
       ;;For each suite in the report, 
       (dolist (entry (emt:testral:report-suites report))
-	 (emt:receive:one-newstyle receiver entry testrun-id prefix))))
+	 (emtvr:one-newstyle receiver entry testrun-id prefix))))
 
-;;;_  . emt:receive:test-gone-p
-(defun emt:receive:test-gone-p (suite)
+;;;_  . emtvr:test-gone-p
+(defun emtvr:test-gone-p (suite)
    ""
    ;;`emt:testral:test-runner-info' is never test-gone
    ;;This representation is tentative.
@@ -85,11 +85,11 @@
 	 (emt:testral:suite-badnesses suite)
 	 :test #'equal)))
 
-;;;_  . emt:receive:one-newstyle
-(defun emt:receive:one-newstyle 
+;;;_  . emtvr:one-newstyle
+(defun emtvr:one-newstyle 
    (receiver entry testrun-id prefix)
    ""
-   (check-type receiver emt:receive:data)
+   (check-type receiver emtvr:data)
    (destructuring-bind (how-to-run id suite) entry
       (let
 	 ( 
@@ -100,58 +100,58 @@
 	 ;;Handle special case: If suite reports that it has disappeared,
 	 ;;remove it from alist and from tree.  (How from tree?)
 	 (if
-	    (emt:receive:test-gone-p suite)
+	    (emtvr:test-gone-p suite)
 	    (progn
 	       (setf
-		  (emt:receive:data-alist receiver)
-		  (delete* key (emt:receive:data-alist receiver)
-		     :key #'emt:receive:suite-newstyle-id))
+		  (emtvr:data-alist receiver)
+		  (delete* key (emtvr:data-alist receiver)
+		     :key #'emtvr:suite-newstyle-id))
 	       (funcall 
-		  (emt:receive:data-tree-remove-cb receiver)
+		  (emtvr:data-tree-remove-cb receiver)
 		  presentation-path))
 	    
 	    ;;The normal case:
 	    (let
 	       ((old-cell
-		   (find key (emt:receive:data-alist receiver)
-		      :key #'emt:receive:suite-newstyle-id)))
+		   (find key (emtvr:data-alist receiver)
+		      :key #'emtvr:suite-newstyle-id)))
 	       (if old-cell
 		  ;;Cell is already present.  Alter it.  Still replace
 		  ;;the node in the pathtree.
 		  (progn
 		     (setf
-			(emt:receive:suite-newstyle-testrun-id old-cell)
+			(emtvr:suite-newstyle-testrun-id old-cell)
 			testrun-id
-			(emt:receive:suite-newstyle-suite old-cell)
+			(emtvr:suite-newstyle-suite old-cell)
 			suite)
 		     (funcall 
-			(emt:receive:data-tree-insert-cb receiver)
+			(emtvr:data-tree-insert-cb receiver)
 			presentation-path old-cell))
 	    
 		  ;;It's not present in alist.  Insert it.
 		  (let 
 		     ((cell
-			 (make-emt:receive:suite-newstyle
+			 (make-emtvr:suite-newstyle
 			    :id key
 			    :how-to-run how-to-run
 			    :presentation-path presentation-path
 			    :testrun-id testrun-id
 			    :suite suite)))
-		     (push cell (emt:receive:data-alist receiver))
+		     (push cell (emtvr:data-alist receiver))
 		     (funcall 
-			(emt:receive:data-tree-insert-cb receiver)
+			(emtvr:data-tree-insert-cb receiver)
 			presentation-path cell))))))))
-(put 'emt:receive:one-newstyle 'rtest:test-thru
-   'emt:receive:newstyle)
+(put 'emtvr:one-newstyle 'rtest:test-thru
+   'emtvr:newstyle)
 ;;;_   , Test helpers
 
-(emt-match:define-struct-governor
-   emt:receive:suite-newstyle
+(emtm:define-struct-governor
+   emtvr:suite-newstyle
    id how-to-run presentation-path testrun-id suite)
 
 ;;;_   , Tests
 
-(rtest:deftest emt:receive:newstyle
+(rtest:deftest emtvr:newstyle
 
    ;;Add reports.  Lists should contain what's expected.
    (  "Situation: Empty report.
@@ -161,23 +161,23 @@ Response: List still contains nothing."
 	    (remember-freshened-node
 	       #'(lambda (x y)
 		    (push (list x y) nodes-freshened)))
-	    (receiver (emt:receive:make-empty-alist remember-freshened-node #'ignore))
+	    (receiver (emtvr:make-empty-alist remember-freshened-node #'ignore))
 	    (report (emt:eg
 		       (project emtest)
 		       (sub-project testral)
 		       (library types)
 		       (type report)
 		       (name empty))))
-	 (emt:receive:newstyle receiver report)
+	 (emtvr:newstyle receiver report)
 	 ;;Still an empty list
 	 (assert
 	    (equal
-	       (emt:receive:data-alist receiver)
+	       (emtvr:data-alist receiver)
 	       '())
 	    t)
 	 ;;No callbacks happened
 	 (assert
-	    (emt:match
+	    (emtm
 	       nodes-freshened
 	       (list))
 	    t)
@@ -192,7 +192,7 @@ Response: List contains that one entry."
 	    (remember-freshened-node
 	       #'(lambda (x y)
 		    (push (list x y) nodes-freshened)))
-	    (receiver (emt:receive:make-empty-alist remember-freshened-node #'ignore))
+	    (receiver (emtvr:make-empty-alist remember-freshened-node #'ignore))
 	    (report (emt:eg
 		       (project emtest)
 		       (sub-project testral)
@@ -200,12 +200,12 @@ Response: List contains that one entry."
 		       (type report)
 		       (role original-add)
 		       (what-test test-1))))
-	 (emt:receive:newstyle receiver report)
+	 (emtvr:newstyle receiver report)
 
 	 ;;A list with just that entry
 	 (assert
-	    (emt:match
-	       (emt:receive:data-alist receiver)
+	    (emtm
+	       (emtvr:data-alist receiver)
 	       (list
 		  (eval 
 		     '(emt:eg
@@ -215,13 +215,13 @@ Response: List contains that one entry."
 	    t)
 	 ;;One callback happened
 	 (assert
-	    (emt:match
+	    (emtm
 	       nodes-freshened
 	       (list
 		  (list
 		     (eval 
 			'(emt:eg (type presentation-path)(what-test test-1)))
-		     (make-emt:receive:suite-newstyle
+		     (make-emtvr:suite-newstyle
 			:presentation-path
 			(eval 
 			   '(emt:eg (type presentation-path)(what-test test-1)))
@@ -242,8 +242,8 @@ Response: List contains just that one entry, not duplicated."
 	    (remember-freshened-node
 	       #'(lambda (x y)
 		    (push (list x y) nodes-freshened)))
-	    (receiver (emt:receive:make-empty-alist remember-freshened-node #'ignore)))
-	 (emt:receive:newstyle receiver 
+	    (receiver (emtvr:make-empty-alist remember-freshened-node #'ignore)))
+	 (emtvr:newstyle receiver 
 	    (emt:eg
 	       (project emtest)
 	       (sub-project testral)
@@ -254,7 +254,7 @@ Response: List contains just that one entry, not duplicated."
 	 
 	 (setq nodes-freshened '())
 	 ;;Add a report that just overrides the original
-	 (emt:receive:newstyle receiver 
+	 (emtvr:newstyle receiver 
 	    (emt:eg
 	       (project emtest)
 	       (sub-project testral)
@@ -265,8 +265,8 @@ Response: List contains just that one entry, not duplicated."
 
 	 ;;A list with just that entry
 	 (assert
-	    (emt:match
-	       (emt:receive:data-alist receiver)
+	    (emtm
+	       (emtvr:data-alist receiver)
 	       (list
 		  (eval 
 		     '(emt:eg
@@ -277,13 +277,13 @@ Response: List contains just that one entry, not duplicated."
 
 	 ;;One (new) callback happened
 	 (assert
-	    (emt:match
+	    (emtm
 	       nodes-freshened
 	       (list
 		  (list
 		     (eval 
 			'(emt:eg (type presentation-path)(what-test test-1)))
-		     (make-emt:receive:suite-newstyle
+		     (make-emtvr:suite-newstyle
 			:presentation-path 
 			(eval 
 			   '(emt:eg (type presentation-path)(what-test test-1)))
@@ -305,14 +305,14 @@ Response: List no longer contains that entry; it is empty."
 		  #'(lambda (x y)
 		       (push (list x y) nodes-freshened)))
 	       (receiver 
-		  (emt:receive:make-empty-alist remember-freshened-node #'ignore)))
-	    (emt:receive:newstyle receiver 
+		  (emtvr:make-empty-alist remember-freshened-node #'ignore)))
+	    (emtvr:newstyle receiver 
 	       (emt:eg
 		  (type report)
 		  (role original-add)
 		  (what-test test-1)))
 
-	    (emt:receive:newstyle receiver 
+	    (emtvr:newstyle receiver 
 	       (emt:eg
 		  (type report)
 		  (role remove-previous)
@@ -321,7 +321,7 @@ Response: List no longer contains that entry; it is empty."
 	    ;;An empty list again
 	    (assert
 	       (equal
-		  (emt:receive:data-alist receiver)
+		  (emtvr:data-alist receiver)
 		  '())
 	       t)
 
@@ -329,7 +329,6 @@ Response: List no longer contains that entry; it is empty."
 
 	    t)))
 
-   '  ;;$$New
    (  "Situation: Have added a report w/1 entry.
 Operation: Add a second report
 Response: List contains both entries."
@@ -340,8 +339,8 @@ Response: List contains both entries."
 		  #'(lambda (x y)
 		       (push (list x y) nodes-freshened)))
 	       (receiver 
-		  (emt:receive:make-empty-alist remember-freshened-node #'ignore)))
-	    (emt:receive:newstyle receiver 
+		  (emtvr:make-empty-alist remember-freshened-node #'ignore)))
+	    (emtvr:newstyle receiver 
 	       (emt:eg
 		  (type report)
 		  (role original-add)
@@ -349,21 +348,21 @@ Response: List contains both entries."
 
 	    ;;Empty the callback list
 	    (setq nodes-freshened '())
-	    (emt:receive:newstyle receiver 
+	    (emtvr:newstyle receiver 
 	       (emt:eg (type report)(what-test test-2)))
 
 	    ;;Test that we have the right contents.  Skip for now
-	    ;;because emt-match doesn't have a set matcher yet.
+	    ;;because emtm doesn't have a set matcher yet.
 
 	    ;;One (new) callback happened
 	    (assert
-	       (emt:match
+	       (emtm
 		  nodes-freshened
 		  (list
 		     (list
 			(eval 
 			   '(emt:eg (type presentation-path)(what-test test-2)))
-			(make-emt:receive:suite-newstyle
+			(make-emtvr:suite-newstyle
 			   :presentation-path 
 			   (eval 
 			      '(emt:eg (type presentation-path)(what-test test-2)))
@@ -387,7 +386,7 @@ Response: List contains both entries."
 	    (remember-freshened-node
 	       #'(lambda (x y)
 		    (push (list x y) nodes-freshened)))
-	    (receiver (emt:receive:make-empty-alist remember-freshened-node #'ignore)))
+	    (receiver (emtvr:make-empty-alist remember-freshened-node #'ignore)))
 	 ;;List length.
 
 	 ;;Matches the pattern - but we don't have a set-match pattern
@@ -397,15 +396,15 @@ Response: List contains both entries."
    )
 
 ;;;_ , Emviewer operations on pathtree
-;;;_  . emt:receive:summarize
-(defun emt:receive:summarize (tree)
+;;;_  . emtvr:summarize
+(defun emtvr:summarize (tree)
    ""
-   ;;For now, just call `emt:receive:sum-node-badnesses' just before
+   ;;For now, just call `emtvr:sum-node-badnesses' just before
    ;;printing.
    
    ;;As yet we have no good way of making a predicate that takes
    ;;arguments.  Contents should be a `emt:view:presentable'
-   (check-type tree emt:view:pathtree-node)
+   (check-type tree emtvp-node)
    ;;Traverse the tree recursively:  Recurse on all children, then
    ;;join those sets together, put it in sum-badnesses field, and
    ;;return it.
@@ -418,13 +417,13 @@ Response: List contains both entries."
       ()
       
       ))
-;;;_   , emt:receive:combine-badnesses
+;;;_   , emtvr:combine-badnesses
 (require 'cl)  ;;For `union'
-(defsubst emt:receive:combine-badnesses (bads)
+(defsubst emtvr:combine-badnesses (bads)
    (reduce #'union bads))
 
-;;;_   , emt:receive:sum-testral-note-badnesses
-(defun emt:receive:sum-testral-note-badnesses (data)
+;;;_   , emtvr:sum-testral-note-badnesses
+(defun emtvr:sum-testral-note-badnesses (data)
    ""
    
    (let*
@@ -433,30 +432,30 @@ Response: List contains both entries."
       ;;won't hurt much.  Could write
       ;;`mapcar-but-tail'.
       ;;Encap.  This handles notes.
-      (emt:receive:combine-badnesses
+      (emtvr:combine-badnesses
 	 (mapcar
 	    #'emt:testral:base-badnesses
 	    (emt:view:suite-newstyle-start data)))))
-;;;_   , emt:receive:sum-node-badnesses
-;;Rename `emt:receive:sum-viewnode-badnesses'
+;;;_   , emtvr:sum-node-badnesses
+;;Rename `emtvr:sum-viewnode-badnesses'
 ;;Design: Maybe split into accessor and summer.  Accessor should be
 ;;conformer: It will set its own node right after children are all made right.
 
 ;;Node data is covariant with this.
-(defun emt:receive:sum-node-badnesses (node)
+(defun emtvr:sum-node-badnesses (node)
    ""
-   (check-type node emt:view:pathtree-node)
+   (check-type node emtvp-node)
    
    (let*
       (
 	 (data
-	    (emt:view:pathtree-node-data node))
+	    (emtvp-node-data node))
 	 (input-badnesses
 	    (mapcar
 	       #'(lambda (child)
 		    (emt:view:presentable-sum-badnesses
-		       (emt:view:pathtree-node-data child)))
-	       (emt:view:pathtree-node-children node)))
+		       (emtvp-node-data child)))
+	       (emtvp-node-children node)))
 	 ;;Gives a list of badnesses.
 	 ;;Accessor
 	 (own-badnesses
@@ -466,7 +465,7 @@ Response: List contains both entries."
 		  (emt:view:suite-newstyle
 		     (let
 			((s
-			    (emt:receive:suite-newstyle-suite
+			    (emtvr:suite-newstyle-suite
 			       (emt:view:suite-newstyle-cell data))))
 			(etypecase s 
 			   (null) 
@@ -476,10 +475,10 @@ Response: List contains both entries."
 			      '()))))
 		  (emt:view:TESTRAL '())
 		  (emt:view:TESTRAL-unexpanded
-		     (emt:receive:sum-testral-note-badnesses data))
+		     (emtvr:sum-testral-note-badnesses data))
 		  (emt:view:presentable '()))))
 	 (sum-badnesses
-	    (emt:receive:combine-badnesses
+	    (emtvr:combine-badnesses
 	       (cons
 		  own-badnesses
 		  input-badnesses))))
@@ -491,7 +490,7 @@ Response: List contains both entries."
 
 
 ;;;_   , Tests
-(rtest:deftest emt:receive:sum-node-badnesses
+(rtest:deftest emtvr:sum-node-badnesses
 
    ;;Given a tree, compare result to expected example.
    ;;Summary of the one-error example gets propagated upwards.
@@ -507,8 +506,8 @@ Response: WRITEME."
       )
    
    )
-;;;_  . emt:receive:conform-stages
-(defun emt:receive:conform-stages (note-list)
+;;;_  . emtvr:conform-stages
+(defun emtvr:conform-stages (note-list)
    ""
    
    (let*
@@ -519,7 +518,7 @@ Response: WRITEME."
 
 ;;Conforming is only done in the course of expanding it.
 ;;;_   , Tests
-(rtest:deftest emt:receive:conform-stages
+(rtest:deftest emtvr:conform-stages
    ;;Given the note-list, transform it to the conformed version
    '
    (  "Situation: WRITEME.
@@ -528,8 +527,8 @@ Response: WRITEME."
       )
    
    )
-;;;_  . emt:receive:expand-testral
-(defun emt:receive:expand-testral (node)
+;;;_  . emtvr:expand-testral
+(defun emtvr:expand-testral (node)
    ""
    (let*
       ()
@@ -539,7 +538,7 @@ Response: WRITEME."
 
 ;;;_   , Tests
 ;;After 
-(rtest:deftest emt:receive:expand-testral
+(rtest:deftest emtvr:expand-testral
    ;;Given a view testral node of one level, expand it.
    '
    (  "Situation: WRITEME.
@@ -555,7 +554,7 @@ Response: WRITEME."
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'receive)
+(provide 'viewers/receive)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -563,4 +562,4 @@ Response: WRITEME."
 ;;;_  + End:
 
 ;;;_ , End
-;;; receive.el ends here
+;;; viewers/receive.el ends here

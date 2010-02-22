@@ -1,4 +1,4 @@
-;;;_ loal.el --- Lists of Alists functionality
+;;;_ viewers/loal.el --- Lists of Alists functionality
 
 ;;;_. Headers
 ;;;_ , License
@@ -37,7 +37,7 @@
 ;;;_ , Types
 ;;;_  . loal:single-alist
 (deftype loal:single-alist ()
-   (require 'deep-type-checker)
+   (require 'tester/testhelp/deep-type-checker)
    '(repeat (list symbol t)))
 ;;;_  . loal
 (deftype loal ()
@@ -74,7 +74,7 @@
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'loal)
+(provide 'viewers/loal)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -82,4 +82,4 @@
 ;;;_  + End:
 
 ;;;_ , End
-;;; loal.el ends here
+;;; viewers/loal.el ends here

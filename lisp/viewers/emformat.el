@@ -1,4 +1,4 @@
-;;;_ emformat.el --- Formatting functions specific to Emtest
+;;;_ viewers/emformat.el --- Formatting functions specific to Emtest
 
 ;;;_. Headers
 ;;;_ , License
@@ -32,8 +32,8 @@
 (when (not (fboundp 'rtest:deftest))
     (defmacro rtest:deftest (&rest dummy))
     (defmacro rtest:if-avail (&rest dummy)))
-(require 'pathtree) ;;The first-arg type
-(require 'loal)     ;;The second-arg type
+(require 'viewers/pathtree) ;;The first-arg type
+(require 'viewers/loal)     ;;The second-arg type
 
 ;;$$DESIGNME - maybe require chewie.  Ie, this isn't under chewie
 ;;control-wise, chewie is under this.  That must wait until after the
@@ -42,38 +42,38 @@
 ;;;_. Body
 
 ;;;_ , Format functions
-;;;_  . emtest:viewer:fmt:top
-(defun emtest:viewer:fmt:top (view-tree data-list)
+;;;_  . emtvf:top
+(defun emtvf:top (view-tree data-list)
    ""
    
-   (check-type view-tree emt:view:pathtree)
+   (check-type view-tree emtvp)
    (list
       "Emtest" "\n"
       `(dynamic 
-	  ,(emt:view:pathtree-root view-tree)
+	  ,(emtvp-root view-tree)
 	 ,(loal:acons 'depth 0 data-list)
-	 ,#'emtest:viewer:fmt:node)))
+	 ,#'emtvf:node)))
 
 
-;;;_  . emtest:viewer:fmt:node
-(defun emtest:viewer:fmt:node (view-node data-list)
+;;;_  . emtvf:node
+(defun emtvf:node (view-node data-list)
    "
-SUITE must be an emt:view:pathtree-node-data.
+SUITE must be an emtvp-node-data.
 DATA-LIST must be a list of alists."
 
-   (check-type view-node emt:view:pathtree-node)
+   (check-type view-node emtvp-node)
    ;;Temporary hack.  This will really entwine with pathtree dirtiness
    ;;and updates.  Or wookie dirtiness?
-   (emt:receive:sum-node-badnesses view-node)
+   (emtvr:sum-node-badnesses view-node)
 
    ;;WRITEME Get depth from data-list, build a new one that we'll pass
    ;;down.
    (let
-      ((suite (emt:view:pathtree-node-data view-node))
+      ((suite (emtvp-node-data view-node))
 	 (name
-	    (emt:view:pathtree-node-name view-node))
+	    (emtvp-node-name view-node))
 	 (children
-	    (emt:view:pathtree-node-children view-node))
+	    (emtvp-node-children view-node))
 	 (depth
 	    (loal:val 'depth data-list 0)))
       (append
@@ -84,7 +84,7 @@ DATA-LIST must be a list of alists."
 	    (make-string (1+ depth) ?*) 
 	    " " name
 	    " ") 
-	 (emtest:viewer:fmt:sum-badnesses
+	 (emtvf:sum-badnesses
 	    (emt:view:presentable-sum-badnesses suite) 
 	    data-list) 
 	 (list "\n\n")
@@ -96,7 +96,7 @@ DATA-LIST must be a list of alists."
 		     ;;$$RENAME ELSEWHERE - Naming is muddled here.
 		     ;;"suite" appears with two different meanings.
 		     (object
-			(emt:receive:suite-newstyle-suite cell)))
+			(emtvr:suite-newstyle-suite cell)))
 		  (etypecase object
 		     (emt:testral:test-runner-info
 			(list*
@@ -107,7 +107,7 @@ DATA-LIST must be a list of alists."
 				   (list
 				      `(dynamic ,obj 
 					  ,(loal:acons 'depth (1+ depth) data)
-					  ,#'emtest:viewer:fmt:node)))
+					  ,#'emtvf:node)))
 			      children
 			      :data-loal data-list
 			      :separator '("\n"))))
@@ -117,12 +117,12 @@ DATA-LIST must be a list of alists."
 			   (list
 			      "Results for suite " name "\n")
 
-			   ;;(emt:receive:suite-newstyle-how-to-run cell)
+			   ;;(emtvr:suite-newstyle-how-to-run cell)
 			   ;;`how-to-run' informs a button.
 
 			   ;;Info shows nothing for now.  It has no
 			   ;;canonical fields yet.
-			   ;;Use `emtest:viewer:fmt:info'
+			   ;;Use `emtvf:info'
 
 			   (etypecase (emt:testral:suite-contents object)
 			      (emt:testral:runform-list
@@ -133,14 +133,14 @@ DATA-LIST must be a list of alists."
 					    `(dynamic ,obj 
 						,(loal:acons 
 						    'depth (1+ depth) data)
-						,#'emtest:viewer:fmt:node)))
+						,#'emtvf:node)))
 				    children
 				    :data-loal data-list
 				    :separator '("\n")
 				    :els=0 '("No child suites")))
 			      (emt:testral:note-list
 				 (hiformat:map
-				    #'emtest:viewer:fmt:TESTRAL
+				    #'emtvf:TESTRAL
 				    (emt:testral:note-list-notes
 				       (emt:testral:suite-contents object))
 				    :data-loal data-list
@@ -169,7 +169,7 @@ DATA-LIST must be a list of alists."
 			  (list
 			     `(dynamic ,obj 
 				 ,(loal:acons 'depth (1+ depth) data)
-				 ,#'emtest:viewer:fmt:node)))
+				 ,#'emtvf:node)))
 		     children
 		     :separator '("\n")
 		     :data-loal data-list)))
@@ -178,8 +178,8 @@ DATA-LIST must be a list of alists."
 	    ))))
 
 
-;;;_  . emtest:viewer:fmt:TESTRAL (TESTRAL note formatter)
-(defun emtest:viewer:fmt:TESTRAL (obj data &rest d)
+;;;_  . emtvf:TESTRAL (TESTRAL note formatter)
+(defun emtvf:TESTRAL (obj data &rest d)
    ""
    
    (let*
@@ -213,8 +213,8 @@ DATA-LIST must be a list of alists."
 	 (emt:testral:separate
 	    '("Separate args")))))
 
-;;;_  . emtest:viewer:fmt:info (Suite info formatter)
-(defun emtest:viewer:fmt:info (obj data &rest d)
+;;;_  . emtvf:info (Suite info formatter)
+(defun emtvf:info (obj data &rest d)
    ""
    
    (let*
@@ -222,8 +222,8 @@ DATA-LIST must be a list of alists."
       '("Information: None" "\n")
       ))
 
-;;;_  . emtest:viewer:fmt:sum-badnesses
-(defun emtest:viewer:fmt:sum-badnesses (obj data &rest d)
+;;;_  . emtvf:sum-badnesses
+(defun emtvf:sum-badnesses (obj data &rest d)
    ""
    
    (let*
@@ -238,7 +238,7 @@ DATA-LIST must be a list of alists."
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'emformat)
+(provide 'viewers/emformat)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -246,4 +246,4 @@ DATA-LIST must be a list of alists."
 ;;;_  + End:
 
 ;;;_ , End
-;;; emformat.el ends here
+;;; viewers/emformat.el ends here

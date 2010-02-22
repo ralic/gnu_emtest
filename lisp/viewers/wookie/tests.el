@@ -1,4 +1,4 @@
-;;;_ wookie/tests.el --- Tests for wookie
+;;;_ viewers/wookie/tests.el --- Tests for wookie
 
 ;;;_. Headers
 ;;;_ , License
@@ -32,64 +32,69 @@
 (when (not (fboundp 'rtest:deftest))
     (defmacro rtest:deftest (&rest dummy))
     (defmacro rtest:if-avail (&rest dummy)))
-(require 'wookie/testhelp)
-(require 'mockbuf)
+(require 'viewers/wookie/testhelp)
+(require 'tester/testhelp/mocks/filebuf)
+(require 'viewers/hiformat) ;;For loformat
 
 ;;;_. Body
 ;;;_ , wookie:create
-(put 'wookie:create 'rtest:test-thru
-   'wookie)
+(put 'viewers/wookie:create 'rtest:test-thru
+   'viewers/wookie)
 ;;;_ , wookie
 (rtest:deftest wookie
    (  "Proves: Basic expansion works."
       (with-temp-buffer
 	 ;;Create a wookie.  Root is given.
-	 
-	 (wookie:create
-	    ;;Object expander for wookie.  Maybe make this a test helper.
-	    #'(lambda (&rest r)
-		 (list (wookie:th:->displayable "abc")))
-	    
-	    ;;Printer for ewoc.
-	    #'loformat:print
-	    :object 0
-	    :buf (current-buffer)
-	    :showing-cb #'ignore
-	    :unshowing-cb #'ignore)
-	 
-	 (mockbuf:buf-contents-matches
-	    :string "abc")))
+	 (let
+	    ((wookie
+		(wookie:th:make-usual-wookie 
+		   #'(lambda (&rest r)
+			(list (wookie:th:->displayable "abc")))
+		   0)))
+	    (assert
+	       (emtb:buf-contents-matches
+		  :string "abc")))
+	 t))
 
-   (  "Situation: A wookie has been made but no root given.
+   (  "Situation: A wookie has been made but no root was given.
 Operation: Set the root.
 Result: Object is displayed in buffer.
 Proves: Basic expansion works."
       (with-temp-buffer
 	 (let
 	    ((wookie
-		(wookie:create
-		   ;;Object expander for wookie.  Maybe make this a test helper.
+		(wookie:th:make-usual-wookie 
 		   #'(lambda (&rest r)
 			(list (wookie:th:->displayable "abc")))
-	    
-		   ;;Printer for ewoc.
-		   #'loformat:print
-		   :buf (current-buffer)
-		   :showing-cb #'ignore
-		   :unshowing-cb #'ignore)))
+		   nil)))
 	    (assert
-	       (mockbuf:buf-contents-matches
+	       (emtb:buf-contents-matches
 		  :string "")
 	       t)
 	    (wookie:set-root wookie 0)
 
 	    (assert
-	       (mockbuf:buf-contents-matches
+	       (emtb:buf-contents-matches
 		  :string "abc")
 	       t))
 	 t))
 
-   (  "Proves: Can recurse hierarchically."
+   (  "Situation: A wookie has been made and root was given.
+Operation: Set the root (again).
+Result: Error.
+Proves: Can't set the root twice."
+      (with-temp-buffer
+	 (let
+	    ((wookie
+		(wookie:th:make-usual-wookie 
+		   #'(lambda (&rest r)
+			(list (wookie:th:->displayable "abc")))
+		   nil)))
+	    (emt:gives-error
+	       (wookie:set-root wookie 0)))
+	 t))
+
+   (  "Proves: Can recurse statically hierarchically."
       (with-temp-buffer
 	 ;;Root contains an object of its own type.
 	 (let*
@@ -100,22 +105,48 @@ Proves: Basic expansion works."
 		     (wookie:make-tht:1s+1rec
 			:str "def"
 			:recurse nil))))
-
-	    (wookie:create
+	    (wookie:th:make-usual-wookie
 	       #'wookie:th:format-1s+1rec-static
-	       ;;Printer for ewoc.
-	       #'loformat:print
-	       :object root
-	       :buf (current-buffer)
-	       :showing-cb #'ignore
-	       :unshowing-cb #'ignore)
-	    (mockbuf:buf-contents-matches
-	       :string "abc(def())")))))
+	       root)
+	    (assert
+	       (emtb:buf-contents-matches
+		  :string "abc(def())")))
+	 t))
+
+   (  "Proves: Root object's value is available."
+      (with-temp-buffer
+	 (wookie:th:make-usual-wookie
+	    ;;Format function returns a list of one constant string.
+	    #'(lambda (obj)
+		 (list obj))
+	    ;;Root is a string
+	    "abc")
+	 
+	 (emtb:buf-contents-matches
+	    :string "abc")))
+
+   ;;This test only relates wookie and the low printer that
+   ;;`wookie:th:make-usual-wookie' uses.  But it validates an
+   ;;assumption other tests rely on.
+   (  "Proves: Will skip `nil' as a component."
+      (with-temp-buffer
+	 ;;Set up a root.
+	 (wookie:th:make-usual-wookie
+	    ;;Format function returns a list of one nil
+	    #'(lambda (&rest r)
+		 (list nil))
+	    ;;Dummy object and alist
+	    0)
+	 	 
+	 (emtb:buf-contents-matches
+	    :string "")))
+
+   )
 
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'wookie/tests)
+(provide 'viewers/wookie/tests)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -123,4 +154,4 @@ Proves: Basic expansion works."
 ;;;_  + End:
 
 ;;;_ , End
-;;; wookie/tests.el ends here
+;;; viewers/wookie/tests.el ends here

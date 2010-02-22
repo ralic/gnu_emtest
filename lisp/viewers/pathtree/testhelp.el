@@ -1,4 +1,4 @@
-;;;_ pathtree/testhelp.el --- Testhelp for pathtree
+;;;_ viewers/pathtree/testhelp.el --- Testhelp for pathtree
 
 ;;;_. Headers
 ;;;_ , License
@@ -32,17 +32,17 @@
 (when (not (fboundp 'rtest:deftest))
     (defmacro rtest:deftest (&rest dummy))
     (defmacro rtest:if-avail (&rest dummy)))
-(require 'emt-match)
-(require 'pathtree)
+(require 'tester/testhelp/match)
+(require 'viewers/pathtree)
 ;;;_. Body
 
-(emt-match:define-struct-governor emt:view:pathtree-node
+(emtm:define-struct-governor emtvp-node
    name path parent children data)
 
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'pathtree/testhelp)
+(provide 'viewers/pathtree/testhelp)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -50,4 +50,4 @@
 ;;;_  + End:
 
 ;;;_ , End
-;;; testhelp.el ends here
+;;; viewers/pathtree/testhelp.el ends here

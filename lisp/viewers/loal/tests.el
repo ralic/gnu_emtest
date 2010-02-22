@@ -1,4 +1,4 @@
-;;;_ loal/tests.el --- Tests for LOAL (Lists of Alists)
+;;;_ viewers/loal/tests.el --- Tests for LOAL (Lists of Alists)
 
 ;;;_. Headers
 ;;;_ , License
@@ -78,7 +78,7 @@ Response: Value is found."
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'loal/tests)
+(provide 'viewers/loal/tests)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -86,4 +86,4 @@ Response: Value is found."
 ;;;_  + End:
 
 ;;;_ , End
-;;; loal/tests.el ends here
+;;; viewers/loal/tests.el ends here

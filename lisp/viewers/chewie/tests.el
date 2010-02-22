@@ -1,4 +1,4 @@
-;;;_ chewie/tests.el --- Tests for Chewie
+;;;_ viewers/chewie/tests.el --- Tests for Chewie
 
 ;;;_. Headers
 ;;;_ , License
@@ -32,7 +32,7 @@
 (when (not (fboundp 'rtest:deftest))
     (defmacro rtest:deftest (&rest dummy))
     (defmacro rtest:if-avail (&rest dummy)))
-(require 'chewie)
+(require 'viewers/chewie/testhelp)
 ;;;_. Body
 ;;;_ , Help to set the usuals
 ;;May belong in testhelp.
@@ -41,109 +41,59 @@
 
 (rtest:deftest chewie
 
-   ;;Some of these tests just mirror "wookie" tests.
-
-   (  "Proves: Basic expansion works."
-      (with-temp-buffer
-	 ;;Set up a root.
-	 (chewie:setup-root 
-	    ;;Dummy object and alist
-	    0
-	    ()
-	    ;;Format function returns a list of one constant string.
-	    #'(lambda (&rest r)
-		 (list "abc")))
-	 
-	 (mockbuf:buf-contents-matches
-	    :string "abc")))
-   ;;
-   (  "Proves: Will skip `nil' as a component."
-      (with-temp-buffer
-	 ;;Set up a root.
-	 (chewie:setup-root 
-	    ;;Dummy object and alist
-	    0
-	    ()
-	    ;;Format function returns a list of one nil
-	    #'(lambda (&rest r)
-		 (list nil)))
-	 
-	 (mockbuf:buf-contents-matches
-	    :string "")))
-
-   
-   (  "Proves: Nested expansion works."
+   ;;Contract with static expansion for plain "wookie".
+   (  "Proves: Nested dynamic expansion works.
+Dynamic objects are displayed immediately."
       (with-temp-buffer
 	 ;;Set up
-	 (chewie:setup-root 
-	    ;;Dummy object and alist
-	    0
-	    () 
-	    ;;Format function returns a list of one constant string.
-	    #'(lambda (&rest r)
-		 (list 
-		    "abc"
-		    `(dynamic 0 () 
-			,#'(lambda (&rest r)
-			     (list "def")))
-		    "ghi")))
-	 
-	 (mockbuf:buf-contents-matches
-	    :string "abcdefghi")))
+	 (let
+	    ;;Dummy chewie list, since our objects here are just
+	    ;;empty dummies.
+	    ((chewlist (chewie:2:make-list)))
+
+	    (chewie:th:make-usual-chewie
+	       ;;Format function returns a list of constant strings
+	       ;;and one dynamic object.
+	       #'(lambda (&rest r)
+		    (list 
+		       "abc"
+		       `(dynamic 1 () 
+			   ,#'(lambda (&rest r)
+				 (list "def")))
+		       "ghi"))
+	       ;;Dummy object and alist.  Set this up differently now.
+	       0
+	       ;;Dummy chewie list getter
+	       #'(lambda (&rest r) chewlist))
+	    
+	    (emtb:buf-contents-matches
+	       :string "abcdefghi"))))
    
-
-
-   (  "Proves: Root object's value is available."
-      (with-temp-buffer
-	 ;;Set up a root.
-	 (chewie:setup-root 
-	    ;;Root is a string
-	    "abc"
-	    ;;Empty alist
-	    ()
-	    ;;Format function returns a list of one constant string.
-	    #'(lambda (obj data)
-		 (list obj)))
-	 
-	 (mockbuf:buf-contents-matches
-	    :string "abc")))
-
-   ;;$$MOVE ME maybe. It's really a test of interaction with LOAL, not
-   ;;of chewie.  Maybe into "emformat"
-   (  "Proves: Alist's value is available."
-      (with-temp-buffer
-	 ;;Set up a root.
-	 (chewie:setup-root
-	    ;;Dummy object
-	    0
-	    (loal:acons 'my-key "abc" '())
-	    ;;Format function returns a list of one string obtained
-	    ;;from data.
-	    #'(lambda (obj data)
-		 (list 
-		    (loal:val 'my-key data "Wrongwrong"))))
-	 
-	 (mockbuf:buf-contents-matches
-	    :string "abc")))
 
    (  "Proves: Can recurse hierarchically."
       (with-temp-buffer
 	 ;;Root contains an object of its own type.
 	 (let
-	    ((chewie
-		(chewie:setup-root 
-		   (wookie:make-tht:1s+1rec
-		      :str "abc"
-		      :recurse
-		      (wookie:make-tht:1s+1rec
-			 :str "def"
-			 :recurse nil))
-		   ;;Empty alist
-		   ()
-		   #'chewie:th:format-1s+1rec-dynamic)))
-	    	 
-	 (mockbuf:buf-contents-matches
-	    :string "abc(def())"))))
+	    (
+	       (chewie
+		  (chewie:th:make-usual-chewie
+		     ;;Format function interprets this type of object.  It
+		     ;;is passed data too.
+		     #'chewie:th:format-dynamic-1s+1rec
+		     ;;Root contains an object of its own type.
+		     (chewie:make-tht:dynamic-1s+1rec
+			:list (chewie:2:make-list)
+			:str "abc"
+			:recurse
+			(chewie:make-tht:dynamic-1s+1rec
+			   :list (chewie:2:make-list)
+			   :str "def"
+			   :recurse nil))
+		     ;;Chewie list getter
+		     #'chewie:tht:dynamic-1s+1rec->list)))
+	    
+	    (emtb:buf-contents-matches
+	       :string "abc(def())"))))
 
 
    ;;Updating
@@ -151,32 +101,34 @@
       (with-temp-buffer
 	 (labels
 	    ;;Formatter function for list of `wookie:th:1s',
-	    ;;corresponding to the structure of `root'
+	    ;;corresponding to the structure of `root'.
 	    ((format-f
 		(obj data)
 		(list
 		   `(dynamic ,(car obj) ()
-		       chewie:th:format-1s)
+		       wookie:th:format-1s)
 		   "-"
 		   `(dynamic ,(second obj) ()
-		       chewie:th:format-1s))))
+		       wookie:th:format-1s))))
 	    (let*
 	       ;;Root contains two objects.  
 	       ((root
 		   (list
-		      (wookie:make-tht:1s
+		      (chewie:make-tht:dynamic-1s
+			 :list (chewie:2:make-list)
 			 :str "abc")
-		      (wookie:make-tht:1s
+		      (chewie:make-tht:dynamic-1s
+			 :list (chewie:2:make-list)
 			 :str "def")))
-		  (chewie
-		     (chewie:setup-root 
+		  (wookie
+		     (chewie:th:make-usual-chewie
+			#'format-f
 			root
-			()
-			#'format-f)))
+			#'chewie:tht:dynamic-1s->list)))
 	       
 	       ;;Validate original contents.
 	       (assert
-		  (mockbuf:buf-contents-matches
+		  (emtb:buf-contents-matches
 		     :string "abc-def")
 		  t)
 
@@ -187,62 +139,68 @@
 		   (nil nil) (5 "def") (nil "")) 
 
 	       (wookie-debug-get-position-skeleton 
-		  (chewie:chewie->wookie chewie))
+		  wookie)
 	       
 	       (setf
 		  (wookie:tht:1s->str (car root))
 		  "ghi")
-	       (chewie:freshen-obj chewie (car root))
+	       (chewie:redisplay wookie (car root))
 
 	       ;;Check buffer. 
 	       (assert
-		  (mockbuf:buf-contents-matches
+		  (emtb:buf-contents-matches
 		     :string "ghi-def")
 		  t)
 	       ;;Update the other.
 	       (setf
 		  (wookie:tht:1s->str (cadr root))
 		  "jkl")
-	       (chewie:freshen-obj chewie (cadr root))
+	       (chewie:redisplay wookie (cadr root))
 
 	       ;;Check buffer. 
 	       (assert
-		  (mockbuf:buf-contents-matches
+		  (emtb:buf-contents-matches
 		     :string "ghi-jkl")
 		  t)
 	       t))))
-   
-
+   ;;DORMANT Test is not consistent with the new design.  It could be
+   ;;made consistent with another design of chewie where the dynamic
+   ;;objects do not hold their own extra info, but that info is held
+   ;;in association with the objects.
+   '  
    (  "Demonstrates: updating by altering dynamic objects held by others."
       (with-temp-buffer
 	 (labels
 	    ;;Formatter function for list of `wookie:th:1s',
-	    ;;corresponding to the structure of `root'
+	    ;;corresponding to the structure of `root'.  But root
+	    ;;needs to be dynamic too.
 	    ((format-f
 		(obj data)
 		(list
 		   `(dynamic ,(car obj) ()
-		       chewie:th:format-1s)
+		       wookie:th:format-1s)
 		   "-"
 		   `(dynamic ,(second obj) ()
-		       chewie:th:format-1s))))
+		       wookie:th:format-1s))))
 	    (let*
 	       ;;Root contains two objects.  
 	       ((root
 		   (list
-		      (wookie:make-tht:1s
+		      (chewie:make-tht:dynamic-1s
+			 :list (chewie:2:make-list)
 			 :str "abc")
-		      (wookie:make-tht:1s
+		      (chewie:make-tht:dynamic-1s
+			 :list (chewie:2:make-list)
 			 :str "def")))
-		  (chewie
-		     (chewie:setup-root 
+		  (wookie
+		     (chewie:th:make-usual-chewie
+			#'format-f
 			root
-			()
-			#'format-f)))
+			#'chewie:tht:dynamic-1s->list)))
 	       
 	       ;;Validate original contents.
 	       (assert
-		  (mockbuf:buf-contents-matches
+		  (emtb:buf-contents-matches
 		     :string "abc-def")
 		  t)
 
@@ -253,17 +211,73 @@
 
 	       (setf
 		  (car root)
-		  (wookie:make-tht:1s
-		     :str "ghi"))
-	       (chewie:freshen-obj chewie root)
+ 		  (wookie:make-tht:1s :str "ghi"))
+	       
+	       (chewie:redisplay wookie root)
 	       
 	       ;;Check buffer. 
 	       (assert
-		  (mockbuf:buf-contents-matches
+		  (emtb:buf-contents-matches
 		     :string "ghi-def")
 		  t)
 
 	       t))))
+
+   (  "Demonstrates: Removing objects can work."
+      (with-temp-buffer
+	 (let*
+	    (
+	       (root
+		  ;;Root contains an object of its own type.
+		  (chewie:make-tht:dynamic-1s+1rec
+		     :list (chewie:2:make-list)
+		     :str "abc"
+		     :recurse
+		     (chewie:make-tht:dynamic-1s+1rec
+			:list (chewie:2:make-list)
+			:str "def"
+			:recurse nil)))
+	       (wookie
+		  (chewie:th:make-usual-chewie
+		     ;;Format function interprets this type of object.  It
+		     ;;is passed data too.
+		     #'chewie:th:format-dynamic-1s+1rec
+		     root
+		     ;;Chewie list getter
+		     #'chewie:tht:dynamic-1s+1rec->list)))
+	    
+	    (emtb:buf-contents-matches
+	       :string "abc(def())")
+
+	    ;;Remove the child item and undisplay it
+	    (let
+	       ((child
+		   (chewie:tht:dynamic-1s+1rec->recurse root)))
+	       (setf (chewie:tht:dynamic-1s+1rec->recurse root) nil)
+	       (chewie:display-gone wookie child))
+	    
+	    ;;Check contents
+	    (emtb:buf-contents-matches
+	       :string "abc()")
+
+	    ;;Replace the child item with "ghi" instead.  Redisplay
+	    ;;its parent (because only caller knows what holds that
+	    ;;node)
+	    (let
+	       ((new-child
+		   (chewie:make-tht:dynamic-1s+1rec
+		      :list (chewie:2:make-list)
+		      :str "ghi"
+		      :recurse nil)))
+	       (setf (chewie:tht:dynamic-1s+1rec->recurse root) new-child)
+	       (chewie:redisplay wookie root))
+
+	    ;;New node should be visible in the right place.
+	    (emtb:buf-contents-matches
+	       :string "abc(ghi())")	    
+	    )))
+   
+
 
 
    ;;Prove: Updating uses the "local" alist
@@ -287,7 +301,7 @@
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'chewie/tests)
+(provide 'viewers/chewie/tests)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -295,4 +309,4 @@
 ;;;_  + End:
 
 ;;;_ , End
-;;; chewie/tests.el ends here
+;;; viewers/chewie/tests.el ends here

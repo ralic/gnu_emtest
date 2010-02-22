@@ -1,4 +1,4 @@
-;;;_ wookie/testhelp.el --- Test support for wookie
+;;;_ viewers/wookie/testhelp.el --- Test support for wookie
 
 ;;;_. Headers
 ;;;_ , License
@@ -32,13 +32,13 @@
 (when (not (fboundp 'rtest:deftest))
     (defmacro rtest:deftest (&rest dummy))
     (defmacro rtest:if-avail (&rest dummy)))
+(require 'viewers/wookie)
+(require 'viewers/ewoc/testhelp)  ;;Only for
+;;`wookie-debug-get-position-skeleton'
 
 ;;;_. Body
 
 ;;;_ , Test structures
-;;$$RETHINK ME Do these apply the chewie, and wookie doesn't use them?
-;;Or apply to wookie and are currently misnamed?
-
 ;;We make our own test structures because these want field types
 ;;covariant with formatter.  Using a vanilla test structure would
 ;;run the risk of mixing the different meanings.
@@ -62,11 +62,37 @@
 ;;;_  . wookie:th:->displayable
 (defun wookie:th:->displayable (obj)
    ""
+   '
    (wookie:make-displayable 
       :data obj
-      :held-outside-p nil))
+      :held-outside-p nil)
+   ;;After the change
+   obj)
+;;;_  . wookie:th:make-usual-wookie
+(defun wookie:th:make-usual-wookie (expander root &optional get-chewie-list)
+   ""
+   (wookie:create
+      expander
+      ;;Printer for ewoc.
+      #'loformat:print
+      :object root
+      :get-chewie-list get-chewie-list
+      :buf (current-buffer)
+;;       :showing-cb #'ignore
+;;       :unshowing-cb #'ignore
+      ))
+
+;;;_ , Formatter functions
+;;;_  . wookie:th:format-1s
+(defun wookie:th:format-1s (obj data)
+   "Format just prints the string field."
+   (list 
+      (wookie:tht:1s->str obj)))
+
 
 ;;;_  . wookie:th:format-1s+1rec-static
+;;Contrast with `chewie:th:format-1s+1rec-dynamic' acting dynamically
+;;on the same type.
 (defun wookie:th:format-1s+1rec-static (obj)
    ""
    (mapcar
@@ -74,8 +100,6 @@
       (wookie:th:format-1s+1rec-static-x obj)))
 
 ;;;_  . wookie:th:format-1s+1rec-static
-;;Contrast with `chewie:th:format-1s+1rec-dynamic' acting dynamically
-;;on the same type.
 (defun wookie:th:format-1s+1rec-static-x (obj)
    "Format prints a string field, then statically recurses to a child if any."
    `(
@@ -87,12 +111,10 @@
 	       (wookie:th:format-1s+1rec-static-x obj2)))
        ")"))
 
-
+;;;_ , Inspection testhelp 
 ;;;_  . wookie-debug-get-position-skeleton
 (defun wookie-debug-get-position-skeleton (tree)
    ""
-   ;;Requires the ewoc test helper.
-   (require 'ewoc/testhelp)
    (labels
       (
 	 (show-sub (x)
@@ -111,7 +133,7 @@
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'wookie/testhelp)
+(provide 'viewers/wookie/testhelp)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -119,4 +141,4 @@
 ;;;_  + End:
 
 ;;;_ , End
-;;; wookie/testhelp.el ends here
+;;; viewers/wookie/testhelp.el ends here

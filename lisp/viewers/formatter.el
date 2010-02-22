@@ -1,4 +1,4 @@
-;;;_ formatter.el --- Formatter from structured data to text
+;;;_ viewers/formatter.el --- Formatter from structured data to text
 
 ;;;_. Headers
 ;;;_ , License
@@ -634,7 +634,7 @@ FUNC-1->2 transforms obj to a level 2 representation"
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'formatter)
+(provide 'viewers/formatter)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -642,4 +642,4 @@ FUNC-1->2 transforms obj to a level 2 representation"
 ;;;_  + End:
 
 ;;;_ , End
-;;; formatter.el ends here
+;;; viewers/formatter.el ends here

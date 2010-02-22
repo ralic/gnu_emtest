@@ -1,4 +1,4 @@
-;;;_ emviewer.el --- Chewie-based viewer for Emtest results
+;;;_ viewers/emviewer.el --- Chewie-based viewer for Emtest results
 
 ;;;_. Headers
 ;;;_ , License
@@ -33,41 +33,42 @@
     (defmacro rtest:deftest (&rest dummy))
     (defmacro rtest:if-avail (&rest dummy)))
 
-(require 'chewie)  ;;May be replaced by 'wookie
-(require 'receive)
-(require 'pathtree)
-(require 'emformat)
+(require 'viewers/chewie)  ;;May be replaced by 'viewers/wookie
+(require 'viewers/receive)
+(require 'viewers/pathtree)
+(require 'viewers/emformat)
 
 ;;;_. Body
 ;;;_ , Config
 
-(defconst emtest:viewer:emviewer:report-buffer-name 
+(defconst emtve:report-buffer-name 
    "*Emtest Report (emviewer)*")
 ;;;_ , Types
 ;;$$USEME in place of the many globals
-(defstruct emtest:viewer:emviewer
+(defstruct emtve
    "An emviewer object"
    (report-buffer () :type (satisfies bufferp))
-   result-root
-   chewie  ;;May be replaced by wookie
-   receiver)
+   (result-root   () :type emtvp)
+   (wookie        () :type wookie:wookie)
+   (receiver      () :type emtvr:data))
 
 ;;;_ , Globals
 ;;Other than tests, everything uses this emviewer object.
 ;;NOT IN USE YET
-(defconst emtest:viewer:*emviewer* 
+(defconst emtve:*viewer* 
    nil
    "Global Emviewer object" )
-(defconst emtest:viewer:emviewer:report-buffer nil 
+(defconst emtve:report-buffer nil 
    "" )
 ;;result object from receive.  Now it should live here.
-;;$$RENAME ME emtest:viewer:emviewer:pathtree
-(defconst emtest:viewer:emviewer:result-root nil 
+;;$$RENAME ME emtve:pathtree
+(defconst emtve:result-root nil 
    "" )
-(defconst emtest:viewer:emviewer:chewie nil 
+;;$$RENAME ME maybe.  To *:wookie
+(defconst emtve:chewie nil 
    "" )
-(defconst emtest:viewer:emviewer:receiver 
-   nil ;;Should be made by setup.  Of type `emt:receive:data'
+(defconst emtve:receiver 
+   nil ;;Should be made by setup.  Of type `emtvr:data'
    "" )
 ;;;_ , Pathtree callback functions 
 ;;;_  . emtest:viewer:receive-cb
@@ -75,167 +76,103 @@
    "Emviewer callback that `receive' gets.
 It just tells a pathtree to add this node."
    ;;This interface really does need its own callback.
-   (emt:pathtree:add/replace-node
+   (emtvp:add/replace-node
       ;;The pathtree root
-      emtest:viewer:emviewer:result-root 
+      emtve:result-root 
       ;;The path
       presentation-path
       ;;The data
-      (make-emt:view:suite-newstyle :cell cell)))
+      (make-emt:view:suite-newstyle 
+	 :list (chewie:2:make-list)
+	 :cell cell)))
 ;;;_  . emtest:viewer:pathtree-cb
-
-;;Except for summarizing, this isn't very specific to emviewer.
-;;$$SIMPLIFYME This could be a general framework, except for the
-;;`cond' statement.  That general framework would belong in pathtree.
-;;Expand how much we farm off to pathtree utils.
 (defun emtest:viewer:pathtree-cb (obj)
-   ""
-   (check-type obj emt:view:pathtree-node)
-
-   (let* 
-      ((dirty-flags (emt:view:pathtree-node-dirtinesses obj))
-	 (new-dirty-nodes '()))
-      (flet
-	 (  (undirty (flag)
-	       (setq dirty-flags
-		  (delete* flag dirty-flags)))
-	    (undirty-car (flag)
-	       (setq dirty-flags
-		  (delete* 
-		     flag
-		     dirty-flags 
-		     :test #'emt:view:pathtree:util:match-as-car)))
-	    (new-dirty (flag)
-	       (push flag dirty-flags))
-	    (new-dirty-node (flag node)
-	       (push flag (emt:view:pathtree-node-dirtinesses node))
-	       (push node new-dirty-nodes)))
-	 
-	 
-	 
-	 
-      ;;Clauses generally delete their flag, but not always.  Each
-      ;;clause returns a list of nodes to continue on.
-      ;;Maybe encap this as a clause-building cond relative.
-      ;;Maybe let each clause push or append-in the nodes it
-      ;;wants to be rerun.
+   "Callback to handle dirty flags, that `pathree' gets."
+   (emtvp:util:handle-dirty obj
       (cond
-	 ((null dirty-flags) '())
 	 ((or
 	     (member 'new dirty-flags)
-	     ;;Treated the same, for now anyways.
-	     (emt:view:pathtree:util:member-as-car 
+	     (emtvp:util:member-as-car 
 		'replaced 
 		dirty-flags))
 	    (undirty 'new)
-	    '(setq dirty-flags
-	       (delete* 'new dirty-flags))
 	    (undirty-car 'replaced)
-	    '(setq dirty-flags
-	       (delete* 
-		  'replaced 
-		  dirty-flags 
-		  :test #'emt:view:pathtree:util:match-as-car))
 
 	    ;;Dirty display is implied by dirty summary.
 	    (new-dirty 'summary)
-	    '(push 'summary dirty-flags)
 	    (let
-	       ((parent (emt:view:pathtree-node-parent obj)))
+	       ((parent (emtvp-node-parent obj)))
 	       (when parent
-		  ;;Parent's summary or display may be dirty now.
-		  ;;And parent's display is dirty, but that's implied
-		  ;;by summary being dirty.
-		  (new-dirty-node 'summary parent)
-		  '(push 'summary 
-		     (emt:view:pathtree-node-dirtinesses
-			parent))
-		  '(push parent new-dirty-nodes))))
+		  ;;Parent's summary may be dirty now.  Parent's
+		  ;;display definitely is, but that's implied by
+		  ;;summary being dirty.
+		  (new-dirty-node 'summary parent))))
 	 
 	 ((member 'summary dirty-flags)
-	    (if 
-	       ;;If any children have yet to be summarized,
-	       ;;delay
+	    ;;If any children have yet to be summarized, can't do
+	    ;;anything yet.
+	    (unless 
 	       (some
 		  #'(lambda (child)
 		       (member 'summary 
-			  (emt:view:pathtree-node-dirtinesses child)))
-		  (emt:view:pathtree-node-children obj))
-	       (list obj)
+			  (emtvp-node-dirty-flags child)))
+		  (emtvp-node-children obj))
+	       ;;Do summarization
+	       (emtvr:sum-node-badnesses obj)
+	       (undirty 'summary)
+	       (new-dirty 'display) ;;Now we can display it
+	       ;;Parent (if any) now needs to be resummarized.
 	       (let
-		  ((parent (emt:view:pathtree-node-parent obj)))
-		  (undirty 'summary)
-		  '(setq dirty-flags
-		     (delete* 'summary dirty-flags))
-		  ;;Do summarization
-		  (emt:receive:sum-node-badnesses obj)
+		  ((parent (emtvp-node-parent obj)))
 		  (when parent
-		     ;;Mark the parent (if any) as needing to be
-		     ;;summarized.
-		     (new-dirty-node 'summary parent)
-		     '(push 'summary 
-			(emt:view:pathtree-node-dirtinesses
-			   parent))
-		     '(push parent new-dirty-nodes))
-		  ;;Now we'll display it
-		  (new-dirty 'display)
-		  '(push 'display dirty-flags))))
+		     (new-dirty-node 'summary parent)))))
 	 
 	 ((member 'display dirty-flags)
 	    ;;Shouldn't have dirty summary because that would have
 	    ;;been caught by the previous clause.
 	    (assert (not (member 'summary dirty-flags)) t)
 	    (undirty 'display)
-	    '(setq dirty-flags
-	       (delete* 'display dirty-flags))
-	    (chewie:freshen-obj
-	       emtest:viewer:emviewer:chewie 
-	       obj))))
-      
-      (setf 
-	 (emt:view:pathtree-node-dirtinesses obj) dirty-flags)
-      
-
-      ;;Return the nodes we newly know are dirty.  If dirty-flags is
-      ;;non-nil, that includes this node.
-      (if dirty-flags
-	 (cons obj new-dirty-nodes)
-	 new-dirty-nodes)))
-
+	    (chewie:redisplay  ;;chewie:freshen-obj
+	       emtve:chewie 
+	       obj)))))
 
 ;;;_ , Setup emtest:viewer:setup-if-needed
 (defun emtest:viewer:setup-if-needed ()
    ""
-   (unless emtest:viewer:emviewer:result-root
-      (setq emtest:viewer:emviewer:result-root
-	 (emt:pathtree:make-empty-tree-newstyle
+   (unless emtve:result-root
+      (setq emtve:result-root
+	 (emtvp:make-empty-tree-newstyle
 	    #'emtest:viewer:pathtree-cb
-	    ;;Default makes the base type
+	    ;;Default makes the base type.
 	    #'(lambda ()
-		 (make-emt:view:presentable))
+		 (make-emt:view:presentable
+		    :list (chewie:2:make-list)))
 	    'emt:view:suite-newstyle)))
    
-   (unless emtest:viewer:emviewer:chewie
-      (unless emtest:viewer:emviewer:report-buffer
+   (unless emtve:chewie
+      (unless emtve:report-buffer
 	 (setq 
-	    emtest:viewer:emviewer:report-buffer 
+	    emtve:report-buffer 
 	    (generate-new-buffer
-	       emtest:viewer:emviewer:report-buffer-name)))
+	       emtve:report-buffer-name)))
 	 
-      (with-current-buffer emtest:viewer:emviewer:report-buffer
+      (with-current-buffer emtve:report-buffer
 	 (erase-buffer)
-	 (setq emtest:viewer:emviewer:chewie
-	    (chewie:setup-root
-	       emtest:viewer:emviewer:result-root
-	       '()
-	       #'emtest:viewer:fmt:top
-	       emtest:viewer:emviewer:report-buffer))
+	 (setq emtve:chewie
+	    (chewie:create-wookie
+	       #'emtvf:top
+	       emtve:result-root
+	       #'(lambda (obj)
+		    (emt:view:presentable-list
+		       (emtvp-node-data obj)))
+	       :buf
+	       emtve:report-buffer))
 	 ;;For now, anyways.
 	 (outline-mode)))
    (unless 
-      emtest:viewer:emviewer:receiver
-      (setq emtest:viewer:emviewer:receiver
-	 (make-emt:receive:data
+      emtve:receiver
+      (setq emtve:receiver
+	 (make-emtvr:data
 	    :alist ()
 	    :tree-insert-cb #'emtest:viewer:receive-cb
 	    ;;:tree-remove-cb Not yet
@@ -250,15 +187,15 @@ It just tells a pathtree to add this node."
    ""
    (check-type report emt:testral:report)
    (emtest:viewer:setup-if-needed)
-   (emt:receive:newstyle emtest:viewer:emviewer:receiver report)
-   (emt:pathtree:freshen emtest:viewer:emviewer:result-root)
-   (pop-to-buffer emtest:viewer:emviewer:report-buffer))
+   (emtvr:newstyle emtve:receiver report)
+   (emtvp:freshen emtve:result-root)
+   (pop-to-buffer emtve:report-buffer))
 
 
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'emviewer)
+(provide 'viewers/emviewer)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -266,4 +203,4 @@ It just tells a pathtree to add this node."
 ;;;_  + End:
 
 ;;;_ , End
-;;; emviewer.el ends here
+;;; viewers/emviewer.el ends here

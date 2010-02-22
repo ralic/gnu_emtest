@@ -1,4 +1,4 @@
-;;;_ wookie.el --- Emtest viewer that uses ewocs
+;;;_ viewers/wookie.el --- Emtest viewer that uses ewocs
 
 ;;;_. Headers
 ;;;_ , License
@@ -34,7 +34,10 @@
    (defmacro rtest:if-avail (&rest dummy)))
 
 (require 'ewoc)
-(when (not (boundp 'ewoc-provides-variable-separator))
+(unless
+   ;;(not (boundp 'ewoc-provides-variable-separator))
+   (featurep 'ewoc 'variable-separator)
+   ;;Attempted fallback but it may not be portable.
    (unless
       (require 'ewoc "231ewoc" t)
    (error "Needs an ewoc that provides variable separator")))
@@ -57,21 +60,30 @@ which will be the cores of ewocs or wookies.  Args are:
 
  * covariant node data
  * covariant overall data")
-   (showing-cb   () :type (satisfies functionp)
-      :doc "SHOWING-CB is called when a known-outside object is
-displayed.  It takes 3 args: 
- * The node (a `wookie:either' which caller should treat as opaque)
- * The node's data (Type is covariant with the caller)
- * The DATA field here.
-Its return value is ignored." )
-   (unshowing-cb () :type (satisfies functionp)
-      :doc
-      "UNSHOWING-CB is called when a known-outside object is no longer
-displayed.  Its signature is the same as SHOWING-CB.")
+   ;;$$OBSOLESCENT field
+;;    (showing-cb   () :type (satisfies functionp)
+;;       :doc "SHOWING-CB is called when a known-outside object is
+;; displayed.  It takes 3 args: 
+;;  * The node (a `wookie:either' which caller should treat as opaque)
+;;  * The node's data (Type is covariant with the caller)
+;;  * The DATA field here.
+;; Its return value is ignored." )
+;;    ;;$$OBSOLESCENT field
+;;    (unshowing-cb () :type (satisfies functionp)
+;;       :doc
+;;       "UNSHOWING-CB is called when a known-outside object is no longer
+;; displayed.  Its signature is the same as SHOWING-CB.")
    
    (data ()
       :doc "Data passed to all the callbacks.  
 \(Type is covariant with the caller")
+   (get-chewie-list () :type (satisfies functionp)
+      :doc
+      "Function, takes an object covariant with wookie node data type
+and returns a chewie:2:list"
+      )
+   
+   
    (pending () :type (repeat wookie:either)
       :doc "List of nodes that are waiting to be displayed."
       ))
@@ -94,17 +106,16 @@ displayed.  Its signature is the same as SHOWING-CB.")
    '(or wookie:node vector))
 
 ;;;_  . wookie:displayable
+;;$$OBSOLESCENT
+'
 (defstruct (wookie:displayable
 	      (:constructor wookie:make-displayable)
 	      (:conc-name wookie:displayable->)
 	      (:type list))
    "The object that EXPAND-F returns a list of."
    data
-   held-outside-p
-   ;;$$CHANGING These two are now unused
-   ;;callback
-   ;;cb-data
-   )
+   held-outside-p)
+
 
 ;;;_ , Entry points
 
@@ -115,7 +126,8 @@ displayed.  Its signature is the same as SHOWING-CB.")
 
 ;;;_  . wookie:create
 (defun* wookie:create (expand-func ewoc-print-func 
-			 &key buf object showing-cb unshowing-cb)
+			 &key buf object ;;showing-cb unshowing-cb
+			 get-chewie-list)
    "Create a wookie.
 EXPAND-FUNC is a function of one argument.  It expands an object, returning a
 list of `wookie:displayable'.
@@ -138,9 +150,8 @@ BUF is not handled yet."
 	       :root nil
 	       :ewoc ewoc
 	       :expand-f expand-func
-	       :showing-cb showing-cb
-	       :unshowing-cb unshowing-cb)))
-
+	       :get-chewie-list get-chewie-list)))
+      
       ;;Set the root just if it was given (non-nil)
       (when object (wookie:set-root wookie object))
       wookie))
@@ -199,10 +210,13 @@ Error if it has been set before."
       ;;Can't typecase ewoc--node, so assume any vector is one.
       (vector
 	 (ewoc-invalidate (wookie:wookie->ewoc wookie) obj))))
-;;;_  . Wookie callback management
+;;;_  . Wookie callback management (Obsolete)
 ;;;_   , wookie:held-outside-p
+;;Maybe already obsolescent
+'
 (defun wookie:held-outside-p (obj)
    "Non-nil just if the callbacks should be called on the node"
+   (error "Don't call wookie:held-outside-p")
    (etypecase obj
       (wookie:node t)
       ;;Can't typecase ewoc--node, so assume any vector is one.
@@ -216,62 +230,52 @@ Error if it has been set before."
 
    ;;`mapcar' traverses elements in order, so it's OK to use.
    (mapcar
-      #'(lambda (d)
-	   (let*
-	      (  (data
-		    (wookie:displayable->data d))
-		 
-		 (node
-		    (if
-		       (wookie:displayable->held-outside-p d)
-		       ;;If held-outside-p, this node may become an
-		       ;;inner node (it's not yet), so make a wookie.
-		       (let*
-			  (
-			     (placeholder
-				(ewoc-enter-before 
-				   ewoc 
-				   following-ewoc-node 
-				   (wookie:get-placeholder-contents)))
-			     (wookie-node
-				(wookie:make-node
-				   :parent parent
-				   :children placeholder
-				   :data data)))
+      #'(lambda (o)
+	   (cond
+	      ;;$$PRETTY ME UP Encap these clauses.  Really need to
+	      ;;return an ewoc (for linking in) and an either (for
+	      ;;returning, and it can be the same).
+	      ((and (consp o) (eq (car o) 'dynamic))
+		 ;;If object is dynamic, store it for dynamic treatment.
+		 (destructuring-bind (dummy obj data func)
+		    o
+		    (let*
+		       (
+			  (placeholder
+			     (ewoc-enter-before 
+				ewoc 
+				following-ewoc-node 
+				(wookie:get-placeholder-contents)))
+			  (chewlist
+			     (chewie:get-chewlist wookie obj))
+			  (dyn-obj
+			     (chewie:make-dynamic-obj
+				:list chewlist
+				:obj obj
+				:data data
+				:format-f func))
+			  (wookie-node
+			     (wookie:make-node
+				:parent parent
+				:children placeholder
+				:data dyn-obj)))
+		       
+		       ;;Queue the new node to be expanded later.
+		       (wookie:will-display-node wookie wookie-node)
 
-			  ;;Queue the new node to be expanded later.
-			  (wookie:will-display-node wookie wookie-node)
-			  wookie-node)
+		       ;;Register it as a displayer
+		       (chewie:register-display chewlist wookie-node)
 
-		       ;;Otherwise make just an ewoc, which won't ever be
-		       ;;expanded.  Ewoc displays it immediately so we
-		       ;;needn't queue it.
-		       (ewoc-enter-before 
-			  ewoc 
-			  following-ewoc-node 
-			  data))))
-
-	      (when
-		 (and
-		    (wookie:wookie->showing-cb wookie)
-		    (wookie:held-outside-p node))
-		 (funcall 
-		    (wookie:wookie->showing-cb wookie)
-		    node
-		    data
-		    (wookie:wookie->data wookie)))
+		       ;;Return it
+		       wookie-node)))
 	      
-
-	      ;;Call back.  Client may want to know the nodes we make.
-	      ;;Obsolete
-	      ;; 	      '
-	      ;; 	      (when (wookie:displayable->callback d)
-	      ;; 		 (funcall 
-	      ;; 		    (wookie:displayable->callback d)
-	      ;; 		    node
-	      ;; 		    (wookie:displayable->cb-data d)
-	      ;; 		    (wookie:wookie->data wookie)))
-	      node))
+	      
+	      ;;Otherwise just make it as an ewoc
+	      (t
+		 (ewoc-enter-before 
+		    ewoc 
+		    following-ewoc-node 
+		    o))))
       data-list))
 ;;;_   , wookie:delete-either
 (defun wookie:delete-either (wookie node)
@@ -308,6 +312,7 @@ Error if it has been set before."
 (defun wookie:expand-empty (tree node)
    ""
 
+   ;;The expand-f call was this plus wrapping as displayables:
    (let*
       (
 	 (ewoc (wookie:wookie->ewoc tree))
@@ -317,10 +322,10 @@ Error if it has been set before."
 	 ;;the footer node.
 	 (following-ewoc-node
 	    (ewoc--node-right placeholder))
-	 (data-list 
-	    (funcall 
-	       (wookie:wookie->expand-f tree)
-	       (wookie:node->data node)))
+	 (data-list
+ 	       (funcall 
+		  (wookie:wookie->expand-f tree) 
+		  (wookie:node->data node)))
 	 (new-children
 	    (wookie:enter-new-children
 	       tree
@@ -333,8 +338,8 @@ Error if it has been set before."
       (setf (wookie:node->children node) new-children)
 
       ;;Return the wookie node.
-      node)   
-   )
+      node))
+
 ;;;_   , wookie:expand-one
 
 (defun wookie:expand-one (wookie node)
@@ -373,7 +378,7 @@ reprinting too, when it's not a placeholder."
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'wookie)
+(provide 'viewers/wookie)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -381,4 +386,4 @@ reprinting too, when it's not a placeholder."
 ;;;_  + End:
 
 ;;;_ , End
-;;; wookie.el ends here
+;;; viewers/wookie.el ends here

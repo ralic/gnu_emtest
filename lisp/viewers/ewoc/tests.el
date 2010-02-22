@@ -1,4 +1,4 @@
-;;;_ ewoc/tests.el --- Testing for ewoc.el
+;;;_ viewers/ewoc/tests.el --- Testing for ewoc.el
 
 ;;;_. Headers
 ;;;_ , License
@@ -36,8 +36,8 @@
 (when (not (fboundp 'rtest:deftest))
     (defmacro rtest:deftest (&rest dummy))
     (defmacro rtest:if-avail (&rest dummy)))
-(require 'ewoc/testhelp)
-(require 'mockbuf)
+(require 'viewers/ewoc/testhelp)
+(require 'tester/testhelp/mocks/filebuf)
 
 ;;;_. Body
 
@@ -70,7 +70,7 @@ d
 
 	    ;;Validate
 	    (assert
-	       (mockbuf:buf-contents-matches
+	       (emtb:buf-contents-matches
 		  :string expected-contents))
       
 	    ;;Check that nodes' data is as expected
@@ -235,26 +235,26 @@ d
 		  ((node (ewoc-nth ewoc 0)))
 		  (ewoc--refresh-node #'insert node ewoc)
 		  (assert
-		     (mockbuf:buf-contents-matches
+		     (emtb:buf-contents-matches
 			:string expected-contents)))
 	       (let* 
 		  ((node (ewoc-nth ewoc 1)))
 		  (ewoc--refresh-node #'insert node ewoc)
 		  (assert
-		     (mockbuf:buf-contents-matches
+		     (emtb:buf-contents-matches
 			:string expected-contents)))
 
 	       (let* 
 		  ((node (ewoc-nth ewoc 4)))
 		  (ewoc--refresh-node #'insert node ewoc)
 		  (assert
-		     (mockbuf:buf-contents-matches
+		     (emtb:buf-contents-matches
 			:string expected-contents)))
 
 	       ;;Test ewoc-refresh
 	       (ewoc-refresh ewoc)
 	       (assert
-		  (mockbuf:buf-contents-matches
+		  (emtb:buf-contents-matches
 		     :string expected-contents
 		     ))))
 	 t))
@@ -277,7 +277,7 @@ Demonstrates: Correct behavior of various parts of ewoc interface."
 	    
 	    ;;Validate
 	    (assert
-	       (mockbuf:buf-contents-matches
+	       (emtb:buf-contents-matches
 		  :string expected-contents))
 
 	    ;;Check that nodes' data is as expected
@@ -429,26 +429,26 @@ Demonstrates: Correct behavior of various parts of ewoc interface."
 		  ((node (ewoc-nth ewoc 0)))
 		  (ewoc--refresh-node #'insert node ewoc)
 		  (assert
-		     (mockbuf:buf-contents-matches
+		     (emtb:buf-contents-matches
 			:string expected-contents)))
 	       (let* 
 		  ((node (ewoc-nth ewoc 1)))
 		  (ewoc--refresh-node #'insert node ewoc)
 		  (assert
-		     (mockbuf:buf-contents-matches
+		     (emtb:buf-contents-matches
 			:string expected-contents)))
 
 	       (let* 
 		  ((node (ewoc-nth ewoc 4)))
 		  (ewoc--refresh-node #'insert node ewoc)
 		  (assert
-		     (mockbuf:buf-contents-matches
+		     (emtb:buf-contents-matches
 			:string expected-contents)))
 
 	       ;;Test ewoc-refresh
 	       (ewoc-refresh ewoc)
 	       (assert
-		  (mockbuf:buf-contents-matches
+		  (emtb:buf-contents-matches
 		     :string expected-contents
 		     ))))
 	 t))
@@ -469,7 +469,7 @@ Response:  Behaves as the empty separator."
 	    (ewoc-enter-last ewoc "d")
 	    
 	    (assert
-	       (mockbuf:buf-contents-matches
+	       (emtb:buf-contents-matches
 		  :string expected-contents)))
 
 	 t))
@@ -492,7 +492,7 @@ Demonstrates: Correct behavior of refresh and map."
 	    
 	    ;;Validate
 	    (assert
-	       (mockbuf:buf-contents-matches
+	       (emtb:buf-contents-matches
 		  :string expected-contents))
 
 	    ;;Refresh
@@ -500,7 +500,7 @@ Demonstrates: Correct behavior of refresh and map."
 	    (ewoc-refresh ewoc)
 
 	    (assert
-	       (mockbuf:buf-contents-matches
+	       (emtb:buf-contents-matches
 		  :string expected-contents))
 
 	    ;;Map
@@ -514,7 +514,7 @@ Demonstrates: Correct behavior of refresh and map."
 	       )
 	    
 	    (assert
-	       (mockbuf:buf-contents-matches
+	       (emtb:buf-contents-matches
 		  :string expected-contents))
 	   
 	    ;;One element non-nil, ie reprinted.
@@ -522,7 +522,7 @@ Demonstrates: Correct behavior of refresh and map."
 	       ewoc
 	       "c")
 	    (assert
-	       (mockbuf:buf-contents-matches
+	       (emtb:buf-contents-matches
 		  :string expected-contents)))
 	 
 	 t))
@@ -546,7 +546,7 @@ Demonstrates: Correct behavior of filter."
 	    
 	    ;;Validate
 	    (assert
-	       (mockbuf:buf-contents-matches
+	       (emtb:buf-contents-matches
 		  :string "abacad"))
 
 	    (ewoc-filter ewoc
@@ -556,7 +556,7 @@ Demonstrates: Correct behavior of filter."
 	       "a")
 	    
 	    (assert
-	       (mockbuf:buf-contents-matches
+	       (emtb:buf-contents-matches
 		  :string "bcd"))
 
 	    ;;Behavior of `ewoc-do'
@@ -575,7 +575,9 @@ Demonstrates: Correct behavior of filter."
 	 
 	 t))
    
-   
+
+   ;;This is slightly nasty because of variation in the way emacsen
+   ;;represent and print keymaps.
    (  "Demonstration: The colorcomp application."
       (let*
 	 ((color "green")
@@ -592,28 +594,28 @@ Demonstrates: Correct behavior of filter."
 	 (colorcomp color)
 	 (with-current-buffer (get-buffer buf-name)
 	    (assert
-	       (mockbuf:buf-contents-matches
-		  :dir "../t/examples/ewoc/"
+	       (emtb:buf-contents-matches
+		  :dir "examples/"
 		  :file "colorcomp.1.txt"))
 
 	    ;;Put it thru its paces and check that buffer text is
 	    ;;correct.
 	    (dotimes (i 32) (colorcomp-R-more))
 	    (assert
-	       (mockbuf:buf-contents-matches
-		  :dir "../t/examples/ewoc/"
+	       (emtb:buf-contents-matches
+		  :dir "examples/"
 		  :file "colorcomp.2.txt"))
 
 	    (dotimes (i 64) (colorcomp-B-more))
 	    (assert
-	       (mockbuf:buf-contents-matches
-		  :dir "../t/examples/ewoc/"
+	       (emtb:buf-contents-matches
+		  :dir "examples/"
 		  :file "colorcomp.3.txt"))
 
 	    (dotimes (i 15) (colorcomp-G-less))
 	    (assert
-	       (mockbuf:buf-contents-matches
-		  :dir "../t/examples/ewoc/"
+	       (emtb:buf-contents-matches
+		  :dir "examples/"
 		  :file "colorcomp.4.txt"))
 
 	    (colorcomp-copy-as-kill-and-exit))
@@ -625,7 +627,7 @@ Demonstrates: Correct behavior of filter."
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'ewoc/tests)
+(provide 'viewers/ewoc/tests)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -633,4 +635,4 @@ Demonstrates: Correct behavior of filter."
 ;;;_  + End:
 
 ;;;_ , End
-;;; ewoc/tests.el ends here
+;;; viewers/ewoc/tests.el ends here

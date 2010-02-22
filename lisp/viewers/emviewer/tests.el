@@ -1,4 +1,4 @@
-;;;_ emviewer/tests.el --- Emviewer tests
+;;;_ viewers/emviewer/tests.el --- Emviewer tests
 
 ;;;_. Headers
 ;;;_ , License
@@ -35,8 +35,8 @@
     (defmacro rtest:deftest (&rest dummy))
     (defmacro rtest:if-avail (&rest dummy)))
 
-(require 'emviewer/testhelp) ;;For `emtest:ts:run-test'
-(require 'emt-persist)
+(require 'viewers/emviewer/testhelp) ;;For `emtest:ts:run-test'
+(require 'common/emt-persist)
 ;;;_. Body
 
 ;;Testing will be mostly separate for the formatters - maybe chewie
@@ -51,7 +51,7 @@
 
 ;;End-to-end viewing.  
 ;; '
-;; (emt:test:ts:run-test 
+;; (emtt:ts:run-test 
 ;;    '("Situation: testing an example" 
 ;;        (error "An example error")) 
 ;;    #'emtest:viewer:receive)
@@ -59,7 +59,7 @@
 ;; (pp
 ;;    (let 
 ;;       ((l))
-;;       (emt:test:ts:run-test 
+;;       (emtt:ts:run-test 
 ;; 	 '("Situation: testing an example" 
 ;; 	     (error "An example error")) 
 ;; 	 #'(lambda (r)
@@ -148,9 +148,31 @@
    t)
 
 (rtest:deftest emviewer
+   ;;Really a test of wookie interaction with LOAL.  Irrelevant until
+   ;;chewie maker accepts a "data" param from the top.
+   '
+   (  "Proves: Alist's value is available."
+      (with-temp-buffer
+	 (let
+	    ((chewlist (chewie:2:make-list)))
+	    (chewie:th:make-usual-chewie
+	       ;;Format function ignores obj and returns a list of one
+	       ;;string obtained from data.
+	       #'(lambda (obj data)
+		    (list 
+		       (loal:val 'my-key data "Wrongwrong")))
+	       ;;Dummy object
+	       0
+	       ;;$$SUPPORT ME Data parameter from the top
+	       :data
+	       (loal:acons 'my-key "abc" '()))
+	 
+	 
+	    (emtb:buf-contents-matches
+	       :string "abc"))))
 
    (  "Situation: Just the test runner."
-      (emtest:viewer:emviewer:ts:with-mock-viewer
+      (emtve:ts:with-mock-viewer
 	 (emtest:viewer:receive
 	    (emt:eg (type report)(name just-test-runner)))
 
@@ -161,7 +183,7 @@
 		   "~/projects/emtest/lisp/viewers/emviewer/persist")))))
       
    ("Situation: Report one test-1."
-      (emtest:viewer:emviewer:ts:with-mock-viewer
+      (emtve:ts:with-mock-viewer
 	 (emtest:viewer:receive
 	    (emt:eg (type report)(role original-add)(what-test test-1)))
 
@@ -172,7 +194,7 @@
 
 
    ("Situation: Report test-2."
-      (emtest:viewer:emviewer:ts:with-mock-viewer
+      (emtve:ts:with-mock-viewer
 	 (emtest:viewer:receive
 	    (emt:eg (type report)(what-test test-2)))
 
@@ -187,7 +209,7 @@
       ;;And capture the intermediate result stuff - gotta rewrite,
       ;;basically like above or like rewriting "receive" and also
       ;;testing it with set=.
-      (emtest:viewer:emviewer:ts:with-mock-viewer
+      (emtve:ts:with-mock-viewer
 	 (emtest:ts:run-test
 	    '("Situation: testing an example" 
 		(error "An example error")))
@@ -200,11 +222,11 @@
    
    )
 (emt:deftest-3
-   ((of 'emviewer))
+   ((of 'viewers/emviewer))
 
    ;;Tests of just the viewer.
    (()
-      (emtest:viewer:emviewer:ts:with-mock-viewer
+      (emtve:ts:with-mock-viewer
 	 (emtest:viewer:receive
 	    (emt:eg (type report)(name just-test-runner)))
 
@@ -215,7 +237,7 @@
 		   "~/projects/emtest/lisp/viewers/emviewer/persist")))))
    
    (()
-      (emtest:viewer:emviewer:ts:with-mock-viewer
+      (emtve:ts:with-mock-viewer
 	 (emtest:viewer:receive
 	    (emt:eg (type report)(role original-add)(what-test test-1)))
 
@@ -226,7 +248,7 @@
 
 
    (()
-      (emtest:viewer:emviewer:ts:with-mock-viewer
+      (emtve:ts:with-mock-viewer
 	 (emtest:viewer:receive
 	    (emt:eg (type report)(what-test test-2)))
 
@@ -241,7 +263,7 @@
       ;;And capture the intermediate result stuff - gotta rewrite,
       ;;basically like above or like rewriting "receive" and also
       ;;testing it with set=.
-      (emtest:viewer:emviewer:ts:with-mock-viewer
+      (emtve:ts:with-mock-viewer
 	 (emtest:ts:run-test
 	    '("Situation: testing an example" 
 		(error "An example error")))
@@ -258,7 +280,7 @@
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'emviewer/tests)
+(provide 'viewers/emviewer/tests)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -266,4 +288,4 @@
 ;;;_  + End:
 
 ;;;_ , End
-;;; emviewer/tests.el ends here
+;;; viewers/emviewer/tests.el ends here

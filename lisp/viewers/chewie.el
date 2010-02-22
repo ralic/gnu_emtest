@@ -1,4 +1,4 @@
-;;;_ chewie.el --- Chewie - dynamic display of tree-structured data
+;;;_ viewers/chewie.el --- Chewie - dynamic display of tree-structured data
 
 ;;;_. Headers
 ;;;_ , License
@@ -32,13 +32,15 @@
 (when (not (fboundp 'rtest:deftest))
     (defmacro rtest:deftest (&rest dummy))
     (defmacro rtest:if-avail (&rest dummy)))
-(require 'wookie)
-(require 'loal)
-(require 'hiformat)
+(require 'viewers/wookie)
+(require 'viewers/loal)
+(require 'viewers/hiformat)
 ;;;_. Body
 ;;;_ , Types
 ;;;_  . chewie:map-cell
 ;;May merge with `chewie:dynamic-obj'
+;;$$REMOVE ME later.  Obsolescent
+'
 (defstruct (chewie:map-cell
 	      (:type list)
 	      (:constructor chewie:make-map-cell)
@@ -52,19 +54,30 @@ This is basically an alist cell."
    ;;This will become a list of "wookie:either"
    (ewoc () :type wookie:either))
 
+;;;_  . chewie:2:list
+(defstruct (chewie:2:list
+	      ;;(:type list)
+	      (:constructor chewie:2:make-list)
+	      (:conc-name chewie:2:list->)
+	      (:copier nil))
+   "One cell of wookie.  Intended to live inside other types of data
+nodes."
+   ;;(data () :type loal:single-alist)
+   ;;These nodes all know how to expand themselves.
+   (displayers () :type (repeat wookie:either)))
+
 ;;;_  . chewie:dynamic-obj
-;;May merge with `chewie:map-cell'
 (defstruct (chewie:dynamic-obj
 	      (:constructor chewie:make-dynamic-obj)
 	      (:conc-name chewie:dynamic-obj->)
 	      (:copier nil))
-   "Chewie node, for use in a wookie"
+   "Chewie node, for use in a wookie.
+It fully contains the information used to redisplay the object."
+
+
    obj
-   ;;Not clear whether singleton or full is wanted here.  May not even
-   ;;be useful here.
-   (data     () :type loal:single-alist)
-   ;;$$RETHINKME If chewie serves instead of rules, this may not be
-   ;;needed.
+   (list     () :type chewie:2:list)
+   (data     () :type loal)
    (format-f () :type (satisfies functionp)
       :doc
       "This function xforms obj into a format list.
@@ -76,6 +89,8 @@ This is basically an alist cell."
       ))
 
 ;;;_  . chewie:chewie
+;;$$REMOVE ME later.  OBSOLESCENT
+'
 (defstruct (chewie:chewie
 	      (:constructor chewie:make-chewie)
 	      (:conc-name chewie:chewie->))
@@ -90,9 +105,12 @@ This is basically an alist cell."
 
 ;;;_ , Entry points
 ;;;_  . chewie:set-root
+;;$$CHANGE ME
+'
 (defun chewie:set-root (chewie obj data func)
    ""
 
+   (error "Obsolete")
    (let
       ((wookie (chewie:chewie->wookie chewie)))
 
@@ -114,6 +132,8 @@ This is basically an alist cell."
 ;;chewie:get-expansion (?)  Which should become a param.
 ;;$$MOVEME maybe.  This may be just how emviewer constructs a wookie,
 ;;since chewie contains almost nothing now.
+;;$$CHANGE ME - just wraps a few things that we pass.
+'
 (defun chewie:setup-root (obj data func &optional buf)
    "Set up a chewie.
 OBJECT can be any object that FUNC understands.  It will be the root
@@ -124,10 +144,11 @@ FUNC is a function taking 2 arguments:
  * A chewie:loal.  Note that each element is in the same format
    that DATA is in.
 FUNC should return a format list, which must satisfy
-`(typep x 'hiformat:format)'
+`(typep x 'viewers/hiformat:format)'
 
 BUF is the buffer to print in.  It is not handled yet."
 
+   (error "Obsolete")
    (let*
       ((wookie
 	  (wookie:create
@@ -160,70 +181,45 @@ BUF is the buffer to print in.  It is not handled yet."
 	 (chewie:set-root chewie obj data func))
       chewie))
 
+;;;_  . chewie:create-wookie
+(defun chewie:create-wookie (expander root get-chewie-list &rest r)
+   ""
+   ;;$$IMPROVE ME - some of these should be params.  Params should be
+   ;;taken more neatly.
+   (apply #'wookie:create
+      #'chewie:get-expansion
+      ;;Printer for ewoc.  Should be a param.
+      #'loformat:print
+      :object
+      (chewie:make-dynamic-obj
+	 :obj root 
+	 :data () ;;Should be a param.
+	 :format-f expander)
+      :get-chewie-list get-chewie-list
+      r))
 
 
 ;;;_ , Other functions
 ;;;_  . chewie:get-expansion
 
-;;Big-data would be a chewie, if needed.  It's stored with the wookie
-;;tree.
-
-;;$$RETHINK MY PLACE Not clear that this belongs here.  But it does
-;;use and need chewie dynamic objects.
 (defun chewie:get-expansion (x &optional big-data)
-   "Return a list of `wookie:displayable's, each corresponding to an
-item that the formatting function returns.
+   "Return a list of items, each suitable as formatting input.
 
 X must be a `chewie:dynamic-obj'."
 
-   (mapcar
-      #'(lambda (o)
-	   ;;$$RETHINKME This may becomes merely dispatching, inside
-	   ;;hiformat but dispatching to chewie if dynamic is seen.
-	   ;;But it has to know about wookie.  Every case must give a
-	   ;;`wookie:displayable'
-	   (cond
-	      ((and (consp o) (eq (car o) 'dynamic))
-		 ;;If object is dynamic, store it for dynamic treatment.
-		 (destructuring-bind (dummy obj data func)
-		    o
-		    (wookie:make-displayable
-		       :data
-		       (chewie:make-dynamic-obj
-			  :obj obj
-			  :data data
-			  :format-f func)
-		       :held-outside-p
-		       t
-;; 		       ;;Obsolescent, still in use for the moment.
-;; 		       :callback
-;; 		       #'(lambda (node obj chewie)
-;; 			    (chewie:link-obj-node chewie obj node))
-;; 		       ;;Obsolescent, still in use for the moment.
-;; 		       :cb-data
-;; 		       obj
-		       )))
-	      
-	      ;;Otherwise just return it
-	      (t (wookie:make-displayable 
-		    :data o 
-		    :held-outside-p nil))))
-
-      ;;This part doesn't belong here.  Chewie is really just about
-      ;;dynamic objects.
-      ;;This will change.  It may become an `apply' done in hiformat.
-      (funcall
-	 (chewie:dynamic-obj->format-f x)
-	 (chewie:dynamic-obj->obj x)
-	 (chewie:dynamic-obj->data x))))
+   (funcall
+      (chewie:dynamic-obj->format-f x)
+      (chewie:dynamic-obj->obj x)
+      (chewie:dynamic-obj->data x)))
 
 ;;;_  . Chewie object to displayer layer
 ;;;_   , chewie:with-map-cell
 ;;$$OBSOLESCENT This will go away
+'
 (defmacro chewie:with-map-cell (chewie obj cell-sym else &rest body)
    "Evaluate BODY with symbol CELL-SYM bound to the map cell of OBJ.
 If there is none, evaluate ELSE instead."
-   
+   (error "Obsolete")
    `(let
        ;;Find it.
        ((,cell-sym
@@ -235,11 +231,13 @@ If there is none, evaluate ELSE instead."
 
 ;;;_   , chewie:link-obj-node
 ;;$$CHANGING This will change, just operate on node
-;;Was `chewie:know-dynamic-obj'
+;;Was `chewie:know-dynamic-obj'.  This will be replaced.
+;;And renamed `chewie:new-display'
+'
 (defun chewie:link-obj-node (chewie obj node)
    "Register NODE as a rendering of OBJ.
 NODE must be an ewoc node or a wookie node."
-
+   (error "Obsolete")
    ;;For now, we assume it's a one-to-one mapping.
    ;;Todo: Allow multiple nodes.
    ;;Todo: Find and use old key if it exists
@@ -255,11 +253,15 @@ NODE must be an ewoc node or a wookie node."
 ;;Could take a rest list of objects instead of just one
 ;;$$RETHINK MY PLACE This is not properly part of chewie.  It is how
 ;;pathtree invokes reprinting.
+;;$$CHANGE ME This will just call a redisplayer.  `obj' will be the list
+;;Or it can entirely become obsolete.
+;;$$REMOVE ME OBSOLETE.
+'
 (defun chewie:freshen-obj (chewie obj)
    "Mark OBJ as needing reprinting.
 
 Treats OBJ as an identity (via `eq'), not as a value."
-
+   (error "Obsolete")
    (chewie:with-map-cell chewie obj cell
       nil
       (wookie:will-display-node 
@@ -267,71 +269,109 @@ Treats OBJ as an identity (via `eq'), not as a value."
 	 (chewie:map-cell->ewoc cell)))
 
    (wookie:display-pending (chewie:chewie->wookie chewie)))
+;;;_   , chewie:register-display
+(defun chewie:register-display (chewlist display)
+   ""
+   (push display
+      (chewie:2:list->displayers chewlist)))
+;;;_   , chewie:unregister-display
+(defun chewie:unregister-display (&rest r)
+   ""
+   (error "Not written yet"))
 
+;;;_   , chewie:get-chewlist
+(defun chewie:get-chewlist (wookie obj)
+   ""
+   (let*
+      ((getter
+	  (wookie:wookie->get-chewie-list
+	     wookie))
+	 (chewlist
+	    (if getter
+	       (funcall getter obj)
+	       (error 
+		  "Null get-chewie-list function in wookie"))))
+				
+      (check-type chewlist chewie:2:list)
+      chewlist))
 
+;;;_   , chewie:redisplay
+(defun chewie:redisplay (wookie obj)
+   ""
 
-
-;;;_   , chewie:set-obj-display-parms
-;;$$IGNOREME This won't even apply here.
-;;Untested yet.
-'
-(defun chewie:set-obj-display-parms (chewie obj data)
-   "Set the object-local display data about OBJ to DATA.
-
-Note that object-local data applies to every rendering of the object
-in a given tree."
-   (chewie:with-map-cell chewie obj cell
-      ;;If it doesn't exist, create it, so there is no timing
-      ;;dependency - we can call this function before or after.  Doing
-      ;;this will make more sense when we have a list of ewoc/dll
-      ;;pairs, which will be zero here.
-      ;;
-      '(if (not cell)
-	  (push 
-	     (chewie:make-map-cell
-		:key obj
-		:data data
-		:ewoc nil)
-	     (chewie:chewie->mapping chewie))
-	  ;;Else do the rest of this.
-	  )
+   (let* 
+      ((chewlist (chewie:get-chewlist wookie obj)))
       
-      (let
-	 ((node (chewie:map-cell->ewoc cell)))
-	 ;;Set that information in cell
-	 (setf
-	    (chewie:map-cell->data cell)
-	    data)
+      (dolist (d (chewie:2:list->displayers chewlist))
+	 (wookie:will-display-node wookie d)))
+   
+   ;;$$RETHINK ME Not sure this belongs here.  Sometimes we may want
+   ;;to delay doing all this.
+   (wookie:display-pending wookie))
 
-	 ;;For now, there's just one item.
-	 (etypecase node
-	    (wookie:node
-	       (setf
-		  (chewie:dynamic-obj->data
-		     (wookie:node->data node))
-		  data)
-	       ;;Set it to redisplay
-	       )
-	    ;;Can't typecase ewoc--node, so assume vector is one.  Can
-	    ;;this case meaningfully occur, since ewocs are directly
-	    ;;displayable and are things like strings?
-	    (vector
-	       (setf
-		  (chewie:dynamic-obj->data
-		     (ewoc-data node))
-		  data)))
-
-	 ;;Set it to redisplay
+;;;_   , chewie:display-gone
+(defun chewie:display-gone (wookie obj)
+   ""
+   
+   (let* 
+      ((chewlist (chewie:get-chewlist wookie obj)))
+      
+      (dolist (d (chewie:2:list->displayers chewlist))
+	 ;;Redisplay the node's parents (Assume it has parents,
+	 ;;otherwise it's the root and we must take stronger measures)
 	 (wookie:will-display-node 
-	    (chewie:chewie->wookie chewie)
-	    node))))
+	    wookie 
+	    (wookie:node->parent d)))))
 
+
+;;;_. Draft 2
+;;;_ , Structures
+;;;_  . chewie:2:cell
+;;$$REMOVE ME UNUSED
+'
+(defstruct chewie:2:cell
+   ""
+   )
+
+;;;_ , Functions
+;;;_  . chewie:2:set-root
+;;Basically what's left is to `chewie:link-obj-node' on the object,
+;;which means incorporating a chewie:2:list into that object
+;;;_  . chewie:2:setup-root
+
+;;Little is left of this too.  Basically it sets up `:showing-cb' and
+;;`:unshowing-cb' to call to wookie nodes.  This gives it a special
+;;role wrt wookie.  I'm not sure that's so good.
+
+;;And it specifies two format functions, but emviewer could just as
+;;well.  Setting up the circular references is no longer needed.
+
+;;;_  . chewie:2:get-expansion
+;;Into 2 parts: Formatted-thing handler and re-caller for format
+;;function.  That's so that formatted-thing handler can be
+;;incorporated nicely into hiformat.
+;;This puts info into the wookie data field, so we have some
+;;flexibility.  
+
+;;;_  . chewie:2:link-obj-node (chewie:2:register)
+;;Now it's an operation on a chewie:2:list and it just pushes its
+;;diplay into place.  Rename it
+
+;;;_  . chewie:2:unregister
+;;Remove a display from a chewie:2:list
+;;;_  . chewie:2:freshen-obj (chewie:2:reshow)
+;;Interacts with wookie.  Could get more info from cell, but need not.
+;;Maybe the call to `wookie:display-pending' should be outside here.
+
+;;To display, wookie basically calls its usual `expand-f' function and
+;;calls `showing-cb' with the results.  So right now it doesn't do any
+;;interpretation.
 
 
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'chewie)
+(provide 'viewers/chewie)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -339,4 +379,4 @@ in a given tree."
 ;;;_  + End:
 
 ;;;_ , End
-;;; chewie.el ends here
+;;; viewers/chewie.el ends here

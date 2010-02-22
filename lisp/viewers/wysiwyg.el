@@ -1,4 +1,4 @@
-;;;_ wysiwyg.el --- WYSIWYG for chewie
+;;;_ viewers/wysiwyg.el --- WYSIWYG for chewie
 
 ;;;_. Headers
 ;;;_ , License
@@ -55,7 +55,7 @@
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'wysiwyg)
+(provide 'viewers/wysiwyg)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -63,4 +63,4 @@
 ;;;_  + End:
 
 ;;;_ , End
-;;; wysiwyg.el ends here
+;;; viewers/wysiwyg.el ends here

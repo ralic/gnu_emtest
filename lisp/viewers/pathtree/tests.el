@@ -1,4 +1,4 @@
-;;;_ pathtree/tests.el --- Tests for pathtree
+;;;_ viewers/pathtree/tests.el --- Tests for pathtree
 
 ;;;_. Headers
 ;;;_ , License
@@ -32,36 +32,36 @@
 (when (not (fboundp 'rtest:deftest))
     (defmacro rtest:deftest (&rest dummy))
     (defmacro rtest:if-avail (&rest dummy)))
-(require 'pathtree/testhelp)
+(require 'viewers/pathtree/testhelp)
 ;;;_. Body
 ;;;_ , Helper
 
-;;;_  . emt:pathtree:th:callback:push
-(defun emt:pathtree:th:callback:push (x)
+;;;_  . emtvp:th:callback:push
+(defun emtvp:th:callback:push (x)
    "Callback for testing pathtree.
 Store data about X on the list `*nodes-freshened*'.  Then clean up
    like a normal callback would must."
-   (check-type x emt:view:pathtree-node)
+   (check-type x emtvp-node)
    (push  
       (list
-	 (emt:view:pathtree-node-name x)
-	 (emt:view:pathtree-node-data x)
-	 (emt:view:pathtree-node-dirty-flags x))
+	 (emtvp-node-name x)
+	 (emtvp-node-data x)
+	 (emtvp-node-dirty-flags x))
       *nodes-freshened*)
    ;;Wipe out previous dirty-flags in case we are interested in later
    ;;operations. 
-   (setf (emt:view:pathtree-node-dirty-flags x) '())
+   (setf (emtvp-node-dirty-flags x) '())
 
    ;;Return the empty list, indicating that there are no forther
    ;;operations to perform.
    ())
-;;;_  . emt:pathtree:th:how-dirty
-;;Usage: (assert (equal (emt:pathtree:th:how-dirty Name) Expected) t)
-;;Usage: (assert (emt:match (emt:pathtree:th:how-dirty Name) Expected) t)
+;;;_  . emtvp:th:how-dirty
+;;Usage: (assert (equal (emtvp:th:how-dirty Name) Expected) t)
+;;Usage: (assert (emtm (emtvp:th:how-dirty Name) Expected) t)
 
 ;;But this can't be easily used when matching patterns.  Maybe if we
 ;;sort flags. 
-(defun emt:pathtree:th:how-dirty (name)
+(defun emtvp:th:how-dirty (name)
    ""
    
    ;;Mapcar, giving applicable dirty-flags.  Empty list for other names.
@@ -83,27 +83,27 @@ Store data about X on the list `*nodes-freshened*'.  Then clean up
 
 ;;;_   , Tests (of this helper)
 ;;See below
-;;;_  . emt:pathtree:th:assert-name-dirtiness
-(defmacro emt:pathtree:th:assert-name-dirtiness (name pattern)
+;;;_  . emtvp:th:assert-name-dirtiness
+(defmacro emtvp:th:assert-name-dirtiness (name pattern)
    ""
    
    `(let
        ((how-dirty
-	   (emt:pathtree:th:how-dirty ,name)))
+	   (emtvp:th:how-dirty ,name)))
        (assert 
-	  (emt:match how-dirty ,pattern)
+	  (emtm how-dirty ,pattern)
 	  nil "Mismatch %S has %s" ,name how-dirty)))
 
 
-;;;_  . emt:pathtree:th:let*-usuals
-(defmacro emt:pathtree:th:let*-usuals (other-lets &rest body)
+;;;_  . emtvp:th:let*-usuals
+(defmacro emtvp:th:let*-usuals (other-lets &rest body)
    ""
    
    `(let*
 	 (  (*nodes-freshened* '())
 	    (tree 
-	       (emt:pathtree:make-empty-tree-newstyle
-		  #'emt:pathtree:th:callback:push
+	       (emtvp:make-empty-tree-newstyle
+		  #'emtvp:th:callback:push
 		  #'(lambda() "default-data") 
 		  'string))
 	    ,@other-lets)
@@ -112,44 +112,44 @@ Store data about X on the list `*nodes-freshened*'.  Then clean up
 
 ;;;_ , Tests
 
-(rtest:deftest emt:pathtree:add/replace-node-recurse
+(rtest:deftest emtvp:add/replace-node-recurse
    
    
-   (  "Proves that `emt:pathtree:th:callback:push' terminates."
-      (emt:pathtree:th:let*-usuals ()
+   (  "Proves that `emtvp:th:callback:push' terminates."
+      (emtvp:th:let*-usuals ()
 	 (assert
 	    (pending:terminates-on-examples
-	       #'emt:pathtree:th:callback:push
+	       #'emtvp:th:callback:push
 	       ()
-	       (make-emt:view:pathtree-node
+	       (make-emtvp-node
 		  :name "a"
 		  :dirty-flags '(new))))
 	 t))
    
-   ;;Really a test of `emt:pathtree:freshen'
+   ;;Really a test of `emtvp:freshen'
    (  "Situation: Dirty list has members.  
 Operation: Freshen the tree.
 Result: Dirty list is now empty."
-      (emt:pathtree:th:let*-usuals ()
+      (emtvp:th:let*-usuals ()
 	 
 	 ;;How to guarantee it has members while still obeying its
 	 ;;interface?
 	 (push
-	    (make-emt:view:pathtree-node
+	    (make-emtvp-node
 	       :name "a"
 	       :dirty-flags '(new))
-	    (emt:view:pathtree-dirty tree))
-	 (emt:pathtree:freshen tree)
+	    (emtvp-dirty tree))
+	 (emtvp:freshen tree)
 	 ;;The dirty list is now empty
 	 (assert
-	    (null (emt:view:pathtree-dirty tree))
+	    (null (emtvp-dirty tree))
 	    t)
 
 	 ;;Gives the expected list of dirty flags.
-	 (assert (equal (emt:pathtree:th:how-dirty "a") '(new)) 
+	 (assert (equal (emtvp:th:how-dirty "a") '(new)) 
 	    t)
 
-	 (emt:pathtree:th:assert-name-dirtiness "a" '(new))
+	 (emtvp:th:assert-name-dirtiness "a" '(new))
 	 
 	 t))
    
@@ -171,24 +171,24 @@ Response: That element is in the first ply."
       (let* 
 	 (  (*nodes-freshened* '())
 	    (tree 
-	       (emt:pathtree:make-empty-tree-newstyle
-		  #'emt:pathtree:th:callback:push
+	       (emtvp:make-empty-tree-newstyle
+		  #'emtvp:th:callback:push
 		  #'(lambda() "default-data") 
 		  'string))
 	    (cell "cell 1"))
-	 (emt:pathtree:add/replace-node
+	 (emtvp:add/replace-node
 	    tree '("a") cell)
 	 
-	 (emt:pathtree:freshen tree)
+	 (emtvp:freshen tree)
 	 ;;Matches expected tree
 	 (assert
-	    (emt:match
-	       (emt:view:pathtree-root tree)
-	       (make-emt:view:pathtree-node
+	    (emtm
+	       (emtvp-root tree)
+	       (make-emtvp-node
 		  :name ""
 		  :children 
 		  (list
-		     (make-emt:view:pathtree-node
+		     (make-emtvp-node
 			:name "a"
 			:children ()
 			:data (eval 'cell)))
@@ -196,10 +196,10 @@ Response: That element is in the first ply."
 	    t)
 	 
 	 ;;Root "" has new child
-	 (emt:pathtree:th:assert-name-dirtiness ""
+	 (emtvp:th:assert-name-dirtiness ""
 	    '())
 	 ;;Node "a" is new
-	 (emt:pathtree:th:assert-name-dirtiness "a" 
+	 (emtvp:th:assert-name-dirtiness "a" 
 	    '(new))
 	 t))
    
@@ -210,28 +210,28 @@ Response: That element is in the second ply."
       (let* 
 	 (  (*nodes-freshened* '())
 	    (tree 
-	       (emt:pathtree:make-empty-tree-newstyle
-		  #'emt:pathtree:th:callback:push
+	       (emtvp:make-empty-tree-newstyle
+		  #'emtvp:th:callback:push
 		  #'(lambda() "default-data") 
 		  'string))
 	    (cell "cell 1"))
-	 (emt:pathtree:add/replace-node
+	 (emtvp:add/replace-node
 	    tree '("a" "b") cell)
 
-	 (emt:pathtree:freshen tree)
+	 (emtvp:freshen tree)
 	 ;;Matches expected tree
 	 (assert
-	    (emt:match
-	       (emt:view:pathtree-root tree)
-	       (make-emt:view:pathtree-node
+	    (emtm
+	       (emtvp-root tree)
+	       (make-emtvp-node
 		  :name ""
 		  :children 
 		  (list
-		     (make-emt:view:pathtree-node
+		     (make-emtvp-node
 			:name "a"
 			:children 
 			(list
-			   (make-emt:view:pathtree-node
+			   (make-emtvp-node
 			      :name "b"
 			      :children ()
 			      :data (eval 'cell)))
@@ -241,11 +241,11 @@ Response: That element is in the second ply."
 	    t)
 
 	 ;;Root (grandparent) has updated child
- 	 (emt:pathtree:th:assert-name-dirtiness "" '())
+ 	 (emtvp:th:assert-name-dirtiness "" '())
 	 
-	 (emt:pathtree:th:assert-name-dirtiness "a"
+	 (emtvp:th:assert-name-dirtiness "a"
 	    '(new))
-	 (emt:pathtree:th:assert-name-dirtiness "b"
+	 (emtvp:th:assert-name-dirtiness "b"
 	    '(new))
 
 	 t))
@@ -257,34 +257,34 @@ Response: Now the tree has both elements in the expected topology."
       (let* 
 	 (  (*nodes-freshened* '())
 	    (tree 
-	       (emt:pathtree:make-empty-tree-newstyle
-		  #'emt:pathtree:th:callback:push
+	       (emtvp:make-empty-tree-newstyle
+		  #'emtvp:th:callback:push
 		  #'(lambda() "default-data") 
 		  'string))
 	    (cell "cell 1")
 	    (cell-b "cell 2"))
-	 (emt:pathtree:add/replace-node
+	 (emtvp:add/replace-node
 	    tree '("a") cell)
 
-	 (emt:pathtree:freshen tree)
+	 (emtvp:freshen tree)
 	 (setq *nodes-freshened* '())
-	 (emt:pathtree:add/replace-node
+	 (emtvp:add/replace-node
 	    tree '("a" "b") cell-b)
 
-	 (emt:pathtree:freshen tree)
+	 (emtvp:freshen tree)
 	 ;;Matches expected tree
 	 (assert
-	    (emt:match
-	       (emt:view:pathtree-root tree)
-	       (make-emt:view:pathtree-node
+	    (emtm
+	       (emtvp-root tree)
+	       (make-emtvp-node
 		  :name ""
 		  :children 
 		  (list
-		     (make-emt:view:pathtree-node
+		     (make-emtvp-node
 			:name "a"
 			:children 
 			(list
-			   (make-emt:view:pathtree-node
+			   (make-emtvp-node
 			      :name "b"
 			      :children ()
 			      :data (eval 'cell-b)))
@@ -293,10 +293,10 @@ Response: Now the tree has both elements in the expected topology."
 	    t)
 	 
 	 ;;The element "a" has a new child
-	 (emt:pathtree:th:assert-name-dirtiness "a"
+	 (emtvp:th:assert-name-dirtiness "a"
 	    '())
 	 ;;Node "b" is new
-	 (emt:pathtree:th:assert-name-dirtiness "b"
+	 (emtvp:th:assert-name-dirtiness "b"
 	    '(new))
 	 t))
 
@@ -308,30 +308,30 @@ Response: That element replaces the old element."
       (let* 
 	 (  (*nodes-freshened* '())
 	    (tree 
-	       (emt:pathtree:make-empty-tree-newstyle
-		  #'emt:pathtree:th:callback:push
+	       (emtvp:make-empty-tree-newstyle
+		  #'emtvp:th:callback:push
 		  #'(lambda() "default-data") 
 		  'string))
 	    (cell "cell 1")
 	    (cell-a-2 "cell 2"))
-	 (emt:pathtree:add/replace-node
+	 (emtvp:add/replace-node
 	    tree '("a") cell)
 
-	 (emt:pathtree:freshen tree)
+	 (emtvp:freshen tree)
 	 (setq *nodes-freshened* '())
-	 (emt:pathtree:add/replace-node
+	 (emtvp:add/replace-node
 	    tree '("a") cell-a-2)
 
-	 (emt:pathtree:freshen tree)
+	 (emtvp:freshen tree)
 	 ;;Matches expected tree
 	 (assert
-	    (emt:match
-	       (emt:view:pathtree-root tree)
-	       (make-emt:view:pathtree-node
+	    (emtm
+	       (emtvp-root tree)
+	       (make-emtvp-node
 		  :name ""
 		  :children 
 		  (list
-		     (make-emt:view:pathtree-node
+		     (make-emtvp-node
 			:name "a"
 			:children ()
 			:data (eval 'cell-a-2)))
@@ -339,9 +339,9 @@ Response: That element replaces the old element."
 	    t)
 
 	 ;;Root element "" has updated child
- 	 (emt:pathtree:th:assert-name-dirtiness "" '())
+ 	 (emtvp:th:assert-name-dirtiness "" '())
 	 ;;Node "a" has replaced its data
-	 (emt:pathtree:th:assert-name-dirtiness "a"
+	 (emtvp:th:assert-name-dirtiness "a"
 	    (list
 	       (list 'replaced x y)))
 
@@ -356,43 +356,43 @@ The other element remains."
       (let* 
 	 (  (*nodes-freshened* '())
 	    (tree 
-	       (emt:pathtree:make-empty-tree-newstyle
-		  #'emt:pathtree:th:callback:push
+	       (emtvp:make-empty-tree-newstyle
+		  #'emtvp:th:callback:push
 		  #'(lambda() "default-data") 
 		  'string))
 	    (cell "cell 1")
 	    (cell-2 "cell 2")
 	    (cell-3 "cell 3"))
-	 (emt:pathtree:add/replace-node
+	 (emtvp:add/replace-node
 	    tree '("a" "b") cell)
-	 (emt:pathtree:add/replace-node
+	 (emtvp:add/replace-node
 	    tree '("a" "c") cell-3)
 
-	 (emt:pathtree:freshen tree)
+	 (emtvp:freshen tree)
 	 (setq *nodes-freshened* '())
-	 (emt:pathtree:add/replace-node
+	 (emtvp:add/replace-node
 	    tree '("a" "b") cell-2)
 
-	 (emt:pathtree:freshen tree)
+	 (emtvp:freshen tree)
 	 ;;Matches expected tree, including cell-3 being in place.
 	 (assert
-	    (emt:match
-	       (emt:view:pathtree-root tree)
-	       (make-emt:view:pathtree-node
+	    (emtm
+	       (emtvp-root tree)
+	       (make-emtvp-node
 		  :name ""
 		  :children 
 		  (list
-		     (make-emt:view:pathtree-node
+		     (make-emtvp-node
 			:name "a"
 			:children 
 			;;$$ADD SUPPORT This requires set matching
 			;;(ie, unordered), not list matching.
 			(list
-			   (make-emt:view:pathtree-node
+			   (make-emtvp-node
 			      :name "b"
 			      :children ()
 			      :data (eval 'cell-2))
-			   (make-emt:view:pathtree-node
+			   (make-emtvp-node
 			      :name "c"
 			      :children ()
 			      :data (eval 'cell-3))
@@ -402,14 +402,14 @@ The other element remains."
 	    t)
 
 	 ;;The inner node "a" has a new child.
- 	 (emt:pathtree:th:assert-name-dirtiness "a" '())
+ 	 (emtvp:th:assert-name-dirtiness "a" '())
 	 ;;Node "b"'s data has been replaced
-	 (emt:pathtree:th:assert-name-dirtiness "b"
+	 (emtvp:th:assert-name-dirtiness "b"
 	    (list
 	       ;;$$SUPPORTME would be nice to have anonymous
-	       ;;variables in emt-match
+	       ;;variables in emtm
 	       (list 'replaced y z)))
- 	 (emt:pathtree:th:assert-name-dirtiness "c" '())
+ 	 (emtvp:th:assert-name-dirtiness "c" '())
 
 	 t))
    
@@ -422,15 +422,15 @@ Response: The tree is now empty."
       (let* 
 	 (  (*nodes-freshened* '())
 	    (tree 
-	       (emt:pathtree:make-empty-tree-newstyle
-		  #'emt:pathtree:th:callback:push
+	       (emtvp:make-empty-tree-newstyle
+		  #'emtvp:th:callback:push
 		  #'(lambda() "default-data") 
 		  'string))
 	    (cell "cell 1"))
-	 (emt:pathtree:add/replace-node
+	 (emtvp:add/replace-node
 	    tree '("a") cell)
-	 (emt:pathtree:remove-node-recurse '("a"))
-	 (emt:pathtree:freshen tree)
+	 (emtvp:remove-node-recurse '("a"))
+	 (emtvp:freshen tree)
 	 ;;Matches expected tree - empty
 	 '(assert)
 	 t))
@@ -442,20 +442,20 @@ Response: The element is now gone but its parent remains."
       (let* 
 	 (  (*nodes-freshened* '())
 	    (tree 
-	       (emt:pathtree:make-empty-tree-newstyle
-		  #'emt:pathtree:th:callback:push
+	       (emtvp:make-empty-tree-newstyle
+		  #'emtvp:th:callback:push
 		  #'(lambda() "default-data") 
 		  'string))
 	    (cell "cell 1"))
-	 (emt:pathtree:add/replace-node
+	 (emtvp:add/replace-node
 	    tree '("a" "b") cell)
 
-	 (emt:pathtree:remove-node-recurse '("a" "b"))
-	 (emt:pathtree:freshen tree)
+	 (emtvp:remove-node-recurse '("a" "b"))
+	 (emtvp:freshen tree)
 	 (assert
-	    (emt:match
-	       (emt:view:pathtree-root tree)
-	       (make-emt:view:pathtree-node
+	    (emtm
+	       (emtvp-root tree)
+	       (make-emtvp-node
 		  :name ""
 		  :children ()
 		  :data "default-data"))
@@ -473,33 +473,33 @@ Response: The element is now gone but its sibling and parent remain."
       (let* 
 	 (  (*nodes-freshened* '())
 	    (tree 
-	       (emt:pathtree:make-empty-tree-newstyle
-		  #'emt:pathtree:th:callback:push
+	       (emtvp:make-empty-tree-newstyle
+		  #'emtvp:th:callback:push
 		  #'(lambda() "default-data") 
 		  'string))
 	    (cell "cell 1")
 	    (cell "cell 3"))
-	 (emt:pathtree:add/replace-node
+	 (emtvp:add/replace-node
 	    tree '("a" "b") cell)
-	 (emt:pathtree:add/replace-node
+	 (emtvp:add/replace-node
 	    tree '("a" "c") cell-3)
 
-	 (emt:pathtree:remove-node-recurse '("a" "b"))
-	 (emt:pathtree:freshen tree)
+	 (emtvp:remove-node-recurse '("a" "b"))
+	 (emtvp:freshen tree)
 
 	 ;;Matches expected tree
 	 (assert
-	    (emt:match
-	       (emt:view:pathtree-root tree)
-	       (make-emt:view:pathtree-node
+	    (emtm
+	       (emtvp-root tree)
+	       (make-emtvp-node
 		  :name ""
 		  :children 
 		  (list
-		     (make-emt:view:pathtree-node
+		     (make-emtvp-node
 			:name "a"
 			:children 
 			(list
-			   (make-emt:view:pathtree-node
+			   (make-emtvp-node
 			      :name "c"
 			      :children ()
 			      :data (eval 'cell-3)))
@@ -521,18 +521,18 @@ The element is now gone; only its parent remains."
       (let* 
 	 (  (*nodes-freshened* '())
 	    (tree 
-	       (emt:pathtree:make-empty-tree-newstyle
-		  #'emt:pathtree:th:callback:push
+	       (emtvp:make-empty-tree-newstyle
+		  #'emtvp:th:callback:push
 		  #'(lambda() "default-data") 
 		  'string))
 	    (cell "cell 1"))
-	 (emt:pathtree:add/replace-node
+	 (emtvp:add/replace-node
 	    tree '("a" "b") cell)
-	 (emt:pathtree:add/replace-node
+	 (emtvp:add/replace-node
 	    tree '("a" "b" "d") cell)
-	 (emt:pathtree:remove-node-recurse '("a" "b"))
+	 (emtvp:remove-node-recurse '("a" "b"))
 
-	 (emt:pathtree:freshen tree)
+	 (emtvp:freshen tree)
 	 ;;Matches expected tree
 	 '(assert)
 	 t))
@@ -553,7 +553,7 @@ The element is now gone; only its parent remains."
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'pathtree/tests)
+(provide 'viewers/pathtree/tests)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -561,4 +561,4 @@ The element is now gone; only its parent remains."
 ;;;_  + End:
 
 ;;;_ , End
-;;; pathtree/tests.el ends here
+;;; viewers/pathtree/tests.el ends here

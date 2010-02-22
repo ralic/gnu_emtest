@@ -1,4 +1,4 @@
-;;;_ emviewer/testhelp.el --- Emviewer testhelp
+;;;_ viewers/emviewer/testhelp.el --- Emviewer testhelp
 
 ;;;_. Headers
 ;;;_ , License
@@ -32,11 +32,13 @@
 (when (not (fboundp 'rtest:deftest))
     (defmacro rtest:deftest (&rest dummy))
     (defmacro rtest:if-avail (&rest dummy)))
-(require 'emviewer)
-(require 'tester/tester)
+(require 'viewers/emviewer)
+'(require 'tester/tester) ;;Maybe obsolete.
+(require 'tester/launch)
 
 ;;;_. Body
-
+;;$$RENAME ME emtt:ts:run-test-x ?
+;;$$MOVE ME maybe - into tester/launch/testhelp
 (defun emtest:ts:run-test (form)
    ""
    
@@ -45,7 +47,7 @@
    (check-type form
       (list string t))
    
-   (emt:test:ts:run-test form #'emtest:ts:run-test:callback))
+   (emtt:ts:run-test form #'emtest:ts:run-test:callback))
 
 ;;;_ , The callback 
 ;;Maybe should be anonymous
@@ -55,19 +57,18 @@
    (check-type report emt:testral:report)
    (emtest:viewer:receive report))
 
-;;;_ , emtest:viewer:emviewer:ts:with-mock-viewer
+;;;_ , emtve:ts:with-mock-viewer
 
-(defmacro emtest:viewer:emviewer:ts:with-mock-viewer 
-   (&rest body)
+(defmacro emtve:ts:with-mock-viewer (&rest body)
    ""
    
    `(with-temp-buffer
        (let
 	  (
-	     emtest:viewer:emviewer:receiver
-	     emtest:viewer:emviewer:chewie
-	     emtest:viewer:emviewer:result-root
-	     (emtest:viewer:emviewer:report-buffer
+	     emtve:receiver
+	     emtve:chewie
+	     emtve:result-root
+	     (emtve:report-buffer
 		(current-buffer)))
 
 	  ,@body)))
@@ -76,7 +77,7 @@
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'emviewer/testhelp)
+(provide 'viewers/emviewer/testhelp)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -84,4 +85,4 @@
 ;;;_  + End:
 
 ;;;_ , End
-;;; emviewer/testhelp.el ends here
+;;; viewers/emviewer/testhelp.el ends here
