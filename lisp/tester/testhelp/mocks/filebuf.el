@@ -1,4 +1,4 @@
-;;;_ mockbuf.el --- Test helper: Buffer visiting file, point controlled
+;;;_ tester/testhelp/mocks/filebuf.el --- Test helper: Buffer visiting file, point controlled
 
 ;; Copyright (C) 2007, 2008 Tom Breton (Tehom)
 
@@ -2147,38 +2147,15 @@ printed representation the current buffer contains."
 
 
 
-;;;_ , (Deprecated) with-undone-file
-
-;;Deprecated.  Use master/slave copying instead.
-'
-(defmacro with-undone-file (filename &rest body)
-   ""
-   
-   `(with-current-buffer
-       (find-file-noselect ,filename)
-       (buffer-enable-undo)
-       (prog1
-	  (progn ,@body)
-		 
-	  ;;Now undo the change(s), which requires making
-	  ;;an undo-boundary first.
-	  (undo-boundary)
-	  (undo))))
-
-;;;_ , Skeletons
-
-;;They are in rtest-insert
-
 ;;;_: Footers
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
 ;;;_  + mode: emacs-lisp
 ;;;_  + mode: allout
 ;;;_  + outline-regexp: ";;;_ *"
-;;;_  + ade-project-root: "."
 ;;;_  + End:
 
 ;;;_ , Provide
 
 (provide 'tester/testhelp/mocks/filebuf)
-;;; mockbuf.el ends here
+;;; tester/testhelp/mocks/filebuf.el ends here
