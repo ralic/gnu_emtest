@@ -1,0 +1,67 @@
+* Top-level README for emtest
+** Headers
+*** Purpose
+
+Describe the organization of the project directory
+
+*** State
+
+Written.
+
+Badly out of date; does not correspond to current directories.
+
+
+** Body
+*** docs
+
+This directory contains documentation
+
+ * design docs
+ * maintainer docs
+ * user docs
+
+*** lisp
+
+**** emtest.el
+
+Top level file.  Basically dispatches other stuff.
+
+**** tester/
+
+Testing functionality in elisp
+
+ * test-finder
+ * test-run
+ * library
+   * mock objects
+ * result-collector
+
+**** viewers/
+
+Viewers for
+
+ * test results
+ * various outputs
+ * viewer-dispatcher
+
+**** persistence/
+
+Persistence servers
+ * persist.el
+ * persist-as-file.el
+
+**** editor/
+
+Help for writing and editing elisp tests in emacs
+**** t/
+
+Test modules
+
+***** examples/
+
+Example files for tests to read
+
+**** utility
+
+Utilities that are used in the emtest code but not strongly related to
+emtest.
