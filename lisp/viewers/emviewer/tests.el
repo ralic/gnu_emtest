@@ -36,7 +36,10 @@
     (defmacro rtest:if-avail (&rest dummy)))
 
 (require 'viewers/emviewer/testhelp) ;;For `emtest:ts:run-test'
-(require 'common/emt-persist)
+;;$$RETHINK ME
+;;Maybe should be the testhelp instead.
+(require 'common/emt-persist) 
+(require 'common/testral-types/testhelp)
 ;;;_. Body
 
 ;;Testing will be mostly separate for the formatters - maybe chewie
@@ -100,10 +103,6 @@
 ;;They use an old idea of extracting from a "call" with multiple args,
 ;;and they want structured objects.
 
-;;To set it (This under the hood, not strongly related to the "usable"
-;;stuff we did before).  $$FIXME:  This still inserts each object twice.
-'(emt:db:set id 'correct-answer 
-	 (emt:extract-got call arg-ix))
 
 
 
@@ -117,7 +116,7 @@
 
 (defun emt:emviewer:th:check-buffer-string (id)
    ""
-   
+   ;;$$FIXME:  This still inserts each object twice.
    ;;Can set the current result to persist by:
    '(emt:db:set id 'correct-answer (buffer-string))
 
@@ -149,12 +148,14 @@
 
 (rtest:deftest emviewer
    ;;Really a test of wookie interaction with LOAL.  Irrelevant until
-   ;;chewie maker accepts a "data" param from the top.
+   ;;chewie maker accepts a "data" param from the top.  
+   ;;$$MOVE ME actually a chewie test
    '
    (  "Proves: Alist's value is available."
       (with-temp-buffer
 	 (let
 	    ((chewlist (chewie:2:make-list)))
+	    ;;$$FIX ME Args here are wrong, out of date
 	    (chewie:th:make-usual-chewie
 	       ;;Format function ignores obj and returns a list of one
 	       ;;string obtained from data.
@@ -202,7 +203,72 @@
 	    (emt:persist "dbid:l7w6gjq0jwe0"
 	       '(persist
 		   "~/projects/emtest/lisp/viewers/emviewer/persist")))))
+
+   ("Operation: Test-runner plus update
+ * Receive just test-runner
+ * Then receive another report."
+      (emtve:ts:with-mock-viewer
+	 (emtest:viewer:receive
+	    (emt:eg (type report)(name just-test-runner)))
+
+	 (emtest:viewer:receive
+	    (emt:eg 
+	       (type report)
+	       (role original-add)
+	       (what-test test-1)))
+
+	 (emt:emviewer:th:check-buffer-string
+	    (emt:persist "dbid:o5w7zkc04xe0"
+	       '(persist
+		   "~/projects/emtest/lisp/viewers/emviewer/persist")))))
+
+   ("Operation: Receives a report, then an update."
+      (emtve:ts:with-mock-viewer
+	 (emtest:viewer:receive
+	    (emt:eg 
+	       (type report)
+	       (role original-add)
+	       (what-test test-1)))
+
+	 ;;Now receive the second one
+	 (emtest:viewer:receive
+	    (emt:eg 
+	       (type report)
+	       (role replace)
+	       (what-test test-1)))
+
+	 (emt:emviewer:th:check-buffer-string
+	    (emt:persist "dbid:35ni7vd03xe0"
+	       '(persist
+		   "~/projects/emtest/lisp/viewers/emviewer/persist")))))
    
+   ("Operation: Multiple.  
+ * Receive just test-runner
+ * receive another report
+ * report an update."
+      (emtve:ts:with-mock-viewer
+	 (emtest:viewer:receive
+	    (emt:eg (type report)(name just-test-runner)))
+
+	 (emtest:viewer:receive
+	    (emt:eg 
+	       (type report)
+	       (role original-add)
+	       (what-test test-1)))
+
+	 ;;Now receive the second one
+	 (emtest:viewer:receive
+	    (emt:eg 
+	       (type report)
+	       (role replace)
+	       (what-test test-1)))
+
+	 (emt:emviewer:th:check-buffer-string
+	    (emt:persist "dbid:a3elivb04xe0"
+	       '(persist
+		   "~/projects/emtest/lisp/viewers/emviewer/persist")))))
+   
+      
 
    ("End to end test"
 
@@ -218,9 +284,8 @@
 	    (emt:persist "dbid:6y9kxjq0jwe0"
 	       '(persist
 		   "~/projects/emtest/lisp/viewers/emviewer/persist")))))
-   
-   
    )
+
 (emt:deftest-3
    ((of 'viewers/emviewer))
 
@@ -274,6 +339,21 @@
 		   "~/projects/emtest/lisp/viewers/emviewer/persist")))))
    
 
+
+   )
+
+;;;_. Purely testing testing
+
+(emt:deftest-3 example-test-0
+   ;;Clause 0, empty.
+   (())
+   
+   )
+
+(emt:deftest-3 example-test-1
+   (()
+      (error "An example error for `example-test-1'")
+      )
 
    )
 

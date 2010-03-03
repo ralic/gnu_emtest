@@ -157,6 +157,11 @@ BUF is the buffer to print in.  It is not handled yet."
 	     ;;Printer for ewoc.
 	     #'loformat:print
 	     :buf buf
+	     ;;Obsolescent already
+	     :func-list (list #'chewie:handler)
+	     ;;And definition will move into this file
+	     :handlers (list chewie:handler-alist)
+	     ;;$$REMOVE ME obsolete
 	     :showing-cb 
 	     #'(lambda (node obj chewie)
 		  ;;$$CHANGING
@@ -182,21 +187,37 @@ BUF is the buffer to print in.  It is not handled yet."
       chewie))
 
 ;;;_  . chewie:create-wookie
+;;$$IMPROVE ME - Maybe create a testhelp to check that these
+;;parameters covary.
 (defun chewie:create-wookie (expander root get-chewie-list &rest r)
    ""
    ;;$$IMPROVE ME - some of these should be params.  Params should be
    ;;taken more neatly.
-   (apply #'wookie:create
-      #'chewie:get-expansion
-      ;;Printer for ewoc.  Should be a param.
-      #'loformat:print
-      :object
-      (chewie:make-dynamic-obj
-	 :obj root 
-	 :data () ;;Should be a param.
-	 :format-f expander)
-      :get-chewie-list get-chewie-list
-      r))
+   (let
+      ((chewlist
+	  (funcall get-chewie-list root)))
+      
+      (apply #'wookie:create
+	 ;;OBSOLETE.  Waiting for re-arrangement
+	 #'chewie:get-expansion
+	 ;;Printer for ewoc.  Should be a param.
+	 #'loformat:print
+	 ;;$$DESIGN ME - This seems to lead to typing error
+	 ;;opportunity.
+	 :object
+	 `(dynamic ,root () ,expander)
+
+	 ;;This passes thru, never gets used.
+
+;; 	 (chewie:make-dynamic-obj
+;; 	    :obj root 
+;; 	    :list chewlist
+;; 	    :data () ;;Should be a param.
+;; 	    :format-f expander)
+	 :handlers (list chewie:handler-alist)
+	 ;;OBSOLESCENT
+	 :get-chewie-list get-chewie-list
+	 r)))
 
 
 ;;;_ , Other functions
@@ -270,14 +291,26 @@ Treats OBJ as an identity (via `eq'), not as a value."
 
    (wookie:display-pending (chewie:chewie->wookie chewie)))
 ;;;_   , chewie:register-display
+;;$$IMPROVE ME The functionality to get chewlist could move into here.
 (defun chewie:register-display (chewlist display)
    ""
+   (check-type chewlist chewie:2:list)
+   (check-type display wookie:node)
+   ;;$$REMOVE ME Temporary Diag
+   '
+   (when (> (length (chewie:2:list->displayers chewlist)) 0)
+      (debug))
+   
+   ;;$$MAKE ME SAFE  Don't add the same display twice.  `add-to-list'
+   ;;or check for it.
    (push display
       (chewie:2:list->displayers chewlist)))
 ;;;_   , chewie:unregister-display
-(defun chewie:unregister-display (&rest r)
+;;$$IMPROVE ME The functionality to get chewlist could move into here.
+(defun chewie:unregister-display (chewlist display)
    ""
-   (error "Not written yet"))
+   (callf2 delq display 
+      (chewie:2:list->displayers chewlist)))
 
 ;;;_   , chewie:get-chewlist
 (defun chewie:get-chewlist (wookie obj)
@@ -301,8 +334,15 @@ Treats OBJ as an identity (via `eq'), not as a value."
 
    (let* 
       ((chewlist (chewie:get-chewlist wookie obj)))
+      ;;Diag
+      '
+      (if (chewie:2:list->displayers chewlist)
+	 (wookie:will-display-node wookie 
+	    (car
+	       (chewie:2:list->displayers chewlist))))
       
       (dolist (d (chewie:2:list->displayers chewlist))
+	 (wookie:check (wookie:either:th:all-linked-p d))
 	 (wookie:will-display-node wookie d)))
    
    ;;$$RETHINK ME Not sure this belongs here.  Sometimes we may want

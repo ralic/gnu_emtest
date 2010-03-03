@@ -43,6 +43,7 @@
 
 ;;;_ , Format functions
 ;;;_  . emtvf:top
+'  ;;Old version that wanted a whole pathtree object
 (defun emtvf:top (view-tree data-list)
    ""
    
@@ -54,6 +55,13 @@
 	 ,(loal:acons 'depth 0 data-list)
 	 ,#'emtvf:node)))
 
+(defun emtvf:top (view-node data-list)
+   ""
+
+   (check-type view-node emtvp-node)
+   (list*
+      "Emtest" "\n"
+      (emtvf:node view-node data-list)))
 
 ;;;_  . emtvf:node
 (defun emtvf:node (view-node data-list)
@@ -64,7 +72,7 @@ DATA-LIST must be a list of alists."
    (check-type view-node emtvp-node)
    ;;Temporary hack.  This will really entwine with pathtree dirtiness
    ;;and updates.  Or wookie dirtiness?
-   (emtvr:sum-node-badnesses view-node)
+   ;;(emtvr:sum-node-badnesses view-node)
 
    ;;WRITEME Get depth from data-list, build a new one that we'll pass
    ;;down.

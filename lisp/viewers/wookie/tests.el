@@ -39,15 +39,30 @@
 ;;;_. Body
 ;;;_ , wookie:create
 (put 'viewers/wookie:create 'rtest:test-thru
-   'viewers/wookie)
+   'endor)
+;;;_ , wookie:set-root
+(put 'wookie:set-root 'rtest:test-thru
+   'endor)
+;;;_ , wookie:ewoc-handler
+(put 'wookie:ewoc-handler 'rtest:test-thru
+   'endor)
+;;;_ , wookie:dispatch
+(put 'wookie:dispatch 'rtest:test-thru
+   'endor)
+;;;_ , wookie:dispatch-x 
+(put 'wookie:dispatch-x 'rtest:test-thru
+   'endor)
 ;;;_ , wookie
+   ;;$$CHANGEME viewers/wookie
+'
 (rtest:deftest wookie
    (  "Proves: Basic expansion works."
       (with-temp-buffer
 	 ;;Create a wookie.  Root is given.
 	 (let
 	    ((wookie
-		(wookie:th:make-usual-wookie 
+		(wookie:th:make-usual-wookie
+		   ;;Expander.  How does this still fit into the design?
 		   #'(lambda (&rest r)
 			(list (wookie:th:->displayable "abc")))
 		   0)))
@@ -143,6 +158,99 @@ Proves: Can't set the root twice."
 
    )
 
+;;$$CHANGEME viewers/endor
+(rtest:deftest endor
+
+   (  "Proves: Root object's value can be used by the ewoc mechanism."
+      (with-temp-buffer
+	 (wookie:th:make-usual-wookie-2
+	    ;;Format function returns a list of one constant string.
+	    #'(lambda (obj)
+		 (list obj))
+	    ;;Root is a string
+	    "abc")
+	 
+	 (emtb:buf-contents-matches
+	    :string "abc")))
+   
+   (  "Proves: Basic expansion works."
+      ;;Here, the root is just an ewoc.  For others, the root will be
+      ;;a list and all will be list or ewoc.
+      (with-temp-buffer
+	 ;;Create a wookie.  Root is given.
+	 (let
+	    ((wookie
+		(wookie:th:make-usual-wookie-2
+		   ;;Expander.  How does this still fit into the
+		   ;;design?  But it makes a list, which isn't right.
+		   ;;This is about a non-dynamic wookie, not about
+		   ;;a bare expander.
+		   ;;Expander is now irrelevant.
+		   ;;$$REMOVE ME but co-ordinate with definition.
+		   #'(lambda (&rest r)
+			(wookie:th:->displayable "abc"))
+		   '("abc"))))
+	    (assert
+	       (emtb:buf-contents-matches
+		  :string "(abc)")))
+	 t))
+
+   (  "Situation: A wookie has been made but no root was given.
+Operation: Set the root.
+Result: Object is displayed in buffer.
+Proves: Basic expansion works."
+      (with-temp-buffer
+	 (let
+	    ((wookie
+		(wookie:th:make-usual-wookie-2 
+		   #'(lambda (&rest r)
+			(list (wookie:th:->displayable "abc")))
+		   nil)))
+	    (assert
+	       (emtb:buf-contents-matches
+		  :string "")
+	       t)
+	    (wookie:set-root wookie '("abc"))
+
+	    (assert
+	       (emtb:buf-contents-matches
+		  :string "(abc)")
+	       t))
+	 t))
+
+   (  "Situation: A wookie has been made and root was given.
+Operation: Set the root (again).
+Result: Error.
+Proves: Can't set the root twice."
+      (with-temp-buffer
+	 (let
+	    ((wookie
+		(wookie:th:make-usual-wookie-2 
+		   #'(lambda (&rest r)
+			(list (wookie:th:->displayable "abc")))
+		   0)))
+	    (assert
+	       (emt:gives-error
+		  (wookie:set-root wookie 0))))
+	 t))
+
+   ;;This test only relates wookie and the low printer that
+   ;;`wookie:th:make-usual-wookie' uses.  But it validates an
+   ;;assumption other tests rely on.
+   (  "Proves: Will skip `nil' as a component."
+      (with-temp-buffer
+	 ;;Set up a root.
+	 (wookie:th:make-usual-wookie-2
+	    ;;Format function returns a list of one nil
+	    #'(lambda (&rest r)
+		 (list nil))
+	    ;;Dummy object
+	    '(nil nil))
+	 	 
+	 (emtb:buf-contents-matches
+	    :string "()")))
+
+   )
 ;;;_. Footers
 ;;;_ , Provides
 

@@ -132,9 +132,7 @@ It just tells a pathtree to add this node."
 	    ;;been caught by the previous clause.
 	    (assert (not (member 'summary dirty-flags)) t)
 	    (undirty 'display)
-	    (chewie:redisplay  ;;chewie:freshen-obj
-	       emtve:chewie 
-	       obj)))))
+	    (chewie:redisplay emtve:chewie obj)))))
 
 ;;;_ , Setup emtest:viewer:setup-if-needed
 (defun emtest:viewer:setup-if-needed ()
@@ -161,12 +159,16 @@ It just tells a pathtree to add this node."
 	 (setq emtve:chewie
 	    (chewie:create-wookie
 	       #'emtvf:top
-	       emtve:result-root
+	       ;;Pass instead the root node of this.
+	       ;;emtve:result-root ;;Chewie makes a dynamic object.
+	       (emtvp-root emtve:result-root)
 	       #'(lambda (obj)
 		    (emt:view:presentable-list
 		       (emtvp-node-data obj)))
 	       :buf
-	       emtve:report-buffer))
+	       emtve:report-buffer
+	       :handlers (list chewie:handler-alist)
+	       ))
 	 ;;For now, anyways.
 	 (outline-mode)))
    (unless 

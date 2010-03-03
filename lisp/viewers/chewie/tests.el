@@ -34,8 +34,10 @@
     (defmacro rtest:if-avail (&rest dummy)))
 (require 'viewers/chewie/testhelp)
 ;;;_. Body
-;;;_ , Help to set the usuals
-;;May belong in testhelp.
+;;;_ , chewie:handler-alist
+
+(put 'chewie:handler-alist 'rtest:test-thru
+   'chewie)
 
 ;;;_ , Tests of chewie as a whole
 
@@ -95,13 +97,96 @@ Dynamic objects are displayed immediately."
 	    (emtb:buf-contents-matches
 	       :string "abc(def())"))))
 
-
-   ;;Updating
+   ;;Version of the other test, changed to have hierarchical root.
    (  "Demonstrates: updating by altering objects' simple data."
       (with-temp-buffer
 	 (labels
 	    ;;Formatter function for list of `wookie:th:1s',
 	    ;;corresponding to the structure of `root'.
+	    ;;$$CHANGE ME.  This must have a wookie-like object as
+	    ;;root.  So how does it recurse to doubles, then?
+	    ;;Make a different set of handlers just for this test?
+	    ;;Change to use the recursive form, as the other one did?
+	    ;;This is unused now
+	    ((format-f
+		;;Formatting function will change.  Not clear any more
+		;;what its proper role is.
+		(obj data)
+		(list
+		   `(dynamic ,(car obj) ()
+		       wookie:th:format-1s)
+		   "-"
+		   `(dynamic ,(second obj) ()
+		       wookie:th:format-1s)))
+	       (reset (wookie obj str)
+		  (setf
+		     (wookie:tht:1s+1rec->str obj) str)
+		  (chewie:redisplay wookie obj)))
+	    
+	    (let*
+	       ;;Root contains two objects.  
+	       ((root
+		   (chewie:make-tht:dynamic-1s+1rec
+		      :list (chewie:2:make-list)
+		      :str "abc"
+		      :recurse
+		      (chewie:make-tht:dynamic-1s+1rec
+			 :list (chewie:2:make-list)
+			 :str "def"
+			 :recurse nil)))
+		  (wookie
+		     (chewie:th:make-usual-chewie
+			;;Changed these
+			#'chewie:th:format-dynamic-1s+1rec
+			root
+			#'chewie:tht:dynamic-1s+1rec->list)))
+	       
+	       ;;Validate original contents.
+	       (assert
+		  (emtb:buf-contents-matches
+		     :string "abc(def())")
+		  t)
+
+	       ;;$$FIXME The nils may be placeholders that didn't go
+	       ;;away.
+
+	       '((nil "") (nil nil) (nil nil) (1 "abc") (4 "-") 
+		   (nil nil) (5 "def") (nil "")) 
+
+	       (wookie-debug-get-position-skeleton 
+		  wookie)
+	       
+	       (reset wookie root "ghi")
+
+	       ;;Check buffer. 
+	       (assert
+		  (emtb:buf-contents-matches
+		     :string "ghi(def())")
+		  t)
+
+	       ;;Update the other.
+	       (reset wookie (wookie:tht:1s+1rec->recurse root) "jkl")
+
+	       ;;Check buffer. 
+	       (assert
+		  (emtb:buf-contents-matches
+		     :string "ghi(jkl())")
+		  t)
+	       t))))
+
+   ;;This test had to be changed because it "simplified" by making
+   ;;root a list, which we have no handler for.
+   ;;Updating
+   '
+   (  "Demonstrates: updating by altering objects' simple data."
+      (with-temp-buffer
+	 (labels
+	    ;;Formatter function for list of `wookie:th:1s',
+	    ;;corresponding to the structure of `root'.
+	    ;;$$CHANGE ME.  This must have a wookie-like object as
+	    ;;root.  So how does it recurse to doubles, then?
+	    ;;Make a different set of handlers just for this test?
+	    ;;Change to use the recursive form, as the other one did?
 	    ((format-f
 		(obj data)
 		(list
@@ -163,6 +248,8 @@ Dynamic objects are displayed immediately."
 		     :string "ghi-jkl")
 		  t)
 	       t))))
+
+
    ;;DORMANT Test is not consistent with the new design.  It could be
    ;;made consistent with another design of chewie where the dynamic
    ;;objects do not hold their own extra info, but that info is held

@@ -33,8 +33,7 @@
     (defmacro rtest:deftest (&rest dummy))
     (defmacro rtest:if-avail (&rest dummy)))
 (require 'viewers/wookie)
-(require 'viewers/ewoc/testhelp)  ;;Only for
-;;`wookie-debug-get-position-skeleton'
+(require 'viewers/ewoc/testhelp)
 
 ;;;_. Body
 
@@ -68,19 +67,145 @@
       :held-outside-p nil)
    ;;After the change
    obj)
+;;;_  . endor:th:handler-alist
+;;Trivial handlers for testing Endor.  Object type is any list, and
+;;will be printed with parentheses around it.
+'
+(defconst endor:th:handler-alist
+   `(
+       (display
+	  ,#'(lambda (wookie node)
+		(dolist (child node)
+		   (wookie:display-one child wookie))))
+       
+       (delete
+	  ,#'(lambda (wookie node)
+		(dolist (child node)
+		   (wookie:delete-either wookie child))))
+       
+       (get-left-ewoc
+	  ,#'(lambda (wookie node)
+		(wookie:dispatch 'get-left-ewoc wookie (car node))))
+       
+       (make-node
+	  ,#'(lambda (wookie o placeholder parent)
+		;;Only make these nodes for lists of data
+		(when
+		   (consp o)
+		   (let
+		      ((ewoc (wookie:wookie->ewoc wookie))
+			 (node
+			    (mapcar
+			       #'(lambda (obj)
+				    (ewoc-enter-before 
+				       ewoc 
+				       placeholder
+				       obj))
+			       `("(" ,@o ")"))))
+		      ;;Remove the placeholder
+		      (ewoc-delete ewoc placeholder)
+		      node))))
+       
+       (match-type-p
+	  ,#'(lambda (wookie node)
+		(listp node))))
+   
+   "" )
+;;;_  . endor:th:handler-alist Vtable version
+
+(defconst endor:th:handler-alist
+   (make-wookie:callback-table
+      :match-type-p
+      #'(lambda (wookie node)
+	 (listp node))
+      :display
+      #'(lambda (wookie node)
+	 (dolist (child node)
+	    (wookie:display-one child wookie)))
+      :delete
+      #'(lambda (wookie node)
+	 (dolist (child node)
+	    (wookie:delete-either wookie child)))
+      :get-left-ewoc
+      #'(lambda (wookie node)
+	 (wookie:dispatch 'get-left-ewoc wookie (car node)))
+      :make-node
+      #'(lambda (wookie o placeholder parent)
+	 ;;Only make these nodes for lists of data
+	 (when
+	    (consp o)
+	    (let
+	       ((ewoc (wookie:wookie->ewoc wookie))
+		  (node
+		     (mapcar
+			#'(lambda (obj)
+			     (ewoc-enter-before 
+				ewoc 
+				placeholder
+				obj))
+			`("(" ,@o ")"))))
+	       ;;Remove the placeholder
+	       (ewoc-delete ewoc placeholder)
+	       node)))))
+
+
 ;;;_  . wookie:th:make-usual-wookie
+' ;;Obsolete
 (defun wookie:th:make-usual-wookie (expander root &optional get-chewie-list)
    ""
    (wookie:create
       expander
       ;;Printer for ewoc.
       #'loformat:print
-      :object root
+      :object 
+      root
+      ;;Make the root object be dynamic?
+      ;;`(dynamic ,root nil ,expander)
       :get-chewie-list get-chewie-list
       :buf (current-buffer)
+      :func-list (list #'chewie:handler)
+      ;;Not for this
+      ;;:handlers (list chewie:handler-alist)
 ;;       :showing-cb #'ignore
 ;;       :unshowing-cb #'ignore
       ))
+
+;;But this is about Endor.
+;;Expander doesn't do anything?  And root should entirely be the
+;;data.  And we don't try to treat structures.
+(defun wookie:th:make-usual-wookie-2 (expander root &optional get-chewie-list)
+   ""
+   (wookie:create
+      ;;This will go away
+      expander
+      ;;Printer for ewoc.
+      #'loformat:print
+      :object root
+      ;;This will go away
+      :get-chewie-list get-chewie-list
+      :buf (current-buffer)
+      ;;:func-list (list #'chewie:handler)
+      ;;Not for this
+      :handlers 
+      (list endor:th:handler-alist)
+;;       :showing-cb #'ignore
+;;       :unshowing-cb #'ignore
+      ))
+
+;;Is this too much work just to test wookie? (Or endor)?
+;;For lists.
+;;And the test is whether node is a list.
+'`(make-node 
+     ;;Enter everything on the list.
+     ,#'(lambda (wookie o-list placeholder parent)
+	   (let
+	      ((ewoc (wookie:wookie->ewoc wookie)))
+	      (dolist (obj o-list)
+		 (ewoc-enter-before 
+		    ewoc 
+		    placeholder
+		    obj)))))
+
 
 ;;;_ , Formatter functions
 ;;;_  . wookie:th:format-1s
@@ -128,6 +253,45 @@
 	 (wookie:wookie->ewoc tree)
 	 #'show-sub)))
 
+;;;_  . wookie:th:children-linked-p
+(defun wookie:th:children-linked-p (node)
+   ""
+   (let
+      ((children (wookie:node->children node)))
+   (if
+      (listp children)
+      (every
+	 #'(lambda (x)
+	      (etypecase x
+		 (wookie:node
+		    ;;We don't try to recurse.
+		    t)
+		 (vector
+		    (ewoc:th:linked-p x))))
+	 children)
+      ;;Singleton
+      (ewoc:th:linked-p children))))
+;;;_  . wookie:either:th:all-linked-p
+(defun wookie:either:th:all-linked-p (node)
+   ""
+   
+   (etypecase node
+      (wookie:node
+	 (wookie:th:children-linked-p node))
+      (vector 
+	 (ewoc:th:linked-p node))))
+
+;;;_  . wookie:th:show-parts
+(defun wookie:th:show-parts (node &optional key)
+   ""
+   
+   (etypecase node
+      (wookie:node
+	 (mapcar 
+	    #'wookie:th:show-parts 
+	    (wookie:node->children node)))
+      (vector 
+	 (ewoc--node-data node))))
 
 
 ;;;_. Footers

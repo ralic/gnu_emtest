@@ -1,11 +1,11 @@
-;;;_ viewers/emviewer/testhelp.el --- Emviewer testhelp
+;;;_ viewers/endor.el --- Ewocs in an extensible structure
 
 ;;;_. Headers
 ;;;_ , License
 ;; Copyright (C) 2010  Tom Breton (Tehom)
 
 ;; Author: Tom Breton (Tehom) <tehom@panix.com>
-;; Keywords: 
+;; Keywords: lisp, internal
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -32,53 +32,13 @@
 (when (not (fboundp 'rtest:deftest))
     (defmacro rtest:deftest (&rest dummy))
     (defmacro rtest:if-avail (&rest dummy)))
-(require 'viewers/emviewer)
-'(require 'tester/tester) ;;Not needed.  We go thru tester/launch.
-(require 'tester/launch)
 
 ;;;_. Body
-;;$$RENAME ME emtt:ts:run-test-x ?
-;;$$MOVE ME maybe - into tester/launch/testhelp.  But that doesn't fit
-;;any better.
-(defun emtest:ts:run-test (form)
-   ""
-   
-   ;;First validate that form is right.  There should be a type for
-   ;;this, in test-support for emt-define.  For now, expect a string.
-   (check-type form
-      (list string t))
-   
-   (emtt:ts:run-test form #'emtest:ts:run-test:callback))
-
-;;;_ , The callback 
-;;Maybe should be anonymous
-(defun emtest:ts:run-test:callback (report)
-   ""
-   
-   (check-type report emt:testral:report)
-   (emtest:viewer:receive report))
-
-;;;_ , emtve:ts:with-mock-viewer
-
-(defmacro emtve:ts:with-mock-viewer (&rest body)
-   ""
-   
-   `(with-temp-buffer
-       (let
-	  (
-	     emtve:receiver
-	     emtve:chewie
-	     emtve:result-root
-	     (emtve:report-buffer
-		(current-buffer)))
-
-	  ,@body)))
-
 
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'viewers/emviewer/testhelp)
+(provide 'viewers/endor)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -86,4 +46,4 @@
 ;;;_  + End:
 
 ;;;_ , End
-;;; viewers/emviewer/testhelp.el ends here
+;;; viewers/endor.el ends here

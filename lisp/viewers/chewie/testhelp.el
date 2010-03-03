@@ -71,14 +71,31 @@
 ;;;_  . chewie:th:make-usual-chewie
 (defun chewie:th:make-usual-chewie (expander root get-chewie-list)
    ""
-   
+   '
    (wookie:th:make-usual-wookie
       #'chewie:get-expansion
-      (chewie:make-dynamic-obj
-	 :obj root 
-	 :data () ;;data
-	 :format-f expander)
-      get-chewie-list))
+      `(dynamic ,root () ,expander)
+;;       (chewie:make-dynamic-obj
+;; 	 :obj root 
+;; 	 :data () ;;data
+;; 	 :format-f expander)
+      get-chewie-list)
+   ;;$$Maybe should use `chewie:create-wookie' instead.
+   (wookie:create
+      ;;Obsolescent
+      #'chewie:get-expansion
+      ;;Printer for ewoc.
+      #'loformat:print
+      :object 
+      `(dynamic ,root () ,expander)
+      ;;Obsolescent
+      :get-chewie-list get-chewie-list
+      :buf (current-buffer)
+      ;;:func-list (list #'chewie:handler)
+
+      :handlers (list chewie:handler-alist)
+      )
+   )
 
 
 ;;;_. Footers

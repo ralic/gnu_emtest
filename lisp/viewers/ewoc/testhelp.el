@@ -35,6 +35,26 @@
 (require 'ewoc)
 
 ;;;_. Body
+;;;_ , ewoc:th:linked-p
+(defun ewoc:th:linked-p (node)
+   ""
+   
+   (let
+      ((curr-node node))
+      (catch 'ewoc-result
+	 (while t
+	    (setq curr-node
+	       (ewoc--node-right curr-node))
+	    (cond
+	       ((eq curr-node node)
+		  (throw 'ewoc-result t))
+	       ;;Looks like an ewoc node
+	       ((vectorp curr-node))
+	       ;;Definitely not an ewoc node
+	       (t
+		  (throw 'ewoc-result nil)))))))
+
+
 ;;;_ , ewoc-debug-get-position-skeleton
 
 (defun ewoc-debug-get-position-skeleton (ewoc &optional func)
