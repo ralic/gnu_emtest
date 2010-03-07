@@ -1,4 +1,4 @@
-;;;_ emt-funcall.el --- Provide emt:funcall
+;;;_ tester/emt-funcall.el --- Provide emt:funcall
 
 ;;;_. Headers
 ;;;_ , License
@@ -169,7 +169,7 @@ Not called by name, it is flet by tester."
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'emt-funcall)
+(provide 'tester/emt-funcall)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -177,4 +177,4 @@ Not called by name, it is flet by tester."
 ;;;_  + End:
 
 ;;;_ , End
-;;; emt-funcall.el ends here
+;;; tester/emt-funcall.el ends here

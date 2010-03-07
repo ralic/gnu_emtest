@@ -33,7 +33,7 @@
     (defmacro rtest:deftest (&rest dummy))
     (defmacro rtest:if-avail (&rest dummy)))
 (require 'viewers/chewie)
-(require 'viewers/wookie/testhelp)
+(require 'viewers/endor/testhelp)
 
 ;;;_. Body
 ;;;_ , Structures
@@ -41,15 +41,15 @@
 (defstruct (chewie:tht:dynamic-1s
 	      (:constructor chewie:make-tht:dynamic-1s)
 	      (:conc-name chewie:tht:dynamic-1s->)
-	      (:include wookie:tht:1s))
-   "Test-help:  ADT derived from `wookie:tht:1s', but dynamic."
+	      (:include endor:tht:1s))
+   "Test-help:  ADT derived from `endor:tht:1s', but dynamic."
    list)
 ;;;_  . chewie:tht:dynamic-1s+1rec
 (defstruct (chewie:tht:dynamic-1s+1rec
 	      (:constructor chewie:make-tht:dynamic-1s+1rec)
 	      (:conc-name chewie:tht:dynamic-1s+1rec->)
-	      (:include wookie:tht:1s+1rec))
-   "Test-help:  ADT derived from `wookie:tht:1s+1rec', but dynamic."
+	      (:include endor:tht:1s+1rec))
+   "Test-help:  ADT derived from `endor:tht:1s+1rec', but dynamic."
    list)
 
 ;;;_ , Chewie list extractor (chewie:tht:dynamic-1s+1rec->list)
@@ -69,33 +69,22 @@
       ")"))
 ;;;_ , Testhelp
 ;;;_  . chewie:th:make-usual-chewie
-(defun chewie:th:make-usual-chewie (expander root get-chewie-list)
+(defun chewie:th:make-usual-chewie 
+   (expander root get-chewie-list &optional ewoc-printer)
    ""
-   '
-   (wookie:th:make-usual-wookie
-      #'chewie:get-expansion
-      `(dynamic ,root () ,expander)
-;;       (chewie:make-dynamic-obj
-;; 	 :obj root 
-;; 	 :data () ;;data
-;; 	 :format-f expander)
-      get-chewie-list)
    ;;$$Maybe should use `chewie:create-wookie' instead.
-   (wookie:create
+   (endor:create
       ;;Obsolescent
       #'chewie:get-expansion
       ;;Printer for ewoc.
-      #'loformat:print
+      (or ewoc-printer #'loformat:print)
       :object 
       `(dynamic ,root () ,expander)
       ;;Obsolescent
       :get-chewie-list get-chewie-list
       :buf (current-buffer)
-      ;;:func-list (list #'chewie:handler)
+      :handlers (list chewie:handler-alist)))
 
-      :handlers (list chewie:handler-alist)
-      )
-   )
 
 
 ;;;_. Footers

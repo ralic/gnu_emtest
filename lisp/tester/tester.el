@@ -299,7 +299,7 @@ Does not signal error."
 	 (badnesses '()))
       
 
-      (emtt:destructure-clause clause
+      (emtt:destructure-clause-3 clause
 	 (let
 	    (
 	       (emt:trace:properties props)

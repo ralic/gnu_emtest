@@ -157,6 +157,7 @@ Behavior: offer the known values of `dummy-tag' as completions."
       (pcomplete/emacs-lisp-mode/emt:eg)))
 ;;;_ , Helpers for emt-define
 ;;;_  . pcomplete/emacs-lisp-mode/emt:define-2
+;;Already obsolete
 (defun pcomplete/emacs-lisp-mode/emt:define-2 ()
    ""
    ;;Suite name

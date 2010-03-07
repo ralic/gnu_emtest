@@ -1,4 +1,4 @@
-;;;_ testhelp/standard.el --- Standard testhelp for Emtest
+;;;_ tester/testhelp/standard.el --- Standard testhelp for Emtest
 
 ;;;_. Headers
 ;;;_ , License
@@ -196,15 +196,19 @@
 	       ;;NEW
 	       (push '(ungraded) badnesses)
 	       ;;Obsolete
+	       '
 	       (setf (emt:result:event:grade-grade report) 'ungraded)
 	       ;;Obsolete
+	       '
 	       (emt:trace:add-to-stored-diag
 		  (make-emt:result:diag:error :error err))
 	       (signal (car err)(cdr err))))
 
 	 ;;$$REMOVEME These are obsolete
+	 '
 	 (setf (emt:result:event:grade-diagnostic-info report) 
 	    diags)
+	 '
 	 (setf (emt:result:event:grade-info-about report) 
 	    info-about)
 	 (if
@@ -268,7 +272,8 @@
       ((name ungraded))
       (item ((type form)) '(error "I will signal an error"))
       (item ((type grade)) 'ungraded)
-      (item ((type diag-trace)) 
+      (item ((type diag-trace)) ;;$$CHANGE CALLERS Obsolete
+	 '
 	 (list
 	    (make-emt:result:diag:error
 	       :error '(error "I will signal an error")))))
@@ -279,8 +284,8 @@
       ((name fail-comparison))
       (item ((type form)) '(emt:funcall #'equal 1 2))
       (item ((type grade)) 'fail)
-      (item ((type diag-trace)) 
-	 (list
+      (item ((type diag-trace)) ;;$$CHANGE CALLERS Obsolete
+	 '(list
 	    (make-emt:result:diag:call
 	       :status    nil
 	       :call-sexp '(equal 1 2)))))
@@ -291,7 +296,8 @@
 			      (emt:funcall #'equal 1 2)
 			      (emt:funcall #'equal 101 102)))
       (item ((type grade)) 'fail)
-      (item ((type diag-trace)) 
+      (item ((type diag-trace)) ;;$$CHANGE CALLERS Obsolete
+	 '
 	 (list
 	    (make-emt:result:diag:call
 	       :status    nil
@@ -450,6 +456,7 @@ Behavior: Collect the diagnostic trace.  Grade as usual"
 		     (equal 
 			(emt:result:event:grade-form grade) 
 			(emt:eg (type form)))
+		     '  ;;$$REWRITE ME for TESTRAL
 		     (equal
 			(emt:result:event:grade-diagnostic-info grade)
 			(emt:eg (type diag-trace)))
@@ -478,6 +485,7 @@ Behavior: Collect the appropriate diagnostic trace."
 		     (equal 
 			(emt:result:event:grade-form grade) 
 			(emt:eg (type form)))
+		     '  ;;$$REWRITE ME for TESTRAL
 		     (equal
 			(emt:result:event:grade-diagnostic-info grade)
 			(emt:eg (type diag-trace)))
@@ -505,6 +513,7 @@ unreversed after all the pushing)"
 		     (equal 
 			(emt:result:event:grade-form grade) 
 			(emt:eg (type form)))
+		     '  ;;$$REWRITE ME for TESTRAL
 		     (equal
 			(emt:result:event:grade-diagnostic-info grade)
 			(emt:eg (type diag-trace)))
@@ -552,7 +561,7 @@ unreversed after all the pushing)"
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'testhelp/standard)
+(provide 'tester/testhelp/standard)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -560,5 +569,5 @@ unreversed after all the pushing)"
 ;;;_  + End:
 
 ;;;_ , End
-;;; testhelp/standard.el ends here
+;;;  tester/testhelp/standard.el ends here
 

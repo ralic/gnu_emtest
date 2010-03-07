@@ -28,17 +28,16 @@
 
 
 ;;;_ , Requires
-;;At one point I had
-  ;;;###autoload (require 'cl)
-;;Why was that needed?
-
-(require 'cl)
+(require 'cl)  ;;cl supplies `remove*'
 (require 'utility/accumulator)
 (require 'utility/pending)
+(require 'tester/testhelp/deep-type-checker nil)
+
 ;;For testing
 (when (not (fboundp 'rtest:deftest))
     (defmacro rtest:deftest    (&rest dummy))
     (defmacro rtest:if-avail   (&rest dummy)))
+;;Substitute testpoint
 (rtest:if-avail
    (require 'el-mock))
 
@@ -223,7 +222,9 @@ This variable is `let' in appropriate scopes" )
    (dolist (p props)
       (when
 	 (eq (first p) 'type-must-be)
-	 (require 'tester/testhelp/deep-type-checker)
+	 ;;Could have fallbacks here.
+	 (unless (featurep 'tester/testhelp/deep-type-checker)
+	    (error "Type-checking requires deep-type-checker"))
 	 (condition-case err
 	    (emty:check-f
 	       (emt:example.-value example)
@@ -623,26 +624,6 @@ Purpose: For consise use inside test code."
 		      body))
 	  
 	     arg-values))))
-
-;;;_   , Test data
-(emt:eg:define xmp:1a424ae8-1c28-4875-bdac-6ba6ad9d1a5e
-   ((project emtest)(library emt:eg)(topic map))
-   (group
-      ((discriminator small)(not-medium))
-      (item
-	 ((part number)) 2)
-      (item
-	 ((part string)) "wee"))
-   
-   (group
-      ((discriminator medium))
-      (item
-	 ((part number)) 14)
-      (item
-	 ((part string)) "medium string"))
-
-   
-   )
 
 ;;;_ , Utilities
 ;;;_  . emt:eg:all-tags

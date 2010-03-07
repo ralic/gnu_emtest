@@ -29,7 +29,7 @@
 ;;Instead of a bare `require', put this before code that uses this.
 '
 (eval-and-compile
-   (when (not (require 'tester/testhelp/testpoint nil t))
+   (unless (require 'tester/testhelp/testpoint nil t)
       (defmacro emtp (id args &rest rest)
 	 `(progn ,@rest))))
 

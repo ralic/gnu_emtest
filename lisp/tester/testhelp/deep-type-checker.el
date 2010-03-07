@@ -33,7 +33,7 @@
     (defmacro rtest:deftest (&rest dummy))
     (defmacro rtest:if-avail (&rest dummy)))
 (require 'cl)
-(require 'emt-funcall "tester/emt-funcall")
+(require 'tester/emt-funcall) ;;Obsolescent
 
 ;;;_. Body
 ;;;_ , Control variable

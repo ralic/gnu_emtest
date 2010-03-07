@@ -1510,6 +1510,22 @@ Response: Only the matching example is seen."
 
    ;;Is informed by emt tester.
    )
+;;;_  . Test data for emt:eg:map
+(emt:eg:define xmp:1a424ae8-1c28-4875-bdac-6ba6ad9d1a5e
+   ((project emtest)(library emt:eg)(topic map))
+   (group
+      ((discriminator small)(not-medium))
+      (item
+	 ((part number)) 2)
+      (item
+	 ((part string)) "wee"))
+   
+   (group
+      ((discriminator medium))
+      (item
+	 ((part number)) 14)
+      (item
+	 ((part string)) "medium string")))
 
 ;;;_  . Tests
 (rtest:deftest emt:eg:map

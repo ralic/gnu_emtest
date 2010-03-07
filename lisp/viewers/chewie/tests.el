@@ -43,7 +43,7 @@
 
 (rtest:deftest chewie
 
-   ;;Contract with static expansion for plain "wookie".
+   ;;Contrast with static expansion for simple endor.
    (  "Proves: Nested dynamic expansion works.
 Dynamic objects are displayed immediately."
       (with-temp-buffer
@@ -51,7 +51,8 @@ Dynamic objects are displayed immediately."
 	 (let
 	    ;;Dummy chewie list, since our objects here are just
 	    ;;empty dummies.
-	    ((chewlist (chewie:2:make-list)))
+	    ((endor:th:do-checks t)
+	       (chewlist (chewie:2:make-list)))
 
 	    (chewie:th:make-usual-chewie
 	       ;;Format function returns a list of constant strings
@@ -68,8 +69,19 @@ Dynamic objects are displayed immediately."
 	       ;;Dummy chewie list getter
 	       #'(lambda (&rest r) chewlist))
 	    
-	    (emtb:buf-contents-matches
-	       :string "abcdefghi"))))
+	    (assert
+	       (emtb:buf-contents-matches
+		  :string "abcdefghi"))
+	    ;;There should be exactly 2 displayers registered now:
+	    ;;Root and dynamic def.
+	    (assert
+	       (=
+		  (length
+		     (chewie:2:list->displayers chewlist))
+		  2)
+	       t)
+	    t)))
+   
    
 
    (  "Proves: Can recurse hierarchically."
@@ -77,6 +89,7 @@ Dynamic objects are displayed immediately."
 	 ;;Root contains an object of its own type.
 	 (let
 	    (
+	       (endor:th:do-checks t)
 	       (chewie
 		  (chewie:th:make-usual-chewie
 		     ;;Format function interprets this type of object.  It
@@ -114,18 +127,19 @@ Dynamic objects are displayed immediately."
 		(obj data)
 		(list
 		   `(dynamic ,(car obj) ()
-		       wookie:th:format-1s)
+		       endor:th:format-1s)
 		   "-"
 		   `(dynamic ,(second obj) ()
-		       wookie:th:format-1s)))
+		       endor:th:format-1s)))
 	       (reset (wookie obj str)
 		  (setf
-		     (wookie:tht:1s+1rec->str obj) str)
+		     (endor:tht:1s+1rec->str obj) str)
 		  (chewie:redisplay wookie obj)))
 	    
 	    (let*
 	       ;;Root contains two objects.  
-	       ((root
+	       ((endor:th:do-checks t)
+		  (root
 		   (chewie:make-tht:dynamic-1s+1rec
 		      :list (chewie:2:make-list)
 		      :str "abc"
@@ -136,7 +150,6 @@ Dynamic objects are displayed immediately."
 			 :recurse nil)))
 		  (wookie
 		     (chewie:th:make-usual-chewie
-			;;Changed these
 			#'chewie:th:format-dynamic-1s+1rec
 			root
 			#'chewie:tht:dynamic-1s+1rec->list)))
@@ -147,13 +160,12 @@ Dynamic objects are displayed immediately."
 		     :string "abc(def())")
 		  t)
 
-	       ;;$$FIXME The nils may be placeholders that didn't go
-	       ;;away.
+	       ;;$$FIXME We are getting extra nils here.
 
 	       '((nil "") (nil nil) (nil nil) (1 "abc") (4 "-") 
 		   (nil nil) (5 "def") (nil "")) 
 
-	       (wookie-debug-get-position-skeleton 
+	       (endor:th:get-position-skeleton 
 		  wookie)
 	       
 	       (reset wookie root "ghi")
@@ -165,7 +177,7 @@ Dynamic objects are displayed immediately."
 		  t)
 
 	       ;;Update the other.
-	       (reset wookie (wookie:tht:1s+1rec->recurse root) "jkl")
+	       (reset wookie (endor:tht:1s+1rec->recurse root) "jkl")
 
 	       ;;Check buffer. 
 	       (assert
@@ -191,13 +203,14 @@ Dynamic objects are displayed immediately."
 		(obj data)
 		(list
 		   `(dynamic ,(car obj) ()
-		       wookie:th:format-1s)
+		       endor:th:format-1s)
 		   "-"
 		   `(dynamic ,(second obj) ()
-		       wookie:th:format-1s))))
+		       endor:th:format-1s))))
 	    (let*
 	       ;;Root contains two objects.  
-	       ((root
+	       (  (endor:th:do-checks t)
+		  (root
 		   (list
 		      (chewie:make-tht:dynamic-1s
 			 :list (chewie:2:make-list)
@@ -223,11 +236,11 @@ Dynamic objects are displayed immediately."
 	       '((nil "") (nil nil) (nil nil) (1 "abc") (4 "-") 
 		   (nil nil) (5 "def") (nil "")) 
 
-	       (wookie-debug-get-position-skeleton 
+	       (endor:th:get-position-skeleton 
 		  wookie)
 	       
 	       (setf
-		  (wookie:tht:1s->str (car root))
+		  (endor:tht:1s->str (car root))
 		  "ghi")
 	       (chewie:redisplay wookie (car root))
 
@@ -238,7 +251,7 @@ Dynamic objects are displayed immediately."
 		  t)
 	       ;;Update the other.
 	       (setf
-		  (wookie:tht:1s->str (cadr root))
+		  (endor:tht:1s->str (cadr root))
 		  "jkl")
 	       (chewie:redisplay wookie (cadr root))
 
@@ -265,13 +278,14 @@ Dynamic objects are displayed immediately."
 		(obj data)
 		(list
 		   `(dynamic ,(car obj) ()
-		       wookie:th:format-1s)
+		       endor:th:format-1s)
 		   "-"
 		   `(dynamic ,(second obj) ()
-		       wookie:th:format-1s))))
+		       endor:th:format-1s))))
 	    (let*
 	       ;;Root contains two objects.  
-	       ((root
+	       (  (endor:th:do-checks t)
+		  (root
 		   (list
 		      (chewie:make-tht:dynamic-1s
 			 :list (chewie:2:make-list)
@@ -298,7 +312,7 @@ Dynamic objects are displayed immediately."
 
 	       (setf
 		  (car root)
- 		  (wookie:make-tht:1s :str "ghi"))
+ 		  (endor:make-tht:1s :str "ghi"))
 	       
 	       (chewie:redisplay wookie root)
 	       
@@ -313,7 +327,7 @@ Dynamic objects are displayed immediately."
    (  "Demonstrates: Removing objects can work."
       (with-temp-buffer
 	 (let*
-	    (
+	    (  (endor:th:do-checks t)
 	       (root
 		  ;;Root contains an object of its own type.
 		  (chewie:make-tht:dynamic-1s+1rec
@@ -382,6 +396,149 @@ Dynamic objects are displayed immediately."
    ;;Should show the one folded, the other unfolded.
 
    ;;Same dynamic object is rendered twice - still works.
+
+   ;;Have to somehow set the object contents.
+
+
+   ;;Note how we have to alter the objects' contents without their
+   ;;identity if we want to simply redisplay them, as we must for
+   ;;root.
+
+   (  "Situation: Root has been set and displayed.
+We are using string and displaying them directly as their names.
+Operation: Redisplay root, via chewlist.
+Response: Buffer display is as expected.
+Chewlist still holds only one display."
+      (with-temp-buffer
+	 (let*
+	    (  (endor:th:do-checks t)
+	       (chewlist (chewie:2:make-list))
+	       (root '(("abcd")))
+	       (chewie
+		  (chewie:th:make-usual-chewie
+		     ;;Formatter just returns list
+		     #'(lambda (obj &rest r)
+			  (check-type obj (list (repeat string)) 
+			     "List of strings")
+			  (car obj))
+		     root
+		     #'(lambda (&rest r) chewlist)
+		     ;;Use an ewoc displayer that expects strings
+		     #'(lambda (x)
+			  (typecase x
+			     (string
+				(insert x)))))))
+	    (setf (car root) '("abc"))
+	    (chewie:redisplay chewie root)
+	    (assert
+	       (emtb:buf-contents-matches
+		  :string "abc"))
+	    (assert
+	       (=
+		  (length
+		     (chewie:2:list->displayers chewlist))
+		  1)
+	       t)
+	    t)))
+
+   (  "Situation: Root has been set and displayed.
+We are using symbols and displaying symbols directly as their names.
+Operation: Redisplay root, via chewlist.
+Response: Buffer display is as expected.
+Chewlist still holds only one display."
+      (with-temp-buffer
+	 (let*
+	    (  (endor:th:do-checks t)
+	       (chewlist (chewie:2:make-list))
+	       (root '((a b c d)))
+	       (chewie
+		  (chewie:th:make-usual-chewie
+		     ;;Formatter just returns list
+		     #'(lambda (obj &rest r)
+			  (check-type obj (list (repeat symbol)) 
+			     "List of symbols")
+			  (car obj))
+		     root
+		     #'(lambda (&rest r) chewlist)
+		     ;;Use an ewoc displayer that expects symbols.
+		     #'(lambda (x)
+			  (typecase x
+			     (symbol
+				(insert (symbol-name x))))))))
+	    (setf (car root) '(a b c))
+	    (chewie:redisplay chewie root)
+	    (assert
+	       (emtb:buf-contents-matches
+		  :string "abc"))
+	    (assert
+	       (=
+		  (length
+		     (chewie:2:list->displayers chewlist))
+		  1)
+	       t)
+	    t)))
+   
+
+
+   ;;Test use of align-lists
+   ;;Dormant for the moment.
+   '
+   (  "Operation: Replace stuff
+Result: Just the expected sub-operations are used.
+Shows: It minimizes sub-operations."
+      (with-temp-buffer
+	 (let*
+	    (  (endor:th:do-checks t)
+	       (chewlist (chewie:2:make-list))
+	       (root '((a b c d)))
+	       (chewie
+		  (chewie:th:make-usual-chewie
+		     ;;Formatter just returns list
+		     #'(lambda (obj &rest r)
+			  (check-type obj (list (repeat symbol)) 
+			     "List of symbols")
+			  (car obj))
+		     root
+		     #'(lambda (&rest r) chewlist)
+		     ;;Use an ewoc displayer that expects symbols.
+		     #'(lambda (x)
+			  (typecase x
+			     (symbol
+				(insert (symbol-name x))))))))
+	    
+	    (let
+	       (
+		  (deleted '())
+		  (displayed '())
+		  (make-noded '()))
+	       (emtp:eval 
+		  ;;As implied above, this call finds chewlist because
+		  ;;that's in a special variable.  So it does find the
+		  ;;display. 
+		  (chewie:redisplay chewie '(a b c))
+		  (tp*
+		     (:id tp:n3k5ro-make-node :fallthru t :count nil)
+		     (o)
+		     (push o make-noded))
+		  (tp*
+		     (:id tp:9wr6as-delete :fallthru t :count nil)
+		     (node)
+		     (push (ewoc--node-data node) deleted))
+		  (tp*
+		     (:id tp:j4rfxx-display :fallthru t :count nil)
+		     (node)
+		     (push (ewoc--node-data node) displayed)))
+	       
+	       (assert (equal deleted    '(d)) t)
+	       (assert (equal make-noded '()) t)
+	       (assert (equal displayed  '()) t))
+      
+	    t)))
+   
+
+
+   
+   
 
    )
 

@@ -37,9 +37,9 @@
 ;;;_. Body
 
 ;;;_ , Persist functions 
-;;These must be visible to tests.  They may be moved, but not into
-;;emt-persist.el which is implementation.
-;;This design is somewhat obsolete now.
+
+;;These must be visible to tests.  Distinct from emt-persist.el which
+;;is implementation.
 
 ;;;_  . emt:persist
 ;;

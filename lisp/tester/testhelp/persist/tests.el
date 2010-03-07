@@ -32,7 +32,7 @@
 (when (not (fboundp 'rtest:deftest))
     (defmacro rtest:deftest (&rest dummy))
     (defmacro rtest:if-avail (&rest dummy)))
-
+(require 'tester/testhelp/misc)
 ;;;_. Body
 
 ;;;_ , emt:persist
@@ -42,7 +42,7 @@
 Param: The backend param is not given.
 Response: The value of the `db-id' property is used as backend."
       ;;$$CHANGEME
-      ;;This is old-style, change to version 3
+      ;;This is old-style emt deftest, change to version 3
       (let-noprops '(dummy-sym)
 	 (emt:deftest-2 dummy-sym
 	    (props (db-id "my-db"))

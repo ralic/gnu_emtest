@@ -48,6 +48,10 @@
 
 ;;;_ , Requires
 
+;;Clunky for now.  Really we'd pull their autoload file(s) in.
+(require 'tester/testhelp/standard)
+(require 'tester/testhelp/persist)
+
 ;;;_. Body
 ;;;_ , emt:if-avail
 ;;;###autoload
@@ -68,6 +72,7 @@
 ;;;###autoload
 (defmacro emt:deftest-2 (symbol props-or-first-clause &rest clauses)
    "Define a test in Emtest"
+   (error "emt:deftest-2 is OBSOLETE, use emt:deftest-3")
    ;;If `props-or-first-clause' is a list starting with `props', it's
    ;;keywise properties, otherwise it's a clause.
    (let*
@@ -116,6 +121,7 @@ of `clause-list' as bound by `emtt:destructure-suite'.
 
  * form - the test form 
  * doc - MAY CHANGE.  The docstring."
+   (error "emtt:destructure-clause is OBSOLETE, use emtt:destructure-clause-3")
    
    `(destructuring-bind (doc form) ,clause
        ,@body))
@@ -133,6 +139,7 @@ SUITE must be a symbol naming a test suite.
 
  * clause-list - List of the clauses in SUITE.
  * props - The property list of SUITE (an alist)."
+   (error "emtt:destructure-suite is OBSOLETE, use emtt:destructure-suite-3")
    
    `(let
        (
@@ -207,6 +214,7 @@ SUITE must be a symbol naming a test suite.
 ;;;_  . emtt:destructure-clause-3
 ;;No longer will provide `doc'.  This form is tentative.  Later
 ;;clauses may become more complex.
+;;I've made FORM optional - also considered making FORM the rest of it.
 (defmacro emtt:destructure-clause-3 (clause &rest body)
    "Run BODY with the contents of CLAUSE bound as indicated.
 
@@ -216,7 +224,7 @@ of `clause-list' as bound by `emtt:destructure-suite'.
  * form - the test form 
  * (Used to be doc - GONE)"
    
-   `(destructuring-bind (governor form) ,clause
+   `(destructuring-bind (governor &optional form) ,clause
        ,@body))
 
 

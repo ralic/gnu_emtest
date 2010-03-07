@@ -1,4 +1,4 @@
-;;;_ persistence/emt-persist.el --- Persistence for emtest
+;;;_ common/emt-persist.el --- Persistence for emtest
 
 ;;;_. Headers
 ;;;_ , License
@@ -180,6 +180,7 @@
 	 (emt:db:internal:ts:mock (emt:eg (type whole-db))
 	    (emt:persist:view-obj
 	       (emt:eg (type tried) (foundp t))))))
+   ;;Very obsolete now.
    '
    (  "Manual test of `emt:persist:view-obj' ~in situ~."
       (emt:eg:narrow 
@@ -238,6 +239,7 @@
 ;;These are now the real tests
 (rtest:deftest emt:persist:accept-correct
 
+   ;;Very obsolete now.
    (  "Test of `emt:persist:accept-correct' ~in situ~."
       (emt:eg:narrow 
 	 ((project emtest)(library persist)(section persist-viewer))
@@ -914,7 +916,7 @@ If CREATE-P is non-nil, create it if it doesn't exist."
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'persistence/emt-persist)
+(provide 'common/emt-persist)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -922,4 +924,4 @@ If CREATE-P is non-nil, create it if it doesn't exist."
 ;;;_  + End:
 
 ;;;_ , End
-;;; persistence/emt-persist.el ends here
+;;; common/emt-persist.el ends here

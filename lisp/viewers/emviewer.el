@@ -49,7 +49,7 @@
    "An emviewer object"
    (report-buffer () :type (satisfies bufferp))
    (result-root   () :type emtvp)
-   (wookie        () :type wookie:wookie)
+   (wookie        () :type endor:endor)
    (receiver      () :type emtvr:data))
 
 ;;;_ , Globals

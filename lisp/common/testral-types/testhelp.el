@@ -1,6 +1,4 @@
 ;;;_ common/testral-types/testhelp.el --- Examples of TESTRAL types
-;;$$MOVE ME to ~/projects/emtest/lisp/testral-types/testhelp.el
-;;Change all callers
 ;;;_. Headers
 ;;;_ , License
 ;; Copyright (C) 2009  Tom Breton (Tehom)
