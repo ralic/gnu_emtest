@@ -157,11 +157,7 @@ BUF is not handled yet."
 	    (endor:make-endor
 	       :root            nil
 	       :ewoc            ewoc
-;;	       :expand-f        expand-func
 	       :get-chewie-list get-chewie-list
-;; 	       :func-list       (append 
-;; 				   func-list
-;; 				   (list #'endor:ewoc-handler))
 	       :handlers	(append
 				   handlers
 				   (list endor:ewoc-handler-alist))

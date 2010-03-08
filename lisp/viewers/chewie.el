@@ -150,6 +150,10 @@ X must be a `chewie:dynamic-obj'."
       (chewie:2:list->displayers chewlist)))
 
 ;;;_   , chewie:get-chewlist
+;;$$REDESIGN ME  This info should be associated with wookie, not
+;;chewie.  This should still be parameterized, but just for the
+;;convenience of tests.  That basically means for wookie, endor data
+;;must be a wookie object.
 (defun chewie:get-chewlist (wookie obj)
    ""
    (let*
@@ -160,7 +164,7 @@ X must be a `chewie:dynamic-obj'."
 	    (if getter
 	       (funcall getter obj)
 	       (error 
-		  "Null get-chewie-list function in wookie"))))
+		  "Null get-chewie-list function in endor"))))
 				
       (check-type chewlist chewie:2:list)
       chewlist))

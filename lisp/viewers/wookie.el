@@ -39,6 +39,17 @@
 ;;;_ , Data types
 
 ;;;_ , Wookie
+;;;_  . wookie:wookie
+;;$$USE ME - and then remove get-chewie-list from endor:endor.
+(defstruct (wookie:wookie
+	      (:constructor wookie:make-wookie)
+	      (:conc-name wookie:wookie->)
+	      (:include endor:endor)
+	      )
+   ""
+   ;;(get-chewie-list () :type function)
+   )
+
 
 ;;;_  . wookie:node
 (defstruct (wookie:node
@@ -46,7 +57,7 @@
 	      (:conc-name wookie:node->))
    "A hierarchical display node."
    (parent () :type wookie:node)
-   (children () :type (or ewoc--node (repeat wookie:either)))
+   (children () :type (or ewoc--node (repeat t)))
    (data ()
       :doc "The node data (Type is covariant with the caller)"))
 
@@ -54,12 +65,17 @@
 ;;Type covaries with handlers
 ;;$$REMOVE ME later
 ;;Will go away, use the match-type-p command instead.
+'
 (deftype wookie:either ()
    "Either type that can dynamically print etc"
    ;;We'd like to write `ewoc--node' instead of `vector' but
    ;;`ewoc--node' has no tag.
    '(or wookie:node vector))
 
+;;;_  . wookie:data-t
+(defstruct wookie:data-t
+   "Object as Endor data"
+   data)
 
 ;;;_ , Entry points
 
@@ -72,24 +88,26 @@
    (endor:check (ewoc:th:linked-p following-ewoc-node))
 
    ;;`mapcar' traverses elements in order, so it's OK to use.
-   (mapcar
-      #'(lambda (o)
-	   (let*
-	      ;;Make a placeholder.
-	      ((placeholder
-		  (ewoc-enter-before 
-		     ewoc 
-		     following-ewoc-node 
-		     (endor:get-placeholder-contents)))
-		 (node
-		    (endor:dispatch 'make-node wookie 
-		       o placeholder parent)))
+   (let
+      ((ewoc (endor:endor->ewoc wookie)))
+      (mapcar
+	 #'(lambda (o)
+	      (let*
+		 ;;Make a placeholder.
+		 ((placeholder
+		     (ewoc-enter-before 
+			ewoc 
+			following-ewoc-node 
+			(endor:get-placeholder-contents)))
+		    (node
+		       (endor:dispatch 'make-node wookie 
+			  o placeholder parent)))
 	      
-	      ;;Queue the new node to be expanded later.
-	      (endor:will-display-node wookie node)
-	      node))
+		 ;;Queue the new node to be expanded later.
+		 (endor:will-display-node wookie node)
+		 node))
       
-      data-list))
+	 data-list)))
 ;;;_   , wookie:delete-either
 (defun wookie:delete-either (wookie node)
    ""
@@ -173,8 +191,8 @@
 	    (ewoc--node-right placeholder))
 	 (data-list
 	    (chewie:get-expansion (wookie:node->data node))
+	    ;;$$REMOVE ME
 ;;  	       (funcall 
-;; 		  ;;$$REPLACE ME with what wookie passes in.
 ;; 		  (endor:endor->expand-f tree) 
 ;; 		  (wookie:node->data node))
 
