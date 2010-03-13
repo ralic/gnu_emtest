@@ -154,9 +154,9 @@
    (  "Proves: Alist's value is available."
       (with-temp-buffer
 	 (let
-	    ((chewlist (chewie:2:make-list)))
+	    ((dlist (wookie:make-dlist)))
 	    ;;$$FIX ME Args here are wrong, out of date
-	    (chewie:th:make-usual-chewie
+	    (wookie:th:make-usual-wookie
 	       ;;Format function ignores obj and returns a list of one
 	       ;;string obtained from data.
 	       #'(lambda (obj data)

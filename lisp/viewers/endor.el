@@ -52,7 +52,30 @@
 
 ;;;_  . endor:endor
 (defstruct (endor:endor
-	      (:constructor endor:make-endor)
+	      (:constructor endor:make-endor
+		 (&key
+		    other-handlers
+		    ewoc-print-func
+		    data
+		    ;;get-dlist ;;Obsolescent
+		    ;;((:root object))
+		    ;;No `buf' argument now - it was misleading.
+		    ;;`root' always starts as `nil'
+		    &aux
+		    (ewoc
+		       (ewoc-create ewoc-print-func nil nil ""))
+		    (handlers
+		       (append
+			  other-handlers
+			  (list endor:ewoc-handler-alist)))
+		    ;;$$REMOVE ME  This was just clunky.
+;; 		    (root
+;; 		       (when object
+;; 			  (endor:set-root endor object)
+;; 			  (endor:endor->root endor)))
+
+		    ))
+	      (:constructor nil)
 	      (:conc-name endor:endor->))
    "A endor object"
    (root () :type t)  ;;Type covaries with handlers
@@ -114,10 +137,10 @@ Command can be:
 \(Type is covariant with the caller")
    ;;$$REMOVE ME later
    ;;Really belongs in wookie
-   (get-chewie-list () :type (satisfies functionp)
-      :doc
-      "Function, takes an object covariant with endor node data type
-and returns a chewie:2:list" )
+;;    (get-dlist () :type (satisfies functionp)
+;;       :doc
+;;       "Function, takes an object covariant with endor node data type
+;; and returns a wookie:dlist" )
    
    (pending () :type (repeat wookie:either)
       :doc "List of nodes that are waiting to be displayed."))
@@ -126,15 +149,16 @@ and returns a chewie:2:list" )
 ;;;_  . endor:get-placeholder-contents
 (defun endor:get-placeholder-contents ()
    "Get contents appropriate for a placeholder node"
+   (error "Obsolete endor:get-placeholder-contents")
    'placeholder)
 
 ;;;_  . endor:create
 ;;$$CHANGE ME args
 ;;$$CHANGE CALLERS
+'  ;;Obsolete
 (defun* endor:create (expand-func ewoc-print-func 
 			 &key buf object
-			 get-chewie-list ;;OBSOLESCENT
-			 ;;func-list ;;OBSOLETE
+			 get-dlist ;;OBSOLESCENT
 			 handlers)
    "Create an endor.
 EXPAND-FUNC is now obsolete.  Was a function of one argument.  It expands an object, returning a
@@ -147,7 +171,7 @@ OBJECT, if non-nil, is the root of the tree.  It must be a type that
 EXPAND-FUNC accepts as an argument.
 
 BUF is not handled yet."
-   
+   (error "Obsolete")
    (let*
       (
 	 (ewoc 
@@ -157,7 +181,7 @@ BUF is not handled yet."
 	    (endor:make-endor
 	       :root            nil
 	       :ewoc            ewoc
-	       :get-chewie-list get-chewie-list
+	       :get-dlist get-dlist
 	       :handlers	(append
 				   handlers
 				   (list endor:ewoc-handler-alist))
@@ -177,14 +201,18 @@ Error if it has been set before."
    (let*
       (
 	 (ewoc (endor:endor->ewoc endor))
-	 (placeholder
-	    (ewoc-enter-last ewoc (endor:get-placeholder-contents)))
+;; 	 (placeholder
+;; 	    '(ewoc-enter-last ewoc (endor:get-placeholder-contents)))
 	 (node 
 	    (progn
-	       (endor:check (ewoc:th:linked-p placeholder))
+	       ;;(endor:check (ewoc:th:linked-p placeholder))
 	       ;;Safe even though root has not been set
 	       (endor:dispatch
-		  'make-node endor object placeholder nil))))
+		  'make-node endor object 
+		  (ewoc--set-buffer-bind-dll ewoc  
+		     (ewoc--node-nth dll -1))
+		  ;;placeholder 
+		  nil))))
 
 
       (setf (endor:endor->root endor) node)
@@ -197,7 +225,7 @@ Error if it has been set before."
       endor))
 
 ;;;_  . endor:clear-root
-;;Untested
+;;Untested, unused.
 (defun endor:clear-root (endor)
    ""
    ;;Delete it semantically
@@ -220,6 +248,7 @@ Error if it has been set before."
 	 (list 'display       display)
 	 (list 'delete        delete)
 	 (list 'get-left-ewoc get-left-ewoc)
+	 (list 'display       display)
 	 (list 'make-node     make-node)
 	 (list 'match-type-p  match-type-p)))
    
@@ -289,6 +318,7 @@ Error if it has been set before."
 		(display       ,#'endor:callback-table-display)
 		(delete        ,#'endor:callback-table-delete)
 		(get-left-ewoc ,#'endor:callback-table-get-left-ewoc)
+		(get-next-ewoc ,#'endor:callback-table-get-next-ewoc)
 		(make-node     ,#'endor:callback-table-make-node)))))
 ;;;_    . endor:dispatch-xx
    (defun endor:dispatch-xx (command table endor args)
@@ -418,10 +448,11 @@ Error if it has been set before."
    ""
    (while (endor:endor->pending endor)
       (endor:display-one 
-	 (pop (endor:endor->pending endor)) 
-	 endor)))
+	 endor
+	 (pop (endor:endor->pending endor)))))
+
 ;;;_   , endor:display-one
-(defsubst endor:display-one (obj endor)
+(defsubst endor:display-one (endor obj)
    "Display or redisplay an ewoc node or a wookie node."
    (endor:dispatch 'display endor obj))
 
@@ -442,18 +473,18 @@ Error if it has been set before."
       #'(lambda (endor node)
 	   (emtp tp:9wr6as-delete
 	      (node)
-	      (ewoc-delete
-		 (endor:endor->ewoc endor) node)))
+	      (ewoc-delete     (endor:endor->ewoc endor) node)))
       :get-left-ewoc
       #'(lambda (endor node)
 	 node)
       :make-node
-      #'(lambda (endor o placeholder parent)
+      #'(lambda (endor o following-ewoc-node parent)
 	   (emtp tp:n3k5ro-make-node
 	      (o)
-	      (ewoc-set-data placeholder o))
-	   placeholder)
-      )
+	      (let
+		 ((ewoc (endor:endor->ewoc endor)))
+		 (ewoc-enter-before ewoc following-ewoc-node o)))))
+   
    "Alist from command symbol to ewoc-oriented function.
 Vtable version."
    )

@@ -83,7 +83,7 @@ It just tells a pathtree to add this node."
       presentation-path
       ;;The data
       (make-emt:view:suite-newstyle 
-	 :list (chewie:2:make-list)
+	 :list (wookie:make-dlist)
 	 :cell cell)))
 ;;;_  . emtest:viewer:pathtree-cb
 (defun emtest:viewer:pathtree-cb (obj)
@@ -132,7 +132,7 @@ It just tells a pathtree to add this node."
 	    ;;been caught by the previous clause.
 	    (assert (not (member 'summary dirty-flags)) t)
 	    (undirty 'display)
-	    (chewie:redisplay emtve:chewie obj)))))
+	    (wookie:redisplay emtve:chewie obj)))))
 
 ;;;_ , Setup emtest:viewer:setup-if-needed
 (defun emtest:viewer:setup-if-needed ()
@@ -144,7 +144,7 @@ It just tells a pathtree to add this node."
 	    ;;Default makes the base type.
 	    #'(lambda ()
 		 (make-emt:view:presentable
-		    :list (chewie:2:make-list)))
+		    :list (wookie:make-dlist)))
 	    'emt:view:suite-newstyle)))
    
    (unless emtve:chewie
@@ -157,7 +157,7 @@ It just tells a pathtree to add this node."
       (with-current-buffer emtve:report-buffer
 	 (erase-buffer)
 	 (setq emtve:chewie
-	    (chewie:create-wookie
+	    (chewie:make-chewie
 	       #'emtvf:top
 	       ;;Pass instead the root node of this.
 	       ;;emtve:result-root ;;Chewie makes a dynamic object.
@@ -167,7 +167,7 @@ It just tells a pathtree to add this node."
 		       (emtvp-node-data obj)))
 	       :buf
 	       emtve:report-buffer
-	       :handlers (list chewie:handler-alist)
+	       :handlers (list wookie:handler-alist)
 	       ))
 	 ;;For now, anyways.
 	 (outline-mode)))
