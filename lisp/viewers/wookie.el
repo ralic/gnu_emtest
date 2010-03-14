@@ -53,6 +53,8 @@
 		    (ewoc
 		       (ewoc-create ewoc-print-func nil nil ""))
 		    (handlers
+		       ;;$$RETHINK ME Maybe always include the wookie
+		       ;;handlers.
 		       (append
 			  other-handlers
 			  (list endor:ewoc-handler-alist)))))
@@ -72,18 +74,6 @@
       "Function, takes an object covariant with endor node data type
  and returns a wookie:dlist" ))
 
-
-
-;;;_  . wookie:child
-;;Only used as a return value.  TEMPORARY.
-;; (defstruct (wookie:child
-;; 	      (:constructor wookie:make-child)
-;; 	      (:conc-name wookie:child->))
-;;    ""
-;;    (hash () :type integer)
-;;    (el () :type wookie:either))
-
-
 ;;;_  . wookie:node
 (defstruct (wookie:node
 	      (:constructor wookie:make-node)
@@ -95,7 +85,6 @@
    (data ()
       :doc "The node data (Type is covariant with the caller)"))
 
-
 ;;;_  . wookie:dlist
 (defstruct (wookie:dlist
 	      (:constructor wookie:make-dlist)
@@ -104,7 +93,6 @@
    "List of current displayers.  Intended to live inside other
 types of data nodes."
    (displayers () :type (repeat wookie:node)))
-
 
 ;;;_  . wookie:either
 ;;Type covaries with handlers
@@ -120,66 +108,26 @@ types of data nodes."
 ;;;_ , Entry points
 
 ;;;_  . Wookie children management
-;;;_   , wookie:enter-new-child
-(defun wookie:enter-new-child (datum ewoc wookie following-ewoc-node parent)
-   ""
-   
-   (let
-      (
-	 (node
-	    (endor:dispatch 'make-node wookie 
-	       datum 
-	       following-ewoc-node
-	       parent)))
-	      
-      ;;Queue the new node to be expanded later.
-      (endor:will-display-node wookie node)
-      node))
-
-;;;_   , wookie:enter-new-children
-'
-(defun wookie:enter-new-children (wookie data-list following-ewoc-node parent)
-   ""
-   (error "Obsolete wookie:enter-new-children")
-   (endor:check (ewoc:th:linked-p following-ewoc-node))
-
-   ;;`mapcar' traverses elements in order, so it's OK to use.
-   (let
-      ((ewoc (endor:endor->ewoc wookie)))
-      (mapcar
-	 #'(lambda (o)
-	      (wookie:enter-new-child o ewoc wookie
-		 following-ewoc-node parent))
-	 data-list)))
 ;;;_   , wookie:delete-either
 (defsubst wookie:delete-either (wookie node)
    ""
    (endor:dispatch 'delete wookie node))
-;;$$USE ME
-(defsubst wookie:get-left-ewoc (wookie node)
-   ""
-   (endor:dispatch 'get-left-ewoc wookie node))
 
 ;;;_   , wookie:delete-node
 (defun wookie:delete-node (wookie node)
    ""
    (endor:check (wookie:th:children-linked-p node))
    (check-type node wookie:node)
-   '
-   (let* 
-      ((dlist
-	  (wookie:node->dlist wookie node)))
-      '
-      (  (obj
-	    (chewie:dynamic-obj->obj
-	       (wookie:node->data node)))
-	 ;;$$REPLACE ME with a direct call, which usually invokes
-	 ;;`chewie:node->dlist' 
-	 (dlist (chewie:get-dlist wookie obj)))
-      ;;Old obsolete style
-      (wookie:unregister-display dlist node))
    (dolist (child (wookie:node->children node))
       (wookie:delete-either wookie child)))
+;;;_  . Finding ewoc nodes
+
+;;;_   , wookie:get-left-ewoc
+(defsubst wookie:get-left-ewoc (wookie node)
+   "Get leftmost ewoc of NODE, which can be any type of node.
+Distinct from `wookie:get-leftmost-sub-ewoc' which assumes node is a
+wookie node."
+   (endor:dispatch 'get-left-ewoc wookie node))
 
 ;;;_   , wookie:get-leftmost-sub-ewoc
 (defun wookie:get-leftmost-sub-ewoc (wookie node)
@@ -193,50 +141,6 @@ wookie node."
       (endor:dispatch 'get-left-ewoc wookie left-child)))
 
 
-;;;_   , wookie:expand-empty
-;;$$OBSOLETE
-'
-(defun wookie:expand-empty (tree node)
-   ""
-   (error "Obsolete wookie:expand-empty")
-   ;;Of course it has a singleton placeholder.
-   (endor:check (wookie:th:children-linked-p node))
-
-   ;;The expand-f call was this plus wrapping as displayables:
-   (let*
-      (
-	 (ewoc (endor:endor->ewoc tree))
-	 ;;This will go away, but the whole call may.
-	 (placeholder
-	    (wookie:node->children node))
-	 ;;Cannot use `ewoc-next' because we may really want to get
-	 ;;the footer node.
-	 (following-ewoc-node
-	    ;;(ewoc--node-right placeholder)
-	    (wookie:parent-get-next-ewoc tree node))
-	 
-	 (data-list
-	    ;;GONE of course
-	    (chewie:get-expansion (wookie:node->data node)))
-	 (new-children
-	    (wookie:enter-new-children
-	       tree
-	       data-list 
-	       following-ewoc-node
-	       node)))
-      
-      ;;Remove placeholder from dll.
-      (ewoc-delete ewoc placeholder)
-      (setf (wookie:node->children node) 
-	 new-children)
-      ;;Compute this differently, directly from data.
-      (setf (wookie:node->hashes node) 
-	 (mapcar
-	    #'sxhash
-	    data-list))
-
-      ;;Return the wookie node.
-      node))
 ;;;_   , wookie:parent-get-next-ewoc
 (defun wookie:parent-get-next-ewoc (wookie node)
    ""
@@ -267,6 +171,24 @@ wookie node."
 	 (ewoc--set-buffer-bind-dll ewoc  
 	    (ewoc--node-nth dll -1)))))
 
+;;;_  . Child management
+;;;_   , wookie:enter-new-child
+(defun wookie:enter-new-child (datum ewoc wookie following-ewoc-node parent)
+   ""
+   
+   (let
+      (
+	 (node
+	    (endor:dispatch 'make-node wookie 
+	       datum 
+	       following-ewoc-node
+	       parent)))
+	      
+      ;;Queue the new node to be expanded later.
+      (endor:will-display-node wookie node)
+      node))
+
+
 ;;;_   , wookie:edit-children
 (defun wookie:edit-children (wookie node edits data-list)
    ""
@@ -284,8 +206,8 @@ wookie node."
 	       ;;Skip an old (A) item.
 	       (wookie:delete-either wookie (car old-children))
 	       ;;Advance the current position.
-	       (setq old-children (cdr old-children)))
-
+	       (pop old-children))
+	    
 	    (b
 	       ;;Enter a new (B) item at the current position
 	       (let
@@ -302,14 +224,14 @@ wookie node."
 			    ;;Otherwise, get it from an ancestor.
 			    (wookie:parent-get-next-ewoc wookie node))
 			 node)))
-		  (setq data-list (cdr data-list))
+		  (pop data-list)
 		  (push new-child rv-new-children)))
 	    
 	    (both
 	       ;;Accept the old item as new. 
 	       (push (car old-children) rv-new-children)
-	       (setq data-list (cdr data-list))
-	       (setq old-children (cdr old-children)))))
+	       (pop data-list)
+	       (pop old-children))))
 
       ;;Put the new children in place, replacing the old ones.
       (setf (wookie:node->children node) 
@@ -400,7 +322,8 @@ reprinting too, when it's not a placeholder."
 	    (wookie:dlist->displayers dlist)))))
 
 ;;;_   , wookie:unregister-display
-(defun wookie:unregister-display (dlist display)
+;;(dlist display)
+(defun wookie:unregister-display (wookie node)
    ""
    (check-type wookie wookie:wookie)
    (check-type node wookie:node)
@@ -408,45 +331,36 @@ reprinting too, when it's not a placeholder."
       ((dlist
 	  (wookie:node->dlist wookie node)))
       (check-type dlist wookie:dlist)
-      (callf2 delq display 
+      (callf2 delq node
 	 (wookie:dlist->displayers dlist))))
 
 ;;;_   , wookie:redisplay
-(defun wookie:redisplay (wookie obj)
+(defun wookie:redisplay (wookie dlist)
    ""
 
-   (let* 
-      ((dlist
-	  (wookie:obj->dlist wookie obj)))
-      '
-      ((dlist (chewie:get-dlist wookie obj)))
-
-      (dolist (d (wookie:dlist->displayers dlist))
-	 (endor:check (wookie:either:th:all-linked-p d))
-	 ;;This can causes redisplay.  We don't indicate whether we're
-	 ;;showing it again, but the node itself knows.
-	 (endor:will-display-node wookie d)))
+   (dolist (d (wookie:dlist->displayers dlist))
+      (endor:check (wookie:either:th:all-linked-p d))
+      ;;This can causes redisplay.  We don't indicate whether we're
+      ;;showing it again, but the node itself knows.
+      (endor:will-display-node wookie d))
    
    ;;$$RETHINK ME Not sure this belongs here.  Sometimes we may want
    ;;to delay doing all this.
    (endor:display-pending wookie))
 
 ;;;_   , wookie:display-gone
-(defun wookie:display-gone (wookie obj)
+(defun wookie:display-gone (wookie dlist)
    ""
-   
-   (let* 
-      ((dlist
-	  (wookie:obj->dlist wookie obj)))
-      '
-      ((dlist (chewie:get-dlist wookie obj)))
-      
-      (dolist (d (wookie:dlist->displayers dlist))
-	 ;;Redisplay the node's parents (Assume it has parents,
-	 ;;otherwise it's the root and we must take stronger measures)
-	 (endor:will-display-node 
-	    wookie 
-	    (wookie:node->parent d)))))
+
+   (dolist (d (wookie:dlist->displayers dlist))
+      ;;Redisplay the node's parent
+      (let
+	 ((parent (wookie:node->parent d)))
+	 ;;If it has none, it's the root and we must take stronger
+	 ;;measures.  Punted for now.
+	 (if parent
+	    (endor:will-display-node wookie parent)))))
+
 
 
 
@@ -472,33 +386,6 @@ reprinting too, when it's not a placeholder."
 	   (wookie:get-leftmost-sub-ewoc wookie node))
       :make-node
       #'(lambda (wookie o following-ewoc parent)
-	   ;;$$REDESIGN ME - this is partly chewie functionality.
-	   ;;Need a node maker.  And maybe work via alist recognizing
-	   ;;governors.
-	   '  ;;OBSOLETE
-	   (when
-	      (and (consp o) (eq (car o) 'dynamic))
-	      (destructuring-bind (dummy obj data func)
-		 o
-		 (let*
-		    (  
-		       (dlist
-			  (wookie:obj->dlist wookie obj))
-		       (dyn-obj
-			  (chewie:make-dynamic-obj
-			     :list     dlist
-			     :obj      obj
-			     :data     data
-			     :format-f func))
-		       (wookie-node
-			  (wookie:make-node
-			     :parent   parent
-			     :children '()
-			     :hashes   '()
-			     :data     dyn-obj)))
-		    ;;Return the displayer we made.  It's not
-		    ;;active yet so don't register it.
-		    wookie-node)))
 	   ;;If either `when' fails we return nil which signals
 	   ;;"Didn't use it"
 	   (when (consp o)

@@ -147,31 +147,14 @@
    t)
 
 (rtest:deftest emviewer
-   ;;Really a test of wookie interaction with LOAL.  Irrelevant until
-   ;;chewie maker accepts a "data" param from the top.  
-   ;;$$MOVE ME actually a chewie test
-   '
-   (  "Proves: Alist's value is available."
-      (with-temp-buffer
-	 (let
-	    ((dlist (wookie:make-dlist)))
-	    ;;$$FIX ME Args here are wrong, out of date
-	    (wookie:th:make-usual-wookie
-	       ;;Format function ignores obj and returns a list of one
-	       ;;string obtained from data.
-	       #'(lambda (obj data)
-		    (list 
-		       (loal:val 'my-key data "Wrongwrong")))
-	       ;;Dummy object
-	       0
-	       ;;$$SUPPORT ME Data parameter from the top
-	       :data
-	       (loal:acons 'my-key "abc" '()))
-	 
-	 
-	    (emtb:buf-contents-matches
-	       :string "abc"))))
 
+   ;;BUGS - Somehow all of these introduce an emtvp-node where a
+   ;;dynamic object is expected, as wookie data.
+   ;;$$CHECK ME - Add tests where objects might be introduced.
+   ;;It's because of `wookie:redisplay' which bypasses chewie's
+   ;;efforts at controlling redisplay; does not wrap in dyn obj, just
+   ;;uses the object directly.  Perhaps that functionality should only be for
+   ;;chewie and for testers.
    (  "Situation: Just the test runner."
       (emtve:ts:with-mock-viewer
 	 (emtest:viewer:receive

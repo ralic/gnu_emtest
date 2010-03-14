@@ -75,7 +75,6 @@
 (defun emtest:viewer:receive-cb (presentation-path cell)
    "Emviewer callback that `receive' gets.
 It just tells a pathtree to add this node."
-   ;;This interface really does need its own callback.
    (emtvp:add/replace-node
       ;;The pathtree root
       emtve:result-root 
@@ -85,6 +84,12 @@ It just tells a pathtree to add this node."
       (make-emt:view:suite-newstyle 
 	 :list (wookie:make-dlist)
 	 :cell cell)))
+;;;_  . emtve:vp-node->dlist
+(defun emtve:vp-node->dlist (obj)
+   ""
+   (emt:view:presentable-list
+      (emtvp-node-data obj)))
+
 ;;;_  . emtest:viewer:pathtree-cb
 (defun emtest:viewer:pathtree-cb (obj)
    "Callback to handle dirty flags, that `pathree' gets."
@@ -132,7 +137,9 @@ It just tells a pathtree to add this node."
 	    ;;been caught by the previous clause.
 	    (assert (not (member 'summary dirty-flags)) t)
 	    (undirty 'display)
-	    (wookie:redisplay emtve:chewie obj)))))
+	    (wookie:redisplay 
+	       emtve:chewie 
+	       (emtve:vp-node->dlist obj))))))
 
 ;;;_ , Setup emtest:viewer:setup-if-needed
 (defun emtest:viewer:setup-if-needed ()
@@ -146,30 +153,28 @@ It just tells a pathtree to add this node."
 		 (make-emt:view:presentable
 		    :list (wookie:make-dlist)))
 	    'emt:view:suite-newstyle)))
-   
-   (unless emtve:chewie
-      (unless emtve:report-buffer
+
+   (unless 
+      (and 
+	 emtve:chewie
+	 (buffer-live-p emtve:report-buffer))
+      (unless (buffer-live-p emtve:report-buffer)
 	 (setq 
 	    emtve:report-buffer 
 	    (generate-new-buffer
 	       emtve:report-buffer-name)))
-	 
+
+      ;;If there was no buffer, we always need a new chewie
       (with-current-buffer emtve:report-buffer
 	 (erase-buffer)
 	 (setq emtve:chewie
 	    (chewie:make-chewie
-	       #'emtvf:top
-	       ;;Pass instead the root node of this.
-	       ;;emtve:result-root ;;Chewie makes a dynamic object.
 	       (emtvp-root emtve:result-root)
-	       #'(lambda (obj)
-		    (emt:view:presentable-list
-		       (emtvp-node-data obj)))
-	       :buf
-	       emtve:report-buffer
-	       :handlers (list wookie:handler-alist)
-	       ))
-	 ;;For now, anyways.
+	       '()
+	       #'emtvf:top
+	       #'loformat:print
+	       #'emtve:vp-node->dlist))
+	 ;;May be replaced at some point
 	 (outline-mode)))
    (unless 
       emtve:receiver

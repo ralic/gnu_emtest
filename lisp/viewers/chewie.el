@@ -48,7 +48,7 @@ It fully contains the information used to redisplay the object."
 
 
    obj
-   (list     () :type wookie:dlist)  ;;$$RECONSIDER ME
+   ;;(list     () :type wookie:dlist)  ;;$$RECONSIDER ME
    (data     () :type loal)
    (format-f () :type (satisfies functionp)
       :doc
@@ -65,52 +65,40 @@ It fully contains the information used to redisplay the object."
 ;;;_  . chewie:make-chewie
 ;;$$CHANGER CALLERS get-dlist must change for this.  Or wrap it
 ;;in a lambda.
-(defun chewie:make-chewie (expander root get-dlist &rest r)
+(defun chewie:make-chewie (root top-data expander ewoc-printer get-dlist)
    ""
-   ;;$$IMPROVE ME - some of these should be params.  Params should be
-   ;;taken more neatly.
+
    (let
-      (
-	 ;;Should be a param.  Default is temporary.
-	 (ewoc-printer #'loformat:print))
-      (let
-	 ((wookie
-	     (wookie:make-wookie
-		;;Printer for ewoc.
-		:ewoc-print-func ewoc-printer
-		;;$$NEW  Extract it from the dyn obj
-
-		;;$$REDESIGN ME.  BUG - this seems to be wrong,
-		;;typewise.  This has to do with the muddle of getting
-		;;dlist, which needs to be redesigned anyways.
-		:get-dlist 
-		`(lambda (x)
-		    (,get-dlist
-		       (chewie:dynamic-obj->obj x)))
-		;;get-dlist
-		:expand-f
-		#'chewie:get-expansion
-		:alist-mk-node
-		(list
-		   (list 'dynamic
-		      #'(lambda (wookie obj data func)
-			   (chewie:make-dynamic-obj
-			      ;;$$OBSOLESCENT (:list)
-			      :list     (wookie:obj->dlist wookie obj)
-			      :obj      obj
-			      :data     data
-			      :format-f func))))
-		:other-handlers 
-		(list wookie:handler-alist))))
-	 (endor:set-root wookie `(dynamic ,root () ,expander))
-	 wookie)))
+      ((wookie
+	  (wookie:make-wookie
+	     ;;Printer for ewoc.
+	     :ewoc-print-func ewoc-printer
+	     :get-dlist 
+	     `(lambda (x)
+		 (,get-dlist
+		    (chewie:dynamic-obj->obj x)))
+	     :expand-f
+	     #'chewie:get-expansion
+	     :alist-mk-node
+	     (list
+		(list 'dynamic
+		   #'(lambda (wookie obj data func)
+			(chewie:make-dynamic-obj
+			   ;;Being rethought.
+			   ;;:list     (wookie:obj->dlist wookie obj)
+			   :obj      obj
+			   :data     data
+			   :format-f func))))
+	     :other-handlers 
+	     (list wookie:handler-alist))))
+      (endor:set-root wookie `(dynamic ,root ,top-data ,expander))
+      wookie))
 
 
 
 
-;;;_ , Other functions
+;;;_ , Support functions
 ;;;_  . chewie:get-expansion
-;;$$CHANGE ME into just support for the expanders
 (defun chewie:get-expansion (x)
    "Return a list of items, each suitable as formatting input.
 
@@ -121,10 +109,9 @@ X must be a `chewie:dynamic-obj'."
       (chewie:dynamic-obj->obj x)
       (chewie:dynamic-obj->data x)))
 ;;;_  . chewie:dynamic-notnull (A support function for formatters)
-(defun chewie:dynamic-notnull (obj formatter)
+(defun chewie:dynamic-notnull (obj data formatter)
    "Make a dynamic form for an object just if OBJ is non-nil."
-   ;;PUNT on setting up data list
-   (when obj `(dynamic ,obj () ,formatter)))
+   (when obj `(dynamic ,obj ,data ,formatter)))
 
 ;;;_ , Chewie interface layer
 ;;;_  . chewie:get-dlist
