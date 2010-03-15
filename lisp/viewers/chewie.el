@@ -34,7 +34,6 @@
     (defmacro rtest:if-avail (&rest dummy)))
 (require 'viewers/wookie)
 (require 'viewers/loal)
-(require 'viewers/hiformat)  ;;For loformat, actually, and temporary
 ;;;_. Body
 ;;;_ , Types
 
@@ -63,8 +62,6 @@ It fully contains the information used to redisplay the object."
 
 ;;;_ , Entry points
 ;;;_  . chewie:make-chewie
-;;$$CHANGER CALLERS get-dlist must change for this.  Or wrap it
-;;in a lambda.
 (defun chewie:make-chewie (root top-data expander ewoc-printer get-dlist)
    ""
 
@@ -91,13 +88,18 @@ It fully contains the information used to redisplay the object."
 			   :format-f func))))
 	     :other-handlers 
 	     (list wookie:handler-alist))))
-      (endor:set-root wookie `(dynamic ,root ,top-data ,expander))
+      (chewie:set-root wookie root top-data expander)
       wookie))
 
 
 
 
 ;;;_ , Support functions
+;;;_  . chewie:set-root
+(defun chewie:set-root (chewie root top-data expander)
+   ""
+   (endor:--set-root chewie `(dynamic ,root ,top-data ,expander)))
+
 ;;;_  . chewie:get-expansion
 (defun chewie:get-expansion (x)
    "Return a list of items, each suitable as formatting input.

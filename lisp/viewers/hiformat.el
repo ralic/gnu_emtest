@@ -237,6 +237,8 @@ Response: The ELS=1 function is called instead of the usual function."
 (defun loformat:print (x)
    ""
    (typecase x
+      (cons
+	 (mapcar #'loformat:print x))
       (string
 	 (insert x))))
 

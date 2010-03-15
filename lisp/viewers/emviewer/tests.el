@@ -148,13 +148,6 @@
 
 (rtest:deftest emviewer
 
-   ;;BUGS - Somehow all of these introduce an emtvp-node where a
-   ;;dynamic object is expected, as wookie data.
-   ;;$$CHECK ME - Add tests where objects might be introduced.
-   ;;It's because of `wookie:redisplay' which bypasses chewie's
-   ;;efforts at controlling redisplay; does not wrap in dyn obj, just
-   ;;uses the object directly.  Perhaps that functionality should only be for
-   ;;chewie and for testers.
    (  "Situation: Just the test runner."
       (emtve:ts:with-mock-viewer
 	 (emtest:viewer:receive

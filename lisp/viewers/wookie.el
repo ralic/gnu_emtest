@@ -236,8 +236,32 @@ wookie node."
       ;;Put the new children in place, replacing the old ones.
       (setf (wookie:node->children node) 
 	 (nreverse rv-new-children))))
+;;;_   , wookie:get-governor-cell
+(defsubst wookie:get-governor-cell (wookie sym)
+   ""
+   (assq sym (wookie:wookie->alist-mk-node wookie)))
 
+;;;_   , wookie:compress-list
+(defun wookie:compress-list (wookie data-list)
+   "Compress DATA-LIST used as a format list for wookie.
+Collect everything into lists except lists whose head we recognize."
 
+   (let
+      (  (rv-entire)
+	 (rv-to-ewoc '()))
+      (dolist (datum data-list)
+	 (if
+	    (and 
+	       (listp datum)
+	       (wookie:get-governor-cell wookie (car datum)))
+	    (progn
+	       (push (nreverse rv-to-ewoc) rv-entire)
+	       (setq rv-to-ewoc '())
+	       (push datum rv-entire))
+	    (progn
+	       (push datum rv-to-ewoc))))
+      (push (nreverse rv-to-ewoc) rv-entire)
+      (nreverse rv-entire)))
 
 ;;;_   , wookie:expand-one
 (defun wookie:expand-one (wookie node)
@@ -255,8 +279,12 @@ reprinting too, when it's not a placeholder."
 	    (funcall (wookie:wookie->expand-f wookie)
 	       (wookie:node->data node)))
 	    
-	 ;;Here, could compress pieces into lists.
-
+	 ;;Compress pieces into lists.
+	 (data-list
+	    (emtp tp:tdo969n0qxe0
+	       (data-list)  
+	       (wookie:compress-list wookie data-list)))
+	 
 	 ;;Compute the respective hashes
 	 (hashes
 	    (mapcar #'sxhash data-list))
@@ -390,6 +418,8 @@ reprinting too, when it's not a placeholder."
 	   ;;"Didn't use it"
 	   (when (consp o)
 	      (let* 
+		 ((cell (wookie:get-governor-cell wookie (car o))))
+		 '
 		 ((alist (wookie:wookie->alist-mk-node wookie))
 		    (cell (assq (car o) alist)))
 		 (when cell
