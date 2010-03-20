@@ -50,7 +50,7 @@ The type only demands a function, so it's mostly for
 ;;A separate thing
 (deftype hiformat:format ()
    "A format list"
-   (repeat
+   '(repeat
       (or
 	 ;;This may change from `string', because it should be
 	 ;;covariant with input type to loformat.
