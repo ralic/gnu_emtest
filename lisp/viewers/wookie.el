@@ -30,7 +30,7 @@
 ;;;_ , Requires
 
 (require 'viewers/endor)
-(require 'viewers/align-lists) ;;For aligning the lists.
+(require 'utility/align-lists)
 (eval-when-compile
    (require 'cl))
 
@@ -57,7 +57,9 @@
 		       ;;handlers.
 		       (append
 			  other-handlers
-			  (list endor:ewoc-handler-alist)))))
+			  (list endor:ewoc-handler-alist)))
+		    (ttvtable
+		       (ttvtable:make handlers))))
 	      (:constructor nil)
 	      (:conc-name wookie:wookie->)
 	      (:include endor:endor))
@@ -94,17 +96,6 @@
 types of data nodes."
    (displayers () :type (repeat wookie:node)))
 
-;;;_  . wookie:either
-;;Type covaries with handlers
-;;$$REMOVE ME later
-;;Will go away, use the match-type-p command instead.
-'
-(deftype wookie:either ()
-   "Either type that can dynamically print etc"
-   ;;We'd like to write `ewoc--node' instead of `vector' but
-   ;;`ewoc--node' has no tag.
-   '(or wookie:node vector))
-
 ;;;_ , Entry points
 
 ;;;_  . Wookie children management
@@ -116,7 +107,7 @@ types of data nodes."
 ;;;_   , wookie:delete-node
 (defun wookie:delete-node (wookie node)
    ""
-   (endor:check (wookie:th:children-linked-p node))
+   (endor:check (endor:dispatch 'linked-p wookie node))
    (check-type node wookie:node)
    (dolist (child (wookie:node->children node))
       (wookie:delete-either wookie child)))
@@ -134,7 +125,7 @@ wookie node."
    "Get leftmost ewoc of NODE, which must be a wookie node.
 Distinct from `wookie:get-left-ewoc' which does not assume node is a
 wookie node."
-   (endor:check (wookie:th:children-linked-p node))
+   (endor:check (endor:dispatch 'linked-p wookie node))
    (assert (listp (wookie:node->children node)))
    (let
       ((left-child (car (wookie:node->children node))))
@@ -168,7 +159,8 @@ wookie node."
 	    (wookie:parent-get-next-ewoc wookie parent))
       
 	 ;;No parent.  Get ewoc node from ewoc itself.
-	 (ewoc--set-buffer-bind-dll ewoc  
+	 (ewoc--set-buffer-bind-dll 
+	    (endor:endor->ewoc wookie)
 	    (ewoc--node-nth dll -1)))))
 
 ;;;_  . Child management
@@ -269,7 +261,7 @@ Collect everything into lists except lists whose head we recognize."
 
 For now, we assume it always wants expansion.  Later we'll support
 reprinting too, when it's not a placeholder."
-   (endor:check (wookie:th:children-linked-p node))
+   (endor:check (endor:dispatch 'linked-p wookie node))
    (assert (listp (wookie:node->children node)))
 
    (let*
@@ -367,9 +359,9 @@ reprinting too, when it's not a placeholder."
    ""
 
    (dolist (d (wookie:dlist->displayers dlist))
-      (endor:check (wookie:either:th:all-linked-p d))
-      ;;This can causes redisplay.  We don't indicate whether we're
-      ;;showing it again, but the node itself knows.
+      (endor:check (endor:th:all-linked-p wookie d))
+      ;;We don't indicate whether we're showing the node for the first
+      ;;time or again, but the node itself knows its display state.
       (endor:will-display-node wookie d))
    
    ;;$$RETHINK ME Not sure this belongs here.  Sometimes we may want
@@ -396,7 +388,9 @@ reprinting too, when it's not a placeholder."
 ;;;_   , wookie:handler-alist
 
 (defconst wookie:handler-alist 
-   (make-endor:callback-table
+   (endor:make-callback-table
+      :node-tag cl-struct-wookie:node-tags
+      :node-type (car (get 'wookie:node 'cl-struct-type))
       :match-type-p
       #'(lambda (wookie node)
 	   (wookie:node-p node))
@@ -428,7 +422,17 @@ reprinting too, when it's not a placeholder."
 		       :children '()
 		       :hashes   '()
 		       :data     
-		       (apply (second cell) wookie (cdr o))))))))
+		       (apply (second cell) wookie (cdr o)))))))
+      ;;$$AUTOLOAD ME so we don't drag in testhelp unless it's
+      ;;actually used.
+      :linked-p
+      #'(lambda (wookie node)
+	   (every
+	      #'(lambda (x)
+		   (endor:dispatch 'linked-p wookie x))
+	      (wookie:node->children node)))
+      
+      )
    
    "Wookie table of handler functions." )
 
