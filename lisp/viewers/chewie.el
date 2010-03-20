@@ -33,7 +33,7 @@
     (defmacro rtest:deftest (&rest dummy))
     (defmacro rtest:if-avail (&rest dummy)))
 (require 'viewers/wookie)
-(require 'viewers/loal)
+(require 'utility/loal)
 ;;;_. Body
 ;;;_ , Types
 
@@ -47,7 +47,6 @@ It fully contains the information used to redisplay the object."
 
 
    obj
-   ;;(list     () :type wookie:dlist)  ;;$$RECONSIDER ME
    (data     () :type loal)
    (format-f () :type (satisfies functionp)
       :doc
@@ -91,9 +90,6 @@ It fully contains the information used to redisplay the object."
       (chewie:set-root wookie root top-data expander)
       wookie))
 
-
-
-
 ;;;_ , Support functions
 ;;;_  . chewie:set-root
 (defun chewie:set-root (chewie root top-data expander)
@@ -110,77 +106,11 @@ X must be a `chewie:dynamic-obj'."
       (chewie:dynamic-obj->format-f x)
       (chewie:dynamic-obj->obj x)
       (chewie:dynamic-obj->data x)))
+
 ;;;_  . chewie:dynamic-notnull (A support function for formatters)
 (defun chewie:dynamic-notnull (obj data formatter)
    "Make a dynamic form for an object just if OBJ is non-nil."
    (when obj `(dynamic ,obj ,data ,formatter)))
-
-;;;_ , Chewie interface layer
-;;;_  . chewie:get-dlist
-;;Gone, adapted as wookie:node->dlist
-
-;;;_  . chewie:get-dlist
-;;$$REDESIGN ME  This info should be associated with wookie, not
-;;chewie.  This should still be parameterized, but just for the
-;;convenience of tests.  That basically means for wookie, endor data
-;;must be a wookie object.
-
-;;The getter will be gotten from wookie (typically
-;;`chewie:node->dlist' which will then not call this).  BUT no, we
-;;always field thru the 2 structures with this strategy.
-'  ;;OBSOLESCENT
-(defun chewie:get-dlist (wookie obj)
-   ""
-   
-   (let*
-      ((getter
-	  (wookie:wookie->get-dlist
-	     wookie))
-	 (dlist
-	    (if getter
-	       (funcall getter obj)
-	       (error 
-		  "Null get-dlist function in endor"))))
-				
-      (check-type dlist wookie:dlist)
-      dlist))
-
-;;;_  . chewie:node->dlist
-'(defun chewie:node->dlist (wookie node)
-   ""
-   ;;$$REDESIGN ME
-   ;;Getting this is ODD, unneccessarily complex.  There are 2
-   ;;routes.  Could have just extracted it from the chewie dynamic
-   ;;object, which data directly is.  So we don't really need that
-   ;;field.  It doesn't make anything easier.  Or it could just be
-   ;;merged in directly.  And `chewie:get-dlist' can essentially
-   ;;disappear. 
-
-   (let* 
-      (  (obj
-	    (chewie:dynamic-obj->obj
-	       (wookie:node->data node))))
-      ;;$$REPLACE ME with a call about chewie dynamic obj
-      (chewie:get-dlist wookie obj)))
-'  ;;Obsolete
-(defun chewie:data->dlist (wookie data)
-   ""
-   ;;$$REDESIGN ME
-   ;;Getting this is ODD, unneccessarily complex.  There are 2
-   ;;routes.  Could have just extracted it from the chewie dynamic
-   ;;object, which data directly is.  So we don't really need that
-   ;;field.  It doesn't make anything easier.  Or it could just be
-   ;;merged in directly.  And `chewie:get-dlist' can essentially
-   ;;disappear. 
-
-   (let* 
-      (  (obj
-	    (chewie:dynamic-obj->obj data)))
-      
-      ;;$$REPLACE ME with a call about chewie dynamic obj
-      ;;(chewie:get-dlist wookie obj)
-
-      ))
 
 
 ;;;_. Footers
