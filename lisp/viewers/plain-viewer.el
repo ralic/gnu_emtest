@@ -36,7 +36,7 @@
 ;;;_  . Test requirements
 (rtest:if-avail
    (require 'common/result-types/testhelp)
-   (require 'tester/testhelp/eg))
+   (require 'emtest/testhelp/eg))
 
 
 ;;;_. Body
@@ -508,7 +508,7 @@ Response: WRITEME."
 
 (rtest:if-avail
    (require 'common/result-types/testhelp))
-(require 'tester/define)
+(require 'emtest/runner/define)
 
 (emt:deftest-2 emt:plain-viewer:->format-tree
    ;;Inspection tests - and experimenting with persist and emtest.
