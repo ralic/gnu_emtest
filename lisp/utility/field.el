@@ -227,7 +227,7 @@ Response: The accessor is found."
 			     (lambda (slot-name &rest dummy)
 				slot-name))
 			  slot-spec))))
-	    slots)))))
+	    slots))))
 
 ;;;_  . Tests
 (rtest:deftest emt-field:get-all-slot-syms
