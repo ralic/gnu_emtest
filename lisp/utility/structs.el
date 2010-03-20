@@ -69,7 +69,7 @@ respective object."
 		     ((,accessor-sym (field-sym)
 			 ,(etypecase-w/accessor-x
 			     ;;$$FIXME Don't let obj be evaluated twice.
-			     case 'field-sym ,obj)))
+			     case 'field-sym obj)))
 		     ,case))
 	    cases)))
 ;;;_   , etypecase-w/accessor-x Helper (Impossible right now)
