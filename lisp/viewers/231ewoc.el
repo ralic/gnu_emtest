@@ -149,6 +149,7 @@ and (ewoc--node-nth dll -1) returns the last node."
 `dll' will be bound when VARLIST is initialized, but
 the current buffer will *not* have been changed.
 Return value of last form in FORMS."
+   (declare (debug (symbolp [&rest (symbolp form)] &rest form)))
   (let ((hnd (make-symbol "ewoc")))
     `(let* ((,hnd ,ewoc)
             (dll (ewoc--dll ,hnd))
@@ -157,6 +158,7 @@ Return value of last form in FORMS."
          ,@forms))))
 
 (defmacro ewoc--set-buffer-bind-dll (ewoc &rest forms)
+   (declare (debug (symbolp &rest form)))
   `(ewoc--set-buffer-bind-dll-let* ,ewoc nil ,@forms))
 
 (defsubst ewoc--filter-hf-nodes (ewoc node)
@@ -429,6 +431,7 @@ arguments will be passed to MAP-FUNCTION."
    "Evaluate BODY repeatedly, with NAME bound successively to the data
 of each element.
 The element will be refreshed if BODY returns non-nil."
+   (declare (debug ((symbolp form) &rest form)))
    (destructuring-bind (name ewoc-form) spec
       `(progn
 	  (ewoc-foreach
