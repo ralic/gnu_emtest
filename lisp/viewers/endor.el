@@ -34,7 +34,10 @@
    (featurep 'ewoc 'variable-separator)
    ;;Fallback.  This will error if it doesn't succeed
    (load "viewers/231ewoc" nil))
+(require 'utility/ttvtable)
 
+;;;_ , Dummies for testing
+;;$$DO ME MORE NEATLY to avoid compiler warning "not known".
 (defmacro endor:check (form &rest args)
    "Assert FORM just if endor testhelp is available."
    `(when 
@@ -43,7 +46,7 @@
 	  endor:th:do-checks)
        (assert ,form ,@args)))
 (eval-and-compile
-   (unless (require 'tester/testhelp/testpoint nil t)
+   (unless (require 'emtest/testhelp/testpoint nil t)
       (defmacro emtp (id args &rest rest)
 	 `(progn ,@rest))))
 
@@ -61,37 +64,55 @@
 		    &aux
 		    (ewoc
 		       (ewoc-create ewoc-print-func nil nil ""))
+;; 		    (scratch
+;; 		       (endor:cbtable:collect-handlers
+;; 			  other-handlers))
+;; 		    (vtable-alist
+;; 		       (first scratch))
+;; 		    (list-default-handler
+;; 		       (second scratch))
 		    (handlers
 		       (append
 			  other-handlers
-			  (list endor:ewoc-handler-alist)))))
+			  (list endor:ewoc-handler-alist)))
+		    (ttvtable
+		       (ttvtable:make
+			  handlers))))
+	      
 	      (:constructor nil)
 	      (:conc-name endor:endor->))
    "A endor object"
    (root () :type t)  ;;Type covaries with handlers
    (ewoc () :type ewoc)
-   (handlers () 
-      :type (repeat
-	       (list
-		  symbol
-		  function))
-      :doc
-      "Handler function.  Takes:
- * command
- * endor
- * zero or more other args.  If NODE is passed it will be passed as
-   the first of these other args.
- * Returns non-nil if it handled the command, otherwise nil.
+   (ttvtable () :type ttvtable)
+   ;;$$REMOVE ME later.  Moving into ttvtable
+;;    (handlers () 
+;;       :type (repeat
+;; 	       (list
+;; 		  symbol
+;; 		  function))
+;;       :doc
+;;       "Handler function.  Takes:
+;;  * command
+;;  * endor
+;;  * zero or more other args.  If NODE is passed it will be passed as
+;;    the first of these other args.
+;;  * Returns non-nil if it handled the command, otherwise nil.
 
-Command can be:
- * match-type-p: W C NODE Return non-nil just if NODE is the
-   respective type. 
- * display: W C NODE Cause it to be displayed
- * delete: W C NODE Cause it to be undisplayed and deleted.
- * get-left-ewoc: W C NODE Get the leftmost ewoc owned by this node.
- * make-node W C DATA PLACEHOLDER.
-   * Make a new node of the respective type.")
-
+;; Command can be:
+;;  * match-type-p: W C NODE Return non-nil just if NODE is the
+;;    respective type. 
+;;  * display: W C NODE Cause it to be displayed
+;;  * delete: W C NODE Cause it to be undisplayed and deleted.
+;;  * get-left-ewoc: W C NODE Get the leftmost ewoc owned by this node.
+;;  * make-node W C DATA PLACEHOLDER.
+;;    * Make a new node of the respective type.")
+;;    ;;$$REMOVE ME later.  Moving into ttvtable
+;;    (vtable-alist () :type 
+;;       (repeat (list symbol endor:callback-table)))
+;;    ;;$$REMOVE ME later.  Moving into ttvtable
+;;    (list-default-handler () :type endor:callback-table)
+   
    (data ()
       :doc "Blind data for callbacks.  
 \(Type is covariant with the caller")
@@ -141,83 +162,67 @@ This function should not usually be directly called."
    (endor:display-pending endor))
 
 ;;;_  . Dispatchers
-;;;_   , Alist version
-
-(when nil
-;;;_    . make-endor:callback-table
-
-   (defun* make-endor:callback-table 
-      (&key display delete get-left-ewoc make-node match-type-p)
-      ""
-      (list
-	 (list 'display       display)
-	 (list 'delete        delete)
-	 (list 'get-left-ewoc get-left-ewoc)
-	 (list 'display       display)
-	 (list 'make-node     make-node)
-	 (list 'match-type-p  match-type-p)))
-   
-
-;;;_    . endor:dispatch-x
-   (defun endor:dispatch-x (command halist endor args)
-      ""
-   
-      (let
-	 ((cell
-	     (assq command h)))
-	 (unless cell (error "No handler for command `%s'" command))
-	 (apply (second cell) endor args)))
-
-
-;;;_    . endor:dispatch
-
-   (defun endor:dispatch (command endor &rest args)
-      ""
-      (emtp tp:7b7edqv0exe0
-	 (command (car args))
-
-
-	 (let
-	    ((handler-sets-list (endor:endor->handlers endor)))
-	    (catch 'endor:dispatch-done
-	       (dolist (h handler-sets-list)
-		  (if
-		     (memq command '(make-node match-type-p))
-		     ;;Some commands can't or shouldn't use a NODE argument.
-		     ;;These immediately call the handler and if the result
-		     ;;is `nil', fall thru to next set of handlers.
-		     (let
-			((answer (endor:dispatch-x command h endor args)))
-			(when answer (throw 'endor:dispatch-done answer)))
-	       
-		     ;;Most commands pass NODE as next argument.  For them,
-		     ;;check the node's type.  If NODE is the right type,
-		     ;;call the real command and return its result.  If it
-		     ;;isn't, fall thru.
-		     (when
-			(endor:dispatch-x 'match-type-p h endor (list (car args)))
-			(throw 'endor:dispatch-done 
-			   (endor:dispatch-x command h endor args))))))))))
 
 ;;;_   , Vtable version
 (when t
 ;;;_    . endor:callback-table
-   (defstruct endor:callback-table
-      "Callback table."
+   (defstruct (endor:callback-table
+		 (:include ttvtable:vtable)
+		 (:constructor endor:make-callback-table))
+      
+      "Callback table.
+
+Command can be:
+ * match-type-p: ENDOR NODE Return non-nil just if NODE is the
+   respective type. 
+ * display: ENDOR NODE Cause it to be displayed
+ * delete: ENDOR NODE Cause it to be undisplayed and deleted.
+ * get-left-ewoc: ENDOR NODE Get the leftmost ewoc owned by this node.
+ * make-node ENDOR DATA FOLLOWING-NODE PARENT
+   * Make a new node of the respective type.
+ * linked-p: ENDOR NODE.  For debugging, return non-nil if all the
+component ewoc nodes are properly linked."
       match-type-p
       display
       delete
       get-left-ewoc
       make-node
-      ;;$$Add certain fields for debugging purposes.  The
-      ;;instantiations could be autoloaded so they don't always drag
-      ;;the testhelp files in.
+
+;;       (node-tag  () :type (repeat symbol)
+;; 	 :doc
+;; 	 "List of structure-tags that a node might have.
+;; For a structure created by defstruct, it would be in the variable
+;; `cl-struct-NAME-tags'.")
+      
+;;       (node-type () :type (member list vector)
+;; 	 :doc 
+;; 	 "Broad type of nodes.  
+
+;; For a structure created by defstruct, it would be the
+;; cl-struct-type property of NAME."  )
+
+      (linked-p ()
+	 :doc
+	 "For debugging.  Function that returns true if all the node's
+	 ewocs are linked in properly." )
       )
+;;;_    . endor:alist:command->accessor
+   (defconst endor:alist:command->accessor 
+      `(
+	  (match-type-p  ,#'endor:callback-table-match-type-p)
+	  (display       ,#'endor:callback-table-display)
+	  (delete        ,#'endor:callback-table-delete)
+	  (get-left-ewoc ,#'endor:callback-table-get-left-ewoc)
+	  (get-next-ewoc ,#'endor:callback-table-get-next-ewoc)
+	  (make-node     ,#'endor:callback-table-make-node)
+	  (linked-p      ,#'endor:callback-table-linked-p))
+      "" )
 ;;;_    . endor:cbtable:command->accessor
+   ;;Use `endor:alist:command->accessor'
    (defun endor:cbtable:command->accessor (command)
       ""
       (second
-	 (assq command
+	 (assq command ;;endor:alist:command->accessor
 	    `(
 		(match-type-p  ,#'endor:callback-table-match-type-p)
 		(display       ,#'endor:callback-table-display)
@@ -254,90 +259,250 @@ This function should not usually be directly called."
 	       `(apply ,func-form ,endor ,args))
 	    ;;Otherwise use the original
 	    body)))
-;;;_    . endor:dispatch-xxx
+;;;_    . High dispatch that naively just matches via the type predicate
+   (when nil
+;;;_     , endor:cbtable:collect-handlers
+      (defun endor:cbtable:collect-handlers (&rest r)
+	 ""
+	 ;;Dummy.  This deliberately doesn't do anything.
+	 (list nil nil))
 
-   (defsubst endor:dispatch-xxx (command h endor args)
-      "Try to dispatch COMMAND via table H"
-      (if
-	 (memq command '(make-node match-type-p))
-	 ;;Some commands can't or shouldn't use a NODE argument.
-	 ;;Just call the handler and if the result is `nil',
-	 ;;fall thru to next set of handlers.
-	 (let
-	    ((answer
-		(endor:dispatch-xx command h endor args)))
-	    (when answer
-	       (throw 'endor:dispatch-done answer)))
-	 ;;Most commands pass NODE as next argument.  For them,
-	 ;;check the node's type.  If NODE is the right type,
-	 ;;call the real command and return its result.  If it
-	 ;;isn't, fall thru.
-	 (when
-	    (endor:dispatch-xx 'match-type-p h endor
-	       (list (car args)))
-	    (throw 'endor:dispatch-done
-	       (endor:dispatch-xx command h endor args)))))
+;;;_     , endor:dispatch-xxx
+      (defsubst endor:dispatch-xxx (command h endor args)
+	 "Try to dispatch COMMAND via table H"
+	 (if
+	    (memq command '(make-node match-type-p))
+	    ;;Some commands can't or shouldn't use a NODE argument.
+	    ;;Just call the handler and if the result is `nil',
+	    ;;fall thru to next set of handlers.
+	    (let
+	       ((answer
+		   (endor:dispatch-xx command h endor args)))
+	       (when answer
+		  (throw 'endor:dispatch-done answer)))
+	    ;;Most commands pass NODE as next argument.  For them,
+	    ;;check the node's type.  If NODE is the right type,
+	    ;;call the real command and return its result.  If it
+	    ;;isn't, fall thru.
+	    (when
+	       (endor:dispatch-xx 'match-type-p h endor
+		  (list (car args)))
+	       (throw 'endor:dispatch-done
+		  (endor:dispatch-xx command h endor args)))))
 
-   (define-compiler-macro endor:dispatch-xxx
-      (&whole body command h endor args)
-      (let* 
-	 ((literal-cmd-p
-	     (and
-		(consp command)
-		(eq (car command) 'quote))))
-	 (if literal-cmd-p
-	    ;;This is nearly repitition of the original form, but I
-	    ;;see no alternative for now.
-	    (if
-	       (memq (eval command) '(make-node match-type-p))
-	       ;;Some commands can't or shouldn't use a NODE argument.
-	       ;;Just call the handler and if the result is `nil',
-	       ;;fall thru to next set of handlers.
-	       `(let
-		   ((answer
-		       (endor:dispatch-xx ,command ,h ,endor ,args)))
-		   (when answer
-		      (throw 'endor:dispatch-done answer)))
-	       ;;Most commands pass NODE as next argument.  For them,
-	       ;;check the node's type.  If NODE is the right type,
-	       ;;call the real command and return its result.  If it
-	       ;;isn't, fall thru.
+      (define-compiler-macro endor:dispatch-xxx
+	 (&whole body command h endor args)
+	 (let* 
+	    ((literal-cmd-p
+		(and
+		   (consp command)
+		   (eq (car command) 'quote))))
+	    (if literal-cmd-p
+	       ;;This is nearly repitition of the original form, but I
+	       ;;see no alternative for now.
+	       (if
+		  (memq (eval command) '(make-node match-type-p))
+		  ;;Some commands can't or shouldn't use a NODE argument.
+		  ;;Just call the handler and if the result is `nil',
+		  ;;fall thru to next set of handlers.
+		  `(let
+		      ((answer
+			  (endor:dispatch-xx ,command ,h ,endor ,args)))
+		      (when answer
+			 (throw 'endor:dispatch-done answer)))
+		  ;;Most commands pass NODE as next argument.  For them,
+		  ;;check the node's type.  If NODE is the right type,
+		  ;;call the real command and return its result.  If it
+		  ;;isn't, fall thru.
 
-	       ;;The repeatedly-evaluated forms here are not good,
-	       ;;though in practice here they just refer to symbol so
-	       ;;they should be safe enough, though not robust.
-	       `(when
-		   (endor:dispatch-xx 'match-type-p ,h ,endor
-		      (list (car ,args)))
-		   (throw 'endor:dispatch-done
-		      (endor:dispatch-xx ,command ,h ,endor ,args))))
+		  ;;The repeatedly-evaluated forms here are not good,
+		  ;;though in practice here they just refer to symbol so
+		  ;;they should be safe enough, though not robust.
+		  `(when
+		      (endor:dispatch-xx 'match-type-p ,h ,endor
+			 (list (car ,args)))
+		      (throw 'endor:dispatch-done
+			 (endor:dispatch-xx ,command ,h ,endor ,args))))
 
-	    body)))
+	       body)))
    
    
-;;;_    . endor:dispatch
+;;;_     , endor:dispatch
 
-   (defun endor:dispatch (command endor &rest args)
-      ""
-      (emtp tp:7b7edqv0exe0
-	 (command args)
+      (defun endor:dispatch (command endor &rest args)
+	 ""
+	 (emtp tp:7b7edqv0exe0
+	    (command args)
+	    (let
+	       ((handler-sets-list (endor:endor->handlers endor)))
+	 
+	       (catch 'endor:dispatch-done
+		  (dolist (h handler-sets-list)
+		     (endor:dispatch-xxx command h endor args))))))
+
+      (define-compiler-macro endor:dispatch 
+	 (&whole body command endor &rest args)
+	 ;;This omits the testpoint, so does not support certain tests.
+	 `(let*
+	     (  (endor ,endor)
+		(handler-sets-list (endor:endor->handlers endor)))
+	 
+	     (catch 'endor:dispatch-done
+		(dolist (h handler-sets-list)
+		   (endor:dispatch-xxx ,command h endor (list
+		,@args)))))))
+
+;;;_   , Tagwise version (of high dispatch)
+;;This relies on using structures.  It will require ctor to be
+;;changed, not include endor:ewoc-handler-alist among the handlers
+;;because now it's the default.  And construct `vtable-alist' in the
+;;expected manner.
+   (when nil
+;;;_    . endor:cbtable:collect-handlers
+      (defun endor:cbtable:collect-handlers (raw-handlers)
+	 ""
+	 (let*
+	    ((list-default nil)
+	       (raw-list
+		  (mapcar
+		     ;;Collect an alist, with possibly some nil cells,
+		     ;;and possibly set list-default while doing so.
+		     #'(lambda (x)
+			  (let
+			     ((tag
+				 (endor:callback-table-node-tag x)))
+			     (cond 
+				(tag
+				   (list tag x))
+				((eq (endor:callback-table-node-type x) 'list)
+				   (setq list-default x)
+				   nil)
+				(t nil))))
+		     raw-handlers)))
+	    (list (delq nil raw-list) list-default)))
+
+;;;_     , endor:get-table-x
+      (defun endor:get-table-x (vtable-alist sym)
+	 ""
+      
 	 (let
-	    ((handler-sets-list (endor:endor->handlers endor)))
-	 
-	    (catch 'endor:dispatch-done
-	       (dolist (h handler-sets-list)
-		  (endor:dispatch-xxx command h endor args))))))
-
-   (define-compiler-macro endor:dispatch 
-      (&whole body command endor &rest args)
-      ;;This omits the testpoint, so does not support certain tests.
-      `(let*
-	 (  (endor ,endor)
-	    (handler-sets-list (endor:endor->handlers endor)))
-	 
+	    ((cell (assq sym vtable-alist)))
+	    (when cell (second cell))))
+;;;_     , endor:get-table
+      (defun endor:get-table (node vtable-alist vec-default list-default)
+	 ""
+	 (etypecase node
+	    (vector
+	       (or
+		  (endor:get-table-x vtable-alist (aref node 0))
+		  vec-default))
+		     
+	    (cons
+	       (or
+		  (endor:get-table-x vtable-alist (car node))
+		  list-default
+		  (error "No list default handler available")))))
+   
+;;;_     , endor:dispatch-until-success
+      (defun endor:dispatch-until-success (vtable-alist command endor &rest args)
+	 ""
 	 (catch 'endor:dispatch-done
-	    (dolist (h handler-sets-list)
-	       (endor:dispatch-xxx ,command h endor (list ,@args)))))))
+	    ;;Except it will become an alist or obarray so we
+	    ;;must extract the table object.
+	    (dolist (h vtable-alist)
+	       (let
+		  ((answer
+		      (endor:dispatch-xx command (second h) endor args)))
+		  (when answer
+		     (throw 'endor:dispatch-done answer))))))
+
+;;;_     , endor:dispatch
+   
+      (defun endor:dispatch (command endor &rest args)
+	 ""
+	 (emtp tp:7b7edqv0exe0
+	    (command args)
+	    (let
+	       ((vtable-alist (endor:endor->vtable-alist endor)))
+	       (if (memq command '(make-node match-type-p))
+		  ;;If command does not have a node, loop thru
+		  ;;all vtables.
+		  (apply #'endor:dispatch-until-success
+		     ;;Has to include the defaults too, as the last
+		     ;;two items.  There's opportunity to make this
+		     ;;faster and neater.
+		     (append
+			vtable-alist
+			(let
+			   ((list-default
+			       (endor:endor->list-default-handler endor)
+			       ))
+			   (if list-default
+			      (list
+				 (list nil list-default)
+				 (list nil endor:ewoc-handler-alist))
+			      
+			      (list
+				 (list nil endor:ewoc-handler-alist))
+			      )))
+		     
+		     command endor args)
+	       
+		  ;;Otherwise figure out vtable by shortcut.
+		  (let*
+		     ((node (car args))
+			(vtable
+			   (endor:get-table
+			      node
+			      vtable-alist
+			      endor:ewoc-handler-alist 
+			      (endor:endor->list-default-handler endor))))
+		     (endor:dispatch-xx command vtable endor
+		  args)))))))
+;;;_    . ttvtable version
+
+   (when t
+;;;_    . endor:cbtable:collect-handlers
+      ;;Temporary, just because ctor still uses it.
+      (defun endor:cbtable:collect-handlers (raw-handlers)
+	 ""
+	 (list nil nil))
+
+;;;_     , endor:dispatch
+   
+      (defun endor:dispatch (command endor &rest args)
+	 ""
+	 (emtp tp:7b7edqv0exe0
+	    (command args)
+	    (let
+	       (
+		  (ttvtable (endor:endor->ttvtable endor)))
+	       
+	       (if (memq command '(make-node match-type-p))
+		  ;;If command does not have a node, try all vtables
+		  ;;until success
+		  (ttvtable:call-until-success
+		     ttvtable 
+		     endor:alist:command->accessor
+		     command
+		     (cons endor args))
+	       
+		  ;;Otherwise figure out the vtable that corresponds
+		  ;;to node and use it.  Node, if present, is always
+		  ;;the first of ARGS (but after the ubiquitous ENDOR
+		  ;;arg)
+		  (let*
+		     ((node (car args)))
+		     (ttvtable:dispatch-xx 
+			(ttvtable:get-table node ttvtable)
+			endor:alist:command->accessor 
+			command 
+			(cons endor args))))))))
+   
+   )
+
+
+
 
 ;;;_  . Endor pending-list functions
 
@@ -362,9 +527,11 @@ This function should not usually be directly called."
 
 ;;;_  . Handler functions
 ;;;_   , endor:ewoc-handler-alist
-
+;;$$RENAME ME endor:ewoc-handler-vtable
 (defconst endor:ewoc-handler-alist
-   (make-endor:callback-table
+   (endor:make-callback-table
+      :node-tag nil ;;cl-struct-NAME-tags
+      :node-type (car (get 'ewoc--node 'cl-struct-type))
       :match-type-p
       #'(lambda (endor node)
 	 (vectorp node))
@@ -387,7 +554,15 @@ This function should not usually be directly called."
 	      (o)
 	      (let
 		 ((ewoc (endor:endor->ewoc endor)))
-		 (ewoc-enter-before ewoc following-ewoc-node o)))))
+		 (ewoc-enter-before ewoc following-ewoc-node o))))
+
+      ;;$$AUTOLOAD ME so we don't drag in testhelp unless it's
+      ;;actually used.
+      :linked-p
+      #'(lambda (endor node)
+	   (ewoc:th:linked-p node))
+      
+      )
    
    "Alist from command symbol to ewoc-oriented function.
 Vtable version."
