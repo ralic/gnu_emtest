@@ -38,7 +38,6 @@
 ;;;_ , Structures
 ;;;_  . stage2-state
 ;;For now, not making a structure, just punting.
-;;$$May want to pass foldedness too.  And list-depth?
 (defsubst emt:plain-viewer:make-stage2-state (depth)
    ""
    depth)
@@ -468,6 +467,9 @@ Response: A string in it is usable by a command."
 
 
 ;;;_  . emt:plain-viewer:insert
+;;$$MOVE ME
+;;$$RENAME ME
+;;$$USE ME
 (defun emt:plain-viewer:insert (tree)
    "Print a format-tree into the current buffer.
 TREE must be a format-tree.
