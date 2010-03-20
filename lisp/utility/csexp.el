@@ -24,46 +24,15 @@
 
 ;;;_ , Commentary:
 
-;; Canonical s-expression encoding and decoding.  Used by emtest when
-;; communicating with inferior processes.
+;; Canonical s-expression encoding and decoding.  Intended to be used
+;; by emtest when communicating with inferior processes.
 
 ;;Will include a mini print/read facility for structures.
 
 ;;;_ , Requires
 
-(when (not (fboundp 'rtest:deftest))
-    (defmacro rtest:deftest (&rest dummy))
-    (defmacro rtest:if-avail (&rest dummy)))
 
 ;;;_. Body
-;;;_ , Test data
-
-(rtest:if-avail
-   ;;This should be eg examples instead
-   (defstruct csexp:th:pair
-      ""
-      encoded
-      decoded)
-   
-   ;;Encoded/decoded pairs
-   (defconst csexp:thd:pairs
-      (list
-	 (make-csexp:th:pair
-	    :encoded "()"
-	    :decoded ())
-	 (make-csexp:th:pair
-	    :encoded "(2:ab)"
-	    :decoded '(ab))
-	 (make-csexp:th:pair
-	    :encoded "(2:ab2:cd)"
-	    :decoded '(ab cd))
-	 ;;Other examples here
-	 )
-      "" )
-   
-      
-   )
-
 ;;;_ , Encoder
 
 ;;;_ , Decoder
