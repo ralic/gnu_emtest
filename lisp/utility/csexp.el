@@ -53,10 +53,10 @@
 	    :decoded ())
 	 (make-csexp:th:pair
 	    :encoded "(2:ab)"
-	    :decoded (ab))
+	    :decoded '(ab))
 	 (make-csexp:th:pair
 	    :encoded "(2:ab2:cd)"
-	    :decoded (ab cd))
+	    :decoded '(ab cd))
 	 ;;Other examples here
 	 )
       "" )
