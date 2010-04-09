@@ -1,6 +1,0 @@
-
-Before mark a!mark a.After mark a
-
-Before mark b!mark b.After mark b
-
-Before blank mark!.After blank mark
