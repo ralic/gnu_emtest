@@ -1,4 +1,7 @@
 * Top-level README for emtest
+  :PROPERTIES:
+  :ID:       fa945h30xxe0
+  :END:
 ** Headers
 *** Purpose
 
@@ -8,10 +11,19 @@ Describe the organization of the project directory
 
 Written.
 
-Badly out of date; does not correspond to current directories.
+** About Emtest
 
+Emtest is an extensible, modular testing package for emacs.  It is
+written entirely in Elisp.
 
-** Body
+It is primarily for emacs but its display and control functionality is
+designed to accomodate anything that can send and receive its
+test-report format (TESTRAL).
+
+In addition to its test running and displaying functionality, it
+includes a number of libraries that are helpful in testing Elisp.
+
+** File organization
 *** docs
 
 This directory contains documentation
@@ -22,46 +34,19 @@ This directory contains documentation
 
 *** lisp
 
-**** emtest.el
-
-Top level file.  Basically dispatches other stuff.
-
-**** tester/
-
-Testing functionality in elisp
-
- * test-finder
- * test-run
- * library
-   * mock objects
- * result-collector
-
-**** viewers/
-
-Viewers for
-
- * test results
- * various outputs
- * viewer-dispatcher
-
-**** persistence/
-
-Persistence servers
- * persist.el
- * persist-as-file.el
-
-**** editor/
-
-Help for writing and editing elisp tests in emacs
-**** t/
-
-Test modules
-
-***** examples/
-
-Example files for tests to read
-
-**** utility
-
-Utilities that are used in the emtest code but not strongly related to
-emtest.
+Plan of lisp directories for Emtest: 
+ * emtest :: 
+   * runner :: The test runner in Elisp
+   * testhelp :: code not required in emtest but useful in writing
+                 tests in Elisp
+     * Note "standard", which should probably be loaded more
+       aggressively than the others.  
+       * Perhaps whenever define is loaded, but let's keep 'em separate
+         to leave some flexibility.
+   * testhelp/mocks :: Mocks of specific functionality
+   * common :: Code shared by viewer and Elisp tester.
+   * viewer :: Formatting & display code specific to Emtest
+   * editing :: Help for writing and editing elisp tests in emacs.
+     * When the editing is specific to some file FOO, it should go in
+       FOO/editing.el 
+   * persistence :: Code dealing with persistence
