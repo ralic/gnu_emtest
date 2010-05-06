@@ -110,12 +110,12 @@ NB, TEST-FORM is a *test-form*, which should begin with a docstring."
  
 
 ;;;_ , emtt:suite
-;;Obsolete.  Use `emtt:defun-at-point'
+;;Obsolete.  Use `emt:defun-at-point'
 
 
-;;;_ , emtt:defun-at-point
+;;;_ , emt:defun-at-point
 ;;;###autoload
-(defun emtt:defun-at-point (arg)
+(defun emt:defun-at-point (arg)
   "Run tests on the function or suite under point.
 
 If prefix ARG is non-nil, eval it first.

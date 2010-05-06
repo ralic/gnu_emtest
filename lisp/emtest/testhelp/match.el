@@ -231,42 +231,43 @@ PATTERN is headed by governor"
 
 ;;;_   , Test examples
 
-(emt:eg:define xmp:3be9cd9e-25f7-4f9d-9304-8afc1680d17a
-   ((project emtest)
-      (library emtm)
-      (section emtm:govs:list))
+(defconst emtm:govs:thd:examples
+   (emt:eg:define+ ;;xmp:3be9cd9e-25f7-4f9d-9304-8afc1680d17a
+      ((project emtest)
+	 (library emtm)
+	 (section emtm:govs:list))
 
-   ;;Structure matches & mismatches together?  Not until tester use of
-   ;;docs and iterating-over is stronger.  We'd want to iterate over
-   ;;combinations of 2 things: pattern-situation and subordinately,
-   ;;object-situation. 
-   (group ((situation one-item-t))
-      (doc ()
-	 "One item in the list.  It matches.")
-      (item ((type pattern)(subtype list))
-	 '(list 12))
-      (item ((type pattern)(subtype set))
-	 '(set 12))
-      (item ((type object))
-	 '(12))
-      (item ((type matches-p)) 
-	 t))
+      ;;Structure matches & mismatches together?  Not until tester use of
+      ;;docs and iterating-over is stronger.  We'd want to iterate over
+      ;;combinations of 2 things: pattern-situation and subordinately,
+      ;;object-situation. 
+      (group ((situation one-item-t))
+	 (doc ()
+	    "One item in the list.  It matches.")
+	 (item ((type pattern)(subtype list))
+	    '(list 12))
+	 (item ((type pattern)(subtype set))
+	    '(set 12))
+	 (item ((type object))
+	    '(12))
+	 (item ((type matches-p)) 
+	    t))
 
-   (group ((situation one-item-f))
-      (doc ()
-	 "One item in the list.  It mismatches.")
-      (item ((type pattern)(subtype list))
-	 '(list 12))
-      (item ((type pattern)(subtype set))
-	 '(set 12))
-      (item ((type object))
-	 '(13))
-      (item ((type matches-p)) 
-	 nil))
-   ;;Similarly for the other test data.
+      (group ((situation one-item-f))
+	 (doc ()
+	    "One item in the list.  It mismatches.")
+	 (item ((type pattern)(subtype list))
+	    '(list 12))
+	 (item ((type pattern)(subtype set))
+	    '(set 12))
+	 (item ((type object))
+	    '(13))
+	 (item ((type matches-p)) 
+	    nil))
+      ;;Similarly for the other test data.
 
    
-   )
+      ))
 
 ;;;_   , Tests
 ;;

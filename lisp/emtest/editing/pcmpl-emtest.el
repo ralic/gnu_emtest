@@ -157,13 +157,15 @@ Behavior: offer the known values of `dummy-tag' as completions."
       (pcomplete/emacs-lisp-mode/emt:eg)))
 ;;;_ , Helpers for emt-define
 ;;;_  . pcomplete/emacs-lisp-mode/emt:define-2
-;;Already obsolete
+;;Already obsolete, but adapt it for emt:define-3
+'
 (defun pcomplete/emacs-lisp-mode/emt:define-2 ()
    ""
    ;;Suite name
    (pcomplete-here
       (list
 	 (progn
+	    ;;Remove this, as in edit
 	    (require 'rtest-edit)
 	    ;;Have to exit from here to find it.
 	    (save-excursion

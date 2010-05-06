@@ -29,9 +29,7 @@
 
 ;;;_ , Requires
 
-(when (not (fboundp 'rtest:deftest))
-    (defmacro rtest:deftest (&rest dummy))
-    (defmacro rtest:if-avail (&rest dummy)))
+
 (require 'emtest/viewer/emviewer)
 '(require 'emtest/runner/tester) ;;Not needed.  We go thru tester/launch.
 (require 'emtest/runner/launch)

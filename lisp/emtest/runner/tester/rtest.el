@@ -29,10 +29,11 @@
 
 ;;;_ , Requires
 (require 'emtest/runner/tester)
+(require 'emtest/runner/tester/testhelp)
 
 ;;;_. Body
 ;;;_   , emtts:surround
-
+' ;;OBSOLETE.  See `emtt:add-surrounders'
 (rtest:deftest emtts:surround
 
    (  "Args: Empty list of protectors.
@@ -103,7 +104,7 @@ Response: Error."
 ;;;_    . emtt:trap-errors
 
 (rtest:deftest emtt:trap-errors
-
+   '  ;;OBSOLETE
    (  "Shows: Works with `emtts:surround'."
       (equal
 	 (eval
@@ -136,16 +137,21 @@ Does not signal error."
 That test is now being run.
 Behavior: `emtt:get-properties' returns the relevant property."
       (let-noprops '(dummy-sym)
-	 (emt:deftest-2 dummy-sym
-	    (props (db-id "my-db")(example-dir "examples/"))
-	    ("Docstring" 
-	       (emtp tp:531a913c-aa10-4730-9be5-30c1cb02b7c4
-		  ()
-		  t)))
+	 (emt:deftest-3 
+	    (
+	       (of 'dummy-sym)
+	       (db-id "my-db")
+	       (example-dir "examples/"))
+	    (()
+	       (progn
+		  (emt:doc "Docstring" )
+		  (emtp 531a913c-aa10-4730-9be5-30c1cb02b7c4
+		     ()
+		     t))))
 	 
-	 (emt:testpoint:eval
+	 (emtp:eval
 	    (emtt:th:run-suite 'dummy-sym #'ignore)
-	    (tp:531a913c-aa10-4730-9be5-30c1cb02b7c4
+	    (tp 531a913c-aa10-4730-9be5-30c1cb02b7c4
 	       ()
 	       (progn
 		  (assert

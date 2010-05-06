@@ -29,9 +29,8 @@
 
 ;;;_ , Requires
 
-(when (not (fboundp 'rtest:deftest))
-    (defmacro rtest:deftest (&rest dummy))
-    (defmacro rtest:if-avail (&rest dummy)))
+(eval-when-compile
+   (require 'cl))
 
 ;;;_. Body
 
@@ -123,7 +122,7 @@
 
 ;;;_   , Contents discrimination for suite type
 
-;;;_    . emt:testral:suite-id-list
+;;;_    . emt:testral:runform-list
 (defstruct emt:testral:runform-list
    ""
    ;;Run-form
@@ -132,6 +131,8 @@
    ;;(repeat emt:testral:both-ids)
    ;;It may have to be, since children must be launchable but have to
    ;;be comparable by visible place.
+
+   ;;$$CHANGE ME Should repeat an emtt:explorable
    (els () :type (repeat emt:test-ID:e-n)))
 ;;;_    . emt:testral:note-list
 (defstruct emt:testral:note-list
@@ -150,7 +151,10 @@
       (repeat
 	 ;;Maybe this should be a type too.
 	 (list 
-	    ;;The first two could become a "both".
+	    ;;$$CHANGE ME
+	    ;;The first should be a emtt:explorable.  It may fold in
+	    ;;the second field, but let's leave that an empty list for
+	    ;;now. 
 	    emt:test-ID:e-n
 	    emt:testral:partial-suite-id
 	    (or emt:testral:suite emt:testral:test-runner-info)))))
@@ -182,6 +186,8 @@
 (defstruct emt:testral:test-runner-info
    "Info describing a tester.  Not fleshed out yet."
    (name () :type string)
+   ;;$$CHANGE ME - See [[id:b4sjlt20mze0][Test-runner info]]
+   ;;Type should become (repeat emtt:method)
    (explore-methods-supported () :type (repeat emt:testral:explore-method-id)))
 
 

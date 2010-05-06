@@ -57,6 +57,8 @@ Response: `emt:trace:stored-diag' is trimmed to 6 reports."
 (put 'emt:funcall-x 'rtest:test-thru
    'emt:funcall)
 ;;;_  . Tests
+;;OBSOLETE
+'
 (rtest:deftest emt:funcall
    ;;"should" etc won't work inside `emt:funcall:th' but will
    ;;work outside it.

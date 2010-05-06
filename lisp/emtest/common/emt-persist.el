@@ -29,9 +29,7 @@
 
 ;;;_ , Requires
 
-(when (not (fboundp 'rtest:deftest))
-    (defmacro rtest:deftest    (&rest dummy))
-    (defmacro rtest:if-avail   (&rest dummy)))
+;;The rtests in here are all obsolete.
 
 ;;The only backend supported at this time is persist.el.  
 (require 'tinydb/persist)
@@ -109,7 +107,7 @@
 	       arg-ix)))))
 
 ;;;_   , Tests
-;;These are now the real tests
+'
 (put 'emt:extract-got 'rtest:test-thru
    'emt:persist:accept-correct)
 
@@ -174,8 +172,7 @@
       (pop-to-buffer buf)))
 
 ;;;_   , Tests
-;;These are now the real tests
-
+'
 (rtest:deftest emt:persist:view-obj
 
 
@@ -242,10 +239,11 @@
 
 
 ;;;_   , Tests
-;;These are now the real tests
+'
 (rtest:deftest emt:persist:accept-correct
 
    ;;Very obsolete now.
+   '
    (  "Test of `emt:persist:accept-correct' ~in situ~."
       (emt:eg:narrow 
 	 ((project emtest)(library persist)(section persist-viewer))
@@ -271,29 +269,30 @@
 ;;;_ , Interface for testing with persists
 ;;;_  . Example objects
 '
-(emt:eg:define xmp:af39c81f-229e-4d30-84a3-7842123fba35
-   ((project emtest)(library tester)(section emt:funcall))
-   (transparent-tags () (type subtype))
-   (item
-      ((type placeholder)(subtype archive))
-      (make-emt:db:id-index.
-	 :id "a"
-	 :backend '(persist "Dummy")))
-   (item
-      ((type placeholder)(subtype version))
-      (make-emt:db:version-index.
-	 :id-index (emt:eg (type placeholder)(subtype archive))
-	 :version-id "v.1"))
+(defconst emt:persist:xmp:af39c81f-229e-4d30-84a3-7842123fba35
+   (emt:eg:define xmp:af39c81f-229e-4d30-84a3-7842123fba35
+      ((project emtest)(library tester)(section emt:funcall))
+      (transparent-tags () (type subtype))
+      (item
+	 ((type placeholder)(subtype archive))
+	 (make-emt:db:id-index.
+	    :id "a"
+	    :backend '(persist "Dummy")))
+      (item
+	 ((type placeholder)(subtype version))
+	 (make-emt:db:version-index.
+	    :id-index (emt:eg (type placeholder)(subtype archive))
+	    :version-id "v.1"))
    
 
-   ;;A bit wobbly - careful of the symbol vs function-quoted symbol
-   ;;distinction.
-   (item
-      ((type call-sexp))
-      (list #'equal 
-	 1 
-	 (emt:eg (type placeholder)(subtype archive))))
-   )
+      ;;A bit wobbly - careful of the symbol vs function-quoted symbol
+      ;;distinction.
+      (item
+	 ((type call-sexp))
+	 (list #'equal 
+	    1 
+	    (emt:eg (type placeholder)(subtype archive))))
+      ))
 
 
 ;;;_  . emt:persist:value

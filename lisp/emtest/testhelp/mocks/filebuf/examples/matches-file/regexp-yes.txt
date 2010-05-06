@@ -1,0 +1,2 @@
+line[ +]A
+li[f*]ne B

@@ -29,12 +29,10 @@
 
 ;;;_ , Requires
 
-(when (not (fboundp 'rtest:deftest))
-    (defmacro rtest:deftest (&rest dummy))
-    (defmacro rtest:if-avail (&rest dummy)))
 (require 'utility/pathtree) ;;The view-node type
 (require 'utility/loal)     ;;The data-list type
 (require 'viewers/hiformat)
+(require 'emtest/viewer/view-types)
 
 ;;;_. Body
 
@@ -185,16 +183,18 @@ DATA-LIST must be a list of alists."
 	    (typecase obj
 
 	       (emt:testral:error-raised
-		  `("\n"
+		  `((nl-if-none)
 		      "Error raised: "
 		      ,(prin1-to-string
 			 (emt:testral:error-raised-err obj))
 		      "\n"))
 	       (emt:testral:doc
-		  `("\n"
+		  `((nl-if-none)
 		      ,(emt:testral:doc-str obj)
 		      "\n"))
-	       (t '("A TESTRAL note (alone)""\n"))))
+	       (t '((nl-if-none )
+		      "A TESTRAL note (alone)"
+		      "\n"))))
 	 ;;Temporary (Probably)
 	 (emt:testral:check:push
 	    '("Begin a TESTRAL check"))

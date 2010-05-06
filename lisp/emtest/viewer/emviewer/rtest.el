@@ -31,10 +31,6 @@
 
 ;;;_ , Requires
 
-(when (not (fboundp 'rtest:deftest))
-    (defmacro rtest:deftest (&rest dummy))
-    (defmacro rtest:if-avail (&rest dummy)))
-
 (require 'emtest/viewer/emviewer/testhelp)
 ;;$$RETHINK ME
 ;;Maybe should require the testhelp instead.

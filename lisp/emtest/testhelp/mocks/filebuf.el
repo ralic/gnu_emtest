@@ -118,20 +118,21 @@ You may want to use this to umount a ramdisk"
 ;;$$MOVE ME into testhelp
 ;;;_  . Test config
 (defconst emtb:th-examples-dir
-   (emtb:expand-filename-by-load-file "examples/mockbuf") 
+   (emtb:expand-filename-by-load-file "filebuf/examples/") 
    "" )
 
 
 ;;;_  . Master/slave files
-(emt:eg:define xmp:07298be7-85b8-414b-b9ae-e3a1edde2e07
-   ((project emtest)(library mockbuf))
-   (item
-      ((role master)(type filename))
-      (expand-file-name "file3" emtb:th-examples-dir))
-   ;;This item may go away as we automatically make tmp.
-   (item
-      ((role slave)(type filename))
-      (expand-file-name "slave-dir/file3" emtb:th-examples-dir)))
+(defconst emtb:thd:examples
+   (emt:eg:define+ ;;xmp:07298be7-85b8-414b-b9ae-e3a1edde2e07
+      ((project emtest)(library mockbuf))
+      (item
+	 ((role master)(type filename))
+	 (expand-file-name "file3" emtb:th-examples-dir))
+      ;;This item may go away as we automatically make tmp.
+      (item
+	 ((role slave)(type filename))
+	 (expand-file-name "slave-dir/file3" emtb:th-examples-dir))))
 
 ;;;_ , Virtual directory
 ;;Deprecated
@@ -245,7 +246,7 @@ You may want to use this to umount a ramdisk"
       (eval file-basenames)))
 
 ;;;_    . Tests
-
+;;Fails.
 (rtest:deftest make-emtb:virtual-dir:sexp->widget-value
    
    (  "Situation: Normal.  
@@ -319,7 +320,7 @@ Response: Accepts it."
 	    (list ':file-basenames `'(,@file-basenames)))))
 
 ;;;_    . Tests
-
+;;Fails
 (rtest:deftest make-emtb:virtual-dir:widget-value->sexp
 
    ;;This can't just be tested by simple comparison, because the forms
@@ -798,7 +799,9 @@ buffer is read-only."
 	  `(emtb:cautious-setup-file 
 	      ,visited-name 
 	      ,(or dir
-		  `(file-name-directory ,file))))
+		  (if file
+		     `(file-name-directory ,file))
+		  nil)))
       
 
       ,(if point-replaces
@@ -908,10 +911,11 @@ Reaction: Point is now where STR was "
 
 
    ;;Exercise the `visited-name' feature.
-
+   ;;Missing the directory
    (  "Exercise the `visited-name' feature."
 
-      (emt:eg:narrow ((project emtest)(library mockbuf))
+      (emt:eg:with emtb:thd:examples 
+	 ((project emtest)(library mockbuf))
 	 (let 
 	    (  (master-file (emt:eg (role master)(type filename)))
 	       (slave-file  (emt:eg (role slave)(type filename))))
@@ -927,10 +931,11 @@ Reaction: Point is now where STR was "
 	    ;;The files' contents match
 	    (emtb:files-match master-file slave-file))))
    
-
+   ;;Missing the directory
    (  "Situation: The slave file already exists.
 Response: Works the same."
-      (emt:eg:narrow ((project emtest)(library mockbuf))
+      (emt:eg:with emtb:thd:examples 
+	 ((project emtest)(library mockbuf))
 	 (let 
 	    (  (master-file (emt:eg (role master)(type filename)))
 	       (slave-file  (emt:eg (role slave)(type filename))))
@@ -951,8 +956,7 @@ Response: Works the same."
 
    (  "Param: the symbol `tmp' is given as `:visited-name'.
 Behavior: Creates a temporary file."
-
-      (emt:eg:narrow ((project emtest)(library mockbuf))
+      (emt:eg:with emtb:thd:examples ((project emtest)(library mockbuf))
 	 (let 
 	    (  slave-file
 	       (master-file (emt:eg (role master)(type filename))))
@@ -966,6 +970,29 @@ Behavior: Creates a temporary file."
 	       (save-buffer 0))
 	    ;;The files' contents match
 	    (emtb:files-match master-file slave-file))))
+
+   ;;Missing the directory
+   (  "Param: the symbol `tmp' is given as `:visited-name'.
+Neither `dir' nor `file' is given.
+Behavior: Creates a temporary file with those contents."
+      (emt:eg:with emtb:thd:examples ((project emtest)(library mockbuf))
+	 (let 
+	    (  slave-file
+	       (master-file (emt:eg (role master)(type filename))))
+	    ;;Visit slave-file, but with contents from master-file.
+	    (with-buffer-containing-object 
+	       (:string "abc"
+		  :visited-name 'tmp)
+	       ;;Get its name.
+	       (setq slave-file (buffer-file-name))
+	       ;;Save the file (and don't back it up)
+	       (save-buffer 0))
+	    ;;The files' contents match
+	    (assert
+	       (string=
+		  "abc"
+		  (emtb:file-contents-absname slave-file))
+	       t))))
 
 
    (  "Shows: `sequence' works.
@@ -1012,6 +1039,27 @@ Response: Contents of buffer are as expected."
 	     (when
 		(file-exists-p ,temp-file-sym)
 		(delete-file ,temp-file-sym))))))
+;;;_  . emtb:string-containing-object 
+
+(defmacro emtb:string-containing-object (spec)
+   ""
+
+   `(with-buffer-containing-object ,spec
+      (buffer-string)))
+
+;;;_   , Tests
+
+'
+(assert
+   (string=
+      (emtb:string-containing-object (:string "abc"))
+      "abc"))
+
+;;;_  . emtb:string-containing-object-f
+(defun emtb:string-containing-object-f (spec)
+   ""
+   (eval
+      `(emtb:string-containing-object ,spec)))
 
 ;;;_   , Helper emtb:absent-flag
 (defun* emtb:absent-flag (&rest dummy &key absent &allow-other-keys)
@@ -1175,7 +1223,7 @@ Response: After body has run, file no longer exists."
 (defun emtb:cautious-setup-file (visited-name dir)
    ""
 
-   (after-find-file)
+   (when dir (after-find-file))
    (case visited-name
       ;;By default we do not want to risk saving changes made during a
       ;;test into the original file, but we do want it to know

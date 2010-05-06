@@ -28,12 +28,18 @@
 
 
 ;;;_ , Requires
-
-(when (not (fboundp 'rtest:deftest))
-    (defmacro rtest:deftest (&rest dummy))
-    (defmacro rtest:if-avail (&rest dummy)))
+(require 'emtest/runner/tester)
+(require 'emtest/testhelp/deep-type-checker)
 
 ;;;_. Body
+;;;_ , emt:test-finder:pending-list:check-type
+(defun emt:test-finder:pending-list:check-type ()
+   ""
+   (emty:check
+      emt:test-finder:pending-list
+      (list emtt:pending)))
+
+
 ;;;_ , Test helpers
 (defun emtt:th:explore-one (form callback &optional testrun-id)
    ""

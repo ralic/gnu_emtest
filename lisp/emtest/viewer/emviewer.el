@@ -29,15 +29,13 @@
 
 ;;;_ , Requires
 
-(when (not (fboundp 'rtest:deftest))
-    (defmacro rtest:deftest (&rest dummy))
-    (defmacro rtest:if-avail (&rest dummy)))
-
+(require 'emtest/viewer/receive)
+(require 'emtest/viewer/empathtree)
+(require 'emtest/viewer/emformat)
+(require 'emtest/viewer/view-types)
 (require 'viewers/chewie)
 (require 'viewers/loformat)
-(require 'emtest/viewer/receive)
 (require 'utility/pathtree)
-(require 'emtest/viewer/emformat)
 
 ;;;_. Body
 ;;;_ , Config
@@ -198,6 +196,19 @@ It just tells a pathtree to add this node."
    (emtvr:newstyle emtve:receiver report)
    (emtvp:freshen emtve:result-root)
    (pop-to-buffer emtve:report-buffer))
+
+;;;_ , emt:relaunch-all
+;;Very dependent on emviewer, and may belong in it or associated to it
+;;or to receive.
+;;;###autoload
+(defun emt:relaunch-all ()
+   ""
+   
+   (interactive)
+   (let*
+      ()
+      
+      ))
 
 
 ;;;_. Footers

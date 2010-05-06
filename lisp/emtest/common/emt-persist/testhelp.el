@@ -28,10 +28,6 @@
 
 
 ;;;_ , Requires
-
-(when (not (fboundp 'rtest:deftest))
-    (defmacro rtest:deftest (&rest dummy))
-    (defmacro rtest:if-avail (&rest dummy)))
 (require 'emtest/common/emt-persist)
 (require 'emtest/testhelp/eg)
 
@@ -40,165 +36,167 @@
 ;;;_ , Examples
 
 ;;;_  . Interface for testing with persists
-(emt:eg:define xmp:af39c81f-229e-4d30-84a3-7842123fba35
-   ((project emtest)(library tester)(section emt:funcall))
-   (transparent-tags () (type subtype))
-   (item
-      ((type archive-placeholder))
-      (make-emt:db:id-index.
-	 :id "a"
-	 :backend '(persist "Dummy")))
-   (item
-      ((type version-placeholder))
-      (make-emt:db:version-index.
-	 :id-index (emt:eg (type archive-placeholder))
-	 :version-id "v.1"))
+(defconst emt:persist:thd:funcall-examples
+   (emt:eg:define+
+      ((project emtest)(library tester)(section emt:funcall))
+      (transparent-tags () (type subtype))
+      (item
+	 ((type archive-placeholder))
+	 (make-emt:db:id-index.
+	    :id "a"
+	    :backend '(persist "Dummy")))
+      (item
+	 ((type version-placeholder))
+	 (make-emt:db:version-index.
+	    :id-index (emt:eg (type archive-placeholder))
+	    :version-id "v.1"))
    
 
-   ;;A bit wobbly - careful of the symbol vs function-quoted symbol
-   ;;distinction.
-   (item
-      ((type call-sexp))
-      (list #'equal 
-	 1 
-	 (emt:eg (type archive-placeholder)))))
+      ;;A bit wobbly - careful of the symbol vs function-quoted symbol
+      ;;distinction.
+      (item
+	 ((type call-sexp))
+	 (list #'equal 
+	    1 
+	    (emt:eg (type archive-placeholder))))))
 
 ;;;_  . Test data
 
-(emt:eg:define xmp:077db118-e844-49f1-aa63-3224e0e2b6f7
-   ((project emtest)(library persist))
-   (item ((type emt:db:single))
-      (make-emt:db:single
-	 :version-id 0
-	 :value 12
-	 :find-value nil
-	 :use-category 'correct-answer
-	 :notes ()
-	 :creation-time 0))
-   (transparent-tags () (type foundp))
-   (group ((count 0))
-      (item ((type emt:db:persist-archive))
-	 (make-emt:db:persist-archive
-	    :list (emt:eg (type versions))))
-      (item ((type id)) 0)
-      (item ((type values))
-	 ())
-      (item ((type versions))
-	 ()))
-
-   (type-must-be ((type whole-db)) emt:db:record-alist)
-   (type-must-be ((type emt:db:persist-archive)) emt:db:persist-archive)
-   (type-must-be ((type versions)) (repeat emt:db:single))
-   (type-must-be ((type archive-placeholder))
-      emt:db:id-index.)
-   ;;Can't type-check this for bootstrap reasons - emt:funcall
-   ;;"recognizes" this type of object as a persist placeholder and
-   ;;tries to look up its value.
-;;    (type-must-be ((type version-placeholder))
-;;       emt:db:version-index.)
-
-   (group ((count 1))
-      (item ((type whole-db))
-	 (list
-	    (cons 
-	       (emt:eg (type id))
-	       (emt:eg (type emt:db:persist-archive)))))
-      (item ((type emt:db:persist-archive))
-	 (make-emt:db:persist-archive
-	    :list (emt:eg (type versions))))
-      (item ((type id)) 'x0)
-      (item ((type values))
-	 '(12))
-      (item ((type versions))
-	 (list
-	    (make-emt:db:single
-	       :version-id 0
-	       :value 12
-	       :find-value nil
-	       :use-category 'correct-answer
-	       :notes ()
-	       :creation-time 0))))
-
-   (group ((section persist-viewer))
-      (item ((type whole-db))
-	 (list
-	    (cons 
-	       (emt:eg (type id))
-	       (emt:eg (type emt:db:persist-archive)))))
-      
-      (item ((type emt:db:persist-archive))
-	 (make-emt:db:persist-archive
-	    :list (emt:eg (type versions))))
-      (item ((type id)) 'x10)
-      (item ((type version-id)) 'fg95mg)
-      (item ((type 1-value))
-	 "This is the text of the stored item.")
-      (item ((type archive-placeholder))
-	 (make-emt:db:id-index.
-	    :id (emt:eg (type id))
-	    :backend '(persist "Dummy")))
-      (item ((type version-placeholder))
-	 (make-emt:db:version-index.
-	    :id-index (emt:eg (type archive-placeholder))
-	    :version-id (emt:eg (type version-id))))
-      (item ((type values))
-	 (list (emt:eg (type 1-value))))
-      (item ((type 1-version))
+(defconst emt:persist:thd:examples
+   (emt:eg:define+ xmp:077db118-e844-49f1-aa63-3224e0e2b6f7
+      ((project emtest)(library persist))
+      (item ((type emt:db:single))
 	 (make-emt:db:single
-	    :version-id (emt:eg (type version-id))
-	    :value (emt:eg (type 1-value))
+	    :version-id 0
+	    :value 12
 	    :find-value nil
 	    :use-category 'correct-answer
 	    :notes ()
 	    :creation-time 0))
+      (transparent-tags () (type foundp))
+      (group ((count 0))
+	 (item ((type emt:db:persist-archive))
+	    (make-emt:db:persist-archive
+	       :list (emt:eg (type versions))))
+	 (item ((type id)) 0)
+	 (item ((type values))
+	    ())
+	 (item ((type versions))
+	    ()))
+
+      (type-must-be ((type whole-db)) emt:db:record-alist)
+      (type-must-be ((type emt:db:persist-archive)) emt:db:persist-archive)
+      (type-must-be ((type versions)) (repeat emt:db:single))
+      (type-must-be ((type archive-placeholder))
+	 emt:db:id-index.)
+      ;;Can't type-check this for bootstrap reasons - emt:funcall
+      ;;"recognizes" this type of object as a persist placeholder and
+      ;;tries to look up its value.
+      ;;    (type-must-be ((type version-placeholder))
+      ;;       emt:db:version-index.)
+
+      (group ((count 1))
+	 (item ((type whole-db))
+	    (list
+	       (cons 
+		  (emt:eg (type id))
+		  (emt:eg (type emt:db:persist-archive)))))
+	 (item ((type emt:db:persist-archive))
+	    (make-emt:db:persist-archive
+	       :list (emt:eg (type versions))))
+	 (item ((type id)) 'x0)
+	 (item ((type values))
+	    '(12))
+	 (item ((type versions))
+	    (list
+	       (make-emt:db:single
+		  :version-id 0
+		  :value 12
+		  :find-value nil
+		  :use-category 'correct-answer
+		  :notes ()
+		  :creation-time 0))))
+
+      (group ((section persist-viewer))
+	 (item ((type whole-db))
+	    (list
+	       (cons 
+		  (emt:eg (type id))
+		  (emt:eg (type emt:db:persist-archive)))))
       
-      (item ((type versions))
-	 (list (emt:eg (type 1-version))))
-      (item ((type data)(name got))
-	 "Mismatched string")
-      (item ((type tried)(foundp t))
-	 (make-emt:result:diag:tried-persist-version.
-	    :arg-ix 2
-	    :placeholder
-	    (emt:eg (type version-placeholder))))
-      (item ((type tried)(foundp nil))
-	 (make-emt:result:diag:tried-persist-archive.
-	    :arg-ix 2
-	    :placeholder
-	    (emt:eg (type archive-placeholder))
-	    :use-category 'correct-answer
-	    :reason 'none-found))
+	 (item ((type emt:db:persist-archive))
+	    (make-emt:db:persist-archive
+	       :list (emt:eg (type versions))))
+	 (item ((type id)) 'x10)
+	 (item ((type version-id)) 'fg95mg)
+	 (item ((type 1-value))
+	    "This is the text of the stored item.")
+	 (item ((type archive-placeholder))
+	    (make-emt:db:id-index.
+	       :id (emt:eg (type id))
+	       :backend '(persist "Dummy")))
+	 (item ((type version-placeholder))
+	    (make-emt:db:version-index.
+	       :id-index (emt:eg (type archive-placeholder))
+	       :version-id (emt:eg (type version-id))))
+	 (item ((type values))
+	    (list (emt:eg (type 1-value))))
+	 (item ((type 1-version))
+	    (make-emt:db:single
+	       :version-id (emt:eg (type version-id))
+	       :value (emt:eg (type 1-value))
+	       :find-value nil
+	       :use-category 'correct-answer
+	       :notes ()
+	       :creation-time 0))
       
-      (item ((type result-diag)(foundp t))
-	 (make-emt:result:diag:call
-	    :status nil
-	    :tried 
-	    (list (emt:eg (type tried)(foundp t)))
-	    :info-about (list)
-	    :call-sexp
-	    `(equal
+	 (item ((type versions))
+	    (list (emt:eg (type 1-version))))
+	 (item ((type data)(name got))
+	    "Mismatched string")
+	 (item ((type tried)(foundp t))
+	    (make-emt:result:diag:tried-persist-version.
+	       :arg-ix 2
+	       :placeholder
+	       (emt:eg (type version-placeholder))))
+	 (item ((type tried)(foundp nil))
+	    (make-emt:result:diag:tried-persist-archive.
+	       :arg-ix 2
+	       :placeholder
+	       (emt:eg (type archive-placeholder))
+	       :use-category 'correct-answer
+	       :reason 'none-found))
+      
+	 (item ((type result-diag)(foundp t))
+	    (make-emt:result:diag:call
+	       :status nil
+	       :tried 
+	       (list (emt:eg (type tried)(foundp t)))
+	       :info-about (list)
+	       :call-sexp
+	       `(equal
+		   ,(emt:eg (type data)(name got))
+		   ,(emt:eg (type archive-placeholder)))))
+
+	 (item ((type result-diag)(foundp nil))
+	    (make-emt:result:diag:call
+	       :status nil
+	       :tried 
+	       (list (emt:eg (type tried)(foundp nil)))
+	       :info-about ()
+	       :call-sexp
+	       `(equal
+		   ,(emt:eg (type data)(name got))
+		   ,(emt:eg (type archive-placeholder)))))
+
+	 (item ((type formatted-persist-data))
+	    `(data-persist-used 
 		,(emt:eg (type data)(name got))
 		,(emt:eg (type archive-placeholder)))))
-
-      (item ((type result-diag)(foundp nil))
-	 (make-emt:result:diag:call
-	    :status nil
-	    :tried 
-	    (list (emt:eg (type tried)(foundp nil)))
-	    :info-about ()
-	    :call-sexp
-	    `(equal
-		,(emt:eg (type data)(name got))
-		,(emt:eg (type archive-placeholder)))))
-
-      (item ((type formatted-persist-data))
-	 `(data-persist-used 
-	     ,(emt:eg (type data)(name got))
-	     ,(emt:eg (type archive-placeholder)))))
    
    
    
-   )
+      ))
 
 ;;;_ , Helper functions
 

@@ -45,11 +45,11 @@ Define a test in Emtest
 
 ;;;***
 
-;;;### (autoloads (emtt:library emtt:defun-at-point) "emtest/runner/launch"
+;;;### (autoloads (emtt:library emt:defun-at-point) "emtest/runner/launch"
 ;;;;;;  "runner/launch.el" (19362 38201))
 ;;; Generated autoloads from runner/launch.el
 
-(autoload (quote emtt:defun-at-point) "emtest/runner/launch" "\
+(autoload (quote emt:defun-at-point) "emtest/runner/launch" "\
 Run tests on the function or suite under point.
 
 If prefix ARG is non-nil, eval it first.

@@ -109,12 +109,12 @@ Response: Essentially nothing special is reported."
    (  "Situation: SUITE-SYM has a test suite defined.
 Response: That test-suite is run.  A result is returned."
       (let-noprops '(dummy-sym)
-	 (emt:deftest-2 dummy-sym
-	    ("Docstring" ()))
+	 (emt:deftest-3 dummy-sym
+	    (nil (progn (emt:doc "Docstring"))))
 	 (emtp:eval
 	    (emtt:th:run-suite 'dummy-sym 
 	       #'(lambda (x)
-		    (emty:check x emt:result-group)))
+		    (emty:check x emt:testral:report)))
 	    (tp-reached tp:798212b4-1abe-4779-beb1-baf53ff39a8c 
 	       1)
 	    (tp* 
@@ -146,9 +146,9 @@ Full exploration is used (Meaningless for now)
 Response: Just two clauses are run.
 Those suites have distinct IDs."
       (let-noprops '(dummy-sym)
-	 (emt:deftest-2 dummy-sym
-	    ("Clause 1" ())
-	    ("Clause 2" ()))
+	 (emt:deftest-3 dummy-sym
+	    (() (progn (emt:doc "Clause 1")))
+	    (() (progn (emt:doc "Clause 2"))))
 	 (let
 	    ((all-test-ids))
 	    (emtp:eval
@@ -189,8 +189,8 @@ Those suites have distinct IDs."
 Operation: That test suite is run.
 Behavior: The clause still gets the same test-ID as before."
       (let-noprops '(dummy-sym)
-	 (emt:deftest-2 dummy-sym
-	    ("Clause 1" (original-form)))
+	 (emt:deftest-3 dummy-sym
+	    (() (progn (emt:doc "Clause 1") (original-form))))
 
 	 (let*
 	    (  (old-test-id-list
@@ -198,8 +198,9 @@ Behavior: The clause still gets the same test-ID as before."
 	       (old-test-id (car old-test-id-list)))
 	    (assert (= (length old-test-id-list) 1) t)
 	       
-	    (emt:deftest-2 dummy-sym
-	       ("Clause 1" (new-form)))
+	    (emt:deftest-3 dummy-sym
+	       (() (progn (emt:doc "Clause 1") (new-form))))
+
 	       
 	    (let*
 	       (  (new-test-id-list
@@ -216,7 +217,8 @@ Behavior: The clause still gets the same test-ID as before."
 ;;emtt:defun-at-point is direct, it just joins other functions
 
 ;;;_   , emt:suite-sym-at-point
-(emt:deftest-2 emt:suite-sym-at-point
+
+(emt:deftest-3 emt:suite-sym-at-point
 
    ;;Need example text, presumably from one or more example files.
    ;;They are in "t/examples/editor/find-names/1.el"
@@ -239,10 +241,11 @@ Behavior: The clause still gets the same test-ID as before."
 
 
    ;;Nothing should be found in empty file (Make from string)
-   ("Situation: In empty file
-Response: Return `nil'."
+   (()
       (with-buffer-containing-object 
 	 (:string "\n\n\n\n")
+	 (emt:doc "Situation: In empty file.")
+	 (emt:doc "Response: Return `nil'.")
 	 (emacs-lisp-mode)
 	 (should
 	    (null 
@@ -250,32 +253,33 @@ Response: Return `nil'."
 
 
 ;;;_   , Test data
-(emt:eg:define xmp:699d3b9f-cb26-4964-b23d-94b07a44d75d
-   ((project emtest)(library tester)(section entry-points))
-   (transparent-tags () (type))
-   (group
-      ((count 2))
-      (item ((type name)) "example-2")
-      (item ((type count)) 2)
-      (item ((type suite-sym-list)) '(foo bar))
-      (item ((type file-load-history))
-	 `(,(emt:eg (type name))
-	     ,@(emt:eg (type suite-sym-list)) 
-	     (provide . example-2))))
+(defconst emtt:launch:thd:examples
+   (emt:eg:define+ ;;xmp:699d3b9f-cb26-4964-b23d-94b07a44d75d
+      ((project emtest)(library tester)(section entry-points))
+      (transparent-tags () (type))
+      (group
+	 ((count 2))
+	 (item ((type name)) "example-2")
+	 (item ((type count)) 2)
+	 (item ((type suite-sym-list)) '(foo bar))
+	 (item ((type file-load-history))
+	    `(,(emt:eg (type name))
+		,@(emt:eg (type suite-sym-list)) 
+		(provide . example-2))))
    
-   (group
-      ((count 1))
-      (item ((type name)) "example-1")
-      (item ((type count)) 1)
-      (item ((type suite-sym-list)) '(foo))
-      (item ((type file-load-history))
-	 `(,(emt:eg (type name))
-	     ,@(emt:eg (type suite-sym-list)) 
-	     (provide . example-1))))
+      (group
+	 ((count 1))
+	 (item ((type name)) "example-1")
+	 (item ((type count)) 1)
+	 (item ((type suite-sym-list)) '(foo))
+	 (item ((type file-load-history))
+	    `(,(emt:eg (type name))
+		,@(emt:eg (type suite-sym-list)) 
+		(provide . example-1))))
    
-   (item ((type load-history))
-      (emt:eg:map count nil
-	 (emt:eg (type file-load-history)))))
+      (item ((type load-history))
+	 (emt:eg:map count nil
+	    (emt:eg (type file-load-history))))))
 ;;;_   , emtt:lib-sym->suites
 
 (rtest:deftest emtt:lib-sym->suites
@@ -302,37 +306,38 @@ Response: The suite-handler part runs exactly twice
 \(Not tested: Exactly those two suites are seen.)
 \(Not tested: Those suites have distinct IDs.)
 "
-      (emtt:library:th ((count 2))
-	 (emtp:eval
-	    (emtt:library
-	       (emt:eg (type name))
-	       ;;$$Library does not return a result object yet.  Will
-	       ;;type-check it.
-	       ;;(emty:check x emt:result-group)
-	       #'ignore)
+      (emt:eg:with emt:testral:thd:examples ()
+	 (emtt:library:th ((count 2))
+	    (emtp:eval
+	       (emtt:library
+		  (emt:eg (type name))
+		  ;;$$Library does not return a result object yet.  Will
+		  ;;type-check it.
+		  ;;(emty:check x emt:result-group)
+		  #'ignore)
 	    
- 	    (tp-reached tp:798212b4-1abe-4779-beb1-baf53ff39a8c 
-	       (emt:eg (type count)))
-	    (tp* 
-	       (  :id tp:a084136e-8f02-49a5-ac0d-9f65509cedf2 
-		  :count nil
-		  :fallthru t)
-	       (test-id)
-	       (typecase test-id
-		  ;;Intercept suite
-		  (emt:test-ID:e-n:suite
-		     ;;A reached-point for counting invocations.
-		     (emtp tp:798212b4-1abe-4779-beb1-baf53ff39a8c
-			())
-		     ;;Don't try to explore its clauses, return
-		     ;;instead.
-		     (throw 'emtp:tag-return nil))
-		  ;;Let library fall thru to handler
-		  (emt:test-ID:e-n:library:elisp-load t)
-		  ;;We don't expect to see any other types of
-		  ;;explores.
-		  (t
-		     (error "This test shouldn't reach here"))))))))
+	       (tp-reached tp:798212b4-1abe-4779-beb1-baf53ff39a8c 
+		  (emt:eg (type count)))
+	       (tp* 
+		  (  :id tp:a084136e-8f02-49a5-ac0d-9f65509cedf2 
+		     :count nil
+		     :fallthru t)
+		  (test-id)
+		  (typecase test-id
+		     ;;Intercept suite
+		     (emt:test-ID:e-n:suite
+			;;A reached-point for counting invocations.
+			(emtp tp:798212b4-1abe-4779-beb1-baf53ff39a8c
+			   ())
+			;;Don't try to explore its clauses, return
+			;;instead.
+			(throw 'emtp:tag-return nil))
+		     ;;Let library fall thru to handler
+		     (emt:test-ID:e-n:library:elisp-load t)
+		     ;;We don't expect to see any other types of
+		     ;;explores.
+		     (t
+			(error "This test shouldn't reach here")))))))))
 
 ;;;_. Footers
 ;;;_ , Provides

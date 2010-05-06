@@ -1,0 +1,2 @@
+A dummy master file for mockbuf:virtual-dir examples to refer to.
+This should be the only file in this directory.

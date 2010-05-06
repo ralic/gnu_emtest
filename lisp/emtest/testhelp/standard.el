@@ -33,7 +33,8 @@
     (defmacro rtest:deftest (&rest dummy))
     (defmacro rtest:if-avail (&rest dummy)))
 (require 'emtest/common/testral-types)
-(require 'emtest/runner/tester)  ;;For specialing emt:testral:*events-seen*
+;;OBSOLETE REQUIREMENT
+;;(require 'emtest/runner/tester)  ;;For specialing emt:testral:*events-seen*
 (defvar emt:report-control:thd:report-all)
 ;;;_ , Customization
 
@@ -49,12 +50,12 @@
 ;;;###autoload
 (defun emt:doc (str &rest r)
    ""
-   (push
-      (make-emt:testral:doc :str str)
-      emt:testral:*events-seen*))
+   (emt:testral:add-note
+      (make-emt:testral:doc :str str)))
 
 ;;;_ , "should"
 ;;;_  . emt:wrap-form
+;; Obsolete
 (defun emt:wrap-form (form)
    ""
 
@@ -66,22 +67,24 @@
       form))
 ;;;_   , Examples
 
-(emt:eg:define xmp:26ef7f1f-ce61-4284-8175-29a7fc7e4ef5
-   ((project emtest)(library tester)(section emt:wrap-form))
-   (group
-      ()
-      (item ((type form)(subtype original))
-	 '(equal 1 2))
-      (item ((type form)(subtype wrapped))
-	 '(emt:funcall #'equal 1 2))))
+(defconst emt:wrap-form:thd:examples
+   (emt:eg:define+ ;;xmp:26ef7f1f-ce61-4284-8175-29a7fc7e4ef5
+      ((project emtest)(library tester)(section emt:wrap-form))
+      (group
+	 ()
+	 (item ((type form)(subtype original))
+	    '(equal 1 2))
+	 (item ((type form)(subtype wrapped))
+	    '(emt:funcall #'equal 1 2)))))
 
 
 
 ;;;_   , Tests
+;; Obsolete
 (rtest:deftest emt:wrap-form
 
    (  "Shows: It wraps the examples as expected."
-      (emt:eg:narrow 
+      (emt:eg:with emt:wrap-form:thd:examples
 	 ((project emtest)(library tester)(section emt:wrap-form))
 	 (assert
 	    (equal
@@ -91,7 +94,7 @@
 	 t))
 
    ("Shows: The wrapped examples behave as expected"
-      (emt:eg:narrow 
+      (emt:eg:with emt:persist:thd:examples
 	 ((project emtest)(library persist)(count 1))
 	 (emt:db:internal:ts:mock
 	    (emt:eg (type whole-db))
@@ -128,6 +131,7 @@
 	    t)))
    )
 ;;;_  . emt:should-f
+;;Done in an obsolete way
 (defun emt:should-f (form)
    ""
    ;;$ADDME When `emt:testral:*parent-id*' etc are not bound, act like
@@ -135,13 +139,12 @@
    ;;examined. 
    (declare (special emt:testral:*id-counter* emt:testral:*parent-id*))
 
-   ;;$$CHANGEME.  This will change to just send notes to a listener
+
    (let*
-      ((report 
-	  ;;Make&send a `emt:testral:check:push'.  Use
-	  ;;(emt:testral:add-note start-note '(should))
-	  (make-emt:result:event:grade
-	     :form form))
+      (
+;; 	 (report 
+;; 	    (make-emt:result:event:grade
+;; 	       :form form))
 	 (parent-id emt:testral:*parent-id*)
 	 ;;Use a counter or a uuid.
 	 (id (incf emt:testral:*id-counter*))
@@ -151,12 +154,11 @@
 	 ;;Create empty badnesses, just because `unwind-protect' must
 	 ;;see it
 	 (badnesses '()))
-      (push
+      (emt:testral:add-note
 	 (make-emt:testral:check:push
 	    :info (list (list 'form form))
 	    :parent-id parent-id
-	    :id id)
-	 emt:testral:*events-seen*)
+	    :id id))
       
 
 
@@ -177,8 +179,8 @@
 		     (eval form-x)))
 	       
 	       ;;Obsolete
-	       (setf (emt:result:event:grade-grade report) 
-		  (if retval 'pass 'fail))
+;; 	       (setf (emt:result:event:grade-grade report) 
+;; 		  (if retval 'pass 'fail))
 	       ;;NEW
 	       (unless retval
 		  (push '(failed) badnesses))
@@ -194,45 +196,26 @@
 
 	    ;;Add to badnesses, unless already there.
 	    ('emt:already-handled 
-	       ;;NEW
-	       (push '(ungraded) badnesses)
-	       ;;Obsolete
-	       (setf (emt:result:event:grade-grade report) 'ungraded)
+	       (pushnew '(ungraded) badnesses)
 	       (signal 'emt:already-handled ()))
 	    ;;Add to badnesses, unless already there.
 	    (error
-	       ;;NEW
-	       (push '(ungraded) badnesses)
-	       ;;Obsolete
-	       '
-	       (setf (emt:result:event:grade-grade report) 'ungraded)
-	       ;;Obsolete
-	       '
-	       (emt:trace:add-to-stored-diag
-		  (make-emt:result:diag:error :error err))
+	       (pushnew '(ungraded) badnesses)
 	       (signal (car err)(cdr err))))
 
-	 ;;$$REMOVEME These are obsolete
-	 '
-	 (setf (emt:result:event:grade-diagnostic-info report) 
-	    diags)
-	 '
-	 (setf (emt:result:event:grade-info-about report) 
-	    info-about)
-	 (if
-	    (boundp 'emt:trace:current-event-list)
-	    (push report emt:trace:current-event-list)
-	    ;;$$Want an error specific to emtest
-	    (signal 'error report))
+;; 	 (if
+;; 	    (boundp 'emt:trace:current-event-list)
+;; 	    (push report emt:trace:current-event-list)
+;; 	    ;;$$Want an error specific to emtest
+;; 	    (signal 'error report))
 
 	 ;;This is now the meat of the operation.
-	 (push
+	 (emt:testral:add-note
 	    (make-emt:testral:check:pop
 	       :parent-id parent-id
 	       :id id
 	       ;;Punt
-	       :badnesses badnesses)
-	    emt:testral:*events-seen*))))
+	       :badnesses badnesses)))))
 
 
 ;;;_   , Tests
@@ -240,6 +223,7 @@
    'should)
 
 ;;;_  . should
+;;Done in an obsolete way
 ;;;###autoload
 (defmacro* should (form &key doc)
    ""
@@ -248,73 +232,74 @@
 
 ;;;_   , Test data
 
-(emt:eg:define xmp:bf4883a1-50ae-4fdf-815a-98ecdfc26a2a
-   ((project emtest) (library tester))
-   (group 
-      ((name pass))
-      (item ((type form)) t)
-      (item ((type grade)) 'pass)
-      (item ((type diag-trace)) ())
-      )
-   ;;$$DISTINGUISH ME
-   ;;$$USE ME
-;;    (group 
-;;       ((name pass))
-;;       (item ((type form)) '(eq t t))
-;;       (item ((type grade)) 'pass)
-;;       (item ((type diag-trace)) ())
-;;       )
-;;    (group 
-;;       ((name pass))
-;;       (item ((type form)) '(null nil))
-;;       (item ((type grade)) 'pass)
-;;       (item ((type diag-trace)) ())
-;;       )
-   (group 
-      ((name fail))
-      (item ((type form)) nil)
-      (item ((type grade)) 'fail)
-      (item ((type diag-trace)) ())
-      )
-   (group 
-      ((name ungraded))
-      (item ((type form)) '(error "I will signal an error"))
-      (item ((type grade)) 'ungraded)
-      (item ((type diag-trace)) ;;$$CHANGE CALLERS Obsolete
-	 '
-	 (list
-	    (make-emt:result:diag:error
-	       :error '(error "I will signal an error")))))
+(defconst emt:standard:thd:examples
+   (emt:eg:define+ ;;xmp:bf4883a1-50ae-4fdf-815a-98ecdfc26a2a
+      ((project emtest) (library tester))
+      (group 
+	 ((name pass))
+	 (item ((type form)) t)
+	 (item ((type grade)) 'pass)
+	 (item ((type diag-trace)) ())
+	 )
+      ;;$$DISTINGUISH ME
+      ;;$$USE ME
+      ;;    (group 
+      ;;       ((name pass))
+      ;;       (item ((type form)) '(eq t t))
+      ;;       (item ((type grade)) 'pass)
+      ;;       (item ((type diag-trace)) ())
+      ;;       )
+      ;;    (group 
+      ;;       ((name pass))
+      ;;       (item ((type form)) '(null nil))
+      ;;       (item ((type grade)) 'pass)
+      ;;       (item ((type diag-trace)) ())
+      ;;       )
+      (group 
+	 ((name fail))
+	 (item ((type form)) nil)
+	 (item ((type grade)) 'fail)
+	 (item ((type diag-trace)) ())
+	 )
+      (group 
+	 ((name ungraded))
+	 (item ((type form)) '(error "I will signal an error"))
+	 (item ((type grade)) 'ungraded)
+	 (item ((type diag-trace)) ;;$$CHANGE CALLERS Obsolete
+	    '
+	    (list
+	       (make-emt:result:diag:error
+		  :error '(error "I will signal an error")))))
    
-   ;;A group that has a simple diag trace.
-   ;;Partly shared with emt:funcall:th:3.
-   (group 
-      ((name fail-comparison))
-      (item ((type form)) '(emt:funcall #'equal 1 2))
-      (item ((type grade)) 'fail)
-      (item ((type diag-trace)) ;;$$CHANGE CALLERS Obsolete
-	 '(list
-	    (make-emt:result:diag:call
-	       :status    nil
-	       :call-sexp '(equal 1 2)))))
+      ;;A group that has a simple diag trace.
+      ;;Partly shared with emt:funcall:th:3.
+      (group 
+	 ((name fail-comparison))
+	 (item ((type form)) '(emt:funcall #'equal 1 2))
+	 (item ((type grade)) 'fail)
+	 (item ((type diag-trace)) ;;$$CHANGE CALLERS Obsolete
+	    '(list
+		(make-emt:result:diag:call
+		   :status    nil
+		   :call-sexp '(equal 1 2)))))
    
-   (group 
-      ((name fail-double-comparison))
-      (item ((type form)) '(or
-			      (emt:funcall #'equal 1 2)
-			      (emt:funcall #'equal 101 102)))
-      (item ((type grade)) 'fail)
-      (item ((type diag-trace)) ;;$$CHANGE CALLERS Obsolete
-	 '
-	 (list
-	    (make-emt:result:diag:call
-	       :status    nil
-	       :call-sexp '(equal 1 2))
-	    (make-emt:result:diag:call
-	       :status    nil
-	       :call-sexp '(equal 101 102)))))
+      (group 
+	 ((name fail-double-comparison))
+	 (item ((type form)) '(or
+				 (emt:funcall #'equal 1 2)
+				 (emt:funcall #'equal 101 102)))
+	 (item ((type grade)) 'fail)
+	 (item ((type diag-trace)) ;;$$CHANGE CALLERS Obsolete
+	    '
+	    (list
+	       (make-emt:result:diag:call
+		  :status    nil
+		  :call-sexp '(equal 1 2))
+	       (make-emt:result:diag:call
+		  :status    nil
+		  :call-sexp '(equal 101 102)))))
    
-   )
+      ))
 
 
 ;;;_   , Test helper
@@ -344,7 +329,7 @@
    
    (  "Situation: A form that returns non-nil.
 Response: Collect a passing grade."
-      (emt:eg:narrow 
+      (emt:eg:with emt:standard:thd:examples
 	 ((project emtest) (library tester)(name pass))
 	 (let
 	    ((stored-grades 
@@ -368,7 +353,7 @@ Response: Collect a passing grade."
 That forms is (null nil) which somehow has behaved oddly - different
 than t.  So does (eq t t) Maybe forms behave differently, but they shouldn't.
 Response: Collect a passing grade."
-      (emt:eg:narrow 
+      (emt:eg:with emt:standard:thd:examples
 	 ((project emtest) (library tester)(name pass))
 	 (let
 	    ((stored-grades 
@@ -392,7 +377,7 @@ Response: Collect a passing grade."
    
    (  "Situation: A form that returns nil.
 Response: Collect a failing grade."
-      (emt:eg:narrow 
+      (emt:eg:with emt:standard:thd:examples
 	 ((project emtest) (library tester)(name fail))
 	 (let
 	    ((stored-grades 
@@ -415,7 +400,7 @@ Response: Collect a failing grade."
 
    (  "Event: Something in the form errors.
 Behavior: Collect an ungraded grade."
-      (emt:eg:narrow 
+      (emt:eg:with emt:standard:thd:examples
 	 ((project emtest) (library tester)(name ungraded))
 	 (let
 	    ((stored-grades 
@@ -447,7 +432,7 @@ Behavior: Collect an ungraded grade."
 
    (  "Event: Something in the form provides diagnostic trace
 Behavior: Collect the diagnostic trace.  Grade as usual"
-      (emt:eg:narrow 
+      (emt:eg:with emt:standard:thd:examples
 	 ((project emtest) (library tester)(name fail-comparison))
 	 (let
 	    ((stored-grades 
@@ -476,7 +461,7 @@ Behavior: Collect the diagnostic trace.  Grade as usual"
 
    (  "Event: Something in the form errors.
 Behavior: Collect the appropriate diagnostic trace."
-      (emt:eg:narrow 
+      (emt:eg:with emt:standard:thd:examples
 	 ((project emtest) (library tester)(name ungraded))
 	 (let
 	    ((stored-grades 
@@ -504,7 +489,7 @@ Behavior: Collect the appropriate diagnostic trace."
    (  "Situation: Several things are traced
 Response: Trace occurs in forward order, not reversed (ie, it gets
 unreversed after all the pushing)"
-      (emt:eg:narrow 
+      (emt:eg:with emt:standard:thd:examples
 	 ((project emtest) (library tester)(name fail-double-comparison))
 	 (let
 	    ((stored-grades 

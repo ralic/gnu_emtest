@@ -29,10 +29,6 @@
 
 ;;;_ , Requires
 
-(when (not (fboundp 'rtest:deftest))
-    (defmacro rtest:deftest (&rest dummy))
-    (defmacro rtest:if-avail (&rest dummy)))
-
 (eval-when-compile (require 'cl))
 (require 'emtest/common/testral-types)
 ;;;_. Body
@@ -274,7 +270,7 @@
    (info-about () :type (repeat emt:result:info-about))
    (diagnostic-info () :type (repeat emt:result:diag:bool)))
 
-;;;_  . Info-about
+;;;_  . Info-about (NO, these should be list objects)
 
 (defstruct emt:result:info-about
    ""
@@ -373,13 +369,13 @@ especially in configuration testing for new installations"
    (placeholder-ix () :type integer))  ;;0-based
 
 
-;;;_  . (RETHUNK) (OBSOLETE again) Test ID
+;;;_  . (REORGANIZE ME) Test ID
 (defstruct emt:test-ID
    ""
    (context () :type (repeat (list emt:test-ID:context:key *)))
    (explore-next () :type emt:test-ID:e-n))
 
-;;;_   , Context
+;;;_   , Context (OBSOLETE)
 
 ;;Keys include testrun-ID, tester-ID, and user extensions.  For Elisp,
 ;;Symbol as Suite-ID.
@@ -393,9 +389,9 @@ especially in configuration testing for new installations"
        ;;'(satisfies)
        ))
 
-;;;_    . Suite-ID
+;;;_    . Suite-ID (OBSOLETE)
 ;;A symbol
-;;;_    . clause-ID
+;;;_    . clause-ID (OBSOLETE)
 ;;To be determined, see "design.org" for some possibilities.
 
 ;;;_   , Explore-next (NOT obsolete)
@@ -486,8 +482,49 @@ especially in configuration testing for new installations"
 (defstruct (emt:test-ID:e-n:from-dir (:include emt:test-ID:e-n))
    ""
    (dir-name () :type string))
+;;;_    . emt:test-ID:e-n:dynamic
+(defstruct (emt:test-ID:e-n:dynamic 
+	      (:include emt:test-ID:e-n))
+   "Special method to make explorables at runtime."
+   name
+   params)
 
-;;;_  . emt:test-info
+
+;;;_   , emtt:explorable (Full runnable)
+(defstruct (emtt:explorable
+	      (:conc-name emtt:explorable->)
+	      (:constructor emtt:make-explorable))
+   "All the information needed to specify how to run a test or suite/"
+
+   (id () 
+      :type emt:test-ID:e-n
+      :doc "What to launch for this exploration.")
+   
+   (path-prefix () 
+      :type emt:testral:partial-suite-id
+      :doc "The path prefix so far in the descent, for presentation")
+
+   (properties () 
+      :type (repeat (list symbol *))
+      :doc "The properties that this exploranle has when it's run")
+   (aliases () 
+      :type (repeat emt:test-ID:e-n) 
+      :doc "A possibly empty list of othed IDs that would launch the
+      same thing")) 
+
+;;;_   , emtt:dynamic-method
+(defstruct emtt:dynamic-method
+   "A dynamic exploration method."
+   name
+   keys)
+
+;;;_   , emtt:method (Union of those types)
+(deftype emtt:method ()
+   ", for test-runner-info"
+   '(or emtt:dynamic-method emtt:explorable))
+
+
+;;;_  . emt:test-info (OBSOLETE)
 ;;Doesn't seem to be used anywhere.  
 '
 (defstruct emt:test-info
@@ -503,7 +540,7 @@ especially in configuration testing for new installations"
    ;;Abstract.  No fields
    )
 
-;;;_  . NEW diagnostic-info
+;;;_  . NEW diagnostic-info (May be obsolete)
 
 ;;;_   , Boolean-valued things
 ;;;_    . emt:result:diag:bool
@@ -598,19 +635,18 @@ especially in configuration testing for new installations"
 
 ;;;_   , Run instruction
 
-;;$$No, use `emt:test-ID:e-n' instead.
-;;Governor is a string so that all testers can share common
-;;explore-method id & behaviors.
+;;$$REMOVE ME - This is unclear, and I have changed the approach
+;;This is obsolete, see [[id:4v4h3s20mze0][Representing them]]
 (defalias 'emt:testral:explore-method-id-p 'stringp)
 (deftype emt:testral:explore-id ()
    "How to run an explorable."
-   '(list* emt:testral:explore-method-id-p (repeat t)))
+   '(list* emt:testral:explore-method-id (repeat t)))
 
-;;And maybe something that combines emt:testral:explore-id and
-;;emt:testral:partial-suite-id, that being the name for the next path
-;;component.
 ;;;_   , emt:testral:both-ids (Both)
-;;$$USEME
+
+;;$$OBSOLETE NEVER USED
+;;This has merged with emtt:explorable.
+'
 (defstruct emt:testral:both-ids
    "ID sufficient to both name and (re)run a runnable."
    
@@ -626,7 +662,7 @@ especially in configuration testing for new installations"
 
 
 
-;;;_  . NEW for viewer
+;;;_  . NEW for viewer (All moved or deleted)
 ;;;_   , (OBSOLESCENT) TESTRAL notes in viewer
 '
 (defstruct emt:view:testral
@@ -659,6 +695,7 @@ especially in configuration testing for new installations"
    (testrun-id ():type emt:testral:testrun-id)
    ;;OR info for a particular tester
    (suite ()     :type (or null emt:testral:suite))
+   ;;$$CHANGE ME to emtt:explorable
    (how-to-run ():type emt:test-ID:e-n)
    ;;Actual known children.  This is the n-ary part of the structure.
    ;;NB, even if suite is given, it only tells us their ids, so this
@@ -674,50 +711,6 @@ especially in configuration testing for new installations"
    ;;Summarized badnesses, including any from suite.
    (sum-badnesses () :type (repeat emt:result-badness))
    (display-info ()  :type (or null emt:view:display:base)))
-;;;_   , Presentables
-;;;_    . Pathtree node
-;;Moved to receive, the pathtree module
-
-;;;_    . Base 
-;;Emviewer uses this as the content element in pathtree nodes.
-;;May want its own library that only emtest/viewers/* would see
-(defstruct emt:view:presentable
-   ""
-   ;;Summarized badnesses from all subtrees.  They are summarized
-   ;;treewise, including any badnesses from this node.
-   (sum-badnesses () :type (repeat emt:result-badness))
-   (list () :type chewie:2:list))
-
-
-
-;;;_    . Suite in tree (as by emviewer)
-(defstruct (emt:view:suite-newstyle 
-	      (:include emt:view:presentable))
-   ""
-   ;;Just for suite nodes.
-   (cell () :type emtvr:suite-newstyle))
-
-;;;_    . TESTRAL finished
-(defstruct (emt:view:TESTRAL
-	      (:include emt:view:presentable))
-   ""
-
-   (main () :type (or emt:testral:alone emt:testral:push))
-   (end  () :type (or null emt:testral:pop))
-   ;;May GO AWAY and be represented by child nodes having mains of
-   ;;type `emt:testral:separate'.
-   (args () :type (repeat emt:testral:separate)))
-
-;;;_    . TESTRAL unexpanded leaf
-(defstruct (emt:view:TESTRAL-unexpanded
-	      (:include emt:view:presentable))
-   ""
-   ;;The list of applicable nodes (generally in another list)
-   (start () :type (repeat emt:testral:base))
-   ;;The inapplicable tail of that list.
-   (past-end ()  :type (repeat emt:testral:base)))
-
-
 
 ;;;_   , (OBSOLETE) Display info
 ;;;_    . (OBSOLESCENT) Base emt:view:display:base

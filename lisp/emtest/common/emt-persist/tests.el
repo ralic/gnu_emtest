@@ -45,7 +45,7 @@
 
    (  "Param:  A diag call to a comparison that used persist.
 Response: Returns the (got placeholder) pair."
-      (emt:eg:narrow
+      (emt:eg:with emt:persist:thd:funcall-examples
 	 ((project emtest)(library tester)(section emt:funcall))
 	 (let*
 	    ((db-index 
@@ -92,7 +92,7 @@ Response: Returns nil."
    (  "Param:  A diag call to a comparison that used persist.
 The functor is something other than #'equal
 Response: (For now.  This will change) Error."
-      (emt:eg:narrow
+      (emt:eg:with emt:persist:thd:funcall-examples
 	 ((project emtest)(library tester)(section emt:funcall))
 	 (let*
 	    ((db-index (emt:eg (type version-placeholder)))
@@ -180,7 +180,7 @@ Response: WRITEME."
    (  "Situation: One arg is a persistence placeholder.
 It doesn't exist in the database.
 One Response: Raises error of type `emt:already-handled'."
-      (emt:eg:narrow
+      (emt:eg:with emt:persist:with 
 	 ((project emtest)(library tester)(section emt:funcall))
 	 (emt:funcall-handle-persistence-x:th:values ()
 	    (let
@@ -197,7 +197,7 @@ One Response: Raises error of type `emt:already-handled'."
 It doesn't exist in the database.
 One response: Reports error.
 Stores a diag trace with `unique' field = `none-found'."
-      (emt:eg:narrow
+      (emt:eg:with emt:persist:thd:funcall-examples
 	 ((project emtest)(library tester)(section emt:funcall))
 	 (emt:funcall-handle-persistence-x:th:values ()
 	    (let
@@ -220,7 +220,7 @@ Stores a diag trace with `unique' field = `none-found'."
    (  "Situation: One arg is a persistence placeholder.
 In the database, it gives more than 1 answer marked `correct'.
 One response: Raises error of type `emt:already-handled'."
-      (emt:eg:narrow
+      (emt:eg:with emt:persist:thd:funcall-examples
 	 ((project emtest)(library tester)(section emt:funcall))
 	 (emt:funcall-handle-persistence-x:th:values '(13 143)
 	    (let
@@ -235,7 +235,7 @@ One response: Raises error of type `emt:already-handled'."
 In the database, it gives more than 1 answer marked `correct'.
 Response: Reports error and raises error of type
 `emt:already-handled'."
-      (emt:eg:narrow
+      (emt:eg:with emt:persist:thd:funcall-examples
 	 ((project emtest)(library tester)(section emt:funcall))
 	 (emt:funcall-handle-persistence-x:th:values '(13 143)
 	    (let
@@ -265,7 +265,7 @@ Response: Reports error and raises error of type
 It exists in the database and the only value matches
 Response: Reports success and returns non-nil.
 Stores a diag trace with `unique' field = `t'."
-      (emt:eg:narrow
+      (emt:eg:with emt:persist:thd:funcall-examples
 	 ((project emtest)(library tester)(section emt:funcall))
 	 (emt:funcall-handle-persistence-x:th:values '(1)
 	    (let
@@ -292,7 +292,7 @@ Stores a diag trace with `unique' field = `t'."
 It exists in the database and the only value mismatches
 Response: Reports failed and returns nil.
 Stores a diag trace with `unique' field = `t'."
-      (emt:eg:narrow
+      (emt:eg:with emt:persist:thd:funcall-examples
 	 ((project emtest)(library tester)(section emt:funcall))
 	 (emt:funcall-handle-persistence-x:th:values '(13)
 	    (let
@@ -325,7 +325,7 @@ Stores a diag trace with `unique' field = `t'."
 It exists in the database. 
 The only value matches but relates as `wrong-answer'
 Response: Reports failure and returns nil."
-      (emt:eg:narrow
+      (emt:eg:with emt:persist:thd:funcall-examples
 	 ((project emtest)(library tester)(section emt:funcall))
 	 (with-mock
 	    (mock (emt:db:get-all-values * 'wrong-answer) => '(1))
@@ -350,7 +350,7 @@ Response: Reports failure and returns nil."
 It exists in the database.
 The only value mismatches but relates as `wrong-answer'
 Response: Reports error and throws error."
-      (emt:eg:narrow
+      (emt:eg:with emt:persist:thd:funcall-examples
 	 ((project emtest)(library tester)(section emt:funcall))
 	 (with-mock
 	    (mock (emt:db:get-all-values * 'wrong-answer) => '(13))
@@ -413,7 +413,7 @@ Response: Reports error and throws error."
 
    (  "Situation: ID has no versions
 Response: Return the empty list."
-      (emt:eg:narrow 
+      (emt:eg:with emt:persist:thd:examples
 	 ((project emtest)(library persist)(count 0))
 	 (with-mock
 	    (stub emt:db:by-ix:get-record =>
@@ -424,7 +424,7 @@ Response: Return the empty list."
    
    (  "Situation: ID has 1 version
 Response: Return a list of that version."
-      (emt:eg:narrow 
+      (emt:eg:with emt:persist:thd:examples
 	 ((project emtest)(library persist)(count 1))
 	 (with-mock
 	    (stub emt:db:by-ix:get-record =>
@@ -442,7 +442,7 @@ Response: Return a list of that version."
 
    (  "Situation: ID has no versions
 Response: Return the empty list."
-      (emt:eg:narrow 
+      (emt:eg:with emt:persist:thd:examples
 	 ((project emtest)(library persist)(count 0))
 	 (with-mock
 	    (stub emt:db:by-ix:get-record =>
@@ -453,7 +453,7 @@ Response: Return the empty list."
    
    (  "Situation: ID has 1 version
 Response: Return a list of that version."
-      (emt:eg:narrow 
+      (emt:eg:with emt:persist:thd:examples
 	 ((project emtest)(library persist)(count 1))
 	 (with-mock
 	    (stub emt:db:by-ix:get-record =>
@@ -565,7 +565,7 @@ Response: Return nil."
    '
    (  "Situation: find-value field is `nil'
 Response: Just return the value field."
-      (emt:eg:narrow 
+      (emt:eg:with emt:persist:thd:examples
 	 ((project emtest)(library persist)(count 0))
 	 (with-mock
 	    (stub emt:db:by-ix:get-record =>

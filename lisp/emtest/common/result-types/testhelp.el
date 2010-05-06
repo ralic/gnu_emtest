@@ -29,11 +29,6 @@
 
 ;;;_ , Requires
 
-(when (not (fboundp 'rtest:deftest))
-    (defmacro rtest:deftest (&rest dummy))
-    (defmacro rtest:defexample (&rest dummy))
-    (defmacro rtest:if-avail (&rest dummy)))
-
 (require 'emtest/common/result-types)
 (require 'emtest/testhelp/eg)
 
@@ -42,7 +37,8 @@
 ;;;_ , Example definitions
 
 
-(emt:eg:define xmp:ebd26a0a-1392-45c5-a137-0395cb079589
+(defconst emt:result:thd:examples
+   (emt:eg:define+ ;;xmp:ebd26a0a-1392-45c5-a137-0395cb079589
    ((project emtest)(library result-types))
    (transparent-tags () (type name))
    
@@ -245,7 +241,7 @@
 				 very-very-very-very
 				 long call) 
 			      (another very-very-very-very long call))))
-	 )))
+	 ))))
 
 ;;;_. Footers
 ;;;_ , Provides

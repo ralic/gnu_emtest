@@ -29,9 +29,6 @@
 
 ;;;_ , Requires
 
-(when (not (fboundp 'rtest:deftest))
-    (defmacro rtest:deftest (&rest dummy))
-    (defmacro rtest:if-avail (&rest dummy)))
 (require 'emtest/testhelp/misc)
 ;;;_. Body
 
@@ -41,13 +38,12 @@
    (  "Situation: `emt:trace:properties' has the db-id property bound.
 Param: The backend param is not given.
 Response: The value of the `db-id' property is used as backend."
-      ;;$$CHANGEME
-      ;;This is old-style emt deftest, change to version 3
       (let-noprops '(dummy-sym)
-	 (emt:deftest-2 dummy-sym
-	    (props (db-id "my-db"))
-	    ("Clause is not used" ()))
-	 (emtt:destructure-suite 'dummy-sym
+	 (emt:deftest-3 
+	    ((of 'dummy-sym) 
+	       (db-id "my-db"))
+	    (() (progn ())))
+	 (emtt:destructure-suite-3 'dummy-sym
 	    (let* ((emt:trace:properties props)
 		     (placeholder (emt:persist 'id-0)))
 	       (assert

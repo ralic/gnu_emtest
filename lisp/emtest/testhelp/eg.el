@@ -32,14 +32,8 @@
 (require 'utility/accumulator)
 (require 'utility/pending)
 (require 'emtest/testhelp/deep-type-checker nil)
+(require 'viewers/formatter)  ;;Just for the browse functionality
 
-;;For testing
-(when (not (fboundp 'rtest:deftest))
-    (defmacro rtest:deftest    (&rest dummy))
-    (defmacro rtest:if-avail   (&rest dummy)))
-;;Substitute testpoint
-(rtest:if-avail
-   (require 'el-mock))
 
 ;;;_. Body
 
@@ -477,6 +471,18 @@ Should document the structure here."
 
    `(emt:eg:define-f ',id ',group-args))
 
+;;;_  . emt:eg:define+
+
+(defmacro emt:eg:define+ (&rest group-args)
+   ""
+   
+   `(let
+       ((emt:eg:all-prpty-makers)
+	  (emt:eg:all-examples))
+       (emt:eg:define-f nil ',group-args)
+       emt:eg:all-examples))
+
+
 ;;;_ , Use examples
 
 ;;;_  . emt:eg:kv-matches-p
@@ -575,6 +581,19 @@ Takes keywords
        (append
 	  (emt:eg:tagset-strip emt:eg:tagset ',ignore-tags)
 	  ',narrow)))
+;;;_  . emt:eg+
+(defmacro emt:eg+ (examples &rest kv-list)
+   ""
+   ;;Merge this and `emt:eg:value' behind one helper.
+   `(emt:eg:get-value ,examples
+       (append 
+	  ;;New
+	  (emt:eg:tagset-strip emt:eg:tagset 
+	     ',(mapcar
+		#'(lambda (kv)
+		     (if (consp kv) (car kv) kv))
+		kv-list))
+	  ',kv-list)))
 
 ;;;_ , Narrowing the tagset
 ;;;_  . emt:eg:narrow-f
@@ -608,6 +627,14 @@ Purpose: For consise use inside test code."
    (emt:eg:narrow-f `',kv-filter body))
 
 
+;;;_  . emt:eg:with
+
+(defmacro* emt:eg:with (examples kv-filter &rest body)
+   "Execute BODY in a particular examples tagset.
+Purpose: For consise use inside test code."
+   `(let
+      ((emt:eg:all-examples ,examples))
+      ,(emt:eg:narrow-f `',kv-filter body)))
 
 ;;;_ , Looping
 ;;;_  . emt:eg:map
@@ -618,11 +645,21 @@ Purpose: For consise use inside test code."
       ((name (or name (gensym))))
       `(let
 	  ((arg-values (emt:eg:all-tag-args ',tag)))
+	  (emt:doc 
+	     (concat 
+		"EG operation: Loop over values of "
+		(prin1-to-string ',tag)))
 	  (mapcar
 	     #'(lambda (,name)
 		  ,(emt:eg:narrow-f
 		      `(list (list ',tag ,name))
-		      body))
+		      `(
+			  (emt:doc 
+			     (concat 
+				(prin1-to-string ',tag)
+				" = " 
+				(prin1-to-string ,name)))
+			  ,@body)))
 	  
 	     arg-values))))
 
@@ -645,7 +682,8 @@ Purpose: For consise use inside test code."
 
 ;;;_  . emt:eg:all-tag-args
 (defun emt:eg:all-tag-args (tag)
-   "Return a list of all values for a given tag"
+   "Return a list of all values for a given tag.
+Returns `no-arg' if the key takes no argument."
    (catch 'emt:eg:tag-no-arg
       (remove-duplicates
 	 (apply #'append
@@ -666,6 +704,13 @@ Purpose: For consise use inside test code."
 		  emt:eg:all-examples
 		  emt:eg:tagset))))))
 
+;;;_  . emt:eg:boundp
+;;;###autoload
+(defun emt:eg:boundp (kv-pair)
+   "Return non-nil if there exists at least one item that would be
+selected by KV-PAIR."
+
+   (member (second kv-pair) (emt:eg:all-tag-args (first kv-pair))))
 
 ;;;_  . emt:eg:ambiguous-p
 (defun emt:eg:ambiguous-p (tagset)

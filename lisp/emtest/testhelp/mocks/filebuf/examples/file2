@@ -1,0 +1,10 @@
+A example file for testing file+position comparison.  
+
+The position of the percent sign is the landmark we use for this test.
+
+%  <- The landmark!
+
+position=mockbuf-1
+
+position=mockbuf-meta-1
+

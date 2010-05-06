@@ -127,6 +127,7 @@ function."
 		(progn
 		   (require 'rtest-edit)
 		   ;;$$REPLACE ME and this should handle `of' lists.
+		   ;;There is code somewhere in emt that does this.
 		   (symbol-name (rtest:suite-sym-at-point)))))
 	    
 	 (read-string "Name of suite: " default-suite-name nil
@@ -179,7 +180,7 @@ function."
 	 (let
 	    ((default-suite-name
 		(progn
-		   ;;$$REPLACE ME
+		   ;;$$REPLACE ME, same as above
 		   (require 'rtest-edit)
 		   (symbol-name (rtest:suite-sym-at-point)))))
 	    
@@ -213,9 +214,10 @@ function."
    (let
       ((id (org-id-new "xmp")))
       (pp
-	 `(emt:eg:define ,(intern id)
-	     ((tag value) list)
-	     items-start-here)
+	 `(defconst ,(intern id)
+	     (emt:eg:define+ 
+		((tag value) list)
+		items-start-here))
 	 
 	 (current-buffer))))
 ;;;_  . emt:insert-testpoint

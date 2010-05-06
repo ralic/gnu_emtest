@@ -29,57 +29,148 @@
 
 ;;;_ , Requires
 
-(when (not (fboundp 'rtest:deftest))
-    (defmacro rtest:deftest (&rest dummy))
-    (defmacro rtest:if-avail (&rest dummy)))
+(require 'emtest/testhelp/misc)
+(require 'emtest/testhelp/mocks/filebuf)
 
 ;;;_. Body
+;;;_ , Types
+;;;_  . emtmd:repr-file
+
+(defstruct (emtmd:repr-file
+	      (:constructor 
+		 emtmd:make-repr-file
+		 (name &optional contents-spec
+		    &aux 
+		    (contents
+		       (if contents-spec
+			  (emtb:string-containing-object-f contents-spec)
+			  nil))))
+	      (:conc-name emtmd:repr-file->)
+	      (:copier nil))
+   
+   "Dirtree representation of a file"
+   name
+   contents)
+;;;_  . emtmd:repr-dir
+(deftype emtmd:repr-dir ()
+   "Dirtree representation of a directory"
+   '(cons string emtmd:repr-contents))
+;;;_   , emtmd:make-repr-dir
+(defun emtmd:make-repr-dir (name &rest contents)
+   ""
+   (list* name contents))
+;;;_  . emtmd:repr-contents
+(deftype emtmd:repr-contents ()
+   "Dirtree representation of directory contents"
+   ;;File has to precede dir, because dir gets explored even for files.
+   '(repeat (or emtmd:repr-file emtmd:repr-dir)))
+;;;_   , emtmd:make-repr-contents
+(defun emtmd:make-repr-contents (&rest contents)
+   ""
+   contents)
+
 ;;;_ , emtmd:root
 
-;;A function, which inits if needed
+(defun emtmd:root ()
+   "Return the name of a new temp directory."
+   (let
+      ((dir
+	  (make-temp-name emtb:slave-root)))
+      (make-directory dir t)
+      dir))
 
-'(make-temp-name)
 
-;;And make a directory there.
+
 ;;Config which dir to point at.
 ;;Since we don't know when to erase, we'll leave things there.
 
 ;;;_ , emtmd:with-dirtree
-;;(Set up a dirtree.  For now, always from a master dir)
-;;     * make-temp-name under emtmd:root
 ;;     * copy master dir recursively to there
 ;;     * Or for tree, set each buffer filename to there.
 
-;;When done, remove that dir tree, `unwind-protect'.
 (defmacro emtmd:with-dirtree (spec &rest body)
-   ""
+   "Run body in directory whose contents are given by SPEC
+SPEC can be any of the following:
+ * A directory whose contents are copied.
+ * An `emtmd:repr-contents' object
+ * A list of contents.
+"
    
    `(let
-       ;;Needs a value
-       ((default-directory))
-       ,@body))
+       ((default-directory (emtmd:root)))
+       (unwind-protect
+	  (progn
+	     ,@body)
+	  ;;When done, remove that dir tree unless it should be saved.
+
+	  )))
+
+;;;_ , emtmd:get-repr-contents   
+(defun emtmd:get-repr-contents (dir)
+   "Get a representation of the recursive contents of DIR"
+   (assert dir)
+   (assert (or
+	      (file-name-absolute-p dir)
+	      default-directory))
+   (let
+      ((els-w/nils
+	  (mapcar
+	     #'(lambda (x)
+		  (cond
+		     ((member (car x) '("." ".."))  nil)
+		     ((eq (second x) t)
+			(apply
+			   #'emtmd:make-repr-dir
+			   (car x)
+			   (emtmd:get-repr-contents
+			      (expand-file-name (car x) dir))))
+		     (t 
+			(emtmd:make-repr-file
+			   (car x)
+			   `(:file ,(expand-file-name (car x) dir))))))
+	     (directory-files-and-attributes dir))))
+
+      (apply #'emtmd:make-repr-contents
+	 (delq nil els-w/nils))))
 
 
-;;;_ , emtmd:get-nametree   Get representation
-;;Bunch of filenames.  Sort them into canonical order.
-;;directory-files, recursively on directories
-;;directory-files-and-attributes, so we can tell directories, which
-;;we'll explore.
-;; Neat - this sorts them, and they can be relative, and one can
-;;recognize directories.
-(defun emtmd:get-nametree (root-dir)
+
+;;;_ , emtmd:repr-contents-equal
+
+;;Sort-and-compare is tempting for this, since comparison is
+;;recursive.
+(defun emtmd:repr-contents-equal (a b)
    ""
-   
-   (let*
-      ()
-      
-      ))
+   ;;Can this ever legitimately receive a file repr for either?
+   (check-type a emtmd:repr-contents)
+   (check-type b emtmd:repr-contents)
+   (emt:sets= a b
+      :test
+      #'(lambda (a b)
+	   (etypecase a
+	      (emtmd:repr-file
+		 (and 
+		    (emtmd:repr-file-p b)
+		    (string= 
+		       (emtmd:repr-file->name a) 
+		       (emtmd:repr-file->name b))
+		    ;;Only compare if both are non-nil.
+		    (if
+		       (and
+			  (emtmd:repr-file->contents a)
+			  (emtmd:repr-file->contents b))
+		       (string= 
+			  (emtmd:repr-file->contents a) 
+			  (emtmd:repr-file->contents b))
+		       t)))
+	      (cons 
+		 (and
+		    (consp b)
+		    (stringp (car b))
+		    (string= (car a) (car b))
+		    ;;Each will be an emtmd:repr-contents
+		    (emtmd:repr-contents-equal (cdr a)(cdr b))))))))
 
-
-;;;_ , Compare representations
-;;But that could be just `equal'.
-;;Might be nice to indicate when a comparand is out of order, since
-;;we're comparing sets.
 
 ;;;_. Footers
 ;;;_ , Provides

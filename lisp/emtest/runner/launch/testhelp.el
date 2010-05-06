@@ -29,9 +29,6 @@
 
 ;;;_ , Requires
 
-(when (not (fboundp 'rtest:deftest))
-    (defmacro rtest:deftest (&rest dummy))
-    (defmacro rtest:if-avail (&rest dummy)))
 (require 'emtest/runner/launch)
 
 ;;;_. Body

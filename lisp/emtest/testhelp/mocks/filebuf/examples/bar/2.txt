@@ -1,0 +1,1 @@
+A second dummy file for mockbuf:virtual-dir to refer to

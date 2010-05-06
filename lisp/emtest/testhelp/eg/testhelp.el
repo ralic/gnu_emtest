@@ -28,11 +28,7 @@
 
 
 ;;;_ , Requires
-
-(when (not (fboundp 'rtest:deftest))
-    (defmacro rtest:deftest (&rest dummy))
-    (defmacro rtest:if-avail (&rest dummy)))
-
+(require 'emtest/testhelp/eg)
 ;;;_. Body
 
 ;;;_  .  Test helper emt:eg:th:validate-helper-retval
@@ -52,6 +48,7 @@
 ;;;_  . Handle adding definitions
 
 ;;;_   , Test helper
+;;$$CHANGING  The new design barely needs this.
 (defmacro* emt:eg:define:th:with-empty-tagset
    ((&key examples) &rest body)
    ""

@@ -36,15 +36,7 @@
 (require 'emtest/common/result-types)
 (require 'emtest/common/testral-types)
 (require 'emtest/runner/testral)
-
-'  ;;Required for tests, but that's no longer here.
-(emt:if-avail
-   (require 'emtest/testhelp/deep-type-checker)
-   (require 'emtest/testhelp/misc)
-   (require 'el-mock)
-   (require 'emtest/testhelp/testpoint) ;;`tp' is soft-required above
-   ;;but hard-required to run certain tests.
-   (require 'emtest/testhelp/eg))
+;;$$ADD ME  Require something for `emtm:proper-list-p'
 ;;;_. Body
 
 
@@ -57,6 +49,7 @@
        test-error-trap
        save-window-excursion
        with-temp-buffer
+       ;;(with-timeout 1.0) ;;But respond to properties.
        ;;Add other *standard* ones here.  This should not be
        ;;customized.
        )
@@ -135,6 +128,34 @@
 	  (error "Not handling unexpected errors yet"))))
 
 
+;;;_ , NEW surrounders
+(defun emtt:add-surrounders (form surrounders props)
+   "Add SURROUNDERS around FORM.
+SURROUNDERS is a list whose elements must each be either:
+ * A list.
+ * A function taking 1 argument (props) and returning a list
+
+In either case, FORM is added as the last element of the list.
+
+PROPS is a property list."
+   
+   (dolist (surrounder-0 (reverse surrounders) form)
+      (let
+	 ((surrounder-1
+	     (cond
+		((emtm:proper-list-p surrounder-0) 
+		   surrounder-0)
+		((functionp surrounder-0)
+		   ;;$$MAKE ME SAFE Protect this call.  By surrounding
+		   ;;it, but take care not to recurse infinitely.
+		   (funcall surrounder-0 props))
+		(t
+		   ;;Otherwise complain and stop.  For now, do it cheap.
+		   (assert (emtm:proper-list-p surrounder-0))))))
+	 (setq form
+	    (append surrounder-1 (list form))))))
+
+
 ;;;_ , Info available to tests (Not used yet)
 ;;;_  . Type `emtt:top-data' 
 (defstruct emtt:top-data
@@ -142,51 +163,29 @@
    (report-func () :type (satisfies #'functionp)))
 
 
-;;;_   , Examples
-;;None yet.
 ;;;_  . Special variables
 ;;;_   , emt:trace:properties
 ;;Only needs to be visible to suite-handling.
+;;May be obsolete.  Or may be used for reporting control etc
 (declare (special emt:trace:properties))
 ;;;_   , emt:testral:*events-seen*
 ;;This belongs somewhere that both runner and testhelp can see.
 (declare (special emt:testral:*events-seen*))
 ;;;_  . emtt:get-properties
-;;Yet to be used.
-(defun emtt:get-properties (prop-sym)
+(defun emtt:get-properties (prop-sym prop-list)
    ""
    
    (let
-      ((cell (assoc prop-sym emt:trace:properties)))
+      ((cell (assoc prop-sym prop-list)))
       (when cell
 	 (second cell))))
 
 ;;;_ , test finder
 
 ;;;_  . Pending list
-(defvar emt:test-finder:pending-list () "" )
-;;;_   , Type spec
-(defstruct emtt:pending
-   ""
-   ;;This is correct: Descendants are of `emt:test-ID:e-n', not of
-   ;;this class.
-   (id () :type emt:test-ID:e-n)
-
-   (path-prefix () :type emt:testral:partial-suite-id)
-
-   ;;This may be a mistake.  Outside should not control this.
-   ;;Props are only used for exploring clauses, but they are passed
-   ;;down suites.  Could be a subtype, but it's fairly general.  Let's
-   ;;let it be in the base type.
-   (properties () :type (repeat (list symbol *))))
-
-;;;_   , emt:test-finder:pending-list:check-type (Validation)
-(defun emt:test-finder:pending-list:check-type ()
-   ""
-   (require 'deep-type-checker)
-   (emty:check
-      emt:test-finder:pending-list
-      (list emtt:pending)))
+(defvar emt:test-finder:pending-list () 
+   "List of pending tests (etc) to explore.
+Each one must be a `emtt:explorable'" )
 
 
 ;;;_ , Run tests
@@ -206,6 +205,7 @@
 	 ;;Only for problems that manifest right here, not lower down.
 	 (badnesses '()))
 
+      ;;This defines `props'
       (emtt:destructure-clause-3 clause
 	 (let
 	    (
@@ -215,10 +215,15 @@
 	       ;;may yet be used again.  But it shouldn't be optional.
 	       (form-1
 		  ;;(emtts:surround form '(emtt:trap-errors))
-		  form
+		  ;;form
+		  (emtt:add-surrounders 
+		     form 
+		     (emtt:get-properties :surrounders props) 
+		     props)
 		  ))
 	    (condition-case err
 	       (eval form-1)
+	       ;;$$ADD ME an error case for dormancy pseudo-errors.
 	       (error
 		  (push
 		     (make-emt:testral:error-raised
@@ -251,10 +256,10 @@
       (
 	 (test-id  ;;This is now of type `emt:test-ID:e-n' and
 	    ;;contains all the relevant info.
-	    (emtt:pending-id next))
+	    (emtt:explorable->id next))
 	 ;;Passed around, but only used a little, and then only as a cache.
 	 (props
-	    (emtt:pending-properties next))
+	    (emtt:explorable->properties next))
 
 	 (one-report
 	    (emtp tp:a084136e-8f02-49a5-ac0d-9f65509cedf2
@@ -305,7 +310,7 @@
 				 ;;of rv-list-to-run, so pending-list
 				 ;;is explored in the expected order.
 				 (push 
-				    (make-emtt:pending
+				    (emtt:make-explorable
 				       :id test-id 
 				       :path-prefix path
 				       ;;Each clause has the
@@ -345,7 +350,7 @@
 				     :suite-ID suite-sym)))
 			      (push test-id list-to-run)
 			      (push 
-				 (make-emtt:pending
+				 (emtt:make-explorable
 				    :id test-id 
 				    :path-prefix path
 				    ;;For now, libraries have no
@@ -408,7 +413,7 @@
 	 (make-emt:testral:report
 	    :testrun-id "0" ;;Punt
 	    :tester-id "0" ;;Punt
-	    :test-id-prefix (emtt:pending-path-prefix next)
+	    :test-id-prefix (emtt:explorable->path-prefix next)
 	    :suites 
 	    (list one-report)))))
 
@@ -435,14 +440,16 @@
 
 
 ;;;_  . emt:test-finder:top
+
+;;$$RECONSIDER MY INTERFACE what-to-run may become an
+;;`emtt:explorable' and be pushed as itself.  Callers must take notice.
 (defun emt:test-finder:top (what-to-run path-prefix testrun-id report-cb)
    ""
    
    (let
       (  (emt:test-finder:pending-list ()))
-
       (push
-	 (make-emtt:pending
+	 (emtt:make-explorable
 	    :id what-to-run
 	    :path-prefix path-prefix
 	    :properties ())

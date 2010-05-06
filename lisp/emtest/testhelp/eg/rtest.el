@@ -29,9 +29,6 @@
 
 ;;;_ , Requires
 
-(when (not (fboundp 'rtest:deftest))
-    (defmacro rtest:deftest (&rest dummy))
-    (defmacro rtest:if-avail (&rest dummy)))
 (require 'emtest/testhelp/eg/testhelp)
 ;;;_. Body
 
@@ -119,28 +116,29 @@
 ;;$$This should be shared with previous uses in tests.  But there's a
 ;;bootstrapping problem.  So define real names for these, and use
 ;;those objects here by name.
-(emt:eg:define xmp:757125c0-8d83-4e75-ae31-78104b90639f
-   ((project emtest)(library emt:eg)(section external))
-   (transparent-tags () (type))
-   (item ((type docstring))
-      emt:eg:define:td:docstring-1)
-   (item ((type eg-item)(name 0))
-      (make-emt:example.
-	 :definer-id 'dont-care
-	 :value `(doc ,(emt:eg:value 
-			  :narrow ((type docstring))
-			  :ignore-tags (name)))
-	 :tagset '((dummy-tag 1))))
-   (item ((type eg-item)(name 1))
-      (make-emt:example.
-	 :definer-id 'dont-care
-	 :value 'dont-care
-	 :tagset '((dummy-tag 1))
-	 :property-list 
-	 (list '(other-prop other-value))))
+(defconst emt:eg:thd:examples
+   (emt:eg:define+ ;;xmp:757125c0-8d83-4e75-ae31-78104b90639f
+      ((project emtest)(library emt:eg)(section external))
+      (transparent-tags () (type))
+      (item ((type docstring))
+	 emt:eg:define:td:docstring-1)
+      (item ((type eg-item)(name 0))
+	 (make-emt:example.
+	    :definer-id 'dont-care
+	    :value `(doc ,(emt:eg:value 
+			     :narrow ((type docstring))
+			     :ignore-tags (name)))
+	    :tagset '((dummy-tag 1))))
+      (item ((type eg-item)(name 1))
+	 (make-emt:example.
+	    :definer-id 'dont-care
+	    :value 'dont-care
+	    :tagset '((dummy-tag 1))
+	    :property-list 
+	    (list '(other-prop other-value))))
 
 
-   )
+      ))
 
 ;;;_  . emt:eg:see-err Include errors in examples
 (defun emt:eg:see-err (form)
@@ -435,6 +433,7 @@ Can't use `emt:eg' in body."
        ,@body))
 
 ;;;_   , Tests
+'  ;;OBSOLETE
 (rtest:deftest emt:eg:try-valuedef->example
 
    (  "Situation: Form has no error.
@@ -1511,21 +1510,22 @@ Response: Only the matching example is seen."
    ;;Is informed by emt tester.
    )
 ;;;_  . Test data for emt:eg:map
-(emt:eg:define xmp:1a424ae8-1c28-4875-bdac-6ba6ad9d1a5e
-   ((project emtest)(library emt:eg)(topic map))
-   (group
-      ((discriminator small)(not-medium))
-      (item
-	 ((part number)) 2)
-      (item
-	 ((part string)) "wee"))
+(defconst emt:eg:thd:examples-2
+   (emt:eg:define+ ;;xmp:1a424ae8-1c28-4875-bdac-6ba6ad9d1a5e
+      ((project emtest)(library emt:eg)(topic map))
+      (group
+	 ((discriminator small)(not-medium))
+	 (item
+	    ((part number)) 2)
+	 (item
+	    ((part string)) "wee"))
    
-   (group
-      ((discriminator medium))
-      (item
-	 ((part number)) 14)
-      (item
-	 ((part string)) "medium string")))
+      (group
+	 ((discriminator medium))
+	 (item
+	    ((part number)) 14)
+	 (item
+	    ((part string)) "medium string"))))
 
 ;;;_  . Tests
 (rtest:deftest emt:eg:map
@@ -1537,7 +1537,7 @@ Response:
  * Each part passes a type test
  * Returning a list of the parts, we get the expected set."
 
-      (emt:eg:narrow
+      (emt:eg:with emt:eg:thd:examples-2
 	 ((project emtest)(library emt:eg)(topic map))
 	 (assert
 	    (rtest:sets= 
@@ -1561,7 +1561,7 @@ Response:
    (  "Param: NAME is nil
 Response: No errors."
 
-      (emt:eg:narrow
+      (emt:eg:with emt:eg:thd:examples-2
 	 ((project emtest)(library emt:eg)(topic map))
 	 (emt:eg:map discriminator nil t)
 	 t))
@@ -1569,7 +1569,7 @@ Response: No errors."
    ( "Situation: The tag has associated values (`medium') that should
 already have been narrowed out of our scope.
 Response: Those values are not visited."
-      (emt:eg:narrow
+      (emt:eg:with emt:eg:thd:examples-2
 	 ((project emtest)(library emt:eg)(topic map)(not-medium))
 	 (assert
 	    (rtest:sets= 
@@ -1635,7 +1635,7 @@ Response: Returns the symbol `no-arg'."
 
    (  "Operation: Visit values of `discriminator'
 Response: Finds the expected ones."
-      (emt:eg:narrow
+      (emt:eg:with emt:eg:thd:examples-2
 	 ((project emtest)(library emt:eg)(topic map))
 	 (assert
 	    (rtest:sets= 
@@ -1650,7 +1650,7 @@ Response: Finds the expected ones."
    (  "Situation: The tag has associated values (`medium') that should
 already have been narrowed out of our scope.
 Response: Those values are not found."
-      (emt:eg:narrow
+      (emt:eg:with emt:eg:thd:examples-2
 	 ((project emtest)(library emt:eg)(topic map)(not-medium))
 	 (assert
 	    (rtest:sets= 
