@@ -68,6 +68,39 @@
 
 	  ,@body)))
 
+;;;_ , emt:emviewer:th:check-buffer-string
+(defun emt:emviewer:th:check-buffer-string (id)
+   "Check that current buffer's contents matches what ID identifies."
+   ;;Can set the current result to persist by evalling this in buffer.
+   ;;$$FIXME:  This still inserts each object twice.
+   '(emt:db:set id 'correct-answer (buffer-string))
+
+   ;;This works, after having set the persisting object.
+   (let
+      ((contents-matches-p
+	  (equal
+	     (buffer-string)
+	     (condition-case err
+		(emt:persist:value id)
+		;;For now, can't be more specific than `error'
+		(error
+		   (message "Couldn't get persisting value")
+		   (recursive-edit))))))
+
+      (unless contents-matches-p
+	 (message "Buffer string does not match")
+	 ;;This is just for my manual handling.
+      
+	 ;;Font-locking via here doesn't work.
+	 (recursive-edit))
+   
+      ;;Would like this + definition to be the whole form, but for now
+      ;;we can't.
+      (assert
+	 (progn contents-matches-p)
+	 t))
+   t)
+
 ;;;_. Footers
 ;;;_ , Provides
 

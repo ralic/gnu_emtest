@@ -51,6 +51,9 @@
       ((backend
 	  (or
 	     backend
+	     ;;Use emtt:get-properties.  But first remove that from
+	     ;;tester.el and give it the right default.
+	     ;(emtt:get-properties 'db-id emt:trace:properties)
 	     (let
 		((cell (assoc 'db-id emt:trace:properties)))
 		(when cell

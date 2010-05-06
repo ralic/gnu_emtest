@@ -36,7 +36,7 @@
 (require 'emtest/common/result-types)
 (require 'emtest/common/testral-types)
 (require 'emtest/runner/testral)
-;;$$ADD ME  Require something for `emtm:proper-list-p'
+(require 'emtest/testhelp/match) ;;Just for `emtm:proper-list-p'
 ;;;_. Body
 
 
@@ -165,8 +165,9 @@ PROPS is a property list."
 
 ;;;_  . Special variables
 ;;;_   , emt:trace:properties
-;;Only needs to be visible to suite-handling.
-;;May be obsolete.  Or may be used for reporting control etc
+;;This belongs somewhere that both runner and testhelp can see.
+;;Right now, it's used for the `emt:persist' testhelp.
+;;OBSOLESCENT.  
 (declare (special emt:trace:properties))
 ;;;_   , emt:testral:*events-seen*
 ;;This belongs somewhere that both runner and testhelp can see.

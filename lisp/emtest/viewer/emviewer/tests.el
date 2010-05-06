@@ -30,11 +30,22 @@
 ;;;_ , Requires
 
 (require 'emtest/runner/define)
-
+(require 'emtest/viewer/emviewer/testhelp)
+(require 'emtest/common/testral-types/testhelp)
 ;;;_. Body
-(emt:deftest-3
-   ((of 'emtest/viewer/emviewer))
+;;;_ , Constants
+(defconst emtve:td:dir 
+   (emtb:expand-filename-by-load-file "persist")
+   "The file where the database is located" )
 
+;;;_ , emtest/viewer/emviewer
+(emt:deftest-3
+   ((of 'emtest/viewer/emviewer)
+      (db-id
+	 `(persist ,emtve:td:dir))
+      (:surrounders
+	 '((emt:eg:with emt:testral:thd:examples ()))))
+   
    ;;Tests of just the viewer.
    (()
       (emtve:ts:with-mock-viewer
@@ -43,9 +54,7 @@
 
 	 (emt:emviewer:th:check-buffer-string
 	    (emt:persist 
-	       "dbid:yygeryl0jwe0"
-	       '(persist
-		   "~/projects/emtest/lisp/emtest/viewer/emviewer/persist")))))
+	       "dbid:yygeryl0jwe0"))))
    
    (()
       (emtve:ts:with-mock-viewer
@@ -53,9 +62,7 @@
 	    (emt:eg (type report)(role original-add)(what-test test-1)))
 
 	 (emt:emviewer:th:check-buffer-string
-	    (emt:persist "dbid:mf660gq0jwe0"
-	       '(persist
-		   "~/projects/emtest/lisp/emtest/viewer/emviewer/persist")))))
+	    (emt:persist "dbid:mf660gq0jwe0"))))
 
 
    (()
@@ -64,9 +71,7 @@
 	    (emt:eg (type report)(what-test test-2)))
 
 	 (emt:emviewer:th:check-buffer-string
-	    (emt:persist "dbid:l7w6gjq0jwe0"
-	       '(persist
-		   "~/projects/emtest/lisp/emtest/viewer/emviewer/persist")))))
+	    (emt:persist "dbid:l7w6gjq0jwe0"))))
    
    ;;End to end test
    (()
@@ -80,13 +85,8 @@
 		(error "An example error")))
 
 	 (emt:emviewer:th:check-buffer-string
-	    (emt:persist "dbid:6y9kxjq0jwe0"
-	       '(persist
-		   "~/projects/emtest/lisp/emtest/viewer/emviewer/persist")))))
-   
+	    (emt:persist "dbid:6y9kxjq0jwe0")))))
 
-
-   )
 
 ;;;_. Footers
 ;;;_ , Provides
