@@ -109,6 +109,9 @@ Response: List contains that one entry."
 			    (role original-add)
 			    (what-test test-1)))))
 	       t)
+	    (assert
+	       (= (length (emtvr:data-alist receiver)) 1)
+	       t)
 	    ;;One callback happened
 	    (assert
 	       (emtm
@@ -170,6 +173,9 @@ Response: List contains just that one entry, not duplicated."
 			    (type receive-alist-item)
 			    (role replace)
 			    (what-test test-1)))))
+	       t)
+	    (assert
+	       (= (length (emtvr:data-alist receiver)) 1)
 	       t)
 
 	    ;;One (new) callback happened

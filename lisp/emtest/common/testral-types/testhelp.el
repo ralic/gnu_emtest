@@ -61,7 +61,9 @@
       ((project emtest)(sub-project testral)(library types))
       ;;I don't like having `name' here but it is currently needed.  It
       ;;will get in the way when name parallelism is wanted for some
-      ;;things later.
+      ;;things later.  Similarly, `what-test' is needed but a PITA.
+      ;;It was needed so that we could see suites, which aren't tagged
+      ;;for that.
       (transparent-tags () (type subtype name role what-test))
       (group
 	 ;; Notes alone
@@ -136,83 +138,6 @@
 	       :notes
 	       (list
 		  (emt:eg (type note)(subtype alone)(name error-1))))))
-   
-      ;;OBSOLETE This design has changed
-      ;;Conformed lists: They are bookended by stages.  Top level is
-      ;;stages.  Perhaps other properness conformances.
-      ;;    (group
-      ;;       ;; TESTRAL
-      ;;       ((type testral-note-list)(subtype conformed))
-      ;;       (type-must-be () (repeat emt:testral:base))
-      ;;       ;;TBD what we do in case of an empty list.
-      ;; ;;       (item
-      ;; ;; 	 ((name empty))
-      ;; ;; 	 (list))
-      
-      ;;       (item
-      ;; 	 ((name one-node))
-      ;; 	 (list
-      ;; 	    (make-emt:testral:stage:push :name "main")
-      ;; 	    (emt:eg (type note)(subtype alone)(name error-1))
-      ;; 	    (make-emt:testral:stage:pop :badnesses ()))))
-   
-      ;;    ;;OBSOLETE This design has changed
-      ;;    (group
-      ;;       ((type testral-tree))
-      
-      ;;       ;;`emt:view:testral' trees corresponding to TESTRAL lists.  The
-      ;;       ;;`name' tag corresponds.
-
-      ;;       ;;$$CHANGEME These should be patterns so they don't try to match
-      ;;       ;;on the display field.
-
-      ;;       ;;To be used in TESTRAL-expanded view trees below
-      ;;       (group
-      ;; 	 ;;Fully-expanded representation
-      ;; 	 ((expansion full))
-      ;; 	 ;;(transparent-tags () (expansion))
-      ;; 	 (item
-      ;; 	    ((name one-node))
-      ;; 	    (let
-      ;; 	       ((note-list 
-      ;; 		   (emt:eg:value 
-      ;; 		      :narrow 
-      ;; 		      ((type testral-note-list)(subtype conformed))
-      ;; 		      :ignore-tags (expansion))))
-      ;; 	       (make-emt:view:testral
-      ;; 		  :main (nth 0 note-list)
-      ;; 		  :end  (nth 2 note-list)
-      ;; 		  :args ()
-      ;; 		  :child-type 'scoped
-      ;; 		  :children 
-      ;; 		  (list
-      ;; 		     (make-emt:view:testral
-      ;; 			:main (nth 1 note-list)
-      ;; 			:end   nil
-      ;; 			:args ()
-      ;; 			:child-type nil
-      ;; 			:children ()))))))
-      ;;       (group
-      ;; 	 ;;Representation expanded just one ply
-      ;; 	 ((expansion 1))
-      ;; 	 ;;(transparent-tags () (expansion))
-      ;; 	 (item
-      ;; 	    ((name one-node))
-      ;; 	    (let
-      ;; 	       ((note-list 
-      ;; 		   (emt:eg:value 
-      ;; 		      :narrow 
-      ;; 		      ((type testral-note-list)(subtype conformed))
-      ;; 		      :ignore-tags (expansion))))
-      ;; 	       (make-emt:view:testral
-      ;; 		  :main (nth 0 note-list)
-      ;; 		  :end  (nth 2 note-list)
-      ;; 		  :args ()
-      ;; 		  :child-type 'tails
-      ;; 		  :children 
-      ;; 		  (list
-      ;; 		     (nthcdr 1 note-list))))))
-      ;;       )
 
       (group
 	 ;; Suites
@@ -244,13 +169,10 @@
 	    ((name has-children-1))
 	    (make-emt:testral:suite
 	       :contents
-	       ;;$$CHANGED recently
-	       (make-emt:testral:runform-list
+	       (emt:testral:make-runform-list
 		  :els
 		  (list 
-		     (make-emt:test-ID:e-n:indexed-clause
-			:suite-sym 'first-suite
-			:clause-index 0)))
+		     (emt:eg (type explorable)(what-test index-1))))
 	       :badnesses '(ungraded)
 	       :info ()))
 
@@ -311,7 +233,47 @@
 	    (make-emt:test-ID:e-n:suite :suite-ID 'test-1))
 	 (item ((name test-2)
 		  (what-test test-2))
-	    (make-emt:test-ID:e-n:suite :suite-ID 'test-2)))
+	    (make-emt:test-ID:e-n:suite :suite-ID 'test-2))
+	 (item
+	    ((what-test index-1))
+	    (make-emt:test-ID:e-n:indexed-clause
+	       :suite-sym 'first-suite
+	       :clause-index 0)))
+
+      (group
+	 ((type explorable))
+	 (type-must-be () emtt:explorable)
+	 (item
+	    ((name just-test-runner))
+	    (emtt:make-explorable
+	       :id          (make-emt:test-ID:e-n:hello)
+	       :path-prefix () 
+	       :properties  ()
+	       :aliases     ()))
+	 (item
+	    ((what-test index-1))
+	    (emtt:make-explorable
+	       :id          (emt:eg (type how-to-run)(what-test index-1))
+	       :path-prefix ()  ;;Empty presentation name
+	       :properties  ()
+	       :aliases     ()))
+	 
+	 (item
+	    ((what-test test-1))
+	    (emtt:make-explorable
+	       :id          (emt:eg (type how-to-run)(what-test test-1))
+	       :path-prefix (emt:eg (type presentation-name)(what-test test-1))
+	       :properties  ()
+	       :aliases     ()))
+
+	 (item
+	    ((what-test test-2))
+	    (emtt:make-explorable
+	       :id          (emt:eg (type how-to-run)(what-test test-2))
+	       :path-prefix (emt:eg (type presentation-name)(what-test test-2))
+	       :properties  ()
+	       :aliases     ())))
+      
       (group
 	 ((type testrun-id))
 	 (item
@@ -345,7 +307,7 @@
 	       :test-id-prefix ()
 	       :suites (list
 			  (list 
-			     (make-emt:test-ID:e-n:hello)
+			     (emt:eg (type explorable)(name just-test-runner))
 			     () 
 			     (emt:eg (type test-runner-info))))))
 
@@ -360,8 +322,8 @@
 	       :test-id-prefix ()
 	       :suites (list
 			  (list 
-			     (emt:eg (type how-to-run)(what-test test-1))
-			     (emt:eg (type presentation-name)(what-test test-1))
+			     (emt:eg (type explorable)(what-test test-1))
+			     ()
 			     (emt:eg (type suite)(what-test test-1)(role original-add))))))
       
 	 ;;A second report overriding the first
@@ -375,8 +337,8 @@
 	       :test-id-prefix ()
 	       :suites (list
 			  (list
-			     (emt:eg (type how-to-run)(what-test test-1))
-			     (emt:eg (type presentation-name)(what-test test-1))
+			     (emt:eg (type explorable)(what-test test-1))
+			     ()
 			     (emt:eg (type suite)(what-test test-1)(role replace))))))
 
 	 ;;A report removing the first report
@@ -390,8 +352,8 @@
 	       :test-id-prefix ()
 	       :suites (list
 			  (list
-			     (emt:eg (type how-to-run)(what-test test-1))
-			     (emt:eg (type presentation-name)(what-test test-1))
+			     (emt:eg (type explorable)(what-test test-1))
+			     ()
 			     (emt:eg (type suite)(what-test test-1)(role remove-previous))))))
       
 
@@ -406,8 +368,8 @@
 	       :test-id-prefix ()
 	       :suites (list
 			  (list 
-			     (emt:eg (type how-to-run)(what-test test-2))
-			     (emt:eg (type presentation-name)(what-test test-2))
+			     (emt:eg (type explorable)(what-test test-2))
+			     ()
 			     (emt:eg (type suite)(what-test test-2))))))
 
 	 ;;Maybe add:
@@ -415,7 +377,9 @@
 	 ;;A report with a different tester-id (same testrun-id?)
 	 )
    
-   
+      ;;$$MOVE ME This belongs in view-types/testhelp.el, which
+      ;;receive/rtest and maybe other files should use.  Would be
+      ;;easier with separate stuff.
       (group
 	 ((type receive-alist-item))
 	 (type-must-be () (emtm:pattern emtvr:suite-newstyle))
@@ -429,10 +393,10 @@
 		     '(emt:eg (type suite)(what-test test-1)(role original-add)))
 		  :how-to-run
 		  (eval 
-		     '(emt:eg (type how-to-run)(name test-1)))
+		     '(emt:eg (type explorable)(what-test test-1)))
 		  :id
 		  (eval 
-		     '(emt:eg (type how-to-run)(name test-1)))
+		     '(emt:eg (type how-to-run)(what-test test-1)))
 		  :presentation-path
 		  (eval 
 		     '(emt:eg (type presentation-path)(what-test test-1)))
@@ -450,10 +414,10 @@
 		     '(emt:eg (type suite)(what-test test-1)(role replace)))
 		  :how-to-run
 		  (eval 
-		     '(emt:eg (type how-to-run)(name test-1)))
+		     '(emt:eg (type explorable)(what-test test-1)))
 		  :id
 		  (eval 
-		     '(emt:eg (type how-to-run)(name test-1)))
+		     '(emt:eg (type how-to-run)(what-test test-1)))
 		  :presentation-path
 		  (eval 
 		     '(emt:eg (type presentation-path)(what-test test-1)))

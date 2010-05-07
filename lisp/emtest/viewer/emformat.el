@@ -111,6 +111,9 @@ DATA-LIST must be a list of alists."
 
 			   ;;(emtvr:suite-newstyle-how-to-run cell)
 			   ;;`how-to-run' informs a button.
+			   ;;NB, this will now be a `emtt:explorable'
+			   ;;or even a `emtt:method', not an :e-n as
+			   ;;it was before.
 
 			   ;;Info shows nothing for now.  It has no
 			   ;;canonical fields yet.

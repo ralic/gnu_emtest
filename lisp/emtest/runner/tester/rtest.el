@@ -30,6 +30,7 @@
 ;;;_ , Requires
 (require 'emtest/runner/tester)
 (require 'emtest/runner/tester/testhelp)
+(require 'emtest/runner/launch/testhelp) ;;For emtt:th:run-suite
 
 ;;;_. Body
 ;;;_   , emtts:surround

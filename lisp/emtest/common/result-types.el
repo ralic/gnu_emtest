@@ -395,7 +395,7 @@ especially in configuration testing for new installations"
 ;;To be determined, see "design.org" for some possibilities.
 
 ;;;_   , Explore-next (NOT obsolete)
-
+;;Most of this could be moved into runner/ directory.  
 ;;;_    . Base
 (defstruct emt:test-ID:e-n
    ""
@@ -495,18 +495,22 @@ especially in configuration testing for new installations"
 	      (:conc-name emtt:explorable->)
 	      (:constructor emtt:make-explorable))
    "All the information needed to specify how to run a test or suite/"
-
+   ;;$$RENAME ME how-to-run
    (id () 
       :type emt:test-ID:e-n
       :doc "What to launch for this exploration.")
    
+   ;;$$RENAME ME presentation-path
+   ;;May become rv-prestn-path and be represented in the reverse
+   ;;order, most local component first.
    (path-prefix () 
       :type emt:testral:partial-suite-id
-      :doc "The path prefix so far in the descent, for presentation")
+      :doc "The presentation path so far")
 
    (properties () 
       :type (repeat (list symbol *))
       :doc "The properties that this exploranle has when it's run")
+   ;;Aliases might also allow a string as UUID
    (aliases () 
       :type (repeat emt:test-ID:e-n) 
       :doc "A possibly empty list of othed IDs that would launch the

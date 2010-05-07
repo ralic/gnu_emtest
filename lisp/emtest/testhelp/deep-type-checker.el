@@ -177,7 +177,7 @@ its slots, recursively."
 			  (apply
 			     (function* 
 				(lambda (slot-name &optional init-form 
-					   &key type)
+					   &key type &allow-other-keys)
 				   (if type
 				      (emt:funcall #'typep slot-val type)
 				      ;;A typeless slot accepts anything

@@ -123,17 +123,12 @@
 ;;;_   , Contents discrimination for suite type
 
 ;;;_    . emt:testral:runform-list
-(defstruct emt:testral:runform-list
-   ""
-   ;;Run-form
+(defstruct (emt:testral:runform-list
+	      (:constructor emt:testral:make-runform-list))
+   "List of explorables"
 
-   ;;Or it could be:
-   ;;(repeat emt:testral:both-ids)
-   ;;It may have to be, since children must be launchable but have to
-   ;;be comparable by visible place.
-
-   ;;$$CHANGE ME Should repeat an emtt:explorable
-   (els () :type (repeat emt:test-ID:e-n)))
+   ;;$$CHANGED, Was emt:test-ID:e-n
+   (els () :type (repeat emtt:explorable)))
 ;;;_    . emt:testral:note-list
 (defstruct emt:testral:note-list
    ""
@@ -143,49 +138,27 @@
 
 (defstruct emt:testral:report
    "A report sent by test-runner to viewer"
-   (testrun-id () :type emt:testral:testrun-id)
-   (tester-id  () :type emt:testral:tester-id)
+   (testrun-id     () :type emt:testral:testrun-id)
+   (tester-id      () :type emt:testral:tester-id)
    ;;This is really visible-path prefix.
    (test-id-prefix () :type emt:testral:prefix-suite-id)
    (suites () :type 
       (repeat
-	 ;;Maybe this should be a type too.
+	 ;;Maybe this should be a type too.  NB, it's a list because
+	 ;;it is a list in `emtvr:one-newstyle'
 	 (list 
-	    ;;$$CHANGE ME
-	    ;;The first should be a emtt:explorable.  It may fold in
-	    ;;the second field, but let's leave that an empty list for
-	    ;;now. 
-	    emt:test-ID:e-n
-	    emt:testral:partial-suite-id
+	    ;;$$CHANGED
+	    emtt:explorable
+	    null ;;let's leave that an empty list for now
 	    (or emt:testral:suite emt:testral:test-runner-info)))))
 
 ;;;_   , Suites etc specific reports
-;;;_    . New TESTRAL suite report type
-
-(deftype emtvr:suite-newstyle-id ()
-   "Can be a UUID string or a how-to-run object"
-   '(or string emt:test-ID:e-n))
-(defstruct emtvr:suite-newstyle
-   ""
-   (id () :type emtvr:suite-newstyle-id)
-   ;;How to run this as a test.
-   (how-to-run ():type emt:test-ID:e-n)
-   ;;Tester or how to call tester
-
-   ;;The path to the corresponding node in the tree.
-   (presentation-path ()   :type emt:testral:suite-id)
-
-   ;;This is becoming more of a datestamp/circumstance info.
-   (testrun-id ():type emt:testral:testrun-id)
-   ;;OR info for a particular tester
-   (suite ()     :type (or null 
-			  emt:testral:suite 
-			  emt:testral:test-runner-info)))
 
 ;;;_   , test-runner info
 (defstruct emt:testral:test-runner-info
-   "Info describing a tester.  Not fleshed out yet."
-   (name () :type string)
+   "Info describing a tester."
+   (name    ()  :type string)
+   (version "0" :type string)
    ;;$$CHANGE ME - See [[id:b4sjlt20mze0][Test-runner info]]
    ;;Type should become (repeat emtt:method)
    (explore-methods-supported () :type (repeat emt:testral:explore-method-id)))

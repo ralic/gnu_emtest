@@ -122,7 +122,7 @@ Response: Destructuring finds the expected clauses."
 	 (emtt:destructure-suite-3 'dummy-sym
 	    (assert
 	       (= (length clause-list) 1) t)
-	    (emtt:destructure-clause
+	    (emtt:destructure-clause-3
 	       (car clause-list)
 	       (equal form '(progn 12)))
 	    t)))

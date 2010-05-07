@@ -27,18 +27,24 @@
 ;; 
 
 ;;Instead of a bare `require', put this before code that uses this.
+;;That means that if testpoint is not available, there is no error and
+;;a testpoint will just eval the body forms.
 '
 (eval-and-compile
-   (unless (require 'emtest/testhelp/testpoint nil t)
-      (defmacro emtp (id args &rest rest)
+   (when (not (require 'emtest/testhelp/testpoint nil t))
+      (defmacro emtp (id args &rest rest) 
+	 (declare (debug (symbolp (&rest form) body)))
 	 `(progn ,@rest))))
 
 ;;;_ , Requires
 
 (require 'utility/accumulator)
+
 (when (not (fboundp 'rtest:deftest))
     (defmacro rtest:deftest (&rest dummy))
     (defmacro rtest:if-avail (&rest dummy)))
+(require 'rtest-util)  
+(require 'rtest-define)
 
 ;;;_. Body
 
@@ -73,8 +79,11 @@ When enabled and there is a handler that matches ID, calls that
 handler with arglist ARGS.
 That handler can either fall thru to BODY or throw a return value to
 `emtp:tag-return'."
+   (declare 
+      (debug (symbolp (&rest form) body)))
    `(catch 'emtp:tag-return
        (progn 
+	  (declare (special emtp:*handlers*))
 	  (when emtp:enable
 	     ;;If `emtp:handle-call' uses a handler, it throws and
 	     ;;does not return. 

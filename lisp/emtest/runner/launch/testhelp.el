@@ -36,7 +36,8 @@
 (defun emtt:th:run-suite (suite-sym func)
    ""
    
-   (emt:test-finder:top 
+   (emt:test-finder:top
+      ;;$$UPDATE ME
       (make-emt:test-ID:e-n:suite
 	 :suite-ID suite-sym) 
       '()

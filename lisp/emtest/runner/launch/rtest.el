@@ -70,7 +70,7 @@ Response: WRITEME."
 	     (should nil))))
    '
    (  "Situation: Body raises an error of type `emt:already-handled'.
-Response: Essentially nothing special is reported."
+Response: Reports a failure but essentially nothing special is reported."
       (emtt:sexp-at-point
 	 '("Situation: While executing a dummy test that raises
 `emt:already-handled'."

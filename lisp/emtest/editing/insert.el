@@ -29,10 +29,9 @@
 
 ;;;_ , Requires
 
-(unless (fboundp 'emt:deftest)
-   (defmacro emt:deftest (&rest dummy))
-   (defmacro emt:if-avail (&rest dummy)))
-
+(require 'org-id nil)
+(require 'rtest-edit)  ;;$$REMOVE ME SHould go away
+(require 'pp)
 
 ;;;_. Body
 
@@ -159,7 +158,7 @@ Response: WRITEME.\"
        (progn
 	  (emt:doc "Situation: WRITEME.")
 	  (emt:doc "Response: WRITEME.")))
-   "" )
+   "Sexp og a skeleton clause" )
 (defun emt:insert-clause ()
    ""
    
@@ -199,7 +198,7 @@ function."
 (defun emt:insert-persister ()
    "Insert a persister"
    (interactive)
-   (require 'org-id nil)
+   ;;Check that org-id is provided
    (let
       ((id (org-id-new "dbid")))
       (pp

@@ -29,13 +29,17 @@
 
 (eval-and-compile
    (when (not (require 'emtest/testhelp/testpoint nil t))
-      (defmacro emtp (id args &rest rest) `(progn ,@rest))))
-
+      (defmacro emtp (id args &rest rest) 
+	 (declare 
+	    (debug (symbolp (&rest form) body)))
+	 `(progn ,@rest))))
 (eval-when-compile
    (require 'cl))
 (require 'emtest/common/result-types)
 (require 'emtest/common/testral-types)
 (require 'emtest/runner/testral)
+(require 'emtest/runner/define)
+;;$$CLEAN ME UP - move that call into a list utility. 
 (require 'emtest/testhelp/match) ;;Just for `emtm:proper-list-p'
 ;;;_. Body
 
@@ -255,23 +259,32 @@ Each one must be a `emtt:explorable'" )
    ""
    (let*
       (
-	 (test-id  ;;This is now of type `emt:test-ID:e-n' and
-	    ;;contains all the relevant info.
+	 (test-id  ;;This is now of type `emt:test-ID:e-n'
 	    (emtt:explorable->id next))
 	 ;;Passed around, but only used a little, and then only as a cache.
 	 (props
 	    (emtt:explorable->properties next))
-
+	 ;;This largely uses the original `next' as the launch
+	 ;;path-prefix usually shouldn't even be changed.  It should
+	 ;;be inserted with the right value, not changed here.
 	 (one-report
 	    (emtp tp:a084136e-8f02-49a5-ac0d-9f65509cedf2
-	       (test-id)  ;;No more `e-n'
-	       (typecase test-id  ;;Was e-n, which went away.
+	       (test-id)
+	       (typecase test-id
 		  (emt:test-ID:e-n:form
-		     (list
-			test-id
-			'("literal form") ;;Punt the name for now
-			(emtt:explore-clause
-			   (emt:test-ID:e-n:form-test-form test-id))))
+		     '(list
+			next
+;;  			(emtt:make-explorable
+;;  			   :id 
+;;  			   test-id
+;;  			   :path-prefix
+;;  			   '("literal form")
+;;  			   :properties props)
+			
+			nil
+			)
+		     (emtt:explore-clause
+			   (emt:test-ID:e-n:form-test-form test-id)))
 		  ;;`clause-list' from where?
 		  (emt:test-ID:e-n:indexed-clause
 		     (let*
@@ -282,12 +295,19 @@ Each one must be a `emtt:explorable'" )
 			   (index
 			      (emt:test-ID:e-n:indexed-clause-clause-index
 				 test-id)))
-			(list
-			   test-id
-			   (list (format "Clause %d" index))
-			   (emtt:destructure-suite-3 suite-sym
+			'(list
+			   next
+;;  			   (emtt:make-explorable
+;;  			      :id
+;;  			      test-id
+;;  			      :path-prefix
+;;  			      (list (format "Clause %d" index))
+;;  			      :properties props)
+			   nil
+			   )
+			(emtt:destructure-suite-3 suite-sym
 			      (emtt:explore-clause 
-				 (nth index clause-list))))))
+				 (nth index clause-list)))))
 
 		  (emt:test-ID:e-n:suite
 		     (let* 
@@ -299,39 +319,51 @@ Each one must be a `emtt:explorable'" )
 			   (let
 			      (  
 				 (rv-list-to-run '()))
-
 			      (dotimes (n (length clause-list))
 				 (push  
-				    (make-emt:test-ID:e-n:indexed-clause
-				       :clause-index n
-				       :suite-sym suite-sym)
+				    (emtt:make-explorable
+				       :id
+				       (make-emt:test-ID:e-n:indexed-clause
+					  :clause-index n
+					  :suite-sym suite-sym)
+				       :path-prefix 
+				       (append 
+					  path
+					  (list (format "Clause %d" n)))
+				       
+				       ;;Each clause has the
+				       ;;properties of the suite (and
+				       ;;for now, only those)
+				       :properties props)
 				    rv-list-to-run))
 			      (dolist (test-id rv-list-to-run)
 				 ;;Reverses the already-reversed order
 				 ;;of rv-list-to-run, so pending-list
 				 ;;is explored in the expected order.
 				 (push 
-				    (emtt:make-explorable
-				       :id test-id 
-				       :path-prefix path
-				       ;;Each clause has the
-				       ;;properties of the suite
-				       ;;(and for now, only those)
-				       :properties props)
+				    test-id
 				    emt:test-finder:pending-list))
 			      
-			      (list
-				 test-id
-				 path
-				 (make-emt:testral:suite
+			      '(list
+				 next
+;;  				 (emtt:make-explorable
+;;  				    :id
+;;  				    test-id
+;;  				    :path-prefix
+;;  				    path)
+				 nil
+				 )
+			      (make-emt:testral:suite
+				    ;;This will be the same contents
+				    ;;as are made pending.
 				    :contents 
-				    (make-emt:testral:runform-list
+				    (emt:testral:make-runform-list
 				       :els (reverse rv-list-to-run))
 				    :badnesses '() ;;Punt - anyways, only
 				    ;;meaningful if it crapped out right
 				    ;;here.
 				    :info '() ;;Punt info for now.
-				    ))))))
+				    )))))
 		
 		  (emt:test-ID:e-n:library:elisp-load
 		     (let* 
@@ -358,37 +390,57 @@ Each one must be a `emtt:explorable'" )
 				    ;;properties. 
 				    :properties ())
 				 emt:test-finder:pending-list)))
-			(list
-			   test-id
-			   path
-			   (make-emt:testral:suite
+			'(list
+			   next
+;;  			   (emtt:make-explorable
+;;  			      :id
+;;  			      test-id
+;; 			      :path-prefix
+;;  			      path)
+			   nil
+			   )
+			(make-emt:testral:suite
 			      :contents list-to-run
 			      :badnesses '() ;;Punt - only if it crapped
 			      ;;out right here.
 			      :info '()	;;Punt info for now.
-			      ))))
+			      )))
 		  
 		  ;;Tell receiver about this tester
 		  (emt:test-ID:e-n:hello
-		     (list
-			test-id
-			(list "Emtest tester")
-			(make-emt:testral:test-runner-info
+		     '(list
+			next
+;; 			(emtt:make-explorable
+;; 			   :id
+;; 			   test-id
+;; 			   :path-prefix
+;; 			   (list "Emtest tester"))
+			nil
+			)
+		     (make-emt:testral:test-runner-info
 			   :name "Emtest"
+			   ;;:version "4.1"
 			   ;;$$REDESIGN ME - we no longer have
 			   ;;`emt:test-finder:conversions'.  Use a
 			   ;;list?  Are these still strings?  Perhaps
 			   ;;the tester defines these and groups them.
 			   :explore-methods-supported
-			   (mapcar #'car emt:test-finder:conversions))))
+			   (mapcar #'car emt:test-finder:conversions)))
 
 		  (t
-		     (list
-			(make-emt:test-ID:e-n:invalid)
-			(list "Bad explore type")
+		     '(list
+			next
+;; 			(emtt:make-explorable
+;; 			   :id
+;; 			   (make-emt:test-ID:e-n:invalid)
+;; 			   :path-prefix
+;; 			   (list "Bad explore type"))
+			nil
 			;;$$DESIGNME - this design is ugly, has parts
-			;;that overlap.
-			(make-emt:testral:suite
+			;;that overlap.  The results should indicate
+			;;that there's no such method.
+			)
+		     (make-emt:testral:suite
 			   :contents 
 			   (make-emt:testral:note-list
 			      :notes 
@@ -406,7 +458,7 @@ Each one must be a `emtt:explorable'" )
 			   '((ungraded 'error 
 				"Unrecognized internal explore type"))
 			   :info '() ;;Punt info for now.
-			   ))
+			   )
 		     )))))
 
       (funcall func
@@ -414,9 +466,14 @@ Each one must be a `emtt:explorable'" )
 	 (make-emt:testral:report
 	    :testrun-id "0" ;;Punt
 	    :tester-id "0" ;;Punt
-	    :test-id-prefix (emtt:explorable->path-prefix next)
+	    ;;Not used by this tester
+	    :test-id-prefix '()
 	    :suites 
-	    (list one-report)))))
+	    (list 
+	       (list
+		  next
+		  nil
+		  one-report))))))
 
 ;;;_  . Helper emtt:lib-sym->suites
 

@@ -29,8 +29,47 @@
 
 ;;;_ , Requires
 (require 'emtest/common/result-types)
-
+(eval-when-compile
+   (require 'cl))
 ;;;_. Body
+;;;_ , emtvr:suite-newstyle-id
+
+(deftype emtvr:suite-newstyle-id ()
+   "Can be a UUID string or a how-to-run object"
+   '(or string emt:test-ID:e-n))
+
+;;;_ , emtvr:suite-newstyle
+
+;;This is cted by receive.
+;;Note that changes will affect basically just `emtvr:one-newstyle'.
+
+(defstruct emtvr:suite-newstyle
+   "Report element in receive tree"
+   (id () :type emtvr:suite-newstyle-id
+      :doc "The \"official\" id.")
+
+   ;;Was a emt:test-ID:e-n
+   ;;$$CHANGED to a emtt:explorable
+   ;;Could even be a `emtt:method'
+   (how-to-run ():type emtt:explorable
+      :doc "How to run this as a test.")
+
+   ;;The full presentation path, including any prefix from report.
+   (presentation-path ()   
+      :type emt:testral:suite-id
+      :doc "The path to the corresponding node in the pathtree.")
+
+   ;;This is becoming more of a datestamp/circumstance info.
+   (testrun-id ()
+      :type emt:testral:testrun-id
+      :doc "The ID of the testrun that created this result.")
+   ;;$$RENAME ME  "result"
+   (suite ()     
+      :type (or null 
+	       emt:testral:suite 
+	       emt:testral:test-runner-info)
+      :doc "The result data itself"))
+
 
 ;;;_ , Presentables
 

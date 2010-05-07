@@ -29,6 +29,8 @@
 
 ;;;_ , Requires
 (require 'emtest/common/testral-types)
+(require 'emtest/common/result-types)
+(require 'emtest/viewer/view-types)
 
 ;;;_. Body
 ;;;_ , Receive reports alist
@@ -54,6 +56,7 @@
 (defun emtvr:newstyle (receiver report)
    ""
    (check-type receiver emtvr:data)
+   (check-type report emt:testral:report)
    (let
       (  (testrun-id 
 	    (emt:testral:report-testrun-id report))
@@ -79,17 +82,25 @@
 	 :test #'equal)))
 
 ;;;_  . emtvr:one-newstyle
+
+;;Become smarter about aliases.  Pick the "best" one as the id,
+;;favoring UUIDs (recognized as strings), allowing viewer's
+;;recommendations and the test-runner's.  Try all aliases in deleting
+;;it.
+
+;;Also, suites (sometimes) indicate what their current children are.  If
+;;other children are recorded, they no longer exist so remove them.
 (defun emtvr:one-newstyle 
    (receiver entry testrun-id prefix)
-   ""
+   "Receive and store a single test report."
    (check-type receiver emtvr:data)
-   (destructuring-bind (how-to-run id suite) entry
-      (let
+   (destructuring-bind (how-to-run dummy suite) entry
+      (let*
 	 ( 
+	    (id (emtt:explorable->path-prefix how-to-run))
+	    ;;Includes a possible prefix.
 	    (presentation-path (append prefix id))
-	    ;;When we allow reporting unique ids, key will prefer to
-	    ;;be one when possible.
-	    (key how-to-run))
+	    (key (emtt:explorable->id how-to-run)))
 	 ;;Handle special case: If suite reports that it has disappeared,
 	 ;;remove it from alist and from tree.  (How from tree?)
 	 (if
@@ -98,6 +109,7 @@
 	       (setf
 		  (emtvr:data-alist receiver)
 		  (delete* key (emtvr:data-alist receiver)
+		     :test #'equal
 		     :key #'emtvr:suite-newstyle-id))
 	       (funcall 
 		  (emtvr:data-tree-remove-cb receiver)
@@ -125,11 +137,11 @@
 		  (let 
 		     ((cell
 			 (make-emtvr:suite-newstyle
-			    :id key
-			    :how-to-run how-to-run
+			    :id                key
+			    :how-to-run        how-to-run
 			    :presentation-path presentation-path
-			    :testrun-id testrun-id
-			    :suite suite)))
+			    :testrun-id        testrun-id
+			    :suite             suite)))
 		     (push cell (emtvr:data-alist receiver))
 		     (funcall 
 			(emtvr:data-tree-insert-cb receiver)
