@@ -26,15 +26,16 @@
 
 ;; 
 
-;;Instead of a bare `require', put this before code that uses this.
+;;Instead writing a normal `require', use command
+;;`emt:insert:require-tp' where you would normally write (require
+;;'feature).  It will insert this special code
+'
+(eval-when-compile
+   (require 'emtest/testhelp/testpoint/requirer)
+   (emtp:require))
+
 ;;That means that if testpoint is not available, there is no error and
 ;;a testpoint will just eval the body forms.
-'
-(eval-and-compile
-   (when (not (require 'emtest/testhelp/testpoint nil t))
-      (defmacro emtp (id args &rest rest) 
-	 (declare (debug (symbolp (&rest form) body)))
-	 `(progn ,@rest))))
 
 ;;;_ , Requires
 

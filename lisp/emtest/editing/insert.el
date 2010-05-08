@@ -29,8 +29,8 @@
 
 ;;;_ , Requires
 
-(require 'org-id nil)
-(require 'rtest-edit)  ;;$$REMOVE ME SHould go away
+(require 'utility/uuid)
+(require 'rtest-edit)  ;;$$REMOVE ME Should go away
 (require 'pp)
 
 ;;;_. Body
@@ -84,11 +84,21 @@
    ""
    (interactive)
    (pp
-      '(unless (fboundp 'emt:deftest)
-	  (defmacro emt:deftest (&rest dummy))
+      '(unless (fboundp 'emt:deftest-3)
+	  (defmacro emt:deftest-3 (&rest dummy))
 	  (defmacro emt:if-avail (&rest dummy)))
       (current-buffer)))
+;;;_  . defconst emt:insert:clause-form 
+(defconst emt:insert:require-tp
+   '(eval-when-compile
+      (require 'emtest/testhelp/testpoint/requirer)
+      (emtp:require))
+   "Requires form for testpoint")
 
+(defun emt:insert:require-tp ()
+   "Insert a requires form for testpoint"
+   (interactive)
+   (pp emt:insert:require-tp (current-buffer)))
 
 ;;;_  . emt:insert-examples-dir
 (define-skeleton emt:insert-examples-dir
@@ -142,17 +152,7 @@ function."
 
 
 ;;;_  . emt:insert-clause
-'  ;;$$OBSOLETE
-(define-skeleton emt:insert-clause
-   "Insert an emtest clause"
-   ()
-   "
-   (  \"Situation: WRITEME.
-Response: WRITEME.\"
-      (progn) ;;Test-form
-      )
-"
-   )
+
 (defconst emt:insert:clause-form 
    '(()
        (progn
@@ -198,9 +198,8 @@ function."
 (defun emt:insert-persister ()
    "Insert a persister"
    (interactive)
-   ;;Check that org-id is provided
    (let
-      ((id (org-id-new "dbid")))
+      ((id (utiuid:generate "dbid")))
       (pp
 	 `(emt:persist ,id)
 	 (current-buffer))))
@@ -211,7 +210,7 @@ function."
    
    (interactive)
    (let
-      ((id (org-id-new "xmp")))
+      ((id (utiuid:generate "xmp")))
       (pp
 	 `(defconst ,(intern id)
 	     (emt:eg:define+ 
@@ -225,7 +224,7 @@ function."
    
    (interactive)
    (let
-      ((id (org-id-new "tp")))
+      ((id (utiuid:generate "tp")))
       ;;Would like to surround a region as skeletons can do.  But then
       ;;can't easily get `id'.
       (pp

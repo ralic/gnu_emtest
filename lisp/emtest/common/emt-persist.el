@@ -30,9 +30,15 @@
 ;;;_ , Requires
 
 ;;The rtests in here are all obsolete.
+(require 'rtest-define)
+(require 'emtest/testhelp/eg)
+(require 'emtest/testhelp/deep-type-checker)
+
 
 ;;The only backend supported at this time is persist.el.  
 (require 'tinydb/persist)
+(require 'utility/uuid)
+(require 'emtest/runner/emt-funcall) ;;$$OBSOLESCENT
 (require 'emtest/common/result-types)
 
 ;;;_. Body
@@ -739,8 +745,7 @@ Response: Return nil."
    (check-type persist-archive emt:db:persist-archive)
    
    ;;See [[id:d291192a-e37e-49ce-905f-4841aea19bc4]]
-   ;;`org-id-new' makes an almost certainly unique ID
-   (setf (emt:db:single->version-id single) (org-id-new))
+   (setf (emt:db:single->version-id single) (utiuid:generate))
     
    (push
       single

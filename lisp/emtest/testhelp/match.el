@@ -29,14 +29,22 @@
 
 ;;;_ , Requires
 
+(require 'rtest-tools)
+(require 'rtest-util)
+(require 'rtest-define)
 (when (not (fboundp 'rtest:deftest))
     (defmacro rtest:deftest (&rest dummy))
     (defmacro rtest:if-avail (&rest dummy)))
-;;`tehom-cl' needed for `constantp'
-(require 'tehom-cl)
-(require 'utility/accumulator)
+
+(require 'emtest/testhelp/eg)
 (eval-when-compile
    (require 'cl))
+
+;;`tehom-cl' needed for `constantp'
+(require 'tehom-cl)
+(require 'emtest/testhelp/standard)
+(require 'utility/accumulator)
+
 ;;;_. Body
 ;;;_ , Structures
 ;;;_  . Accumulator definition

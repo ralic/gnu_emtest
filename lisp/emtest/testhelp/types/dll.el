@@ -29,9 +29,11 @@
 
 ;;;_ , Requires
 
+(require 'rtest-define)
 (when (not (fboundp 'rtest:deftest))
     (defmacro rtest:deftest (&rest dummy))
     (defmacro rtest:if-avail (&rest dummy)))
+
 (require 'dll)
 
 ;;;_. Body

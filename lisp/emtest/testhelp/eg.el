@@ -31,9 +31,9 @@
 (require 'cl)  ;;cl supplies `remove*'
 (require 'utility/accumulator)
 (require 'utility/pending)
+(require 'emtest/testhelp/standard)
 (require 'emtest/testhelp/deep-type-checker nil)
 (require 'viewers/formatter)  ;;Just for the browse functionality
-
 
 ;;;_. Body
 

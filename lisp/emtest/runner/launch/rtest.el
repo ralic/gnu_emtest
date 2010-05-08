@@ -29,7 +29,19 @@
 
 ;;;_ , Requires
 
+(require 'rtest-define)
+
+(require 'emtest/runner/launch)
 (require 'emtest/runner/launch/testhelp)
+
+(require 'emtest/runner/define)
+(require 'emtest/runner/tester)
+(require 'emtest/testhelp/eg)
+(require 'emtest/testhelp/mocks/filebuf)
+(require 'emtest/testhelp/deep-type-checker)
+(require 'emtest/testhelp/testpoint)
+(require 'emtest/testhelp/standard)
+(require 'emtest/testhelp/misc) ;;For emt:util:all-different
 
 ;;;_. Body
 
@@ -252,48 +264,21 @@ Behavior: The clause still gets the same test-ID as before."
 	       (emt:suite-sym-at-point))))))
 
 
-;;;_   , Test data
-(defconst emtt:launch:thd:examples
-   (emt:eg:define+ ;;xmp:699d3b9f-cb26-4964-b23d-94b07a44d75d
-      ((project emtest)(library tester)(section entry-points))
-      (transparent-tags () (type))
-      (group
-	 ((count 2))
-	 (item ((type name)) "example-2")
-	 (item ((type count)) 2)
-	 (item ((type suite-sym-list)) '(foo bar))
-	 (item ((type file-load-history))
-	    `(,(emt:eg (type name))
-		,@(emt:eg (type suite-sym-list)) 
-		(provide . example-2))))
-   
-      (group
-	 ((count 1))
-	 (item ((type name)) "example-1")
-	 (item ((type count)) 1)
-	 (item ((type suite-sym-list)) '(foo))
-	 (item ((type file-load-history))
-	    `(,(emt:eg (type name))
-		,@(emt:eg (type suite-sym-list)) 
-		(provide . example-1))))
-   
-      (item ((type load-history))
-	 (emt:eg:map count nil
-	    (emt:eg (type file-load-history))))))
 ;;;_   , emtt:lib-sym->suites
 
 (rtest:deftest emtt:lib-sym->suites
-
+   ;;Could loop over several examples.
    (  "Situation: There are two suites in the library.
 Response: Return a list of those suites' symbols."
       (emtt:library:th ((count 2)) 
 	 (let* 
-	    ((syms (emtt:lib-sym->suites (emt:eg (type name)))))
+	    ((syms (emtt:lib-sym->suites (emt:eg (type sym)))))
 	    (assert
 	       (equal
 		  (length syms)
 		  (emt:eg (type count)))
-	       t)))))
+	       t)
+	    t))))
 
 ;;;_  . Tests
 (rtest:deftest emtt:library
@@ -306,38 +291,38 @@ Response: The suite-handler part runs exactly twice
 \(Not tested: Exactly those two suites are seen.)
 \(Not tested: Those suites have distinct IDs.)
 "
-      (emt:eg:with emt:testral:thd:examples ()
-	 (emtt:library:th ((count 2))
-	    (emtp:eval
-	       (emtt:library
-		  (emt:eg (type name))
-		  ;;$$Library does not return a result object yet.  Will
-		  ;;type-check it.
-		  ;;(emty:check x emt:result-group)
-		  #'ignore)
-	    
-	       (tp-reached tp:798212b4-1abe-4779-beb1-baf53ff39a8c 
-		  (emt:eg (type count)))
-	       (tp* 
-		  (  :id tp:a084136e-8f02-49a5-ac0d-9f65509cedf2 
-		     :count nil
-		     :fallthru t)
-		  (test-id)
-		  (typecase test-id
-		     ;;Intercept suite
-		     (emt:test-ID:e-n:suite
-			;;A reached-point for counting invocations.
-			(emtp tp:798212b4-1abe-4779-beb1-baf53ff39a8c
-			   ())
-			;;Don't try to explore its clauses, return
-			;;instead.
-			(throw 'emtp:tag-return nil))
-		     ;;Let library fall thru to handler
-		     (emt:test-ID:e-n:library:elisp-load t)
-		     ;;We don't expect to see any other types of
-		     ;;explores.
-		     (t
-			(error "This test shouldn't reach here")))))))))
+      (emtt:library:th ((count 2))
+	 (emtp:eval
+	    (emtt:library
+	       (emt:eg (type sym))
+	       ;;$$Library does not return a result object yet.  Will
+	       ;;type-check it.  But for now, we can't pass any
+	       ;;argument. 
+	       ;;(emty:check x emt:result-group)
+	       #'ignore)
+	       
+	    (tp-reached tp:798212b4-1abe-4779-beb1-baf53ff39a8c 
+	       (emt:eg (type count)))
+	    (tp* 
+	       (  :id tp:a084136e-8f02-49a5-ac0d-9f65509cedf2 
+		  :count nil
+		  :fallthru t)
+	       (test-id)
+	       (typecase test-id
+		  ;;Intercept suite
+		  (emt:test-ID:e-n:suite
+		     ;;A reached-point for counting invocations.
+		     (emtp tp:798212b4-1abe-4779-beb1-baf53ff39a8c
+			())
+		     ;;Don't try to explore its clauses, return
+		     ;;instead.
+		     (throw 'emtp:tag-return nil))
+		  ;;Let library fall thru to handler
+		  (emt:test-ID:e-n:library:elisp-load t)
+		  ;;We don't expect to see any other types of
+		  ;;explores.
+		  (t
+		     (error "This test shouldn't reach here"))))))))
 
 ;;;_. Footers
 ;;;_ , Provides

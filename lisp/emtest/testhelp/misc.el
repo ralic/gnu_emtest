@@ -1,6 +1,8 @@
 ;;;_ emtest/testhelp/misc.el --- Utilities for defining tests with emtest
 
-;; Copyright (C) 2007  Dis
+;;;_. Headers
+;;;_ , License
+;; Copyright (C) 2007  Tom Breton (Tehom)
 
 ;; Author: Tom Breton (Tehom) <tehom@localhost.localdomain>
 ;; Keywords: lisp
@@ -20,9 +22,12 @@
 ;; the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 ;; Boston, MA 02111-1307, USA.
 
-;;; Commentary:
+;;;_ , Commentary:
 
 ;; Test helpers of general usefulness
+;;;_ , Requires
+(require 'rtest-util)
+(require 'rtest-define)
 
 ;;;_. Code:
 

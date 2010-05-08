@@ -261,7 +261,8 @@ Each one must be a `emtt:explorable'" )
       (
 	 (test-id  ;;This is now of type `emt:test-ID:e-n'
 	    (emtt:explorable->id next))
-	 ;;Passed around, but only used a little, and then only as a cache.
+	 ;;Not used - the one time it's apparently used below is
+	 ;;actually something else.
 	 (props
 	    (emtt:explorable->properties next))
 	 ;;This largely uses the original `next' as the launch
@@ -272,19 +273,9 @@ Each one must be a `emtt:explorable'" )
 	       (test-id)
 	       (typecase test-id
 		  (emt:test-ID:e-n:form
-		     '(list
-			next
-;;  			(emtt:make-explorable
-;;  			   :id 
-;;  			   test-id
-;;  			   :path-prefix
-;;  			   '("literal form")
-;;  			   :properties props)
-			
-			nil
-			)
 		     (emtt:explore-clause
-			   (emt:test-ID:e-n:form-test-form test-id)))
+			(emt:test-ID:e-n:form-test-form test-id)))
+
 		  ;;`clause-list' from where?
 		  (emt:test-ID:e-n:indexed-clause
 		     (let*
@@ -295,16 +286,6 @@ Each one must be a `emtt:explorable'" )
 			   (index
 			      (emt:test-ID:e-n:indexed-clause-clause-index
 				 test-id)))
-			'(list
-			   next
-;;  			   (emtt:make-explorable
-;;  			      :id
-;;  			      test-id
-;;  			      :path-prefix
-;;  			      (list (format "Clause %d" index))
-;;  			      :properties props)
-			   nil
-			   )
 			(emtt:destructure-suite-3 suite-sym
 			      (emtt:explore-clause 
 				 (nth index clause-list)))))
@@ -343,19 +324,7 @@ Each one must be a `emtt:explorable'" )
 				 (push 
 				    test-id
 				    emt:test-finder:pending-list))
-			      
-			      '(list
-				 next
-;;  				 (emtt:make-explorable
-;;  				    :id
-;;  				    test-id
-;;  				    :path-prefix
-;;  				    path)
-				 nil
-				 )
 			      (make-emt:testral:suite
-				    ;;This will be the same contents
-				    ;;as are made pending.
 				    :contents 
 				    (emt:testral:make-runform-list
 				       :els (reverse rv-list-to-run))
@@ -374,49 +343,32 @@ Each one must be a `emtt:explorable'" )
 			      (emtt:lib-sym->suites lib-sym))
 			   (path
 			      (list "library" (symbol-name lib-sym)))
-			   (list-to-run '()))
+			   (list-to-run
+			      (mapcar
+				 #'(lambda (suite-sym)
+				      (emtt:make-explorable
+					 :id
+					 (make-emt:test-ID:e-n:suite
+					    :suite-ID suite-sym)
+					 ;;This should append lib name.
+					 :path-prefix path
+					 ;;For now, libraries have no
+					 ;;properties. 
+					 :properties ()))
+				 suite-list)))
 			
-			(dolist (suite-sym suite-list)
-			   (let
-			      ((test-id
-				  (make-emt:test-ID:e-n:suite
-				     :suite-ID suite-sym)))
-			      (push test-id list-to-run)
-			      (push 
-				 (emtt:make-explorable
-				    :id test-id 
-				    :path-prefix path
-				    ;;For now, libraries have no
-				    ;;properties. 
-				    :properties ())
-				 emt:test-finder:pending-list)))
-			'(list
-			   next
-;;  			   (emtt:make-explorable
-;;  			      :id
-;;  			      test-id
-;; 			      :path-prefix
-;;  			      path)
-			   nil
-			   )
+			(callf2 append 
+			   list-to-run
+			   emt:test-finder:pending-list) 
 			(make-emt:testral:suite
-			      :contents list-to-run
-			      :badnesses '() ;;Punt - only if it crapped
-			      ;;out right here.
-			      :info '()	;;Punt info for now.
-			      )))
+			   :contents list-to-run
+			   :badnesses '() ;;Punt - only if it crapped
+			   ;;out right here.
+			   :info '() ;;Punt info for now.
+			   )))
 		  
 		  ;;Tell receiver about this tester
 		  (emt:test-ID:e-n:hello
-		     '(list
-			next
-;; 			(emtt:make-explorable
-;; 			   :id
-;; 			   test-id
-;; 			   :path-prefix
-;; 			   (list "Emtest tester"))
-			nil
-			)
 		     (make-emt:testral:test-runner-info
 			   :name "Emtest"
 			   ;;:version "4.1"
@@ -428,37 +380,28 @@ Each one must be a `emtt:explorable'" )
 			   (mapcar #'car emt:test-finder:conversions)))
 
 		  (t
-		     '(list
-			next
-;; 			(emtt:make-explorable
-;; 			   :id
-;; 			   (make-emt:test-ID:e-n:invalid)
-;; 			   :path-prefix
-;; 			   (list "Bad explore type"))
-			nil
-			;;$$DESIGNME - this design is ugly, has parts
-			;;that overlap.  The results should indicate
-			;;that there's no such method.
-			)
+		     ;;Not clear that this answers at a sufficiently
+		     ;;high level.  It must indicate that there's no
+		     ;;such method.
 		     (make-emt:testral:suite
-			   :contents 
-			   (make-emt:testral:note-list
-			      :notes 
-			      (list
-				 (make-emt:testral:error-raised
-				    :err 
-				    '(error 
-					"Unrecognized internal explore type")
-				    :badnesses 
-				    '((ungraded 'error 
-					 "Unrecognized internal explore type"))
-				    )))
-			   ;;Actual form is TBD.
-			   :badnesses 
-			   '((ungraded 'error 
-				"Unrecognized internal explore type"))
-			   :info '() ;;Punt info for now.
-			   )
+			:contents 
+			(make-emt:testral:note-list
+			   :notes 
+			   (list
+			      (make-emt:testral:error-raised
+				 :err 
+				 '(error 
+				     "Unrecognized internal explore type")
+				 :badnesses 
+				 '((ungraded 'error 
+				      "Unrecognized internal explore type"))
+				 )))
+			;;Actual form is TBD.
+			:badnesses 
+			'((ungraded 'error 
+			     "Unrecognized internal explore type"))
+			:info '() ;;Punt info for now.
+			)
 		     )))))
 
       (funcall func
@@ -476,12 +419,19 @@ Each one must be a `emtt:explorable'" )
 		  one-report))))))
 
 ;;;_  . Helper emtt:lib-sym->suites
-
+;;$$MOVE ME And reorganize.  Each how-to-run type should go into its own
+;;subdirectory.
+;;$$RETHINK ME Should this take symbol or string?  We seemed to
+;;convert it and then convert it back.
 (defun emtt:lib-sym->suites (lib-sym)
    ""
    (let*
       (
-	 (lib-data (assoc lib-sym load-history))
+	 (lib-path
+	    (locate-library
+	       (symbol-name lib-sym)))
+	 ;;
+	 (lib-data (assoc lib-path load-history))
 	 ;;Or could (remove* :test-not)
 	 ;;$$CHANGE ME  Also allow the lib's symbol as a test-suite
 	 ;;symbol.

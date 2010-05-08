@@ -29,12 +29,19 @@
 
 ;;;_ , Requires
 
+(require 'rtest-define)
 (when (not (fboundp 'rtest:deftest))
     (defmacro rtest:deftest (&rest dummy))
     (defmacro rtest:if-avail (&rest dummy)))
+(require 'emtest/testhelp/eg)
+(require 'emtest/testhelp/persist)
+
 (require 'emtest/common/testral-types)
-;;OBSOLETE REQUIREMENT
-;;(require 'emtest/runner/tester)  ;;For specialing emt:testral:*events-seen*
+(require 'emtest/common/result-types)
+(require 'emtest/runner/testral)
+(require 'emtest/runner/emt-funcall)  ;;$$OBSOLESCENT
+
+
 (defvar emt:report-control:thd:report-all)
 ;;;_ , Customization
 
@@ -52,6 +59,24 @@
    ""
    (emt:testral:add-note
       (make-emt:testral:doc :str str)))
+;;;_  . emt:stage
+(defmacro emt:stage (stage-args &rest body)
+   "Run BODY in an Emtest stage"
+   
+   `(progn ,@body))
+
+;;Usage, something like:
+'
+(emt:eg:narrow-f
+   `(list (list ',tag ,name))
+   `(emt:stage 
+       ("Iteration"
+	  ;;This would be a parameter note
+	  (concat 
+	     (prin1-to-string ',tag)
+	     " = " 
+	     (prin1-to-string ,name)))
+       ,@body))
 
 ;;;_ , "should"
 ;;;_  . emt:wrap-form

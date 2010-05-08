@@ -29,11 +29,8 @@
 
 ;;;_ , Requires
 
-(when (not (fboundp 'rtest:deftest))
-    (defmacro rtest:deftest (&rest dummy))
-    (defmacro rtest:if-avail (&rest dummy)))
+(require 'emtest/common/result-types)
 ;;Requires the shared persist functionality
-;;Requires tester at least for the special-variable declarations.
 
 ;;;_. Body
 

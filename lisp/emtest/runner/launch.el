@@ -87,13 +87,13 @@ NB, TEST-FORM is a *test-form*, which should begin with a docstring."
       callback))
 
 ;;;_ , emtt:dispatch-normal
-(defun emtt:dispatch-normal (what-to-run &optional prefix)
+(defun emtt:dispatch-normal (what-to-run &optional prefix receiver)
    ""
    (emt:test-finder:top 
       what-to-run 
       prefix  ;;Default is the empty list.
       (prin1-to-string (incf emtt:testrun-counter))
-      emtt:receiver-f))
+      (or receiver emtt:receiver-f)))
 
 ;;;_ , emtt:sexp-at-point
 
@@ -196,11 +196,12 @@ With non-nil ARG, look forwards for it."
 ;;;_ , emtt:library
 
 ;;;###autoload
-(defun emtt:library (library)
+(defun emtt:library (library &optional receiver)
    "Run the test suites of LIBRARY"
    
    (interactive
       (list
+	 ;;$$IMPROVE ME Split this off.
 	 (completing-read 
 	    "Run test suites of which library: "
 	    load-history
@@ -209,14 +210,18 @@ With non-nil ARG, look forwards for it."
 	    nil	;;No narrowing provided yet.
 	    t)))
 
+   ;;Want to use locate-library but can't easily test it.  But with
+   ;;dirtree I could.  In fact, I can just use an example dirtree
+   ;;read-only. 
    (let*
       (
 	 (test-id
 	    (make-emt:test-ID:e-n:library:elisp-load
 	       ;;$$INSPECTME Should this by symbol or string?  Or
 	       ;;allow both?
+	       ;;Or change type to know both lib symbol and true path?
 	       :load-name (intern-soft library))))
-      (emtt:dispatch-normal test-id)))
+      (emtt:dispatch-normal test-id nil receiver)))
 
 
 ;;;_. Footers
