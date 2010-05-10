@@ -44,7 +44,7 @@
 
    (check-type view-node emtvp-node)
    (list*
-      "Emtest" "\n"
+      "Emtest results" "\n"
       (emtvf:node view-node data-list)))
 
 ;;;_  . emtvf:node
@@ -54,9 +54,6 @@ SUITE must be an emtvp-node-data.
 DATA-LIST must be a list of alists."
 
    (check-type view-node emtvp-node)
-   ;;Temporary hack.  This will really entwine with pathtree dirtiness
-   ;;and updates.  Or wookie dirtiness?
-   ;;(emtvr:sum-node-badnesses view-node)
 
    ;;WRITEME Get depth from data-list, build a new one that we'll pass
    ;;down.
@@ -154,20 +151,31 @@ DATA-LIST must be a list of alists."
 	    (emt:view:TESTRAL-unexpanded
 	       '("Unexpanded TESTRAL data"))
 
+	    ;;$ADD ME Add a case for the top node, above testers.  And
+	    ;;a node-type for it.  Which is to be the initial node.
+
 	    ;;Base type, for blank nodes.
 	    (emt:view:presentable
-	       (list*
-		  "\n"
-		  (hiformat:map 
-		     ;;Formatting for each child
-		     #'(lambda (obj data &rest d)
-			  (list
-			     `(dynamic ,obj 
-				 ,(loal:acons 'depth (1+ depth) data)
-				 ,#'emtvf:node)))
-		     children
-		     :separator '("\n")
-		     :data-loal data-list)))
+	       (if
+		  ;;Case is not allowed for now because it doesn't work.
+		  (= (length children) 1) ;;(and nil )
+		  ;;For singletons, use the only child directly.
+		  (list
+		     `(dynamic ,(car children)
+			 ,data-list
+			 ,#'emtvf:node))
+		  (list*
+		     "\n"
+		     (hiformat:map 
+			;;Formatting for each child
+			#'(lambda (obj data &rest d)
+			     (list
+				`(dynamic ,obj 
+				    ,(loal:acons 'depth (1+ depth) data)
+				    ,#'emtvf:node)))
+			children
+			:separator '("\n")
+			:data-loal data-list))))
 
 	    ;;`nil' should not come here.
 	    ))))
