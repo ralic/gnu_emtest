@@ -47,6 +47,20 @@
       "Emtest results" "\n"
       (emtvf:node view-node data-list)))
 
+;;;_  . emtvf:headline-w-badnesses
+;;$$TEST ME
+;;$$USE ME
+(defun emtvf:headline-w-badnesses (depth badnesses data-list)
+   ""
+   (append
+      (list
+	 "\n"
+	 (make-string depth ?*) 
+	 " " name
+	 " ") 
+      (emtvf:sum-badnesses badnesses data-list) 
+      (list "\n")))
+
 ;;;_  . emtvf:node
 (defun emtvf:node (view-node data-list)
    "
@@ -55,8 +69,6 @@ DATA-LIST must be a list of alists."
 
    (check-type view-node emtvp-node)
 
-   ;;WRITEME Get depth from data-list, build a new one that we'll pass
-   ;;down.
    (let
       ((suite (emtvp-node-data view-node))
 	 (name
@@ -66,6 +78,13 @@ DATA-LIST must be a list of alists."
 	 (depth
 	    (loal:val 'depth data-list 0)))
       (append
+	 ;;Use the encap, but do so in the particular cases, so they
+	 ;;can deal with singletons.
+;; 	 (emtvf:headline-w-badnesses 
+;; 	    (1+ depth)
+;; 	    (emt:view:presentable-sum-badnesses suite)
+;; 	    data-list)
+	 
 	 (list
 	    ;;Headline groups with the item itself, not with its parent.
 	    ;;Even blank items will print one.
@@ -76,7 +95,7 @@ DATA-LIST must be a list of alists."
 	 (emtvf:sum-badnesses
 	    (emt:view:presentable-sum-badnesses suite) 
 	    data-list) 
-	 (list "\n\n")
+	 (list "\n")
 	 (etypecase suite
 	    (emt:view:suite-newstyle
 	       (let*
@@ -165,6 +184,8 @@ DATA-LIST must be a list of alists."
 			 ,data-list
 			 ,#'emtvf:node))
 		  (list*
+		     ;;Copy/move the call to
+		     ;;`emtvf:headline-w-badnesses' to here.
 		     "\n"
 		     (hiformat:map 
 			;;Formatting for each child

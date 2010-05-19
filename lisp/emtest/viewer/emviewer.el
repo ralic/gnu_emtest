@@ -56,7 +56,8 @@
 ;;NOT IN USE YET
 (defvar emtve:*viewer* 
    nil
-   "Global Emviewer object" )
+   "Global Emviewer object.
+An `emtve' or `nil'." )
 (defvar emtve:report-buffer nil 
    "" )
 ;;result object from receive.  Now it should live here.

@@ -394,9 +394,37 @@ unreversed after all the pushing)"
    ;;If `doc' errors, that should not keep the form from running.
    )
 
+;;;_  . emtt:map&trap
 
-
-
+(emt:deftest-3 emtt:map&trap
+   (nil
+      (progn
+	 (emt:doc "Proves: Maps over values.")
+	 (assert
+	    (equal
+	       (emtt:map&trap
+		  #'eval
+		  '(12 (+ 1 2)))
+	       '(12 3)))))
+   
+   (nil
+      (let ((a 0))
+	 (emt:doc "Situation: First form errors. Second one increments
+      a variable")
+	 (assert
+	    (emt:gives-error
+	       (emtt:map&trap
+		  #'eval 
+		  '((error "Example error")
+		      (incf a)))))
+	 
+	 (emt:doc "Response: The error is raised, which shows that the
+	 first clause ran.") 
+	 (emt:doc "Response: The variable has been incremented, which
+	 shows that the second clause ran.")
+	 (assert
+	    (equal a 1)
+	    t))))
 
 
 ;;;_. Footers
