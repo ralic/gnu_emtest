@@ -45,22 +45,49 @@
 
 
 ;;;_ , test surrounders (Not used yet)
-;;;_  . List of the usual test-protectors
+;;;_  . emtts:always-surrounders
 
-(defconst emtts:usual-test-protectors 
+(defconst emtts:always-surrounders 
    '(
-       test-message-trap
-       test-error-trap
-       save-window-excursion
-       with-temp-buffer
+       ;;$$WRITE ME
+       ;;emtt:message-trap
+       (save-window-excursion)
+       (with-temp-buffer)
+       ;;$$WRITE ME as a function
        ;;(with-timeout 1.0) ;;But respond to properties.
-       ;;Add other *standard* ones here.  This should not be
-       ;;customized.
+
+       ;;Add other *standard* ones here.  
        )
-   "" )
+   "Standard surrounders.
+
+This should not be customized because it should not vary between
+installations lest it affect results.
+
+Error-trapping does not go here because that is an inherent part of
+emtest tester." )
+;;;_  . emtts:extra-surrounders
+(defvar emtts:extra-surrounders
+   '()
+   "Non-standard surrounders added by helper modules as they are loaded." )
+
+;;;_  . emtts:set-surrounder
+(defun emtts:set-surrounder (surrounder &optional where)
+   "Add SURROUNDER to emtest's surrounders for this session.
+WHERE is a dummy argument for now, eventually it will allow them to be
+placed first or last."
+   
+   (pushnew surrounder emtts:extra-surrounders))
+;;;_  . emtts:clear-surrounder
+(defun emtts:clear-surrounder (filter)
+   "Remove surrounders that match FILTER.
+Not implemented yet."
+   
+   (error "Not implemented yet"))
+
 ;;;_  . Test helper
 
 ;;Assumes tests-own-args can have the form of an empty list.
+'  ;;$$OBSOLETE
 (defconst emtts:thd:simplest-tests-own-args () "" )
 
 ;;;_  . Place form within test-protectors
@@ -74,7 +101,7 @@
 	 (setq form (list i form)))))
 
 ;;;_  . Figure out any extra test-protectors
-
+;;$$OBSOLETE, but can be replaced.
 (defun emtts:get-extra-protectors (tests-own-args)
    "Return the list of test-protectors in TESTS-OWN-ARGS."
    
@@ -90,23 +117,29 @@
 	 (error "protectors is not a list"))
       protectors))
 
-;;;_  . Figure out surrounders (Not used (yet?))
-
-(defun emtts:get-surrounders (tests-own-args debug)
-   ""
+;;;_  . emtts:get-surrounders
+;;$$USE ME
+(defun emtts:get-surrounders (props)
+   "Return a list of the appropriate surrounders for a form.
+PROPS is the property list of the form."
    (append
-      emtts:usual-test-protectors
-      (emtts:get-extra-protectors tests-own-args)
-      ;;Debugging, if present, is innermost.
-      (if debug
-	 '(emtts:with-debugging)
-	 ())))
+      emtts:always-surrounders
+      emtts:extra-surrounders
+      (emtt:get-properties :surrounders props)
+      ;;Figure out whether to debug
+
+      ;;(emtts:get-extra-protectors tests-own-args)
+      ;;Debugging, if present, is innermost.  Debugging is being rethunk.
+;;       (if debug
+;; 	 '(emtts:with-debugging)
+;; 	 ())
+
+      ))
 
 ;;;_  . Some surrounders
 
 ;;;_   , emtts:with-debugging
 ;;Exists just to make `emtts:get-surrounders' neater.
-
 (defmacro emtts:with-debugging (&rest form)
    ""
    
@@ -118,21 +151,29 @@
 
 ;;Can't easily automatically test that it in fact debugs.
 
-;;;_   , emtt:trap-errors (May be obsolete or may get used again)
-
+;;;_   , emtt:trap-errors
+;;$$USE ME
 (defmacro emtt:trap-errors (&rest body)
    ""
-   
-   `(condition-case err
-       (progn ,@body)
-       ('emt:already-handled
-	  ;;For now, do nothing.
-	  nil)
-       (error 
-	  (error "Not handling unexpected errors yet"))))
+   `(progn
+       (declare (special emt:testral:*events-seen* emtt:*abort-p*))
+       (condition-case err
+	  (progn ,@body)
+	  ('emt:already-handled
+	     (setq emtt:*abort-p* t))
+	  ;;$$ADD ME an error case for dormancy pseudo-errors.  It
+	  ;;should push a dormancy note (here, not lower down, which
+	  ;;may be somehow wrong?)
+	  (error
+	     (push
+		(make-emt:testral:error-raised
+		   :err err
+		   :badnesses '(ungraded))
+		emt:testral:*events-seen*)
+	     (setq emtt:*abort-p* t)))))
 
 
-;;;_ , NEW surrounders
+;;;_ , emtt:add-surrounders
 (defun emtt:add-surrounders (form surrounders props)
    "Add SURROUNDERS around FORM.
 SURROUNDERS is a list whose elements must each be either:
@@ -150,8 +191,9 @@ PROPS is a property list."
 		((emtm:proper-list-p surrounder-0) 
 		   surrounder-0)
 		((functionp surrounder-0)
-		   ;;$$MAKE ME SAFE Protect this call.  By surrounding
-		   ;;it, but take care not to recurse infinitely.
+		   ;;$$MAKE ME SAFE Protect this call.  Use
+		   ;;`emtt:trap-errors'?  And examine `emtt:*abort-p*'
+		   ;;afterwards.
 		   (funcall surrounder-0 props))
 		(t
 		   ;;Otherwise complain and stop.  For now, do it cheap.
@@ -200,14 +242,16 @@ Each one must be a `emtt:explorable'" )
    ""
    (let
       (
-	 ;;(emt:trace:current-event-list ())
-	 (emt:testral:*events-seen* (emt:testral:create))
 	 (emt:testral:*parent-id* 0)
 	 ;;Counter to make unique IDs.  Although UUIDs are appealing,
 	 ;;they are slower to make.
 	 (emt:testral:*id-counter* 1)
-	 
+	 (emt:testral:*events-seen* (emt:testral:create))
+	 (emtt:*abort-p* nil)
 	 ;;Only for problems that manifest right here, not lower down.
+	 ;;$$RETHINK ME: Instead, be signalled to abort (that's
+	 ;;compatible with `emtt:trap-errors' and if we see
+	 ;;emtt:*abort-p*, set that badness)
 	 (badnesses '()))
 
       ;;This defines `props'
@@ -223,12 +267,14 @@ Each one must be a `emtt:explorable'" )
 		  ;;form
 		  (emtt:add-surrounders 
 		     form 
-		     (emtt:get-properties :surrounders props) 
+		     ;;(emtt:get-properties :surrounders props) 
+		     (emtts:get-surrounders props)
 		     props)
 		  ))
+	    ;;$$USE STANDARD
+	    ;;(emtt:trap-errors (eval form-1))
 	    (condition-case err
 	       (eval form-1)
-	       ;;$$ADD ME an error case for dormancy pseudo-errors.
 	       (error
 		  (push
 		     (make-emt:testral:error-raised
@@ -350,8 +396,11 @@ Each one must be a `emtt:explorable'" )
 					 :id
 					 (make-emt:test-ID:e-n:suite
 					    :suite-ID suite-sym)
-					 ;;This should append lib name.
-					 :path-prefix path
+					 ;;CHANGED to append lib name.
+					 :path-prefix 
+					 (append 
+					    path
+					    (list (symbol-name suite-sym)))
 					 ;;For now, libraries have no
 					 ;;properties. 
 					 :properties ()))
@@ -423,6 +472,15 @@ Each one must be a `emtt:explorable'" )
 ;;subdirectory.
 ;;$$RETHINK ME Should this take symbol or string?  We seemed to
 ;;convert it and then convert it back.
+
+;;$$CHANGE ME Also offer everything in the /tests library, and try to
+;;load it.  Add tests for this behavior.
+
+;;$$CHANGE ME Could also offer tests on every library that this
+;;library requires.  Gotta control execution, though.  Don't want to
+;;run them too eagerly.  So this would have to return more than just a
+;;symbol for each.  In fact, it could become the workhorse for the
+;;`emt:test-ID:e-n:library:elisp-load' case
 (defun emtt:lib-sym->suites (lib-sym)
    ""
    (let*
@@ -430,20 +488,19 @@ Each one must be a `emtt:explorable'" )
 	 (lib-path
 	    (locate-library
 	       (symbol-name lib-sym)))
-	 ;;
 	 (lib-data (assoc lib-path load-history))
-	 ;;Or could (remove* :test-not)
 	 ;;$$CHANGE ME  Also allow the lib's symbol as a test-suite
 	 ;;symbol.
 	 ;;List of symbols.
 	 (suites
-	    (loop
-	       for x in (cdr lib-data)
-	       if 
-	       (and
-		  (symbolp x)
-		  (get x 'emt:suite))
-	       collect x)))
+	    (delq nil
+	       (mapcar
+		  #'(lambda (x)
+		       (let
+			  ((sym (emtl:ldhst-el->symbol x)))
+			  (when (get sym 'emt:suite) sym)))
+		  (cdr lib-data)))))
+      
       suites))
 
 
