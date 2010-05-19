@@ -1,4 +1,4 @@
-;;;_ emtest/runner/tester/tests.el --- Tests for tester itself
+;;;_ emtest/runner/surrounders/testhelp.el --- Testhelp for surrounders
 
 ;;;_. Headers
 ;;;_ , License
@@ -24,19 +24,25 @@
 
 ;;;_ , Commentary:
 
-;; This does not yet contain the tests in rtest.el
+;; 
 
 
 ;;;_ , Requires
-(require 'emtest/runner/tester)
+
+
 
 ;;;_. Body
+;;;_ , emtts:th:insulate
+(defmacro emtts:th:insulate (&rest body)
+   ""
+   
+   `(progn ,@body))
 
 
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'emtest/runner/tester/tests)
+(provide 'emtest/runner/surrounders/testhelp)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -44,4 +50,4 @@
 ;;;_  + End:
 
 ;;;_ , End
-;;; emtest/runner/tester/tests.el ends here
+;;; emtest/runner/surrounders/testhelp.el ends here

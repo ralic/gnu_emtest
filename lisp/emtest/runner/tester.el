@@ -39,193 +39,27 @@
 (require 'emtest/common/testral-types)
 (require 'emtest/runner/testral)
 (require 'emtest/runner/define)
-;;$$CLEAN ME UP - move that call into a list utility. 
-(require 'emtest/testhelp/match) ;;Just for `emtm:proper-list-p'
+(require 'emtest/runner/surrounders) ;;Just used by the clause explorer
 ;;;_. Body
 
 
-;;;_ , test surrounders (Not used yet)
-;;;_  . emtts:always-surrounders
-
-(defconst emtts:always-surrounders 
-   '(
-       ;;$$WRITE ME
-       ;;emtt:message-trap
-       (save-window-excursion)
-       (with-temp-buffer)
-       ;;$$WRITE ME as a function
-       ;;(with-timeout 1.0) ;;But respond to properties.
-
-       ;;Add other *standard* ones here.  
-       )
-   "Standard surrounders.
-
-This should not be customized because it should not vary between
-installations lest it affect results.
-
-Error-trapping does not go here because that is an inherent part of
-emtest tester." )
-;;;_  . emtts:extra-surrounders
-(defvar emtts:extra-surrounders
-   '()
-   "Non-standard surrounders added by helper modules as they are loaded." )
-
-;;;_  . emtts:set-surrounder
-(defun emtts:set-surrounder (surrounder &optional where)
-   "Add SURROUNDER to emtest's surrounders for this session.
-WHERE is a dummy argument for now, eventually it will allow them to be
-placed first or last."
-   
-   (pushnew surrounder emtts:extra-surrounders))
-;;;_  . emtts:clear-surrounder
-(defun emtts:clear-surrounder (filter)
-   "Remove surrounders that match FILTER.
-Not implemented yet."
-   
-   (error "Not implemented yet"))
-
-;;;_  . Test helper
-
-;;Assumes tests-own-args can have the form of an empty list.
-'  ;;$$OBSOLETE
-(defconst emtts:thd:simplest-tests-own-args () "" )
-
-;;;_  . Place form within test-protectors
-
-(defun emtts:surround (form protectors)
-   ""
-   (let
-      ((rv-protectors (reverse protectors)))
-      
-      (dolist (i rv-protectors form)
-	 (setq form (list i form)))))
-
-;;;_  . Figure out any extra test-protectors
-;;$$OBSOLETE, but can be replaced.
-(defun emtts:get-extra-protectors (tests-own-args)
-   "Return the list of test-protectors in TESTS-OWN-ARGS."
-   
-   (let*
-      (
-	 (got-protectors
-	    (memq 'protectors tests-own-args))
-	 (protectors 
-	    (if got-protectors
-	       (car got-protectors)
-	       ())))
-      (unless (listp protectors)
-	 (error "protectors is not a list"))
-      protectors))
-
-;;;_  . emtts:get-surrounders
-;;$$USE ME
-(defun emtts:get-surrounders (props)
-   "Return a list of the appropriate surrounders for a form.
-PROPS is the property list of the form."
-   (append
-      emtts:always-surrounders
-      emtts:extra-surrounders
-      (emtt:get-properties :surrounders props)
-      ;;Figure out whether to debug
-
-      ;;(emtts:get-extra-protectors tests-own-args)
-      ;;Debugging, if present, is innermost.  Debugging is being rethunk.
-;;       (if debug
-;; 	 '(emtts:with-debugging)
-;; 	 ())
-
-      ))
-
-;;;_  . Some surrounders
-
-;;;_   , emtts:with-debugging
-;;Exists just to make `emtts:get-surrounders' neater.
-(defmacro emtts:with-debugging (&rest form)
-   ""
-   
-   `(progn
-       (debug) 
-       ,@form))
-
-;;;_    . Tests
-
-;;Can't easily automatically test that it in fact debugs.
-
-;;;_   , emtt:trap-errors
-;;$$USE ME
-(defmacro emtt:trap-errors (&rest body)
-   ""
-   `(progn
-       (declare (special emt:testral:*events-seen* emtt:*abort-p*))
-       (condition-case err
-	  (progn ,@body)
-	  ('emt:already-handled
-	     (setq emtt:*abort-p* t))
-	  ;;$$ADD ME an error case for dormancy pseudo-errors.  It
-	  ;;should push a dormancy note (here, not lower down, which
-	  ;;may be somehow wrong?)
-	  (error
-	     (push
-		(make-emt:testral:error-raised
-		   :err err
-		   :badnesses '(ungraded))
-		emt:testral:*events-seen*)
-	     (setq emtt:*abort-p* t)))))
-
-
-;;;_ , emtt:add-surrounders
-(defun emtt:add-surrounders (form surrounders props)
-   "Add SURROUNDERS around FORM.
-SURROUNDERS is a list whose elements must each be either:
- * A list.
- * A function taking 1 argument (props) and returning a list
-
-In either case, FORM is added as the last element of the list.
-
-PROPS is a property list."
-   
-   (dolist (surrounder-0 (reverse surrounders) form)
-      (let
-	 ((surrounder-1
-	     (cond
-		((emtm:proper-list-p surrounder-0) 
-		   surrounder-0)
-		((functionp surrounder-0)
-		   ;;$$MAKE ME SAFE Protect this call.  Use
-		   ;;`emtt:trap-errors'?  And examine `emtt:*abort-p*'
-		   ;;afterwards.
-		   (funcall surrounder-0 props))
-		(t
-		   ;;Otherwise complain and stop.  For now, do it cheap.
-		   (assert (emtm:proper-list-p surrounder-0))))))
-	 (setq form
-	    (append surrounder-1 (list form))))))
-
-
 ;;;_ , Info available to tests (Not used yet)
-;;;_  . Type `emtt:top-data' 
+;;;_  . Type `emtt:top-data'
+;;$$USE ME
 (defstruct emtt:top-data
    ""
    (report-func () :type (satisfies #'functionp)))
 
 
-;;;_  . Special variables
-;;;_   , emt:trace:properties
+;;;_ , Special variables
+;;;_  . emt:trace:properties
 ;;This belongs somewhere that both runner and testhelp can see.
 ;;Right now, it's used for the `emt:persist' testhelp.
 ;;OBSOLESCENT.  
 (declare (special emt:trace:properties))
-;;;_   , emt:testral:*events-seen*
+;;;_  . emt:testral:*events-seen*
 ;;This belongs somewhere that both runner and testhelp can see.
 (declare (special emt:testral:*events-seen*))
-;;;_  . emtt:get-properties
-(defun emtt:get-properties (prop-sym prop-list)
-   ""
-   
-   (let
-      ((cell (assoc prop-sym prop-list)))
-      (when cell
-	 (second cell))))
 
 ;;;_ , test finder
 
@@ -248,7 +82,8 @@ Each one must be a `emtt:explorable'" )
 	 (emt:testral:*id-counter* 1)
 	 (emt:testral:*events-seen* (emt:testral:create))
 	 (emtt:*abort-p* nil)
-	 ;;Only for problems that manifest right here, not lower down.
+	 ;;These badnesses are only for problems that manifest right
+	 ;;here, not lower down. 
 	 ;;$$RETHINK ME: Instead, be signalled to abort (that's
 	 ;;compatible with `emtt:trap-errors' and if we see
 	 ;;emtt:*abort-p*, set that badness)
@@ -258,19 +93,12 @@ Each one must be a `emtt:explorable'" )
       (emtt:destructure-clause-3 clause
 	 (let
 	    (
-	       (emt:trace:properties props)
-	       ;;Parameterize the list of surrounders.
-	       ;;`emtt:trap-errors' is no longer used here, but it
-	       ;;may yet be used again.  But it shouldn't be optional.
+	       (emt:trace:properties props) ;;OBSOLESCENT.
 	       (form-1
-		  ;;(emtts:surround form '(emtt:trap-errors))
-		  ;;form
 		  (emtt:add-surrounders 
 		     form 
-		     ;;(emtt:get-properties :surrounders props) 
 		     (emtts:get-surrounders props)
-		     props)
-		  ))
+		     props)))
 	    ;;$$USE STANDARD
 	    ;;(emtt:trap-errors (eval form-1))
 	    (condition-case err
