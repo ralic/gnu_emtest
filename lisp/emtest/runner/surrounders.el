@@ -54,8 +54,10 @@
        ;;emtt:message-trap
        (save-window-excursion)
        (with-temp-buffer)
-       ;;$$WRITE ME as a function
-       ;;(with-timeout 1.0) ;;But respond to properties.
+       ;;$$WRITE ME as a function, responding to properties.
+       ;;(with-timeout 1.0)
+       ;;$$WRITE ME as a function, figure out whether to debug
+       ;;(emtts:with-debugging)
 
        ;;Add other *standard* ones here.  
        )
@@ -85,14 +87,8 @@ Not implemented yet."
    
    (error "Not implemented yet"))
 
-;;;_  . Test helper
-
-;;Assumes tests-own-args can have the form of an empty list.
-'  ;;$$OBSOLETE
-(defconst emtts:thd:simplest-tests-own-args () "" )
-
 ;;;_  . Place form within test-protectors
-
+'  ;;OBSOLETE
 (defun emtts:surround (form protectors)
    ""
    (let
@@ -101,79 +97,7 @@ Not implemented yet."
       (dolist (i rv-protectors form)
 	 (setq form (list i form)))))
 
-;;;_  . Figure out any extra test-protectors
-;;$$OBSOLETE, but can be replaced.
-(defun emtts:get-extra-protectors (tests-own-args)
-   "Return the list of test-protectors in TESTS-OWN-ARGS."
-   
-   (let*
-      (
-	 (got-protectors
-	    (memq 'protectors tests-own-args))
-	 (protectors 
-	    (if got-protectors
-	       (car got-protectors)
-	       ())))
-      (unless (listp protectors)
-	 (error "protectors is not a list"))
-      protectors))
-
-;;;_  . emtts:get-surrounders
-;;$$USE ME
-(defun emtts:get-surrounders (props)
-   "Return a list of the appropriate surrounders for a form.
-PROPS is the property list of the form."
-   (append
-      emtts:always-surrounders
-      emtts:extra-surrounders
-      (emtt:get-properties :surrounders props)
-      ;;Figure out whether to debug
-
-      ;;(emtts:get-extra-protectors tests-own-args)
-      ;;Debugging, if present, is innermost.  Debugging is being rethunk.
-;;       (if debug
-;; 	 '(emtts:with-debugging)
-;; 	 ())
-
-      ))
-
-;;;_  . Some surrounders
-
-;;;_   , emtts:with-debugging
-;;Exists just to make `emtts:get-surrounders' neater.
-(defmacro emtts:with-debugging (&rest form)
-   ""
-   
-   `(progn
-       (debug) 
-       ,@form))
-
-;;;_    . Tests
-
-;;Can't easily automatically test that it in fact debugs.
-
-;;;_   , emtt:trap-errors
-;;$$USE ME
-(defmacro emtt:trap-errors (&rest body)
-   ""
-   `(progn
-       (declare (special emt:testral:*events-seen* emtt:*abort-p*))
-       (condition-case err
-	  (progn ,@body)
-	  ('emt:already-handled
-	     (setq emtt:*abort-p* t))
-	  ;;$$ADD ME an error case for dormancy pseudo-errors.  It
-	  ;;should push a dormancy note (here, not lower down, which
-	  ;;may be somehow wrong?)
-	  (error
-	     (push
-		(make-emt:testral:error-raised
-		   :err err
-		   :badnesses '(ungraded))
-		emt:testral:*events-seen*)
-	     (setq emtt:*abort-p* t)))))
-
-;;;_ , emtt:add-surrounders
+;;;_  . emtt:add-surrounders
 (defun emtt:add-surrounders (form surrounders props)
    "Add SURROUNDERS around FORM.
 SURROUNDERS is a list whose elements must each be either:
@@ -200,6 +124,53 @@ PROPS is a property list."
 		   (assert (emtm:proper-list-p surrounder-0))))))
 	 (setq form
 	    (append surrounder-1 (list form))))))
+
+
+;;;_   , emtts:get-surrounders
+(defun emtts:get-surrounders (props)
+   "Return a list of the appropriate surrounders for a form.
+PROPS is the property list of the form."
+   (append
+      emtts:always-surrounders
+      emtts:extra-surrounders
+      (emtt:get-properties :surrounders props)))
+
+
+;;;_   , Some surrounders
+
+;;;_    . emtts:with-debugging
+;;Exists just to make `emtts:get-surrounders' neater.
+(defmacro emtts:with-debugging (&rest form)
+   ""
+   
+   `(progn
+       (debug) 
+       ,@form))
+
+;;;_     , Tests
+
+;;Can't easily automatically test that it in fact debugs.
+
+;;;_    . emtt:trap-errors
+;;$$USE ME
+(defmacro emtt:trap-errors (&rest body)
+   ""
+   `(progn
+       (declare (special emt:testral:*events-seen* emtt:*abort-p*))
+       (condition-case err
+	  (progn ,@body)
+	  ('emt:already-handled
+	     (setq emtt:*abort-p* t))
+	  ;;$$ADD ME an error case for dormancy pseudo-errors.  It
+	  ;;should push a dormancy note (here, not lower down, which
+	  ;;may be somehow wrong?)
+	  (error
+	     (push
+		(make-emt:testral:error-raised
+		   :err err
+		   :badnesses '(ungraded))
+		emt:testral:*events-seen*)
+	     (setq emtt:*abort-p* t)))))
 
 
 ;;;_. Footers
