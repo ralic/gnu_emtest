@@ -78,24 +78,17 @@ DATA-LIST must be a list of alists."
 	 (depth
 	    (loal:val 'depth data-list 0)))
       (append
-	 ;;Use the encap, but do so in the particular cases, so they
-	 ;;can deal with singletons.
-;; 	 (emtvf:headline-w-badnesses 
-;; 	    (1+ depth)
-;; 	    (emt:view:presentable-sum-badnesses suite)
-;; 	    data-list)
-	 
-	 (list
-	    ;;Headline groups with the item itself, not with its parent.
-	    ;;Even blank items will print one.
-	    "\n"
-	    (make-string (1+ depth) ?*) 
-	    " " name
-	    " ") 
-	 (emtvf:sum-badnesses
-	    (emt:view:presentable-sum-badnesses suite) 
-	    data-list) 
-	 (list "\n")
+;; 	 (list
+;; 	    ;;Headline groups with the item itself, not with its parent.
+;; 	    ;;Even blank items will print one.
+;; 	    "\n"
+;; 	    (make-string (1+ depth) ?*) 
+;; 	    " " name
+;; 	    " ") 
+;; 	 (emtvf:sum-badnesses
+;; 	    (emt:view:presentable-sum-badnesses suite) 
+;; 	    data-list) 
+;; 	 (list "\n")
 	 (etypecase suite
 	    (emt:view:suite-newstyle
 	       (let*
@@ -105,62 +98,67 @@ DATA-LIST must be a list of alists."
 		     ;;"suite" appears with two different meanings.
 		     (object
 			(emtvr:suite-newstyle-suite cell)))
-		  (etypecase object
-		     (emt:testral:test-runner-info
-			(list*
-			   "Suites tested in " name "\n"
-			   (hiformat:map 
-			      ;;Formatting for each child
-			      #'(lambda (obj data &rest d)
-				   (list
-				      `(dynamic ,obj 
-					  ,(loal:acons 'depth (1+ depth) data)
-					  ,#'emtvf:node)))
-			      children
-			      :data-loal data-list
-			      :separator '("\n"))))
+		  (append
+		     (emtvf:headline-w-badnesses 
+			(1+ depth)
+			(emt:view:presentable-sum-badnesses suite)
+			data-list)
+		     (etypecase object
+			(emt:testral:test-runner-info
+			   (list*
+			      "Suites tested in " name "\n"
+			      (hiformat:map 
+				 ;;Formatting for each child
+				 #'(lambda (obj data &rest d)
+				      (list
+					 `(dynamic ,obj 
+					     ,(loal:acons 'depth (1+ depth) data)
+					     ,#'emtvf:node)))
+				 children
+				 :data-loal data-list
+				 :separator '("\n"))))
 		  
-		     (emt:testral:suite
-			(append
-			   (list
-			      "Results for suite " name "\n")
+			(emt:testral:suite
+			   (append
+			      (list
+				 "Results for suite " name "\n")
 
-			   ;;(emtvr:suite-newstyle-how-to-run cell)
-			   ;;`how-to-run' informs a button.
-			   ;;NB, this will now be a `emtt:explorable'
-			   ;;or even a `emtt:method', not an :e-n as
-			   ;;it was before.
+			      ;;(emtvr:suite-newstyle-how-to-run cell)
+			      ;;`how-to-run' informs a button.
+			      ;;NB, this will now be a `emtt:explorable'
+			      ;;or even a `emtt:method', not an :e-n as
+			      ;;it was before.
 
-			   ;;Info shows nothing for now.  It has no
-			   ;;canonical fields yet.
-			   ;;Use `emtvf:info'
+			      ;;Info shows nothing for now.  It has no
+			      ;;canonical fields yet.
+			      ;;Use `emtvf:info'
 
-			   (etypecase (emt:testral:suite-contents object)
-			      (emt:testral:runform-list
-				 (hiformat:map 
-				    ;;Formatting for each child
-				    #'(lambda (obj data &rest d)
-					 (list
-					    `(dynamic ,obj 
-						,(loal:acons 
-						    'depth (1+ depth) data)
-						,#'emtvf:node)))
-				    children
-				    :data-loal data-list
-				    :separator '("\n")
-				    :els=0 '("No child suites")))
-			      (emt:testral:note-list
-				 (hiformat:map
-				    #'emtvf:TESTRAL
-				    (emt:testral:note-list-notes
-				       (emt:testral:suite-contents object))
-				    :data-loal data-list
-				    :separator '("\n")
-				    :els=0 '("No notes")))
-			      (null
-				 '("No known contents")))
+			      (etypecase (emt:testral:suite-contents object)
+				 (emt:testral:runform-list
+				    (hiformat:map 
+				       ;;Formatting for each child
+				       #'(lambda (obj data &rest d)
+					    (list
+					       `(dynamic ,obj 
+						   ,(loal:acons 
+						       'depth (1+ depth) data)
+						   ,#'emtvf:node)))
+				       children
+				       :data-loal data-list
+				       :separator '("\n")
+				       :els=0 '("No child suites")))
+				 (emt:testral:note-list
+				    (hiformat:map
+				       #'emtvf:TESTRAL
+				       (emt:testral:note-list-notes
+					  (emt:testral:suite-contents object))
+				       :data-loal data-list
+				       :separator '("\n")
+				       :els=0 '("No notes")))
+				 (null
+				    '("No known contents")))
 
-			   )))))
+			      ))))))
 
 	    ;;For the various TESTRAL expansions.
 	    ;;For now, these aren't even relevant yet.
@@ -176,16 +174,22 @@ DATA-LIST must be a list of alists."
 	    ;;Base type, for blank nodes.
 	    (emt:view:presentable
 	       (if
-		  ;;Case is not allowed for now because it doesn't work.
-		  (= (length children) 1) ;;(and nil )
-		  ;;For singletons, use the only child directly.
+		  (and
+		     (= (length children) 1)
+		     ;;Disallow the shortcut if this itself has any
+		     ;;badnesses.  They'd need to be presented.
+		     (not (emt:view:presentable-sum-badnesses suite)))
 		  (list
 		     `(dynamic ,(car children)
 			 ,data-list
 			 ,#'emtvf:node))
-		  (list*
-		     ;;Copy/move the call to
-		     ;;`emtvf:headline-w-badnesses' to here.
+
+		  (append
+		     (emtvf:headline-w-badnesses 
+			(1+ depth)
+			(emt:view:presentable-sum-badnesses suite)
+			data-list)
+
 		     "\n"
 		     (hiformat:map 
 			;;Formatting for each child
