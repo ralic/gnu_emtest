@@ -48,44 +48,6 @@ With `cl' loaded, use it as (incf emtt:testrun-counter)." )
    #'emtest:viewer:receive
    "" )
 
-;;;_ , Helper emtt:form->test-id
-;;Obsolete
-'
-(defun emtt:form->test-id (form)
-   ""
-   (make-emt:test-ID
-      :context ()
-      :explore-next
-      (make-emt:test-ID:e-n:form
-	 :test-form form)))
-
-;;;_ , emtt:sexp-at-point->result
-;;A test helper.  Obsolete.  No longer makes sense, because
-;;the output is what is tested.
-'
-(defun emtt:sexp-at-point->result (form)
-   ""
-   (emt:test-finder:top 
-      (make-emt:test-ID:e-n:form
-	 :test-form form)
-      (list "form")
-      (prin1-to-string (incf emtt:testrun-counter))
-      ;;$$FIXME  This no longer makes sense.  Now we should test thru
-      ;;receive, which puts results into a more orderly form.
-      #'identity))
-
-;;;_ , emtt:ts:run-test
-;;Meant to support view-tests
-(defun emtt:ts:run-test (test-form callback &optional prefix testrun-id)
-   "
-NB, TEST-FORM is a *test-form*, which should begin with a docstring."
-   (emt:test-finder:top 
-      (make-emt:test-ID:e-n:form
-	 :test-form test-form)
-      (or prefix (list "test-form"))
-      (or testrun-id "0")
-      callback))
-
 ;;;_ , emtt:dispatch-normal
 (defun emtt:dispatch-normal (what-to-run &optional prefix receiver)
    ""
@@ -107,11 +69,15 @@ NB, TEST-FORM is a *test-form*, which should begin with a docstring."
       (make-emt:test-ID:e-n:form
 	 :test-form form)
       (list "form")))
- 
 
-;;;_ , emtt:suite
-;;Obsolete.  Use `emt:defun-at-point'
-
+;;;_ , emtt:run-suite
+(defun emtt:run-suite (suite-sym)
+   "Run the test suite associated with SUITE-SYM."
+   
+   ;;$$UPDATE ME - will need to change what it makes
+   (emtt:dispatch-normal 
+      (make-emt:test-ID:e-n:suite
+	 :suite-ID suite-sym)))
 
 ;;;_ , emt:defun-at-point
 ;;;###autoload
@@ -129,12 +95,14 @@ Does nothing if the buffer is not in a known lisp mode."
       ;;If `arg', eval that definition first.
       (when arg (eval-defun nil))
       (let
-	 ((suite-name
+	 ((suite-sym
 	     (emt:suite-sym-at-point)))
-	 (check-type suite-name symbol)
+	 (check-type suite-sym symbol)
+	 (emtt:run-suite suite-sym)
+	 '  ;;$$OBSOLETE
 	 (emtt:dispatch-normal 
 	    (make-emt:test-ID:e-n:suite
-	       :suite-ID suite-name)))))
+	       :suite-ID suite-sym)))))
 
 
 ;;;_  . Helpers (Lisp-syntax-reading stuff)
@@ -191,25 +159,51 @@ With non-nil ARG, look forwards for it."
       ;;If that fails, try to find it forwards
       (emt:suite-sym-at-point-x -1)))
 
+;;;_ , emt:lib-at-point
 
+;;Command: Run the library of symbol at point, or failing that, file
+;;at point.  Give a prompt for confirmation.
+;;Can use `symbol-file'
+;;;_ , emtl:ldhst-el->symbol
+;;Split these parts off
+
+(defun emtl:ldhst-el->symbol (x)
+   ""
+   (if
+      (symbolp x)
+      x
+      (if
+	 (memq (car x)
+	    '(autoload defun))
+	 (cdr x))))
+
+;;;_ , emtl:read-testable-library
+(defun emtl:read-testable-library (prompt)
+   "Interactively read the name of a library containing tests.
+PROMPT is a prompt string"
+   
+   (completing-read 
+      prompt
+      load-history
+      ;;Narrow to just libraries that have tests in them.
+      #'(lambda (lib-data)
+	   (some
+	      #'(lambda (x)
+		   (get (emtl:ldhst-el->symbol x) 'emt:suite))
+	      (cdr lib-data)))
+      t))
 
 ;;;_ , emtt:library
-
+;;$$RENAME ME emt:library because it's an entry point
 ;;;###autoload
 (defun emtt:library (library &optional receiver)
    "Run the test suites of LIBRARY"
    
    (interactive
       (list
-	 ;;$$IMPROVE ME Split this off.
-	 (completing-read 
-	    "Run test suites of which library: "
-	    load-history
-	    ;;$$CHANGE ME Narrow to just libraries that have tests in
-	    ;;them.
-	    nil	;;No narrowing provided yet.
-	    t)))
-
+	 (emtl:read-testable-library 
+	    "Run tests of which library: ")))
+   
    ;;Want to use locate-library but can't easily test it.  But with
    ;;dirtree I could.  In fact, I can just use an example dirtree
    ;;read-only. 

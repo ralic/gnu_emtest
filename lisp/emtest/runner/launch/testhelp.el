@@ -113,16 +113,35 @@
 	  t)))
 
 ;;;_  . emtt:th:run-suite
-(defun emtt:th:run-suite (suite-sym func)
-   ""
+(defun emtt:th:run-suite (suite-sym callback)
+   "Run the test suite associated with SUITE-SYM.
+Results are passed to function CALLBACK."
    
    (emt:test-finder:top
-      ;;$$UPDATE ME - will need to change what it makes
+      ;;$$UPDATE ME - will need to change what it makes.  
+
+      ;;$$REFACTOR ME Would like to use `emtt:run-suite'.  Perhaps
+      ;;these can process arglist and then apply, and `emtt:run-suite'
+      ;;etc can take all the args.
       (make-emt:test-ID:e-n:suite
 	 :suite-ID suite-sym) 
       '()
       "0" 
-      func))
+      callback))
+
+;;;_ , emtt:ts:run-test
+(defun emtt:ts:run-test (test-form callback &optional prefix testrun-id)
+   "Run TEST-FORM as a test.
+Results are passed to function CALLBACK.
+NB, TEST-FORM is a *test-form*, which is a list, usually nil
+followed by a form."
+   (emt:test-finder:top 
+      (make-emt:test-ID:e-n:form
+	 :test-form test-form)
+      (or prefix (list "test-form"))
+      (or testrun-id "0")
+      callback))
+
 
 ;;;_. Footers
 ;;;_ , Provides
