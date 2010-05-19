@@ -30,27 +30,204 @@
 ;;;_ , Requires
 
 ;;;_. Body
+;;;_ , Conventional docstring converters
+(defun emtvers:substring->docform (str start &optional next)
+   ""
+   (let*
+      ((raw-sub
+	  (substring str start next))
+	 (sub-1
+	    (url-strip-leading-spaces raw-sub))
+	 (sub-2
+	    ;;Escape any left-parenthesis at the beginning of line
+	    (replace-regexp-in-string 
+	       "\n(" "\n\\(" sub-1 nil t)))
+      
+      (unless (string= sub-2 "")
+	 (list 
+	    'emt:doc sub-2))))
 
-;;In an old rtest form, before a clause:
-;;Read the string.
-;;Replace it with ()
-;;For each line of the string:
-;;If it matches Word: create an emt:doc line for it.
-;;Place that where?  Or just kill-ring them all?
-;;Inside a new progn around the whole thing.
+(defun emtvers:string->docstring-list (str)
+   "Convert a string to docstring forms"
+   
+   (let*
+      ((rv-str-list '())
+	 (start 0)
+	 (next)
+	 (regexp
+	    (concat
+	       "[ \f\t\n\r\v]*"
+	       (regexp-opt 
+		  '("Situation:"
+		      "Operation:"
+		      "Response:"
+		      "Behavior:"
+		      "Result:"
+		      "Shows:"
+		      "Proves:")))))
+      
+      (while (setq next 
+		(string-match 
+		   regexp
+		   str (1+ start)))
+	 (push
+	    (emtvers:substring->docform str start next)
+	    rv-str-list)
+	 (setq start next))
+      (push
+	 (emtvers:substring->docform str start next)
+	 rv-str-list)
+      (nreverse (delq nil rv-str-list))))
 
-;;If the last thing in it is `t', remove that.  (for understood calls)
 
-;;Supplementary for that, editor to kill a doc form and yank it
-;;elsewhere?  Seems to not add much to kill and yank, especially to
-;;kill-sexp, C-M-k.
+;;;_ , Test converters
+
+(defun emtvers:rtest->emtest (sexp)
+   "Convert an rtest form to an emtest form"
+
+   (when (listp sexp)
+      (case (car sexp)
+	 (put
+	    (destructuring-bind
+	       (put sym test-thru target)
+	       sexp
+	       `(put ,sym 'emt:test-thru ,target)))
+	 (rtest:deftest
+	    (destructuring-bind (rtest-sym sym &rest clauses)
+	       sexp
+	       `(emt:deftest-3 ,sym
+		   ,@(mapcar #'emtvers:rtest-clause->emtest clauses)))))))
+
+(defun emtvers:rtest-clause->emtest-x (sexp)
+   ""
+   (destructuring-bind (docstring form) 
+      sexp
+      `(nil
+	  (progn
+	     ,@(emtvers:string->docstring-list docstring)
+	     ,form))))
+
+(defun emtvers:rtest-clause->emtest (sexp)
+   "Convert an rtest clause to an emtest clause"
+   (when (listp sexp)
+      (if
+	 (eq (car sexp) 'quote)
+	 (list 
+	    'quote
+	    (emtvers:rtest-clause->emtest-x (second sexp)))
+	 (emtvers:rtest-clause->emtest-x sexp))))
+;;;_  . emtvers:goto-next-sexp 
+;;Move point directly in front of next sexp
+;;Return non-nil on success, nil or error on failure.
+(defun emtvers:goto-next-sexp (&optional noerror)
+   ""
+   
+   (interactive)
+   (let
+      ((old-point (point)))
+      (forward-sexp)
+      (backward-sexp)
+      (if (< (point) old-point)
+	 (if noerror
+	    (progn
+	       (goto-char old-point)
+	       nil)
+	    (error "There is no sexp after point"))
+	 t)))
 
 
-;;In an emtest form: Where each clause begins with something
-;;recognized, such as `emt:eg:narrow', move that into surrounders.
+;;;_  . Entry point
+;;;###autoload
+(defun emtvers:cvt-rtest-at-point (&optional noerror)
+   ""
+   
+   (interactive)
 
-;;Where each clause differs by eg flags, replace them all with an eg
-;;iterator. 
+   ;;Move point to directly in front of next sexp so we don't eat
+   ;;comments.
+   (let
+      ((ok (emtvers:goto-next-sexp noerror)))
+      (if ok
+	 (let*
+	    (  (pp-escape-newlines nil)
+	       (start (point))
+	       (rtest-form
+		  (read (current-buffer)))
+	       (emtest-form (emtvers:rtest->emtest rtest-form)))
+	    (when emtest-form
+	       (delete-region start (point))
+	       (pp emtest-form (current-buffer)))
+	    t))))
+
+
+;;;_  . emtvers:cvt-rtest-buffer
+(defun emtvers:cvt-rtest-buffer ()
+   ""
+   ;;Find the library name wrt the known dir root
+   (let* 
+      ((lib-path 
+	  (file-name-directory
+	     (file-relative-name 
+		buffer-file-name
+		emtvers:root-project-dir)))
+	 
+	 (emt-lib-name (concat lib-path "tests"))
+	 (rtest-lib-name (concat lib-path "rtest")))
+      
+      ;;Replace it where it's used.
+      (while (search-forward rtest-lib-name nil t)
+	 (replace-match emt-lib-name nil t))
+
+      ;;Convert all the forms.
+      (while (emtvers:cvt-rtest-at-point t))))
+
+
+;;;_  . 
+(defconst emtvers:root-project-dir 
+   "~/projects/elisp/emtest/lisp/"
+   "" )
+;;;_  . emtvers:cp-rtest-file
+(defun emtvers:cp-rtest-file (filename)
+   "Copy an rtest file, setting it up for emtest
+FILENAME is the filename of an existing rtest file"
+   (interactive
+      (list 
+	 ;;Could provide predicate to ensure "rtest.el" ending.  But
+	 ;;that blocks directories.
+	 (read-file-name "Copy which rtest file? "
+	    nil
+	    buffer-file-name
+	    t
+	    nil
+	    #'(lambda (name)
+		 (or
+		    (file-directory-p name)
+		    (string= (file-name-nondirectory name)
+		       "rtest.el"))))))
+
+   (let*
+      ((path
+	  (file-name-directory filename))
+	 ;;Figure out the equivalent tests file
+	 (emt-filename
+	    (expand-file-name "tests.el" path)))
+      
+      ;;If the tests file already exists, complain and abort
+      (when (file-exists-p emt-filename)
+	 (error "Target file already exists: %s" emt-filename))
+      ;;Copy to it
+      (copy-file filename emt-filename)
+
+      ;;Visit that file
+      (with-current-buffer
+	 (find-file-noselect emt-filename)
+	 ;;Convert it
+	 (emtvers:cvt-rtest-buffer)
+	 ;;Save it
+	 (save-buffer)))
+   
+   ;;Pop that buffer up - maybe
+   )
 
 
 ;;;_. Footers
