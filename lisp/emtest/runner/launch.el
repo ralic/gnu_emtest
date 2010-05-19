@@ -36,7 +36,8 @@
 ;;;_ , Borrowed variables
 ;;;_  . Counter
 
-;;Should probably live elsewhere.  Possibly in emtest/viewer/receive
+;;Should probably live elsewhere.  Possibly in emtest/viewer/receive.
+;;But then emtt:dispatch-normal must move there as well.
 (defvar emtt:testrun-counter 0 
    "A counter used to make testrun-id.
 With `cl' loaded, use it as (incf emtt:testrun-counter)." )

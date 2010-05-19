@@ -70,64 +70,6 @@ Each one must be a `emtt:explorable'" )
 
 
 ;;;_ , Run tests
-;;;_  . emtt:explore-clause
-
-(defun emtt:explore-clause (clause)
-   ""
-   (let
-      (
-	 (emt:testral:*parent-id* 0)
-	 ;;Counter to make unique IDs.  Although UUIDs are appealing,
-	 ;;they are slower to make.
-	 (emt:testral:*id-counter* 1)
-	 (emt:testral:*events-seen* (emt:testral:create))
-	 (emtt:*abort-p* nil)
-	 ;;These badnesses are only for problems that manifest right
-	 ;;here, not lower down. 
-	 ;;$$RETHINK ME: Instead, be signalled to abort (that's
-	 ;;compatible with `emtt:trap-errors' and if we see
-	 ;;emtt:*abort-p*, set that badness)
-	 (badnesses '()))
-
-      ;;This defines `props'
-      (emtt:destructure-clause-3 clause
-	 (let
-	    (
-	       (emt:trace:properties props) ;;OBSOLESCENT.
-	       (form-1
-		  (emtt:add-surrounders 
-		     form 
-		     (emtts:get-surrounders props)
-		     props)))
-	    ;;$$USE STANDARD
-	    ;;(emtt:trap-errors (eval form-1))
-	    (condition-case err
-	       (eval form-1)
-	       (error
-		  (push
-		     (make-emt:testral:error-raised
-			:err err
-			:badnesses '(ungraded))
-		     emt:testral:*events-seen*)
-		  (push
-		     'ungraded
-		     badnesses)))))
-      
-      (make-emt:testral:suite
-	 :contents
-	 (make-emt:testral:note-list
-	    :notes
-	    ;;Reverse the note list so it's in the order that it
-	    ;;occured in.
-	    (nreverse emt:testral:*events-seen*))
-	 ;;Need to acquire this.  At least errors that we
-	 ;;handle here - which may be just overall abort.
-	 ;;See the call to `emtt:trap-errors'
-	 :badnesses badnesses
-	 ;;$$WRITEME Use `emt:trace:properties' for this?  But change
-	 ;;its name?  (And watch the scoping)
-	 :info '())))
-
 ;;;_  . emtt:explore-one
 (defun emtt:explore-one (next func)
    ""
@@ -137,8 +79,8 @@ Each one must be a `emtt:explorable'" )
 	    (emtt:explorable->id next))
 	 ;;Not used - the one time it's apparently used below is
 	 ;;actually something else.
-	 (props
-	    (emtt:explorable->properties next))
+;; 	 (props
+;; 	    (emtt:explorable->properties next))
 	 ;;This largely uses the original `next' as the launch
 	 ;;path-prefix usually shouldn't even be changed.  It should
 	 ;;be inserted with the right value, not changed here.
@@ -146,11 +88,7 @@ Each one must be a `emtt:explorable'" )
 	    (emtp tp:a084136e-8f02-49a5-ac0d-9f65509cedf2
 	       (test-id)
 	       (typecase test-id
-		  (emt:test-ID:e-n:form
-		     (emtt:explore-clause
-			(emt:test-ID:e-n:form-test-form test-id)))
-
-		  ;;`clause-list' from where?
+		  ;;This will be a separate explorer.
 		  (emt:test-ID:e-n:indexed-clause
 		     (let*
 			(
@@ -257,28 +195,34 @@ Each one must be a `emtt:explorable'" )
 			   (mapcar #'car emt:test-finder:conversions)))
 
 		  (t
-		     ;;Not clear that this answers at a sufficiently
-		     ;;high level.  It must indicate that there's no
-		     ;;such method.
-		     (make-emt:testral:suite
-			:contents 
-			(make-emt:testral:note-list
-			   :notes 
-			   (list
-			      (make-emt:testral:error-raised
-				 :err 
-				 '(error 
-				     "Unrecognized internal explore type")
-				 :badnesses 
-				 '((ungraded 'error 
-				      "Unrecognized internal explore type"))
-				 )))
-			;;Actual form is TBD.
-			:badnesses 
-			'((ungraded 'error 
-			     "Unrecognized internal explore type"))
-			:info '() ;;Punt info for now.
-			)
+
+
+		     (if (emt:test-ID:e-n:form-p test-id)
+			(emtt:explore-clause
+			   (emt:test-ID:e-n:form-test-form test-id))
+
+			;;Not clear that this answers at a sufficiently
+			;;high level.  It must indicate that there's no
+			;;such method.
+			(make-emt:testral:suite
+			   :contents 
+			   (make-emt:testral:note-list
+			      :notes 
+			      (list
+				 (make-emt:testral:error-raised
+				    :err 
+				    '(error 
+					"Unrecognized internal explore type")
+				    :badnesses 
+				    '((ungraded 'error 
+					 "Unrecognized internal explore type"))
+				    )))
+			   ;;Actual form is TBD.
+			   :badnesses 
+			   '((ungraded 'error 
+				"Unrecognized internal explore type"))
+			   :info '() ;;Punt info for now.
+			   ))
 		     )))))
 
       (funcall func
