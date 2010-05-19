@@ -39,7 +39,8 @@
 (require 'emtest/common/testral-types)
 (require 'emtest/runner/testral)
 (require 'emtest/runner/define)
-(require 'emtest/runner/surrounders) ;;Just used by the clause explorer
+(require 'emtest/runner/explorers/clause)
+
 ;;;_. Body
 
 

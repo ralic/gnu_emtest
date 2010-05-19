@@ -409,95 +409,125 @@ Response: Reports error and throws error."
 ;;;_ , Interface for tester helpers
 ;;;_  . emt:db:get-versions
 ;;;_   , Tests
-(rtest:deftest emt:db:get-versions
+(emt:deftest-3 emt:db:get-versions
+   (nil
+      (progn
+	 (emt:doc "Situation: ID has no versions")
+	 (emt:doc "")
+	 (emt:doc "Response: Return the empty list.")
+	 (emt:eg:with emt:persist:thd:examples
+	    ((project emtest)
+	       (library persist)
+	       (count 0))
+	    (with-mock
+	       (stub emt:db:by-ix:get-record =>
+		  (emt:eg
+		     (type emt:db:persist-archive)))
+	       (equal
+		  (emt:db:get-versions
+		     (emt:eg
+			(type id)))
+		  (emt:eg
+		     (type versions)))))))
+   (nil
+      (progn
+	 (emt:doc "Situation: ID has 1 version")
+	 (emt:doc "")
+	 (emt:doc "Response: Return a list of that version.")
+	 (emt:eg:with emt:persist:thd:examples
+	    ((project emtest)
+	       (library persist)
+	       (count 1))
+	    (with-mock
+	       (stub emt:db:by-ix:get-record =>
+		  (emt:eg
+		     (type emt:db:persist-archive)))
+	       (equal
+		  (emt:db:get-versions
+		     (emt:eg
+			(type id)))
+		  (emt:eg
+		     (type versions))))))))
 
-   (  "Situation: ID has no versions
-Response: Return the empty list."
-      (emt:eg:with emt:persist:thd:examples
-	 ((project emtest)(library persist)(count 0))
-	 (with-mock
-	    (stub emt:db:by-ix:get-record =>
-	       (emt:eg (type emt:db:persist-archive)))
-	    (equal
-	       (emt:db:get-versions (emt:eg (type id)))
-	       (emt:eg (type versions))))))
-   
-   (  "Situation: ID has 1 version
-Response: Return a list of that version."
-      (emt:eg:with emt:persist:thd:examples
-	 ((project emtest)(library persist)(count 1))
-	 (with-mock
-	    (stub emt:db:by-ix:get-record =>
-	       (emt:eg (type emt:db:persist-archive)))
-	    (equal
-	       (emt:db:get-versions (emt:eg (type id)))
-	       (emt:eg (type versions))))))
-
-   ;;Want more tests. Add after emt:eg:define is stronger
-
-   )
 ;;;_  . emt:db:get-all-values
 ;;;_   , Tests
-(rtest:deftest emt:db:get-all-values
+(emt:deftest-3 emt:db:get-all-values
+   (nil
+      (progn
+	 (emt:doc "Situation: ID has no versions")
+	 (emt:doc "")
+	 (emt:doc "Response: Return the empty list.")
+	 (emt:eg:with emt:persist:thd:examples
+	    ((project emtest)
+	       (library persist)
+	       (count 0))
+	    (with-mock
+	       (stub emt:db:by-ix:get-record =>
+		  (emt:eg
+		     (type emt:db:persist-archive)))
+	       (equal
+		  (emt:db:get-all-values
+		     (emt:eg
+			(type id)))
+		  (emt:eg
+		     (type values)))))))
+   (nil
+      (progn
+	 (emt:doc "Situation: ID has 1 version")
+	 (emt:doc "")
+	 (emt:doc "Response: Return a list of that version.")
+	 (emt:eg:with emt:persist:thd:examples
+	    ((project emtest)
+	       (library persist)
+	       (count 1))
+	    (with-mock
+	       (stub emt:db:by-ix:get-record =>
+		  (emt:eg
+		     (type emt:db:persist-archive)))
+	       (equal
+		  (emt:db:get-all-values
+		     (emt:eg
+			(type id)))
+		  (emt:eg
+		     (type values))))))))
 
-   (  "Situation: ID has no versions
-Response: Return the empty list."
-      (emt:eg:with emt:persist:thd:examples
-	 ((project emtest)(library persist)(count 0))
-	 (with-mock
-	    (stub emt:db:by-ix:get-record =>
-	       (emt:eg (type emt:db:persist-archive)))
-	    (equal
-	       (emt:db:get-all-values (emt:eg (type id)))
-	       (emt:eg (type values))))))
-   
-   (  "Situation: ID has 1 version
-Response: Return a list of that version."
-      (emt:eg:with emt:persist:thd:examples
-	 ((project emtest)(library persist)(count 1))
-	 (with-mock
-	    (stub emt:db:by-ix:get-record =>
-	       (emt:eg (type emt:db:persist-archive)))
-	    (equal
-	       (emt:db:get-all-values (emt:eg (type id)))
-	       (emt:eg (type values))))))
-   
-   )
 ;;;_  . emt:db:get-value
 ;;;_   , Tests
 ;;It's direct.
 ;;;_  . emt:db:set
 
 ;;;_   , Tests
-(rtest:deftest emt:db:set
-   (  "Operation: In a known database, save a value, then read it.
-Response: The object has been added.
-It has the correct value."
-
-      (emt:db:set:th (:initial-db ())
-	 ((id "1"))
-	 (emt:db:set id 'correct-answer 12)
-
-	 ;;Check database's type
-	 (emty:check 
-	    (emt:db:internal:get-all id) 
-	    emt:db:whole)
-
+(emt:deftest-3 emt:db:set
+   (nil
+      (progn
+	 (emt:doc "Operation: In a known database, save a value, then read it.")
+	 (emt:doc "Response: The object has been added.
+It has the correct value.")
+	 (emt:db:set:th
+	    (:initial-db nil)
+	    ((id "1"))
+	    (emt:db:set id 'correct-answer 12)
+	    ;;Check database's type
+	    (emty:check
+	       (emt:db:internal:get-all id)
+	       emt:db:whole)
 	 ;;Can't use `emt:db:get-value' because that wants to know a
 	 ;;version id.  But there's only one entry, so see it.
-	 (let
-	    ((value-list
-		(emt:db:get-all-values id 'correct-answer)))
-
-
+	    (let
+	       ((value-list
+		   (emt:db:get-all-values id 'correct-answer)))
 	    ;;It was empty and now has one element.  Single element
 	    ;;would not be removed (say by expiration).
-	    (assert (= (length value-list) 1))
-	    (assert
-	       (= (car value-list) 12))
-	    t)))
-   
-   )
+	       (assert
+		  (=
+		     (length value-list)
+		     1))
+	       (assert
+		  (=
+		     (car value-list)
+		     12))
+	       t)))))
+
 
 ;;;_  . emt:db:decategorize-all
 ;;;_   , Tests
