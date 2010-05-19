@@ -73,17 +73,11 @@ Each one must be a `emtt:explorable'" )
 ;;;_  . emtt:explore-one
 (defun emtt:explore-one (next func)
    ""
+   ;;(check-type test-id emt:test-ID:e-n)
    (let*
       (
-	 (test-id  ;;This is now of type `emt:test-ID:e-n'
+	 (test-id ;;Type `emt:test-ID:e-n'
 	    (emtt:explorable->id next))
-	 ;;Not used - the one time it's apparently used below is
-	 ;;actually something else.
-;; 	 (props
-;; 	    (emtt:explorable->properties next))
-	 ;;This largely uses the original `next' as the launch
-	 ;;path-prefix usually shouldn't even be changed.  It should
-	 ;;be inserted with the right value, not changed here.
 	 (one-report
 	    (emtp tp:a084136e-8f02-49a5-ac0d-9f65509cedf2
 	       (test-id)
@@ -99,8 +93,10 @@ Each one must be a `emtt:explorable'" )
 			      (emt:test-ID:e-n:indexed-clause-clause-index
 				 test-id)))
 			(emtt:destructure-suite-3 suite-sym
+			   (list 
+			      nil
 			      (emtt:explore-clause 
-				 (nth index clause-list)))))
+				 (nth index clause-list))))))
 
 		  (emt:test-ID:e-n:suite
 		     (let* 
@@ -129,14 +125,9 @@ Each one must be a `emtt:explorable'" )
 				       ;;for now, only those)
 				       :properties props)
 				    rv-list-to-run))
-			      (dolist (test-id rv-list-to-run)
-				 ;;Reverses the already-reversed order
-				 ;;of rv-list-to-run, so pending-list
-				 ;;is explored in the expected order.
-				 (push 
-				    test-id
-				    emt:test-finder:pending-list))
-			      (make-emt:testral:suite
+			      (list
+				 (reverse rv-list-to-run)
+				 (make-emt:testral:suite
 				    :contents 
 				    (emt:testral:make-runform-list
 				       :els (reverse rv-list-to-run))
@@ -144,7 +135,7 @@ Each one must be a `emtt:explorable'" )
 				    ;;meaningful if it crapped out right
 				    ;;here.
 				    :info '() ;;Punt info for now.
-				    )))))
+				    ))))))
 		
 		  (emt:test-ID:e-n:library:elisp-load
 		     (let* 
@@ -171,20 +162,22 @@ Each one must be a `emtt:explorable'" )
 					 ;;properties. 
 					 :properties ()))
 				 suite-list)))
-			
-			(callf2 append 
-			   list-to-run
-			   emt:test-finder:pending-list) 
-			(make-emt:testral:suite
-			   :contents list-to-run
-			   :badnesses '() ;;Punt - only if it crapped
-			   ;;out right here.
-			   :info '() ;;Punt info for now.
-			   )))
+			(list
+			   nil
+			   (make-emt:testral:suite
+			      :contents
+			      (emt:testral:make-runform-list
+				 :els list-to-run)
+			      :badnesses '() ;;Punt - only if it crapped
+			      ;;out right here.
+			      :info '() ;;Punt info for now.
+			      ))))
 		  
 		  ;;Tell receiver about this tester
 		  (emt:test-ID:e-n:hello
-		     (make-emt:testral:test-runner-info
+		     (list
+			nil
+			(make-emt:testral:test-runner-info
 			   :name "Emtest"
 			   ;;:version "4.1"
 			   ;;$$REDESIGN ME - we no longer have
@@ -192,44 +185,54 @@ Each one must be a `emtt:explorable'" )
 			   ;;list?  Are these still strings?  Perhaps
 			   ;;the tester defines these and groups them.
 			   :explore-methods-supported
-			   (mapcar #'car emt:test-finder:conversions)))
+			   (mapcar #'car emt:test-finder:conversions))))
 
 		  (t
 
 
 		     (if (emt:test-ID:e-n:form-p test-id)
-			(emtt:explore-clause
-			   (emt:test-ID:e-n:form-test-form test-id))
+			(list
+			   nil
+			   (emtt:explore-clause
+			      (emt:test-ID:e-n:form-test-form test-id)))
 
 			;;Not clear that this answers at a sufficiently
 			;;high level.  It must indicate that there's no
 			;;such method.
-			(make-emt:testral:suite
-			   :contents 
-			   (make-emt:testral:note-list
-			      :notes 
-			      (list
-				 (make-emt:testral:error-raised
-				    :err 
-				    '(error 
-					"Unrecognized internal explore type")
-				    :badnesses 
-				    '((ungraded 'error 
-					 "Unrecognized internal explore type"))
-				    )))
-			   ;;Actual form is TBD.
-			   :badnesses 
-			   '((ungraded 'error 
-				"Unrecognized internal explore type"))
-			   :info '() ;;Punt info for now.
-			   ))
+			(list
+			   nil
+			   (make-emt:testral:suite
+			      :contents 
+			      (make-emt:testral:note-list
+				 :notes 
+				 (list
+				    (make-emt:testral:error-raised
+				       :err 
+				       '(error 
+					   "Unrecognized internal explore type")
+				       :badnesses 
+				       '((ungraded 'error 
+					    "Unrecognized internal explore type"))
+				       )))
+			      ;;Actual form is TBD.
+			      :badnesses 
+			      '((ungraded 'error 
+				   "Unrecognized internal explore type"))
+			      :info '() ;;Punt info for now.
+			      )))
 		     )))))
+
+      ;;Maybe schedule more.
+      (when (first one-report)
+	 (callf2 append 
+	    (first one-report)
+	    emt:test-finder:pending-list))
 
       (funcall func
 	 ;;For the format, see [[file:~/projects/emtest/lisp/emtest/common/testral-types.el]]
 	 (make-emt:testral:report
 	    :testrun-id "0" ;;Punt
-	    :tester-id "0" ;;Punt
+	    :tester-id "0"  ;;Punt
 	    ;;Not used by this tester
 	    :test-id-prefix '()
 	    :suites 
@@ -237,7 +240,7 @@ Each one must be a `emtt:explorable'" )
 	       (list
 		  next
 		  nil
-		  one-report))))))
+		  (second one-report)))))))
 
 ;;;_  . Helper emtt:lib-sym->suites
 ;;$$MOVE ME And reorganize.  Each how-to-run type should go into its own
