@@ -29,6 +29,10 @@
 
 ;;;_ , Requires
 
+(require 'emtest/common/testral-types)
+(require 'emtest/runner/surrounders)
+(require 'emtest/runner/define)
+(require 'emtest/runner/testral)
 
 
 ;;;_. Body
