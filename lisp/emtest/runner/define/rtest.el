@@ -29,9 +29,6 @@
 
 ;;;_ , Requires
 
-(when (not (fboundp 'rtest:deftest))
-    (defmacro rtest:deftest (&rest dummy))
-    (defmacro rtest:if-avail (&rest dummy)))
 
 ;;;_. Body
 
@@ -109,9 +106,10 @@ Response: Destructuring finds the expected properties."
 
 
 ;;;_  . emt:deftest-3
+
 ;;There's a bootstrap problem in defining a suite to test this, so
-;;this has to be run manually.  Thus the use of `assert'.  For now
-;;it's in rtest so no bootstrap issue.
+;;this has to be run manually.  For now it's in rtest so no bootstrap
+;;issue.
 (rtest:deftest emt:deftest-3
 
    (  "Situation: A test is defined.

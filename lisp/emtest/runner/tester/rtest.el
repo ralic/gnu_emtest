@@ -30,86 +30,20 @@
 ;;;_ , Requires
 (require 'emtest/runner/tester)
 (require 'emtest/runner/tester/testhelp)
-(require 'emtest/runner/launch/testhelp) ;;For emtt:th:run-suite
+(require 'emtest/runner/launch/testhelp)
+(require 'emtest/runner/surrounders)
 
 ;;;_. Body
 ;;;_   , emtts:surround
-' ;;OBSOLETE.  See `emtt:add-surrounders'
-(rtest:deftest emtts:surround
 
-   (  "Args: Empty list of protectors.
-Result: Just form."
-      (equal
-	 (emt:tester:surround 'foo ())
-	 'foo))
-   
-   (  "Args: List of one protector.
-Result: Form is surrounded by that protector."
-      (equal
-	 (emt:tester:surround 'foo '(progn))
-	 '(progn foo)))
-
-   (  "Args: List of one protector, more complicated form.
-Result: More complicated form is correctly surrounded."
-      (equal
-	 (emt:tester:surround '(let (a b) foo) '(progn))
-	 '(progn (let (a b) foo))))
-
-   (  "Args: List of three protectors.
-Result: Form is surrounded by all three in order, first outermost."
-      (equal
-	 (emt:tester:surround 'foo '(progn save-excursion with-temp-buffer))
-	 '(progn (save-excursion (with-temp-buffer foo)))))
-   
-   )
-
-;;;_   , emtts:get-extra-protectors
-'
-(rtest:deftest emtts:get-extra-protectors
-
-   ;;Test of emt:tester:get-extra-protectors.  Requires a bogus
-   ;;tests-own-args object -- but syntax is immature right now.
-   (  "Situation: protectors is not a list
-Response: Error."
-      (progn) ;;Test-form
-      )
-   )
-
-;;;_   , emtts:get-surrounders
-'
-(rtest:deftest emtts:get-surrounders
-   
-   
-   (  "Demonstrate: emt:tester:get-surrounders returns a list of symbols."
-      
-      (every
-	 #'symbolp
-	 (emt:tester:get-surrounders 
-	    emtts:thd:simplest-tests-own-args
-	    nil)))
-   
-
-   (  "Demonstrate: emt:tester:get-surrounders returns a list of symbols."
-      
-      (every
-	 #'symbolp
-	 (emt:tester:get-surrounders 
-	    emtts:thd:simplest-tests-own-args
-	    t)))
-   
-   ;;Since tester's always-surrounders is not controlled by this, we
-   ;;can't test proper contents, but since we just append, should be
-   ;;no problem.
-   )
 
 ;;;_    . emtt:trap-errors
 
 (rtest:deftest emtt:trap-errors
-   '  ;;OBSOLETE
    (  "Shows: Works with `emtts:surround'."
       (equal
 	 (eval
-	    (emt:tester:surround 12 '(emtt:trap-errors)))
+	    (emtt:add-surrounders 12 '((emtt:trap-errors)) ()))
 	 
 	 12))
    
@@ -185,7 +119,7 @@ Behavior: `emtt:get-properties' returns the relevant property."
 ;;;_   , emt:test-finder:top
 
 (rtest:deftest emt:test-finder:top
-
+   
    (  "Shows: It passes callback an `emt:testral:report'."
       (progn
 	 (emtt:th:explore-one '(error "An example error") 
