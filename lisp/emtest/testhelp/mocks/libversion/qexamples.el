@@ -39,10 +39,12 @@
 ;;An overall test of emtest/testhelp/mocks/libversion co-operating
 ;;with tester.
 
-;;Not easily automated, so belongs in another file:  qexamples.
 ;;This is unprotected, but I can unload a feature if the global state
 ;;gets messed up.
 
+;;If we automate this, use `emtts:th:insulate' from surrounders
+;;testhelp and `emtmv:th:surrounders' from libversion testhelp.  And a
+;;test-definition insulator?
 (progn
    ;;Set up a module (Using the examples we already have)
    (emt:eg:with emtmv:th:data ()
@@ -65,14 +67,13 @@ have set up tester to use old version in test forms.")
 	       (emtmv:th:check-all)))))
 
    ;;Set tester to use that module.
-
-   ;;If we automate this,  runner surrounders testhelp should provide
-   ;;insulation.  Insulate list `emtts:extra-surrounders'.
+   ;;$$IMPROVE ME This should be provided by libversion.  It should
+   ;;also emt:doc that old version is being used.
    (emtts:set-surrounder
       '(emtmv:with-version 'old nil))
    
 
-   ;;Run tester, launch in `new' mode. (For now this will be manual)
+   ;;Run tester, launch in `new' mode. (For now this is manual)
    (emtt:run-suite 'emtest/testhelp/mocks/libversion:th:suite)
 
    ;;Expect (via tester itself) the `old' results.
