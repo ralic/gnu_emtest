@@ -509,11 +509,11 @@ especially in configuration testing for new installations"
 
    (properties () 
       :type (repeat (list symbol *))
-      :doc "The properties that this exploranle has when it's run")
+      :doc "The properties that this explorable has when it's run")
    ;;Aliases might also allow a string as UUID
    (aliases () 
       :type (repeat emt:test-ID:e-n) 
-      :doc "A possibly empty list of othed IDs that would launch the
+      :doc "A possibly empty list of other IDs that would launch the
       same thing")) 
 
 ;;;_   , emtt:dynamic-method
