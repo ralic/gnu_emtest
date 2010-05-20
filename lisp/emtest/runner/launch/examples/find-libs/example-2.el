@@ -1,3 +1,3 @@
-;;And example file
+;;An example file
 (defun foo ())
 (defun bar ())
