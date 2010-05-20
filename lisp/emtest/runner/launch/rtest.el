@@ -264,22 +264,6 @@ Behavior: The clause still gets the same test-ID as before."
 	       (emt:suite-sym-at-point))))))
 
 
-;;;_   , emtt:lib-sym->suites
-
-(rtest:deftest emtt:lib-sym->suites
-   ;;Could loop over several examples.
-   (  "Situation: There are two suites in the library.
-Response: Return a list of those suites' symbols."
-      (emtt:library:th ((count 2)) 
-	 (let* 
-	    ((syms (emtt:lib-sym->suites (emt:eg (type sym)))))
-	    (assert
-	       (equal
-		  (length syms)
-		  (emt:eg (type count)))
-	       t)
-	    t))))
-
 ;;;_  . Tests
 (rtest:deftest emtt:library
 

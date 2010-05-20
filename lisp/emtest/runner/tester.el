@@ -39,7 +39,12 @@
 (require 'emtest/common/testral-types)
 (require 'emtest/runner/testral)
 (require 'emtest/runner/define)
+
+;;Require these for now, until we set up to insinuate the explorers
+;;from their collective autoloads file.
 (require 'emtest/runner/explorers/clause)
+(require 'emtest/runner/explorers/suite)
+(require 'emtest/runner/explorers/library)
 
 ;;;_. Body
 
@@ -79,100 +84,25 @@ Each one must be a `emtt:explorable'" )
       (
 	 (test-id ;;Type `emt:test-ID:e-n'
 	    (emtt:explorable->id next))
+	 (props
+	    (emtt:explorable->properties next))
 	 (one-report
 	    (emtp tp:a084136e-8f02-49a5-ac0d-9f65509cedf2
 	       (test-id)
 	       (typecase test-id
-		  ;;This will be a separate explorer.
-		  (emt:test-ID:e-n:indexed-clause
-		     (let*
-			(
-			   (suite-sym 
-			      (emt:test-ID:e-n:indexed-clause-suite-sym
-				 test-id))
-			   (index
-			      (emt:test-ID:e-n:indexed-clause-clause-index
-				 test-id)))
-			(emtt:destructure-suite-3 suite-sym
-			   (list 
-			      nil
-			      (emtt:explore-clause 
-				 (nth index clause-list))))))
+		  (emt:test-ID:e-n:form
+		     (emtt:explore-literal-clause
+			test-id props))
 
+		  (emt:test-ID:e-n:indexed-clause
+		     (emtt:explore-indexed-clause
+			test-id props))
+		  
 		  (emt:test-ID:e-n:suite
-		     (let* 
-			((suite-sym
-			    (emt:test-ID:e-n:suite-suite-ID test-id))
-			   (path
-			      (list (symbol-name suite-sym))))
-			(emtt:destructure-suite-3 suite-sym
-			   (let
-			      (  
-				 (rv-list-to-run '()))
-			      (dotimes (n (length clause-list))
-				 (push  
-				    (emtt:make-explorable
-				       :id
-				       (make-emt:test-ID:e-n:indexed-clause
-					  :clause-index n
-					  :suite-sym suite-sym)
-				       :path-prefix 
-				       (append 
-					  path
-					  (list (format "Clause %d" n)))
-				       
-				       ;;Each clause has the
-				       ;;properties of the suite (and
-				       ;;for now, only those)
-				       :properties props)
-				    rv-list-to-run))
-			      (list
-				 (reverse rv-list-to-run)
-				 (make-emt:testral:suite
-				    :contents 
-				    (emt:testral:make-runform-list
-				       :els (reverse rv-list-to-run))
-				    :badnesses '() ;;Punt - anyways, only
-				    ;;meaningful if it crapped out right
-				    ;;here.
-				    :info '() ;;Punt info for now.
-				    ))))))
-		
+		     (emtt:explore-suite test-id props))
+		  
 		  (emt:test-ID:e-n:library:elisp-load
-		     (let* 
-			(  (lib-sym
-			      (emt:test-ID:e-n:library:elisp-load-load-name test-id))
-			   ;;See [[id:li6i8qd0xxe0][Refactoring dispatchers]]
-			   (suite-list
-			      (emtt:lib-sym->suites lib-sym))
-			   (path
-			      (list "library" (symbol-name lib-sym)))
-			   (list-to-run
-			      (mapcar
-				 #'(lambda (suite-sym)
-				      (emtt:make-explorable
-					 :id
-					 (make-emt:test-ID:e-n:suite
-					    :suite-ID suite-sym)
-					 ;;CHANGED to append lib name.
-					 :path-prefix 
-					 (append 
-					    path
-					    (list (symbol-name suite-sym)))
-					 ;;For now, libraries have no
-					 ;;properties. 
-					 :properties ()))
-				 suite-list)))
-			(list
-			   nil
-			   (make-emt:testral:suite
-			      :contents
-			      (emt:testral:make-runform-list
-				 :els list-to-run)
-			      :badnesses '() ;;Punt - only if it crapped
-			      ;;out right here.
-			      :info '() ;;Punt info for now.
-			      ))))
+		     (emtt:explore-library test-id props))
 		  
 		  ;;Tell receiver about this tester
 		  (emt:test-ID:e-n:hello
@@ -180,47 +110,39 @@ Each one must be a `emtt:explorable'" )
 			nil
 			(make-emt:testral:test-runner-info
 			   :name "Emtest"
-			   ;;:version "4.1"
-			   ;;$$REDESIGN ME - we no longer have
-			   ;;`emt:test-finder:conversions'.  Use a
-			   ;;list?  Are these still strings?  Perhaps
-			   ;;the tester defines these and groups them.
+			   ;;:version "4.2"
+			   ;;$$COLLECT ME from the explorers.  This
+			   ;;will be from a config list, written to by
+			   ;;autoload files.
 			   :explore-methods-supported
 			   (mapcar #'car emt:test-finder:conversions))))
 
+		  ;;Fallback case
 		  (t
-
-
-		     (if (emt:test-ID:e-n:form-p test-id)
-			(list
-			   nil
-			   (emtt:explore-clause
-			      (emt:test-ID:e-n:form-test-form test-id)))
-
-			;;Not clear that this answers at a sufficiently
-			;;high level.  It must indicate that there's no
-			;;such method.
-			(list
-			   nil
-			   (make-emt:testral:suite
-			      :contents 
-			      (make-emt:testral:note-list
-				 :notes 
-				 (list
-				    (make-emt:testral:error-raised
-				       :err 
-				       '(error 
-					   "Unrecognized internal explore type")
-				       :badnesses 
-				       '((ungraded 'error 
-					    "Unrecognized internal explore type"))
-				       )))
-			      ;;Actual form is TBD.
-			      :badnesses 
-			      '((ungraded 'error 
-				   "Unrecognized internal explore type"))
-			      :info '() ;;Punt info for now.
-			      )))
+		     ;;Not clear that this answers at a sufficiently
+		     ;;high level.  It must indicate that there's no
+		     ;;such method.
+		     (list
+			nil
+			(make-emt:testral:suite
+			   :contents 
+			   (make-emt:testral:note-list
+			      :notes 
+			      (list
+				 (make-emt:testral:error-raised
+				    :err 
+				    '(error 
+					"Unrecognized internal explore type")
+				    :badnesses 
+				    '((ungraded 'error 
+					 "Unrecognized internal explore type"))
+				    )))
+			   ;;Actual form is TBD.
+			   :badnesses 
+			   '((ungraded 'error 
+				"Unrecognized internal explore type"))
+			   :info '() ;;Punt info for now.
+			   ))
 		     )))))
 
       ;;Maybe schedule more.
@@ -230,54 +152,16 @@ Each one must be a `emtt:explorable'" )
 	    emt:test-finder:pending-list))
 
       (funcall func
-	 ;;For the format, see [[file:~/projects/emtest/lisp/emtest/common/testral-types.el]]
 	 (make-emt:testral:report
 	    :testrun-id "0" ;;Punt
 	    :tester-id "0"  ;;Punt
-	    ;;Not used by this tester
-	    :test-id-prefix '()
+	    :test-id-prefix '()	    ;;Not used by this tester
 	    :suites 
 	    (list 
 	       (list
 		  next
 		  nil
 		  (second one-report)))))))
-
-;;;_  . Helper emtt:lib-sym->suites
-;;$$MOVE ME And reorganize.  Each how-to-run type should go into its own
-;;subdirectory.
-;;$$RETHINK ME Should this take symbol or string?  We seemed to
-;;convert it and then convert it back.
-
-;;$$CHANGE ME Also offer everything in the /tests library, and try to
-;;load it.  Add tests for this behavior.
-
-;;$$CHANGE ME Could also offer tests on every library that this
-;;library requires.  Gotta control execution, though.  Don't want to
-;;run them too eagerly.  So this would have to return more than just a
-;;symbol for each.  In fact, it could become the workhorse for the
-;;`emt:test-ID:e-n:library:elisp-load' case
-(defun emtt:lib-sym->suites (lib-sym)
-   ""
-   (let*
-      (
-	 (lib-path
-	    (locate-library
-	       (symbol-name lib-sym)))
-	 (lib-data (assoc lib-path load-history))
-	 ;;$$CHANGE ME  Also allow the lib's symbol as a test-suite
-	 ;;symbol.
-	 ;;List of symbols.
-	 (suites
-	    (delq nil
-	       (mapcar
-		  #'(lambda (x)
-		       (let
-			  ((sym (emtl:ldhst-el->symbol x)))
-			  (when (get sym 'emt:suite) sym)))
-		  (cdr lib-data)))))
-      
-      suites))
 
 
 ;;;_  . emt:test-finder:top

@@ -29,11 +29,11 @@
 
 ;;;_ , Requires
 
+(require 'emtest/common/result-types)
 (require 'emtest/common/testral-types)
 (require 'emtest/runner/surrounders)
 (require 'emtest/runner/define)
 (require 'emtest/runner/testral)
-
 
 ;;;_. Body
 ;;;_ , Structures
@@ -97,8 +97,33 @@ This is the heart of Emtest exploration: A test itself."
 	 ;;$$WRITEME Use `emt:trace:properties' for this?  But change
 	 ;;its name?  (And watch the scoping)
 	 :info '())))
+;;;_  . emtt:explore-literal-clause
+(defun emtt:explore-literal-clause (test-id props)
+   ""
+   
+   (list
+      nil
+      (emtt:explore-clause
+	 (emt:test-ID:e-n:form-test-form test-id))))
+;;;_   , Insinuate
+;;;_  . emtt:explore-indexed-clause
+(defun emtt:explore-indexed-clause (test-id props)
+   ""
+   (let*
+      (
+	 (suite-sym 
+	    (emt:test-ID:e-n:indexed-clause-suite-sym
+	       test-id))
+	 (index
+	    (emt:test-ID:e-n:indexed-clause-clause-index
+	       test-id)))
+      (emtt:destructure-suite-3 suite-sym
+	 (list 
+	    nil
+	    (emtt:explore-clause 
+	       (nth index clause-list))))))
 
-
+;;;_   , Insinuate
 
 ;;;_. Footers
 ;;;_ , Provides

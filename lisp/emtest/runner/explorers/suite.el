@@ -29,9 +29,59 @@
 
 ;;;_ , Requires
 
+(require 'emtest/common/testral-types)
+(require 'emtest/runner/define)
+(require 'emtest/common/result-types)
 
 
 ;;;_. Body
+
+;;;_ , emtt:explore-suite
+(defun emtt:explore-suite (test-id props-unused)
+   ""
+   (let* 
+      (
+	 (suite-sym
+	    (emt:test-ID:e-n:suite-suite-ID test-id))
+	 (path
+	    (list (symbol-name suite-sym))))
+      (emtt:destructure-suite-3 suite-sym
+	 (let
+	    (  
+	       (rv-list-to-run '()))
+	    (dotimes (n (length clause-list))
+	       (push  
+		  (emtt:make-explorable
+		     :id
+		     (make-emt:test-ID:e-n:indexed-clause
+			:clause-index n
+			:suite-sym suite-sym)
+		     :path-prefix 
+		     (append 
+			path
+			(list (format "Clause %d" n)))
+		     ;;Each clause has the properties of the suite
+		     ;;(and for now, only those).  `props' comes from
+		     ;;`emtt:destructure-suite-3', not from arglist.
+		     :properties props)
+		  rv-list-to-run))
+	    (list
+	       (reverse rv-list-to-run)
+	       (make-emt:testral:suite
+		  :contents 
+		  (emt:testral:make-runform-list
+		     :els (reverse rv-list-to-run))
+		  :badnesses '() ;;Punt - anyways, only
+		  ;;meaningful if it crapped out right
+		  ;;here.
+		  :info '() ;;Punt info for now.
+		  ))))))
+
+;;;_ , Insinuate
+;;Autoloads that put this on a list:
+
+'(#'emt:test-ID:e-n:suite-p #'emtt:explore-suite "suite")
+
 
 ;;;_. Footers
 ;;;_ , Provides

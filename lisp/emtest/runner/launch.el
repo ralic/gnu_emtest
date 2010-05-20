@@ -30,6 +30,7 @@
 
 (require 'emtest/runner/tester)
 (require 'emtest/viewer/emviewer)
+(require 'emtest/runner/explorers/library) ;;Just for the library launching.
 
 ;;;_. Body
 
@@ -78,7 +79,9 @@ With `cl' loaded, use it as (incf emtt:testrun-counter)." )
    ;;$$UPDATE ME - will need to change what it makes
    (emtt:dispatch-normal 
       (make-emt:test-ID:e-n:suite
-	 :suite-ID suite-sym)))
+	 :suite-ID suite-sym)
+      (list (format "Suite %s" suite-sym))))
+
 
 ;;;_ , emt:defun-at-point
 ;;;###autoload
@@ -99,12 +102,7 @@ Does nothing if the buffer is not in a known lisp mode."
 	 ((suite-sym
 	     (emt:suite-sym-at-point)))
 	 (check-type suite-sym symbol)
-	 (emtt:run-suite suite-sym)
-	 '  ;;$$OBSOLETE
-	 (emtt:dispatch-normal 
-	    (make-emt:test-ID:e-n:suite
-	       :suite-ID suite-sym)))))
-
+	 (emtt:run-suite suite-sym))))
 
 ;;;_  . Helpers (Lisp-syntax-reading stuff)
 
@@ -165,19 +163,6 @@ With non-nil ARG, look forwards for it."
 ;;Command: Run the library of symbol at point, or failing that, file
 ;;at point.  Give a prompt for confirmation.
 ;;Can use `symbol-file'
-;;;_ , emtl:ldhst-el->symbol
-;;Split these parts off
-
-(defun emtl:ldhst-el->symbol (x)
-   ""
-   (if
-      (symbolp x)
-      x
-      (if
-	 (memq (car x)
-	    '(autoload defun))
-	 (cdr x))))
-
 ;;;_ , emtl:read-testable-library
 (defun emtl:read-testable-library (prompt)
    "Interactively read the name of a library containing tests.
