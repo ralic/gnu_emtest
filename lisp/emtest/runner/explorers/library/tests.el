@@ -51,7 +51,8 @@
 	 (item ((type name)) "example-2")
 	 (item ((type count)) 2)
 	 (item ((type suite-sym-list)) '(foo bar))
-	 (item ((type sym)) (intern-soft (emt:eg (type name))))
+	 ;;$RENAME ME Maybe rename it feature-sym
+	 (item ((type sym)) (intern (emt:eg (type name))))
 	 (item ((type file-load-history))
 	    `( ,(concat
 		   emtt:launch:th:examples-dir
@@ -59,13 +60,12 @@
 		   ".el")
 		,@(emt:eg (type suite-sym-list)) 
 		(provide . ,(emt:eg (type sym))))))
-   
       (group
 	 ((count 1))
 	 (item ((type name)) "example-1")
 	 (item ((type count)) 1)
 	 (item ((type suite-sym-list)) '(foo))
-	 (item ((type sym)) (intern-soft (emt:eg (type name))))
+	 (item ((type sym)) (intern (emt:eg (type name))))
 	 (item ((type file-load-history))
 	    `( ,(concat
 		   emtt:launch:th:examples-dir
@@ -135,6 +135,7 @@
 	       t)))))
 
 ;;;_  . Tests
+;;$$FIXME
 (emt:deftest-3 emtt:library
    (nil
       (progn
@@ -152,10 +153,10 @@ Full exploration is used (Meaningless for now)")
 	       (emtt:library
 		  (emt:eg
 		     (type sym))
-		  ;;$$FIX ME Library does not return a result object yet.  Will
-		  ;;type-check it.  But for now, we can't pass any
-		  ;;argument. 
-		  ;;(emty:check x emt:result-group)
+		  ;;$$FIX ME Library does not return a result object
+		  ;;yet.  Will type-check it.  But for now, we can't
+		  ;;pass any argument.  (emty:check x
+		  ;;emt:result-group)
 		  #'ignore)
 	       (tp-reached tp:798212b4-1abe-4779-beb1-baf53ff39a8c
 		  (emt:eg
