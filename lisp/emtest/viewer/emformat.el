@@ -48,16 +48,19 @@
       (emtvf:node view-node data-list)))
 
 ;;;_  . emtvf:headline-w-badnesses
-;;$$TEST ME
-;;$$USE ME
-(defun emtvf:headline-w-badnesses (depth badnesses data-list)
+(defun emtvf:headline-w-badnesses (depth name badnesses data-list)
    ""
    (append
       (list
 	 "\n"
 	 (make-string depth ?*) 
-	 " " name
-	 " ") 
+	 " " )
+      (apply #'append
+	 (mapcar
+	    #'(lambda (x)
+		 (list x " "))
+	    (loal:val 'hdln-path data-list '())))
+      (list name " ")
       (emtvf:sum-badnesses badnesses data-list) 
       (list "\n")))
 
@@ -90,6 +93,7 @@ DATA-LIST must be a list of alists."
 	       (append
 		  (emtvf:headline-w-badnesses 
 		     (1+ depth)
+		     name
 		     (emt:view:presentable-sum-badnesses suite)
 		     data-list)
 		  (etypecase object
@@ -157,39 +161,38 @@ DATA-LIST must be a list of alists."
 	 (emt:view:TESTRAL-unexpanded
 	    '("Unexpanded TESTRAL data"))
 
-	 ;;$ADD ME Add a case for the top node, above testers.  And
-	 ;;a node-type for it.  Which is to be the initial node.
-
 	 ;;Base type, for blank nodes.
 	 (emt:view:presentable
 	    (if
 	       (and
-		  (= (length children) 1)
-		  ;;Disallow the shortcut if this itself has any
-		  ;;badnesses.  They'd need to be presented.
-		  (not (emt:view:presentable-sum-badnesses suite)))
+		  (= (length children) 1))
 	       (list
 		  `(dynamic ,(car children)
-		      ,data-list
+		      ;;$$IMPROVE ME Get value from old hdln-path
+		      ;;(loal:update 'hdln-path FUNC-WRITE-ME data-list '())
+		      ,(loal:acons 'hdln-path (list name) data-list)
 		      ,#'emtvf:node))
+	       (let
+		  ((ch-data-list
+		      (loal:acons 'hdln-path '() data-list)))
+		  (append
+		     (emtvf:headline-w-badnesses 
+			(1+ depth)
+			name
+			(emt:view:presentable-sum-badnesses suite)
+			data-list)
 
-	       (append
-		  (emtvf:headline-w-badnesses 
-		     (1+ depth)
-		     (emt:view:presentable-sum-badnesses suite)
-		     data-list)
-
-		  "\n"
-		  (hiformat:map 
-		     ;;Formatting for each child
-		     #'(lambda (obj data &rest d)
-			  (list
-			     `(dynamic ,obj 
-				 ,(loal:acons 'depth (1+ depth) data)
-				 ,#'emtvf:node)))
-		     children
-		     :separator '("\n")
-		     :data-loal data-list))))
+		     "\n"
+		     (hiformat:map 
+			;;Formatting for each child
+			#'(lambda (obj data &rest d)
+			     (list
+				`(dynamic ,obj 
+				    ,(loal:acons 'depth (1+ depth) data)
+				    ,#'emtvf:node)))
+			children
+			:separator '("\n")
+			:data-loal data-list)))))
 
 	 ;;`nil' should not come here.
 	 )))
