@@ -213,8 +213,10 @@ Call this inside a narrowing to (which WHICH)."
        (let
 	  ;;Insulate values
 	  (emtmv:new-obarray emtmv:old-obarray emtmv:state
-	     emtmv:extra-affected-syms
 	     emtmv:filename
+	     emtmv:t
+
+	     emtmv:extra-affected-syms
 	     ;;Altered in loading
 	     load-history features
 	     ;;Defined in foo-old or foo-new
@@ -279,9 +281,6 @@ Call this inside a narrowing to (which WHICH)."
 	       t)))))
 
 ;;;_ , emtmv:refresh-obarray
-;;Fails, but mapatoms does visit each symbol-name including the
-;;foo:var2, and `emtmv:copy-sym-by-name' works in all cases!  Somehow,
-;;copying properties doesn't work in some cases.  What's different here?
 (emt:deftest-3 
    ((of 'emtmv:refresh-obarray)
       (:surrounders emtmv:th:surrounders))
@@ -495,7 +494,7 @@ Call this inside a narrowing to (which WHICH)."
 	 (let
 	    ((value "Another value"))
 	    (emt:doc "Situation: In state `new'")
-	    (assert (eq emtmv:state 'new))
+	    (assert (eq (emtmv:t->version emtmv:t) 'new))
 
 	    (emt:doc "Assign to a variable")
 	    (setq foo:var1 value)
@@ -514,7 +513,7 @@ Call this inside a narrowing to (which WHICH)."
 		  (equal foo:var1 value)))
 
 	    (emt:doc "Situation: Still in state `new'")
-	    (assert (eq emtmv:state 'new))
+	    (assert (eq (emtmv:t->version emtmv:t) 'new))
 
 	    (emt:doc "Re-eval the `new' form")
 	    (eval

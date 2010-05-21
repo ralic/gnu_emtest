@@ -28,22 +28,43 @@
 
 
 ;;;_ , Requires
-
+(eval-when-compile
+   (require 'cl))
 ;;;_. Body
 ;;;_ , Customization
 (defconst emtmv:extra-affected-syms
    ()
    "Alist from library symbol to list of extra affected symbols.
 Unused for now." )
+;;;_ , Structures
+(defstruct (emtmv:t
+	      (:constructor emtmv:make-t)
+	      (:conc-name emtmv:t->))
+   "State of a versioned library"
+   (new-obarray () :type vector)
+   (old-obarray () :type vector)
+   (version     () :type (member nil old new))
+   ;;May want to capture&swap respective load-history lines too.
+   ;;May want to have two version of this.
+   (filename    () :type string))
+
 ;;;_ , Variables
+(defvar emtmv:t nil
+   "The current versioned library, or `nil'" )
+;;Keep this in sync with test insulator
+
+'
 (defvar emtmv:new-obarray nil
    "Objects from the new version of the module" )
+'
 (defvar emtmv:old-obarray nil
    "Objects from the old version of the module"  )
+'
 (defvar emtmv:state 
    nil
    "Which obarray currently corresponds to the real obarray state.
 Should be `nil', `old', or `new'" )
+'
 (defvar emtmv:filename nil 
    "Full true loadname of file being synced to" )
 
@@ -56,15 +77,13 @@ Should be `nil', `old', or `new'" )
 VERSION should be `old' or `new'.
 Arg DUMMY is reserved in case we ever support multiple invocations."
    (when dummy (error "Passing a value for DUMMY is reserved"))
-   ;;Calc whether to change version.  If `emtmv:state' is nil, do
-   ;;nothing.
    (let
       ((ov-sym (make-symbol "old-version")))
       `(progn
-	  (when (not emtmv:state)
+	  (when (not emtmv:t)
 	     (error "Need to set up first"))
 	  (let
-	     ((,ov-sym emtmv:state))
+	     ((,ov-sym (emtmv:t->version emtmv:t)))
 	     (unwind-protect
 		(progn
 		   ;;OK even if new state is the same as old.
@@ -138,10 +157,9 @@ Leaves emtmv in state VERSION."
 ;;;_   , emtmv:toggle-state
 (defun emtmv:toggle-state ()
    ""
-   
    (interactive)
    (emtmv:change-state
-      (case emtmv:state
+      (case (emtmv:t->version emtmv:t)
 	 (old new)
 	 (new old)
 	 ((nil) (error "libversion hasn't been started")))
@@ -160,50 +178,60 @@ Leaves emtmv in state VERSION."
 	 load-history)))
 
 ;;;_  . emtmv:change-state 
-;;Factor me into setup (for old state=nil) and save&switch
+;;Factor me into setup (for emtmv:t=nil) and save&switch
 (defun emtmv:change-state (new-state dummy &optional lib-filename)
    "Change the current state"
    (when dummy (error "Passing a value for DUMMY is reserved"))
-
-   (unless emtmv:filename
-      (unless lib-filename (error "No filename passed"))
-      (setq emtmv:filename lib-filename))
+   (unless emtmv:t
+      (setq emtmv:t
+	 (emtmv:make-t
+	    :new-obarray nil
+	    :old-obarray nil
+	    :version nil
+	    :filename   
+	    (progn
+	       (unless lib-filename (error "No filename passed"))
+	       lib-filename))))
 
    (case new-state
       (nil (error "Stopping is not supported"))
       (old
-	 (case emtmv:state
+	 (case (emtmv:t->version emtmv:t)
 	    ((nil)
-	       (setq emtmv:old-obarray
+	       (setf (emtmv:t->old-obarray emtmv:t)
 		  (emtmv:init-obarray-by-filename 
-		     emtmv:filename)))
+		     (emtmv:t->filename emtmv:t))))
 	    ;;No change.
 	    (old)
 	    (new
 	       ;;Save the B versions
-	       (setq emtmv:new-obarray
-		  (emtmv:save-to-obarray emtmv:new-obarray
-		     emtmv:filename))
+	       (setf (emtmv:t->new-obarray emtmv:t)
+		  (emtmv:save-to-obarray 
+		     (emtmv:t->new-obarray emtmv:t)
+		     (emtmv:t->filename emtmv:t)))
 	       ;;Switch to the A versions
-	       (setq emtmv:old-obarray
-		  (emtmv:activate-obarray emtmv:old-obarray
-		     emtmv:filename)))))
+	       (setf (emtmv:t->old-obarray emtmv:t)
+		  (emtmv:activate-obarray
+		     (emtmv:t->old-obarray emtmv:t)
+		     (emtmv:t->filename emtmv:t))))))
       
       (new
-	 (case emtmv:state
+	 (case (emtmv:t->version emtmv:t)
 	    ((nil)
-	       (setq emtmv:new-obarray
+	       (setf (emtmv:t->new-obarray emtmv:t)
 		  (emtmv:init-obarray-by-filename 
-		     emtmv:filename)))
+		     (emtmv:t->filename emtmv:t))))
 	    (old
 	       ;;Save the A versions
-	       (setq emtmv:old-obarray
-		  (emtmv:save-to-obarray emtmv:old-obarray
-		     emtmv:filename))
+	       (setf (emtmv:t->old-obarray emtmv:t)
+		  (emtmv:save-to-obarray
+		     (emtmv:t->old-obarray emtmv:t)
+		     (emtmv:t->filename emtmv:t)))
 	       ;;Switch to the B versions
-	       (setq emtmv:new-obarray
-		  (emtmv:activate-obarray emtmv:new-obarray
-		     emtmv:filename)))
+	       (setf (emtmv:t->new-obarray emtmv:t)
+		  (emtmv:activate-obarray 
+		     (emtmv:t->new-obarray emtmv:t)
+		     (emtmv:t->filename emtmv:t))))
 	    ;;No change.
 	    (new)))
       
@@ -211,7 +239,8 @@ Leaves emtmv in state VERSION."
 	 (error "Invalid new-state %s" new-state)))
    
    ;;Remember the state
-   (setq emtmv:state new-state))
+   (setf (emtmv:t->version emtmv:t) new-state))
+
 ;;;_  . emtmv:save-to-obarray
 (defun emtmv:save-to-obarray (oa filename)
    "Save current values into obarray OA and return OA.
