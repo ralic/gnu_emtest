@@ -61,6 +61,7 @@
 		  '("Situation:"
 		      "Operation:"
 		      "Response:"
+		      "Afterwards:"
 		      "Behavior:"
 		      "Result:"
 		      "Shows:"
@@ -179,14 +180,17 @@
 	 (replace-match emt-lib-name nil t))
 
       ;;Convert all the forms.
+      (goto-char (point-min))
       (while (emtvers:cvt-rtest-at-point t))))
 
 
-;;;_  . 
+;;;_  . emtvers:root-project-dir
+;;$$IMPROVE ME Should be customizable or calculated, not handwritten.
 (defconst emtvers:root-project-dir 
    "~/projects/elisp/emtest/lisp/"
    "" )
 ;;;_  . emtvers:cp-rtest-file
+;;;###autoload
 (defun emtvers:cp-rtest-file (filename)
    "Copy an rtest file, setting it up for emtest
 FILENAME is the filename of an existing rtest file"
@@ -226,6 +230,9 @@ FILENAME is the filename of an existing rtest file"
 	 ;;Save it
 	 (save-buffer)))
    
+   ;;Add dependencies?  Ie, find requires section and run elisp-depend.
+   ;;But with maybe nothing loaded, that won't tell us what it should.
+
    ;;Pop that buffer up - maybe
    )
 

@@ -87,10 +87,10 @@ Arg DUMMY is reserved in case we ever support multiple invocations."
 	     (unwind-protect
 		(progn
 		   ;;OK even if new state is the same as old.
-		   (emtmv:change-state ,version nil)
+		   (emtmv:change-state ,version ,dummy)
 		   ,@body)
        
-		(emtmv:change-state ,ov-sym nil))))))
+		(emtmv:change-state ,ov-sym ,dummy))))))
 ;;;_   , emtmv:add-advice
 (defmacro emtmv:add-advice (func &optional version)
    "Advise FUNC to always use a particular version.
@@ -113,15 +113,20 @@ FUNC will generally be an entry point"
        (emtmv:with-version
 	  ,(or version 'old) ()
 	  ad-do-it)))
-
-;;;_  . For user
-;;;_   , Helper emtmv:read-version
+;;;_  . Interactivity help
+;;;_   , emtmv:read-object
+(defun emtmv:read-object (prompt)
+   "Interactively read a libversion object."
+   ;;For now, just return the only one that ever exists.
+   emtmv:t)
+;;;_   , emtmv:read-version
 (defun emtmv:read-version (prompt)
    "Interactively read `old' or `new', defaulting to `old'"
    (intern
       (completing-read prompt
 	 '("old" "new") nil t nil nil "old")))
 
+;;;_  . For user
 ;;;_   , emtmv:advise-function
 (defun emtmv:advise-function (func version)
    "Advise FUNC to use VERSION instead of the global version."
@@ -146,6 +151,10 @@ Leaves emtmv in state VERSION."
 	    "Which module is being versioned? "
 	    load-history nil t)
 	 (emtmv:read-version "Current version is: ")))
+   '  ;;$$USE this, but will error until `emtmv:change-state' allows dummy
+   (setq
+      emtmv:t
+      (emtmv:create-obj lib-filename version))
    (emtmv:change-state version nil lib-filename))
 
 ;;;_   , Start it, giving module symbol-name
@@ -176,10 +185,30 @@ Leaves emtmv in state VERSION."
       (assoc 
 	 (file-truename fullpath) 
 	 load-history)))
+;;;_  . emtmv:create-obj
+(defun emtmv:create-obj (lib-filename &optional initial-version)
+   ""
+   (let
+      ((obj
+	  (emtmv:make-t
+	     :new-obarray nil
+	     :old-obarray nil
+	     :version nil
+	     :filename   
+	     (progn
+		(unless lib-filename (error "No filename passed"))
+		lib-filename))))
+      (when initial-version
+	 (emtmv:change-state initial-version obj))
+      obj))
+;;$$USE ME  This factors out part of emtmv:change-state.  Use it in
+;;tests and in emtmv:start
+;;But will error until `emtmv:change-state' allows dummy
 
 ;;;_  . emtmv:change-state 
 (defun emtmv:change-state (new-version dummy &optional lib-filename)
    "Change the current state"
+   ;;Temporary
    (when dummy (error "Passing a value for DUMMY is reserved"))
    (unless emtmv:t
       (setq emtmv:t

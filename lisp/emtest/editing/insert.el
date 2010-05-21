@@ -30,9 +30,10 @@
 ;;;_ , Requires
 
 (require 'utility/uuid)
-(require 'rtest-edit)  ;;$$REMOVE ME Should go away
 (require 'pp)
-
+;;$$FACTOR ME - the code this provides belongs in editing dir, to be
+;;required by launch.
+(require 'emtest/runner/launch)  
 ;;;_. Body
 
 ;;;_ , emt:skeletons list of available skeletons
@@ -44,6 +45,7 @@
       
       '(
 	  emt:insert-requires
+	  emt:insert-require-tp
 	  emt:insert-examples-dir
 	  emt:insert-with-buf
 	  emt:insert-test
@@ -95,7 +97,7 @@
       (emtp:require))
    "Requires form for testpoint")
 
-(defun emt:insert:require-tp ()
+(defun emt:insert-require-tp ()
    "Insert a requires form for testpoint"
    (interactive)
    (pp emt:insert:require-tp (current-buffer)))
@@ -131,23 +133,18 @@ Prompts for a suite name.  The default suite-name is the previous
 function."
    (interactive
       (list 
+	 ;;$$REFACTOR ME - code is shared
 	 (let
 	    ((default-suite-name
-		(progn
-		   (require 'rtest-edit)
-		   ;;$$REPLACE ME and this should handle `of' lists.
-		   ;;There is code somewhere in emt that does this.
-		   (symbol-name (rtest:suite-sym-at-point)))))
-	    
+		(symbol-name (emt:suite-sym-at-point))))
 	 (read-string "Name of suite: " default-suite-name nil
 	    default-suite-name))))
+   ;;$$REFACTOR ME - code is shared
    (let
       ((pp-escape-newlines nil))
       (pp
 	 `(emt:deftest-3 ,(intern suite-name)
 	     ,emt:insert:clause-form)
-	 
-      
 	 (current-buffer))))
 
 
@@ -178,11 +175,7 @@ function."
       (list 
 	 (let
 	    ((default-suite-name
-		(progn
-		   ;;$$REPLACE ME, same as above
-		   (require 'rtest-edit)
-		   (symbol-name (rtest:suite-sym-at-point)))))
-	    
+		(symbol-name (emt:suite-sym-at-point))))
 	 (read-string "Name of suite: " default-suite-name nil
 	    default-suite-name))))
    

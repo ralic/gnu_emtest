@@ -31,12 +31,6 @@
 
 (require 'emtest/testhelp/eg)
 (require 'pcmpl-elisp)
-(when (not (fboundp 'rtest:deftest))
-    (defmacro rtest:deftest (&rest dummy))
-    (defmacro rtest:if-avail (&rest dummy)))
-(when (not (fboundp 'emt:deftest-2))
-    (defmacro emt:deftest-2 (&rest dummy))
-    (defmacro emt:if-avail (&rest dummy)))
 
 ;;;_. Body
 
@@ -77,77 +71,6 @@
 
 	    (setq avail-tags (remove tag avail-tags))))))
 
-;;;_   , Tests
-
-(rtest:deftest pcomplete/emacs-lisp-mode/emt:eg
-   ;;Uses test-helpers `emt:eg:th:with-example-examples' and
-   ;;`pcomplete:th:test'.
-   ("Validation. The functor `emt:eg' is recognized as a command
-completion" 
-      (and
-	 (member "emt:eg" (pcomplete-elisp-get-command-names))
-	 t))
-   
-
-   ( "Behavior: The functor `emt:eg' is parsed correctly by
-`pcomplete-parse-elisp-arguments'."
-      (with-buffer-containing-object
-	 (:sexp '(emt:eg !)
-	    :point-replaces "!")
-	 (emacs-lisp-mode) ;;Must be in emacs-lisp-mode
-	 (destructuring-bind
-	    (args &rest positions)
-	    (pcomplete-parse-elisp-arguments)
-	    (and
-	       (equal
-		  args 
-		  '("emt:eg" ""))))))
-
-   (  "Position: complete outer form."
-      (emt:eg:th:with-example-examples
-	 (pcomplete:th:test
-	    :sexp '(emt:eg !)
-	    :completions '("dummy-tag" "a" "b")
-	    :known-heads ("emt:eg"))))
-
-
-   (  "Situation: The existing examples are exactly those in
-`emt:eg:th:with-example-examples'. 
-Point is on first arg, on tag.
-Behavior: offer the known tags as completions."
-      (emt:eg:th:with-example-examples
-	 (pcomplete:th:test
-	    :sexp '(emt:eg (!))
-	    :completions '("dummy-tag" "a" "b")
-	    :known-heads ("emt:eg"))))
-
-   (  "Situation: The existing examples are exactly those in
-`emt:eg:th:with-example-examples'.
-One tag-value arg has already been given.
-Point is on second arg, on tag.
-`pcomplete-use-paring' is true.
-Behavior: offer only the other tags as completions."
-      (emt:eg:th:with-example-examples
-	 (let
-	    ((pcomplete-use-paring t))
-	    (pcomplete:th:test
-	       :sexp '(emt:eg (a t)(!))
-	       :completions '("dummy-tag" "b")
-	       :known-heads ("emt:eg")))))
-
-   (  "Situation: The existing examples are exactly those in
-`emt:eg:th:with-example-examples'.
-Point is on first arg, on value.
-Tag is already given as dummy-tag.
-Behavior: offer the known values of `dummy-tag' as completions."
-      (emt:eg:th:with-example-examples
-	 (pcomplete:th:test
-	    :sexp '(emt:eg (dummy-tag !))
-	    :completions '("1" "2")
-	    :known-heads ("emt:eg"))))
-
-   )
-
 ;;;_  . pcomplete/emacs-lisp-mode/emt:eg:narrow
 ;;;###autoload
 (defun pcomplete/emacs-lisp-mode/emt:eg:narrow ()
@@ -157,25 +80,22 @@ Behavior: offer the known values of `dummy-tag' as completions."
       (pcomplete/emacs-lisp-mode/emt:eg)))
 ;;;_ , Helpers for emt-define
 ;;;_  . pcomplete/emacs-lisp-mode/emt:define-2
-;;Already obsolete, but adapt it for emt:define-3
-'
-(defun pcomplete/emacs-lisp-mode/emt:define-2 ()
+;;Adapted for emt:define-3 but untested.
+(defun pcomplete/emacs-lisp-mode/emt:define-3 ()
    ""
-   ;;Suite name
+   ;;Suite name.  $$ADAPT ME.  This will become the suggested value of
+   ;;the "of" property.  Encap me for that.
+   '
    (pcomplete-here
       (list
 	 (progn
-	    ;;Remove this, as in edit
-	    (require 'rtest-edit)
-	    ;;Have to exit from here to find it.
+	    ;;Find a symbol-name outside here.
 	    (save-excursion
 	       (goto-char (pcomplete-begin 'first))
 	       (up-list -1)
-	       (symbol-name (rtest:suite-sym-at-point))))))
+	       (symbol-name (emt:suite-sym-at-point))))))
 
-   ;;Props
-   ;;How to indicate that this is optional and could go right thru to
-   ;;the other?  That's mostly a user interface issue.
+   ;;How to indicate that this could also be a bare symbol?
    (pcomplete-nested
       (progn
 	 (pcomplete-here '("props"))
@@ -183,14 +103,16 @@ Behavior: offer the known values of `dummy-tag' as completions."
 	    (pcomplete-nested
 	       (progn
 		  ;;Suggest the common properties
-		  (pcomplete-here '("db-id"))
+		  (pcomplete-here '("db-id" "of" ":surrounders"))
 		  ;;Punt their suggested values for now.  Suggestions
 		  ;;will be respective of the property name
 		  )))))
    (while t
-      ;;$$Could also choose to copy a clause, using
+      ;;$$ADD ME Could also choose to copy a clause, using
       ;;(pcomplete-build-furthers-obj "*Copy a clause*" LAMBDA-FORM nil)
       ;;That's an alternative to descending.
+      ;;Could alternately off the template:
+      ;;emt:insert:clause-form
       (pcomplete-nested
 	 (progn
 	    ;;Clause.
@@ -198,9 +120,10 @@ Behavior: offer the known values of `dummy-tag' as completions."
 	       (list
 		  "Situation: WRITEME.
 Response: WRITEME."))
-	    ;;This could volunteer common governors in all their
-	    ;;glory: `emt:eg:narrow', `with-buffer-containing-object',
-	    ;;`emtp:eval', etc
+
+	    ;;$$ADD ME This could volunteer common useful functors in
+	    ;;all their glory: `emt:eg:narrow',
+	    ;;`with-buffer-containing-object', `emtp:eval', etc
 	    (pcomplete-here-sexps '((progn)))))))
 
 

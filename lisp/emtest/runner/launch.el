@@ -144,9 +144,10 @@ With non-nil ARG, look forwards for it."
 	       symbol)))
       (scan-error nil)))
 
-;;This transformation belongs in an explore-method instead of here.
-;;Was `rtest::test-thru'.  Maybe be replaced by just allowing symbols
-;;as clauses.
+;;$$WRITE ME
+;;$$MOVE ME This transformation belongs in an explore-method instead
+;;of here.  Maybe be replaced by just allowing symbols as clauses.
+
 '(or (get symbol 'emtt:test-thru) symbol)
 
 (defun emt:suite-sym-at-point () 

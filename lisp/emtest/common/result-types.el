@@ -544,7 +544,7 @@ especially in configuration testing for new installations"
    ;;Abstract.  No fields
    )
 
-;;;_  . NEW diagnostic-info (May be obsolete)
+;;;_  . diagnostic-info (OBSOLETE in favor of TESTRAL)
 
 ;;;_   , Boolean-valued things
 ;;;_    . emt:result:diag:bool
@@ -558,7 +558,6 @@ especially in configuration testing for new installations"
 
 
 ;;;_    . emt:result:diag:error
-;;rtest:gives-error will use this too.  And "should" and others
 (defstruct (emt:result:diag:error (:include emt:result:diag:bool))
    ""
    error)

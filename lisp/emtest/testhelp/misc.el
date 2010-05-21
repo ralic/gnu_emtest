@@ -26,14 +26,13 @@
 
 ;; Test helpers of general usefulness
 ;;;_ , Requires
-(require 'rtest-util)
-(require 'rtest-define)
 
 ;;;_. Code:
 
 ;;;_ , form-by-option
 
-;;$$Rename me.
+;;$$RENAME ME.
+;;$$MOVE ME - into utilities
 ;;;###autoload
 (defmacro form-by-option (options key make-form &optional make-form-else)
    "Return a form that interprets KEY in OPTIONS.
@@ -50,33 +49,6 @@ return a form."
 	 ,(if make-form `(funcall ,make-form data))
 	 ,(if make-form-else `(funcall ,make-form-else data)))))
 
-
-
-;;;_  . Tests
-
-(rtest:deftest form-by-option
-
-   ("Expands form according to data in options"
-      (rtest:retvalue->status
-	 (equal
-	    (form-by-option
-	       '((x bar baz))
-	       'x
-	       #'(lambda
-		    (data)
-		    `(foo ,(second data)
-			,(third data))))
-	    '(foo bar baz))))
-
-	  
-   ("With a FORM-ELSE given, expands it when option isn't given."
-      (rtest:retvalue->status
-	 (equal
-	    (form-by-option nil 'x nil
-	       #'(lambda
-		    (x)
-		    '(foo)))
-	    '(foo)))))
 
 
 
@@ -145,59 +117,6 @@ return a form."
 	  t)))
 
 
-;;;_  . Tests
-(rtest:deftest emt:throws
-
-   (  "Situation: Body does not throw anything
-Response: Return nil."
-      (not 
-	 (emt:throws 'example-tag 'just-return-a-value)))
-   
-   (  "Situation: Body does throw the tag in question, non-nil value.
-Response: Return non-nil."
-      (and
-	 (emt:throws 'example-tag (throw 'example-tag t))
-	 t))
-
-   (  "Situation: Body does throw the tag in question, nil value.
-Response: Return non-nil."
-      (and
-	 (emt:throws 'example-tag (throw 'example-tag nil))
-	 t))
-   
-   (  "Situation: Body perversely throws our own tag, `emt:throws:ok'.
-Response: Return non-nil."
-      (and
-	 (emt:throws 'emt:throws:ok (throw 'emt:throws:ok nil))
-	 t))
-
-   (  "Situation: tag-name is given by a variable, not a literal
-Body does throw the tag in question.
-Response: Return non-nil."
-      (let
-	 ((tag-name 'example-tag))
-	 (and
-	    (emt:throws tag-name (throw 'example-tag t))
-	    t)))
-   
-   (  "Param: Two tags are given
-Situation: Body throws to the first tag.
-Response: Return non-nil."
-      (and
-	 (emt:throws '(example-tag-1 example-tag-2) 
-	    (throw 'example-tag-1 nil))
-	 t))
-
-   (  "Param: Two tags are given
-Situation: Body throws to the second tag.
-Response: Return non-nil."
-      (and
-	 (emt:throws '(example-tag-1 example-tag-2) 
-	    (throw 'example-tag-2 nil))
-	 t))
-
-   )
-
 
 ;;;_ , emt:assert-throws
 (defmacro emt:assert-throws (tags &rest body)
@@ -211,34 +130,6 @@ Response: Return non-nil."
 	      ;;If we fall thru to here, tag was not thrown by BODY.
 	      (error "Tag was not thrown")))))
 
-;;;_  . Tests
-
-(rtest:deftest emt:assert-throws
-
-   (  "Situation: Body does not throw anything
-Response: Signals an error."
-      (rtest:gives-error
-	 (emt:assert-throws 'example-tag 'just-return-a-value)))
-   
-   (  "Situation: Body does throw the tag in question, non-nil value.
-Response: Return non-nil."
-      (equal
-	 (emt:assert-throws 'example-tag (throw 'example-tag 12))
-	 12))
-
-
-   (  "Situation: tag-name is given by a variable, not a literal
-Body does throw the tag in question.
-Response: Return non-nil."
-      (let
-	 ((tag-name 'example-tag))
-	 (equal
-	    (emt:assert-throws tag-name (throw 'example-tag 12))
-	    12)))
-
-   ;;Multiple-tag behavior parallels that of emt:throws.
-
-   )
 ;;;_ , emt:bags=
 
 (defsubst emt:bags= (set1 set2 &rest flags)
@@ -271,47 +162,6 @@ Response: Return non-nil."
 
 (put 'emt:sets= 'emt:equal-test t)
 
-;;;_  . Tests
-
-(rtest:deftest emt:sets=
-   ("Situation: Lists contain the same elements, permuted.
-Response: Return non-nil"
-      (rtest:retvalue->status
-	 (emt:sets= '(1 2 3) '(3 2 1))))
-   
-   ("Situation: First list contains an element not in second.
-Response: Return nil"
-      (rtest:retvalue->status
-	 (null
-	    (emt:sets=
-	       '(1 2 3 4)
-	       '(3 2 1)))))
-
-   ("Situation: Second list contains an element not in first.
-Response: Return nil"
-      (rtest:retvalue->status
-	 (null
-	    (emt:sets=
-	       '(3 2 1)
-	       '(1 2 3 4)))))
-
-   
-   ("Situation: Members are equal but not eq.
-Response: Even so, compares true"
-      (rtest:retvalue->status
-	 (emt:sets=
-	    '((1 10))
-	    '((1 10)))))
-
-      
-   ("Situation: Members are the same but repeated in one.
-Response: Compares false"
-      (rtest:retvalue->status
-	 (not 
-	    (emt:sets=
-	       '((1 10 1 10))
-	       '((1 10))))))
-   )
 ;;;_ , emt:somewhere-in-tree
 
 ;;;###autoload
@@ -331,25 +181,6 @@ Response: Compares false"
 	 ;;If we fell thru, we never found it, so give `nil'
 	 nil)))
 
-;;;_  . Tests
-(rtest:deftest emt:somewhere-in-tree
-
-   (  "Situation: OBJ is in TREE.
-Response: Return non-nil."
-      (progn
-	 (assert
-	    (emt:somewhere-in-tree #'eq '(((12))) 12))
-	 t))
-   
-   (  "Situation: OBJ is not in TREE.
-Response: Return nil."
-      (progn
-	 (assert
-	    (not
-	       (emt:somewhere-in-tree #'eq '(((12))) 13)))
-	 t))
-      
-   )
 ;;;_ , emt/util/collect-in-tree
 (defun emt/util/collect-in-tree (predicate tree)
    "Return a list of the items in TREE satisfying PREDICATE.
@@ -365,23 +196,6 @@ Do not return matching items that are within other matching items."
 		       (emt/util/collect-in-tree predicate el))
 		  tree)))
 	 (t ()))))
-
-;;;_  . Tests
-(rtest:deftest emt/util/collect-in-tree
-
-   (  "Situation: The root of the tree matches PREDICATE.
-Response: Return a list of just it."
-      (equal
-	 (emt/util/collect-in-tree #'integerp 12)
-	 '(12)))
-   
-      (  "Situation: Some items in tree match PREDICATE.
-Response: Return a list of them."
-      (equal
-	 (emt/util/collect-in-tree #'integerp '((a 12 b) 12))
-	 '(12 12)))
-   
-   )
 
 
 ;;;_ , let-noprops
@@ -406,40 +220,6 @@ SYMS-FORM is a form to make a list of symbols."
 	     ;;Restore each symbol's old property list (Uses cl)
 	     (map nil #'setplist ,syms old-props)))))
 
-;;;_  . Tests
-(rtest:deftest let-noprops
-
-   (  "Proves: `let-noprops' temporarily rebinds properties."
-      (let-noprops '(foo)
-	 ;;Now `foo' has no properties
-	 (assert (null (symbol-plist 'foo)))
-	 ;;Inside a nested let-noprops, give `foo' a property
-	 (let-noprops '(foo)
-	    (put 'foo 'example-prop 13))
-
-	 ;;Outside, `foo' once again has no properties
-	 (assert (null (symbol-plist 'foo)))
-	 t))
-   
-   (  "Proves: `let-noprops' temporarily sets properties null."
-      (let-noprops '(foo)
-	 ;;Now `foo' has no properties
-	 (assert (null (symbol-plist 'foo)))
-	 ;;Give `foo' a property
-	 (put 'foo 'example-prop 13)
-	 (assert (equal (symbol-plist 'foo) '(example-prop 13)))
-
-	 (let-noprops '(foo)
-	    ;;Inside a nested let-noprops, `foo' once again has no
-	    ;;properties
-	    (assert (null (symbol-plist 'foo))))
-	 
-	 ;;Outside, `foo' once again has the properties we gave it.
-	 (assert (equal (symbol-plist 'foo) '(example-prop 13)))
-	 t))
-   
-   )
-
 ;;;_ , let-unbound
 (defmacro let-unbound (syms-form &rest body)
    ""
@@ -453,46 +233,6 @@ SYMS-FORM is a form to make a list of symbols."
 
 
 
-;;;_  . Tests
-(rtest:deftest let-unbound
-   ;;Bootstrap problem: To test this, we'd really like to have itself,
-   ;;to insulate the test from the environment.
-
-   (  "Param: literal list of symbol `foo'.
-Response: `foo' is initially unbound in the body.
-After `let-unbound' runs, foo is bound again."
-      (progn
-	 (defconst foo t)
-	 ;;Validation
-	 (assert (boundp 'foo))
-
-	 (let-unbound '(foo)
-	    (assert (not (boundp 'foo))))
-	 (assert (boundp 'foo))
-
-	 ;;Clean up after ourselves
-	 (makunbound 'foo) 
-	 t))
-   
-   (  "Param: symbolic list of symbol `foo'.
-Response: `foo' is initially unbound in the body.
-After `let-unbound' runs, foo is bound again."
-      (let
-	 ((syms '(foo)))
-	 (defconst foo t)
-	 ;;Validation
-	 (assert (boundp 'foo))
-
-	 (let-unbound syms
-	    (assert (not (boundp 'foo))))
-	 (assert (boundp 'foo))
-
-	 ;;Clean up after ourselves
-	 (makunbound 'foo) 
-	 t))
-   
-   ;;Not tested: Cleanliness: Doesn't capture `syms' etc.
-   )
 ;;;_ , flet-unbound
 (defmacro flet-unbound (syms-form &rest body)
    ""
@@ -508,48 +248,6 @@ After `let-unbound' runs, foo is bound again."
 		#'fmakunbound
 		',syms)))))
 
-;;;_  . Tests
-(rtest:deftest flet-unbound
-   ;;Bootstrap problem: To test this, we'd really like to have itself,
-   ;;to insulate the test from the environment.
-
-   (  "Param: literal list of symbol `foo'.
-Response: `foo' is initially unbound in the body.
-After `let-unbound' runs, foo is bound again."
-      (progn
-	 (defun foo ())
-	 ;;Validation
-	 (assert (fboundp 'foo))
-
-	 (flet-unbound '(foo)
-	    (assert (not (fboundp 'foo))))
-	 (assert (fboundp 'foo))
-
-	 ;;Clean up after ourselves
-	 (fmakunbound 'foo) 
-	 t))
-   
-   (  "Param: symbolic list of symbol `foo'.
-Response: `foo' is initially unbound in the body.
-After `let-unbound' runs, foo is bound again."
-      (let
-	 ((syms '(foo)))
-	 (defun foo ())
-	 ;;Validation
-	 (assert (fboundp 'foo))
-
-	 (flet-unbound syms
-	    (assert (not (fboundp 'foo))))
-	 (assert (fboundp 'foo))
-
-	 ;;Clean up after ourselves
-	 (fmakunbound 'foo) 
-	 t))
-   
-   ;;Not tested: Cleanliness: Doesn't capture `syms' etc.
-   )
-
-
 
 ;;;_ , emt:util:all-different
 ;;;###autoload
@@ -559,22 +257,6 @@ After `let-unbound' runs, foo is bound again."
    (let
       ((w/o-dups (remove-duplicates set)))
       (equal (length set) (length w/o-dups))))
-
-;;;_  . Tests
-(rtest:deftest emt:util:all-different
-
-   (  "Proves: `emt:util:all-different' returns non-nil just if all
-members of SET are different."
-      (progn
-	 (assert
-	    (emt:util:all-different '(1 2)))
-	 (assert
-	    (not
-	       (emt:util:all-different '(1 1))))
-	 t))
-   
-   
-   )
 
 ;;;_: Footers
 ;;;_ * Local emacs vars.

@@ -1,11 +1,11 @@
-;;;_ emtest/testhelp/types/dll.el --- Deftypes for elib's dll
+;;;_ emtest/testhelp/testpoint/testhelp.el --- Testhelp for testpoint
 
 ;;;_. Headers
 ;;;_ , License
-;; Copyright (C) 2009  Tom Breton (Tehom)
+;; Copyright (C) 2010  Tom Breton (Tehom)
 
-;; Author: Tom Breton (Tehom) <tehom@localhost.localdomain>
-;; Keywords: lisp, maint, oop
+;; Author: Tom Breton (Tehom) <tehom@panix.com>
+;; Keywords: lisp, maint, internal
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -24,39 +24,30 @@
 
 ;;;_ , Commentary:
 
-;; This is no longer in use.
+;; 
 
 
 ;;;_ , Requires
 
 
+
 ;;;_. Body
 
-;;;_ , dll-repeat
-(deftype dll-repeat (type) 
-   `(satisfies 
-       (lambda (obj)
-	  (dll-repeat-f obj ',type))))
+;;;_ , Test examples
 
-(defun dll-repeat-f (obj type)
+(defun emtp:td:1 (branch &optional arg)
    ""
-   (and
-      (dll-p obj)
-      (catch
-	 'dll-repeat:not-type
-	 (progn
-	    (dll-map
-	       (lambda (item)
-		  (unless
-		     (typep item type)
-		     (throw 'dll-repeat:not-type nil)))
-	       obj)
-	    t))))
+   
+   (if (equal branch 0)
+      (emtp id-0 (arg 'b-0)
+	 'branch-0)
+      (emtp id-1 (arg 'b-1)
+	 'branch-1)))
 
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'emtest/testhelp/types/dll)
+(provide 'emtest/testhelp/testpoint/testhelp)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -64,4 +55,4 @@
 ;;;_  + End:
 
 ;;;_ , End
-;;; emtest/testhelp/types/dll.el ends here
+;;; emtest/testhelp/testpoint/testhelp.el ends here

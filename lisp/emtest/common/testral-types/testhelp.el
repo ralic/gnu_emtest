@@ -377,9 +377,8 @@
 	 ;;A report with a different tester-id (same testrun-id?)
 	 )
    
-      ;;$$MOVE ME This belongs in view-types/testhelp.el, which
-      ;;receive/rtest and maybe other files should use.  Would be
-      ;;easier with separate stuff.
+      ;;$$MOVE ME This belongs in view-types/testhelp.el
+      ;;Would be easier with separate stuff.
       (group
 	 ((type receive-alist-item))
 	 (type-must-be () (emtm:pattern emtvr:suite-newstyle))
