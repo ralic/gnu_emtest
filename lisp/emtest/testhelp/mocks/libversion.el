@@ -178,8 +178,7 @@ Leaves emtmv in state VERSION."
 	 load-history)))
 
 ;;;_  . emtmv:change-state 
-;;Factor me into setup (for emtmv:t=nil) and save&switch
-(defun emtmv:change-state (new-state dummy &optional lib-filename)
+(defun emtmv:change-state (new-version dummy &optional lib-filename)
    "Change the current state"
    (when dummy (error "Passing a value for DUMMY is reserved"))
    (unless emtmv:t
@@ -192,69 +191,57 @@ Leaves emtmv in state VERSION."
 	    (progn
 	       (unless lib-filename (error "No filename passed"))
 	       lib-filename))))
+   (unless (memq new-version '(old new))
+      (error "Invalid state %s" new-version))
 
-   (case new-state
-      (nil (error "Stopping is not supported"))
-      (old
-	 (case (emtmv:t->version emtmv:t)
-	    ((nil)
-	       (setf (emtmv:t->old-obarray emtmv:t)
-		  (emtmv:init-obarray-by-filename 
-		     (emtmv:t->filename emtmv:t))))
-	    ;;No change.
-	    (old)
-	    (new
-	       ;;Save the B versions
-	       (setf (emtmv:t->new-obarray emtmv:t)
-		  (emtmv:save-to-obarray 
-		     (emtmv:t->new-obarray emtmv:t)
-		     (emtmv:t->filename emtmv:t)))
-	       ;;Switch to the A versions
-	       (setf (emtmv:t->old-obarray emtmv:t)
-		  (emtmv:activate-obarray
-		     (emtmv:t->old-obarray emtmv:t)
-		     (emtmv:t->filename emtmv:t))))))
-      
+   (let
+      ((old-version (emtmv:t->version emtmv:t)))
+      (unless (eq new-version old-version)
+	 (when old-version
+	    (emtmv:save-version old-version emtmv:t))
+	 (emtmv:activate-version new-version emtmv:t)
+	 (setf (emtmv:t->version emtmv:t) new-version))))
+
+;;;_  . emtmv:set-obarray
+(defun emtmv:set-obarray (version oa)
+   ""
+   (case version
+	 (new
+	    (setf (emtmv:t->new-obarray obj) oa))
+	 (old
+	    (setf (emtmv:t->old-obarray obj) oa))))
+;;;_  . emtmv:get-obarray
+(defun emtmv:get-obarray (version obj)
+   ""
+   (case version
       (new
-	 (case (emtmv:t->version emtmv:t)
-	    ((nil)
-	       (setf (emtmv:t->new-obarray emtmv:t)
-		  (emtmv:init-obarray-by-filename 
-		     (emtmv:t->filename emtmv:t))))
-	    (old
-	       ;;Save the A versions
-	       (setf (emtmv:t->old-obarray emtmv:t)
-		  (emtmv:save-to-obarray
-		     (emtmv:t->old-obarray emtmv:t)
-		     (emtmv:t->filename emtmv:t)))
-	       ;;Switch to the B versions
-	       (setf (emtmv:t->new-obarray emtmv:t)
-		  (emtmv:activate-obarray 
-		     (emtmv:t->new-obarray emtmv:t)
-		     (emtmv:t->filename emtmv:t))))
-	    ;;No change.
-	    (new)))
-      
-      (otherwise
-	 (error "Invalid new-state %s" new-state)))
-   
-   ;;Remember the state
-   (setf (emtmv:t->version emtmv:t) new-state))
-
-;;;_  . emtmv:save-to-obarray
-(defun emtmv:save-to-obarray (oa filename)
+	 (emtmv:t->new-obarray obj))
+      (old
+	 (emtmv:t->old-obarray obj))))
+;;;_  . emtmv:save-version
+(defun emtmv:save-version (version obj)
    "Save current values into obarray OA and return OA.
 OA can be nil in which case a new obarray is created and returned.
 If initialized, it will be from the module loaded from FILENAME."
-   (emtmv:sync-obarray oa filename obarray oa))
+   (let
+      ((oa
+	  (emtmv:get-obarray version obj)))
+      (emtmv:set-obarray version 
+	 (emtmv:sync-obarray 
+	    oa (emtmv:t->filename obj) obarray oa))))
 
-;;;_  . emtmv:activate-obarray
-(defun emtmv:activate-obarray (oa filename)
+
+;;;_  . emtmv:activate-version
+(defun emtmv:activate-version (version obj)
    "Restore current values from obarray OA and return OA.
 OA can be nil in which case a new obarray is created and returned.
 If initialized, it will be from the module loaded from FILENAME."
-
-   (emtmv:sync-obarray oa filename oa obarray))
+   (let
+      ((oa
+	  (emtmv:get-obarray version obj)))
+      (emtmv:set-obarray version 
+	 (emtmv:sync-obarray 
+	    oa (emtmv:t->filename obj) oa obarray))))
 
 ;;;_  . emtmv:sync-obarray
 (defun emtmv:sync-obarray (oa filename from to)
@@ -266,7 +253,7 @@ OA can be nil in which case a new obarray is created and returned.
 If initialized, it will be from the module loaded from FILENAME.
 
 Workhorse for `emtmv:activate-obarray' and
-`emtmv:save-to-obarray'."
+`emtmv:save-version'."
    (if
       oa
       (progn
@@ -321,7 +308,7 @@ FILENAME must be the name of a file that has already been loaded."
       (dolist (entry hist-line)
 	 (emtmv:set-in-obarray oa entry))
       oa))
-;;;_  . Copy on to another
+;;;_  . Copy one to another
 ;;;_   , emtmv:copy-sym-by-name
 (defun emtmv:copy-sym-by-name (from to name)
    ""
@@ -352,6 +339,7 @@ the same obarray as FROM or TO."
       #'(lambda (sym)
 	   (emtmv:copy-sym-by-name from to (symbol-name sym)))
       syms-of))
+
 ;;;_  . Add another to both
 
 ;;;_  . Add symbol to both obarrays
