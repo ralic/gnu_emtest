@@ -114,7 +114,7 @@ DATA-LIST must be a list of alists."
 		     (emt:testral:suite
 			(append
 			   (list
-			      "Results for suite " name "\n")
+			      "Results for " name "\n")
 
 			   ;;(emtvr:suite-newstyle-how-to-run cell)
 			   ;;`how-to-run' informs a button.
