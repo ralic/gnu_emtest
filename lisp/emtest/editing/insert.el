@@ -86,7 +86,7 @@
    ""
    (interactive)
    (pp
-      '(unless (fboundp 'emt:deftest-3)
+      '(unless (fboundp 'emt:if-avail)
 	  (defmacro emt:deftest-3 (&rest dummy))
 	  (defmacro emt:if-avail (&rest dummy)))
       (current-buffer)))
