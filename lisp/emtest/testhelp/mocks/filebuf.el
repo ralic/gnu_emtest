@@ -277,22 +277,6 @@ You may want to use this to umount a ramdisk"
       (replace-match "")
       (goto-char (match-beginning 0))))
 
-;;;_   , emtb:cautious-find-file
-
-;;$$OBSOLETE
-'
-(defun emtb:cautious-find-file (filename)
-   ""
-
-   (unless
-      (file-name-absolute-p filename)
-      (error "Filename %s is not absolute" filename))
-
-   (unless
-      (file-exists-p filename)
-      (error "File %s doesn't exist" filename))
-
-   (find-file filename))
 ;;;_   , emtb:cautious-insert-file
 (defun emtb:cautious-insert-file (filename &optional visit beg end replace)
    ""
@@ -347,42 +331,19 @@ You may want to use this to umount a ramdisk"
 		   visited-name
 		   (expand-file-name visited-name dir))))
 	    (set-visited-file-name abs-name t nil)))))
-;;;_   , emtb:cautious-load-file
-
-;;$$OBSOLETE
-'
-(defun emtb:cautious-load-file (filename visited-name)
-   ""
-
-   ;;`emtb:cautious-insert-file' will error if buffer is non-empty,
-   ;;so we don't have to provide that.
-
-   ;;Have to set VISITED arg so that within
-   ;;`emtb:cautious-setup-file', `after-find-file' sees a filename
-   ;;as it expects to.
-   (emtb:cautious-insert-file filename t)
-   (emtb:cautious-setup-file 
-      visited-name 
-      (file-name-directory filename)))
-
 ;;;_   , emtb:find-file-goto-text
 
 ;;Deprecated.  This has been split into `emtb:cautious-find-file'
 ;;and the part that manages loc-string and (now) prepare-f
 
+;;May become only a test helper.  Arg LOC-STRING need not be optional.
+
 ;;$$OBSOLESCENT Prepare to replace this.  Several tests use it and
-;;emtb:find-file-2 uses it with no options.
+;;emtb:find-file-2 uses it with no options.  `emtb:find-file-2' itself
+;;is obsolescent.
 
 (defun emtb:find-file-goto-text (filename &optional loc-string)
    ""
-   '
-   (unless
-      (file-name-absolute-p filename)
-      (error "Filename %s is not absolute" filename))
-   '
-   (unless
-      (file-exists-p filename)
-      (error "File %s doesn't exist" filename))
 
    (let
       ((buf (emtb:cautious-find-file filename)))
@@ -394,71 +355,11 @@ You may want to use this to umount a ramdisk"
       
       buf))
 
-;;;_   , emtb:find-file-2
-
-;;$$ADAPT ME Change callers to call thru emtb:find-file-3.  Then
-;;remove loc-string param and its related code.
-(defun emtb:find-file-2 (filesthing-0 basename &optional loc-string)
-   ""
-	 
-   (let*
-      (
-	 (filesthing 
-	    (emtb:virtual-dir:suspected-list->singleton
-	       basename
-	       filesthing-0))
-
-	 (filename
-	    (emtb:virtual-dir:base->filename basename filesthing)))
-      
-      (emtb:virtual-dir:constantize basename filesthing)
-      (emtb:find-file-goto-text filename loc-string)))
-
-
-;;;_   , emtb:find-file-3
-
-;;$$RENAME ME to `emtb:find-file'
-;;;###autoload
-(defun* emtb:find-file-3 (context filebase &key at-str prepare-f) 
-   "Find file FILEBASE, as expanded in filecontext CONTEXT.
-
-If PREPARE-F is given, call it with no args.
-If AT-STR is given, find it in the buffer and put point at the
-beginning of it."
-   
-   (emtb:find-file-2 context filebase)
-   (when prepare-f (funcall prepare-f))
-   (if at-str 
-      (emtb:goto-text at-str)
-      (goto-char (point-min))))
-
-;;;_    . Tests
-
-;;Tested thru `allout-tehom:operate-on-siblings'
-
-;;;_  . emtb:make-form-find-file
-
-;;$$RENAME ME emtb:make-form-find-file
-;;;###autoload
-(defun emtb:make-form-find-file-2 (options key context)
-   "Return a form that interprets KEY in OPTIONS as an instruction to
-switch to a buffer visiting a given file.  A second arg to KEY is
-interpreted as a string to place point at, as in
-`find-file-goto-text'.
-
-OPTIONS and KEY can be symbols.  They are interpreted when the form is
-evalled."
-
-   (form-by-option options key
-      #'(lambda (x)
-	   `(emtb:find-file-2
-	       ,context
-	       ,@(cdr x)))))
 
 ;;;_ , Check file is what's expected
 
 ;;;_  . emtb:buf-is-file
-
+;;;###autoload
 (defun emtb:buf-is-file (buf filename)
    ""
    (if
@@ -511,35 +412,9 @@ if given, must be a function."
       (emtb:cautious-insert-file filename)
       (buffer-string)))
 
-;;;_  . emtb:files-match
 
+;;;_  . emtb:file-contents-absname
 ;;;###autoload
-(defun emtb:files-match (a b)
-   "Return nil if the files differ, non-nil if they don't"
-   (string-equal (emtb:file-contents a) (emtb:file-contents b)))
-
-
-
-;;;_   , Tests
-
-;;Tested thru emtb:virtual-dir:constantize's tests
-
-;;;_  . (Dep) emtb:w/context:buf-matches-file
-
-;;Obsolescent
-(defun emtb:w/context:buf-matches-file (context basename)
-   "Return non-nil if buffer's contents are the same as contents of
-the file BASENAME in context CONTEXT"
-   
-   (let*
-      ((filename
-	  (emtb:virtual-dir:base->filename basename context)))
-      (string-equal 
-	 (buffer-string) 
-	 (emtb:file-contents filename))))
-;;;_  . emtb:file-contents-1
-
-;;NB, the Name-1 convention here is the opposite of the usual
 (defun emtb:file-contents-absname (file &optional dir)
    "Return the contents of a file given by absolute name"
    (let
@@ -551,6 +426,26 @@ the file BASENAME in context CONTEXT"
       (unless (file-name-absolute-p filename)
 	 (error "File name should be absolute"))
       (emtb:file-contents filename)))
+
+;;;_  . emtb:contents
+;;$$RENAME ME emtb:get-contents
+(defun* emtb:contents (default-dir &key file dir string &allow-other-keys)
+   "Get contents, according to arguments.
+For internal use by filebuf.  Outside callers probably want
+`emtb:file-contents-absname'."
+
+   (cond
+      (file
+	 (emtb:file-contents-absname file (or dir default-dir)))
+      (string
+	 string)))
+
+;;;_  . emtb:files-match
+
+;;;###autoload
+(defun emtb:files-match (a b)
+   "Return nil if the files differ, non-nil if they don't"
+   (string-equal (emtb:file-contents a) (emtb:file-contents b)))
 
 ;;;_  . Structures for holding comparison data
 
@@ -568,9 +463,11 @@ the file BASENAME in context CONTEXT"
 
 
 ;;;_  . emtb:last-bad-comparison
+;;$$DESIGN ME Merge these with TESTRAL result lists
 (defvar emtb:last-bad-comparison nil 
    "" )
 ;;;_  . emtb:ediff-last-comparison
+;;Maybe belong in an associated file instead.
 ;;;###autoload
 (defun emtb:ediff-last-comparison (comparison)
    ""
@@ -622,11 +519,11 @@ the file BASENAME in context CONTEXT"
 
 ;;;_  . emtb:buf-contents-matches
 
-;;Key `:object' only exists for historical reasons.
+;;Key `:object' was replaced by key `:sexp'
 ;;;###autoload
 (defun* emtb:buf-contents-matches (&rest args &key file dir string
-					object sexp buf
-					regex-marks validate-re)
+				     sexp buf
+				     regex-marks validate-re)
    "Return non-nil just if the buffer's contents match what is given.
 
 What is given can be:
@@ -653,27 +550,12 @@ What is given can be:
 			  (apply #'emtb:contents dir val))
 		     validate-re))))
 	 
-	 ((or object sexp)
+	 (sexp
 	    (equal
-	       (or object sexp)
+	       sexp
 	       (with-current-buffer buf-in
 		  (save-excursion
 		     (emtb:buffer-object))))))))
-
-;;;_  . emtb:contents
-;;Need better name
-;;Move it near other file/string figurer.
-;;Generally shouldn't call it from outside.  
-(defun* emtb:contents (default-dir &key file dir string &allow-other-keys)
-   "Get contents, according to arguments.
-For internal use by mockbuf.  Outside callers probably want
-`emtb:file-contents-absname'."
-
-   (cond
-      (file
-	 (emtb:file-contents-absname file (or dir default-dir)))
-      (string
-	 string)))
 
 ;;;_  . emtb:extract-regexp
 

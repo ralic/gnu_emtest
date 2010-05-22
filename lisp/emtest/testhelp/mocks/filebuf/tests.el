@@ -103,6 +103,7 @@ Reaction: Point is now where STR was ")
 		  (error "A deliberate error")))
 	    (equal win
 	       (current-window-configuration)))))
+
    (nil
       (progn
 	 (emt:doc "Exercise the `visited-name' feature.")
@@ -125,6 +126,7 @@ Reaction: Point is now where STR was ")
 		  (:file master-file :visited-name slave-file)
 		  (save-buffer 0))
 	       (emtb:files-match master-file slave-file)))))
+
    (nil
       (progn
 	 (emt:doc "Situation: The slave file already exists.")
@@ -333,7 +335,7 @@ No file is made.")
 	    (emtb:find-file-goto-text ".")))))
 
 
-;;;_    . emtb:find-file-2
+;;;_    . emtb:find-file-2 (OBSOLESCENT)
 
 ;;Tested thru emtb:make-form-find-file, but that's increasingly
 ;;less adequate.

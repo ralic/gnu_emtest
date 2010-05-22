@@ -36,7 +36,7 @@
 
 ;;;_  . Test config
 (defconst emtb:th-examples-dir
-   (emtb:expand-filename-by-load-file "filebuf/examples/") 
+   (emtb:expand-filename-by-load-file "examples/") 
    "" )
 
 
