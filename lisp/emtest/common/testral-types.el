@@ -140,6 +140,7 @@
    "A report sent by test-runner to viewer"
    (testrun-id     () :type emt:testral:testrun-id)
    (tester-id      () :type emt:testral:tester-id)
+   (run-done-p     () :type bool)
    ;;This is really visible-path prefix.
    (test-id-prefix () :type emt:testral:prefix-suite-id)
    (suites () :type 

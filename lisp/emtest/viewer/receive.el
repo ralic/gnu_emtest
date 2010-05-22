@@ -83,13 +83,15 @@
 
 ;;;_  . emtvr:one-newstyle
 
-;;Become smarter about aliases.  Pick the "best" one as the id,
-;;favoring UUIDs (recognized as strings), allowing viewer's
+;;$$IMPROVE ME Become smarter about aliases.  Pick the "best" one as
+;;the id, favoring UUIDs (recognized as strings), allowing viewer's
 ;;recommendations and the test-runner's.  Try all aliases in deleting
 ;;it.
 
-;;Also, suites (sometimes) indicate what their current children are.  If
-;;other children are recorded, they no longer exist so remove them.
+;;$$ADD ME suites (sometimes) indicate what their current children
+;;are.  If other children are recorded, they no longer exist so remove
+;;them.  Perhaps suite reports flag whether they have exhaustively
+;;listed their children.
 (defun emtvr:one-newstyle 
    (receiver entry testrun-id prefix)
    "Receive and store a single test report."

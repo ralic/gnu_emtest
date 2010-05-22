@@ -183,7 +183,16 @@ Each one must be a `emtt:explorable'" )
 	 (let
 	    ((next (pop emt:test-finder:pending-list)))
 	    ;;$$PASS parms so it can ct what it returns.  testrun-id.
-	    (emtt:explore-one next report-cb)))))
+	    (emtt:explore-one next report-cb)))
+
+      (funcall report-cb
+	 (make-emt:testral:report
+	    :run-done-p t
+	    :testrun-id "0" ;;Punt
+	    :tester-id "0"  ;;Punt
+	    :test-id-prefix '()	    
+	    :suites '()))))
+
 
 
 ;;;_. Footers

@@ -71,6 +71,7 @@ An `emtve' or `nil'." )
    "" )
 ;;;_ , Pathtree callback functions 
 ;;;_  . emtest:viewer:receive-cb
+;;$$RENAME ME emtve:receive-cb
 (defun emtest:viewer:receive-cb (presentation-path cell)
    "Emviewer callback that `receive' gets.
 It just tells a pathtree to add this node."
