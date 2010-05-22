@@ -33,7 +33,8 @@
 ;;  (require 'emtest/runner/define)
 
 ;;The second is for files that include both main code and tests.  For
-;;these, instead of writing (require 'emtest/runner/define), write this:
+;;these, command `emt:insert' and choose `emt:insert-requires'.  It
+;;will insert something like:
 
 ;; (unless (fboundp 'emt:deftest)
 ;;    (defmacro emt:deftest (&rest dummy))
@@ -48,7 +49,8 @@
 
 ;;;_ , Requires
 
-;;Clunky for now.  We should instead pull their autoload file(s) in.
+;;$$IMPROVE ME.  We should instead pull testhelp's autoload file(s)
+;;in.  Which have yet to be created.
 (require 'emtest/testhelp/standard)
 (require 'emtest/testhelp/persist)
 
@@ -56,105 +58,15 @@
 ;;;_ , emt:if-avail
 ;;;###autoload
 (defmacro emt:if-avail (&rest body)
-   "Eval BODY just if the library is loaded."
-
+   "Equivalent to `progn' just if emtest is available."
    (cons 'progn body))
-;;;_  . Tests
-;;It's direct
+
 ;;;_ , emt:deftest-2-make-prop-eval-form
 (defun emt:deftest-2-make-prop-eval-form (spec)
    ""
    
    (destructuring-bind (sym val-form) spec
       `(list ',sym ,val-form)))
-
-;;;_ , emt:deftest-2
-;; '
-;; (defmacro emt:deftest-2 (symbol props-or-first-clause &rest clauses)
-;;    "Define a test in Emtest"
-;;    (error "emt:deftest-2 is OBSOLETE, use emt:deftest-3")
-;;    ;;If `props-or-first-clause' is a list starting with `props', it's
-;;    ;;keywise properties, otherwise it's a clause.
-;;    (let*
-;;       ((props-p
-;; 	  (and 
-;; 	     (consp props-or-first-clause)
-;; 	     (eq (car props-or-first-clause) 'props)))
-;; 	 (clauses-1
-;; 	    (if props-p
-;; 	       clauses
-;; 	       (cons props-or-first-clause clauses))))
-      
-;;       `(eval-when-compile
-;; 	  ;;Version when no internally defined properties were
-;; 	  ;;recorded. 
-;; ;; 	  ,@(if props-p
-;; ;; 	       `((put ',symbol 'emt:properties
-;; ;; 		    (list
-;; ;; 		       ;;Get the name of the file the test lives in.
-;; ;; 		       '(load-file-name ,load-file-name)
-;; ;; 		       ,@(mapcar
-;; ;; 			    #'emt:deftest-2-make-prop-eval-form
-;; ;; 			    (cdr props-or-first-clause)))))
-;; ;; 	       ())
-;; 	  (put ',symbol 'emt:properties
-;; 	     (list
-;; 		;;Get the name of the file the test lives in.  This
-;; 		;;can be `nil', eg if user used `eval-region'.
-;; 		'(load-file-name ,load-file-name)
-;; 		,@(if props-p
-;; 		     (mapcar
-;; 			#'emt:deftest-2-make-prop-eval-form
-;; 			(cdr props-or-first-clause))
-;; 		     ())))
-	  
-;; 	  (put ',symbol 'emt:suite
-;; 	     ',(cons
-;; 		  (symbol-name symbol)
-;; 		  clauses-1)))))
-;; ;;;_ , emtt:destructure-clause
-;; '
-;; (defmacro emtt:destructure-clause (clause &rest body)
-;;    "Run BODY with the contents of CLAUSE bound as indicated.
-
-;; CLAUSE must be a clause as in a test suite, for instance any element
-;; of `clause-list' as bound by `emtt:destructure-suite'.
-
-;;  * form - the test form 
-;;  * doc - MAY CHANGE.  The docstring."
-;;    (error "emtt:destructure-clause is OBSOLETE, use emtt:destructure-clause-3")
-   
-;;    `(destructuring-bind (doc form) ,clause
-;;        ,@body))
-
-;; ;;;_  . Tests
-
-;; ;;Tested thru `emtt:destructure-suite'.  NB
-;; ;;`emtt:destructure-suite' cannot test normally thru emtest due to
-;; ;;a bootstrap issue.
-
-;; ;;;_ , emtt:destructure-suite
-;; '
-;; (defmacro emtt:destructure-suite (suite &rest body)
-;;    "Run BODY with the contents of SUITE bound as indicated.
-;; SUITE must be a symbol naming a test suite.
-
-;;  * clause-list - List of the clauses in SUITE.
-;;  * props - The property list of SUITE (an alist)."
-;;    (error "emtt:destructure-suite is OBSOLETE, use emtt:destructure-suite-3")
-   
-;;    `(let
-;;        (
-;; 	  (clause-list
-;; 	     ;;`cdr' is to account for the initial docstring.
-;; 	     (cdr 
-;; 		(get ,suite 'emt:suite)))
-;; 	  (props
-;; 	     (get ,suite 'emt:properties)))
-       
-;;        ,@body))
-
-
 
 ;;;_ , Version 3
 ;;;_  . emt:deftest-3

@@ -59,29 +59,32 @@ This is the heart of Emtest exploration: A test itself."
 	 ;;emtt:*abort-p*, set that badness)
 	 (badnesses '()))
 
-      ;;This defines `props'
+      ;;This defines `props' in body.
       (emtt:destructure-clause-3 clause
-	 (let
-	    (
-	       (emt:trace:properties props) ;;OBSOLESCENT.
-	       (form-1
-		  (emtt:add-surrounders 
-		     form 
-		     (emtts:get-surrounders props)
-		     props)))
-	    ;;$$USE STANDARD
-	    ;;(emtt:trap-errors (eval form-1))
-	    (condition-case err
-	       (eval form-1)
-	       (error
-		  (push
-		     (make-emt:testral:error-raised
-			:err err
-			:badnesses '(ungraded))
-		     emt:testral:*events-seen*)
-		  (push
-		     'ungraded
-		     badnesses)))))
+	 ;;$$WRITE ME RIGHT - Dormancy is punted for now.
+	 ;;If it's quoted, it's dormant
+	 (if (not (eq governor 'quote))
+	    (let
+	       (
+		  (emt:trace:properties props) ;;OBSOLESCENT.
+		  (form-1
+		     (emtt:add-surrounders 
+			form 
+			(emtts:get-surrounders props)
+			props)))
+	       ;;$$USE STANDARD
+	       ;;(emtt:trap-errors (eval form-1))
+	       (condition-case err
+		  (eval form-1)
+		  (error
+		     (push
+			(make-emt:testral:error-raised
+			   :err err
+			   :badnesses '(ungraded))
+			emt:testral:*events-seen*)
+		     (push
+			'ungraded
+			badnesses))))))
       
       (make-emt:testral:suite
 	 :contents
