@@ -35,8 +35,6 @@
 (require 'emtest/testhelp/standard)
 (require 'emtest/editing/insert)
 
-(require 'rtest-util)  ;;rtest-one-probe-0
-
 ;;;_. Body
 ;;;_   , with-buffer-containing-buildform
 (put 'with-buffer-containing-buildform 'emt:test-thru 'with-buffer-containing-object)
@@ -331,7 +329,7 @@ No file is made.")
       (progn
 	 (emt:doc "Situation: Filename is not absolute.")
 	 (emt:doc "Response: Error.")
-	 (rtest:gives-error
+	 (emt:gives-error
 	    (emtb:find-file-goto-text ".")))))
 
 
@@ -473,19 +471,19 @@ emtb:string-matches.")
 	 (emt:doc "Response: Error.")
 	 (let
 	    ((default-directory emtb:buf-contents-matches:thd:dir))
-	    (rtest:gives-error
+	    (emt:gives-error
 	       (emtb:buf-contents-matches :file "yes.txt")))))
    (nil
       (progn
 	 (emt:doc "Situation: `dir' is given but expanded filename is not absolute,")
 	 (emt:doc "Response: Error.")
-	 (rtest:gives-error
+	 (emt:gives-error
 	    (emtb:buf-contents-matches :file "yes.txt" :dir "."))))
    (nil
       (progn
 	 (emt:doc "Situation: File does not exist")
 	 (emt:doc "Response: Error.")
-	 (rtest:gives-error
+	 (emt:gives-error
 	    (emtb:buf-contents-matches :file "invalid.txt" :dir emtb:buf-contents-matches:thd:dir))))
    (nil
       (progn
@@ -562,7 +560,7 @@ the regexp pattern.")
 	 (emt:doc "Response: Error.")
 	 (with-buffer-containing-object
 	    (:string emtb:buf-contents-matches:thd:yes\.txt)
-	    (rtest:gives-error
+	    (emt:gives-error
 	       (emtb:buf-contents-matches :file "regexp-yes.txt" :dir emtb:buf-contents-matches:thd:dir :regex-marks
 		  '("[" "]")
 		  :validate-re
@@ -609,7 +607,7 @@ Return: those parts in order, surrounded by ^$ to match a whole string.")
 	 (emt:doc "Situation: A character class is given in bracket form.
 Recognizers are brackets.")
 	 (emt:doc "Response: Gives error")
-	 (rtest:gives-error
+	 (emt:gives-error
 	    (emtb:extract-regexp "[[:digit:]*]" "[" "]"))))
    (nil
       (progn
@@ -690,7 +688,7 @@ magic regexp characters.")
       (progn
 	 (emt:doc "Param: `regex-marks' is something else.  
 Action: Error.")
-	 (rtest:gives-error
+	 (emt:gives-error
 	    (emtb:string-matches "a" "a" "Just one string")))))
 
 

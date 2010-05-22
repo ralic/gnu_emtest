@@ -36,6 +36,7 @@
 ;;;_ , Examples
 
 ;;;_  . Interface for testing with persists
+;;$$OBSOLESCENT
 (defconst emt:persist:thd:funcall-examples
    (emt:eg:define+
       ((project emtest)(library tester)(section emt:funcall))

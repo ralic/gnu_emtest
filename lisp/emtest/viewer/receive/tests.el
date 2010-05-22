@@ -1,4 +1,4 @@
-;;;_ rtest.el --- Tests for receive module
+;;;_ emtest/viewer/receive/tests.el.el --- Tests for receive module
 
 ;;;_. Headers
 ;;;_ , License
@@ -315,7 +315,7 @@
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'rtest)
+(provide 'emtest/viewer/receive/tests)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -323,4 +323,4 @@
 ;;;_  + End:
 
 ;;;_ , End
-;;; rtest.el ends here
+;;; emtest/viewer/receive/tests.el ends here

@@ -29,8 +29,6 @@
 
 ;;;_ , Requires
 
-
-(require 'rtest-define)
 (require 'emtest/testhelp/eg)
 
 ;;Just because emt:wrap-form was tested with the persist examples.

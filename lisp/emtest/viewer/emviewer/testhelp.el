@@ -31,7 +31,6 @@
 
 
 (require 'emtest/viewer/emviewer)
-'(require 'emtest/runner/tester) ;;Not needed.  We go thru tester/launch.
 (require 'emtest/runner/launch)
 
 ;;;_. Body

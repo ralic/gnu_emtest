@@ -36,8 +36,8 @@
 
 ;;;_ , Persist functions 
 
-;;These must be visible to tests.  Distinct from emt-persist.el which
-;;is implementation.
+;;These must be visible to tests.  Distinct from
+;;emtest/common/emt-persist which is implementation.
 
 ;;;_  . emt:persist
 ;;$$MOVE ME and see special variable emt:trace:properties

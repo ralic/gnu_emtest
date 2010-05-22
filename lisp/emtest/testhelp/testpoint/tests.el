@@ -1,4 +1,4 @@
-;;;_ emtest/testhelp/testpoint/tests.el --- Rtest tests for testpoint
+;;;_ emtest/testhelp/testpoint/tests.el --- Tests for testpoint
 
 ;;;_. Headers
 ;;;_ , License
@@ -253,7 +253,7 @@ The testpoint collects one arg.")
 	       (finally nil
 		  (arg-list)
 		  (assert
-		     (rtest:sets= arg-list
+		     (emt:sets= arg-list
 			'(x y))
 		     t)))
 	    t)))
@@ -274,11 +274,11 @@ The testpoint collects multiple args - 2.")
 	       (finally nil
 		  (arg-list a-list)
 		  (assert
-		     (rtest:sets= arg-list
+		     (emt:sets= arg-list
 			'(x y))
 		     t)
 		  (assert
-		     (rtest:sets= a-list
+		     (emt:sets= a-list
 			'(b-1 b-1))
 		     t)))
 	    t)))

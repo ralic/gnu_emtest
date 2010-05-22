@@ -338,7 +338,7 @@ X already has a different property.")
 			   :property-list
 			   (list
 			      '(other-prop other-value))))))
-	       (rtest:sets=
+	       (emt:sets=
 		  (emt:example\.-property-list new-x)
 		  (list
 		     `(doc ,docstring)
@@ -656,7 +656,7 @@ Params:  The value of an item is given as a form.")
 	 (emt:doc "Response: No error.  Behaves normally.")
 	 (emt:eg:define:th:with-empty-tagset nil
 	    (not
-	       (rtest:gives-error
+	       (emt:gives-error
 		  (emt:eg:define dummy-id nil
 		     (group nil)))))))
    (nil
@@ -664,7 +664,7 @@ Params:  The value of an item is given as a form.")
 	 (emt:doc "Param: ID is something other than a symbol")
 	 (emt:doc "Response: Error")
 	 (emt:eg:define:th:with-empty-tagset nil
-	    (rtest:gives-error
+	    (emt:gives-error
 	       (emt:eg:define "String instead of symbol" nil)))))
    (nil
       (progn
@@ -787,7 +787,7 @@ between the examples.")
 	       (item
 		  ((dummy-type-tag b))
 		  'dummy-1-type-b))
-	    (rtest:gives-error
+	    (emt:gives-error
 	       (emt:eg:define dummy-id
 		  ((dummy-tag 1))
 		  (item
@@ -811,7 +811,7 @@ between the examples.")
 		  ((same-dummy-type-tag b))
 		  'dummy-1-type-b))
 	    (not
-	       (rtest:gives-error
+	       (emt:gives-error
 		  (emt:eg:define dummy-id
 		     ((dummy-tag 1))
 		     (item
@@ -836,7 +836,7 @@ call of `emt:eg' see the example it's trying to use.")
 		  'dummy-1-type-b)
 	       (transparent-tags nil
 		  (a-different-tag)))
-	    (rtest:gives-error
+	    (emt:gives-error
 	       (emt:eg:define dummy-id
 		  ((dummy-tag 1))
 		  (item
@@ -857,7 +857,7 @@ The example it's trying to use doesn't exist.")
 	       ((dummy-tag 1))
 	       (transparent-tags nil
 		  (a-different-tag)))
-	    (rtest:gives-error
+	    (emt:gives-error
 	       (emt:eg:define dummy-id
 		  ((dummy-tag 1))
 		  (item
@@ -882,7 +882,7 @@ That example existed before but now doesn't.")
 	       (item
 		  ((dummy-type-tag b))
 		  'dummy-1-type-b))
-	    (rtest:gives-error
+	    (emt:gives-error
 	       (emt:eg:define dummy-id
 		  ((dummy-tag 1))
 		  (item
@@ -1029,7 +1029,7 @@ other example.")
 	 (emt:doc "Situation: Two definitions mutually uses each others values.")
 	 (emt:doc "Response: Error.")
 	 (emt:eg:define:th:with-empty-tagset nil
-	    (rtest:gives-error
+	    (emt:gives-error
 	       (emt:eg:define dummy-id
 		  ((dummy-tag 1))
 		  (transparent-tags nil
@@ -1054,7 +1054,7 @@ other example.")
       (progn
 	 (emt:doc "Params: Kv is the wrong type (a string)")
 	 (emt:doc "Response: Non-nil just if kv's key matches filter.")
-	 (rtest:gives-error
+	 (emt:gives-error
 	    (emt:eg:kv-matches-p "Wrong type" 'dummy-tag))))
    (nil
       (progn
@@ -1086,7 +1086,7 @@ other example.")
       (progn
 	 (emt:doc "Params: Filter is a key/value pair, kv is a bare symbol")
 	 (emt:doc "Response: Error.")
-	 (rtest:gives-error
+	 (emt:gives-error
 	    (emt:eg:kv-matches-p 'dummy-tag
 	       '(dummy-tag 2)))))
    (nil
@@ -1121,7 +1121,7 @@ other example.")
 ;;;_  . Test helper
 (defun emt:eg:filter-one:th (list expected-values)
    ""
-   (rtest:sets=
+   (emt:sets=
       (mapcar
 	 #'emt:example.-value
 	 list)
@@ -1185,7 +1185,7 @@ Param: A bare tag.")
 Param: A tag/value pair matching that tag (c)")
 	 (emt:doc "Response: Error.")
 	 (emt:eg:th:with-example-examples-2
-	    (rtest:gives-error
+	    (emt:gives-error
 	       (emt:eg:filter-one:th
 		  (emt:eg:filter-one emt:eg:all-examples
 		     '(c t))
@@ -1227,7 +1227,7 @@ Param: A tag/value pair matching that tag (c)")
 	 (emt:doc "Params: A tag/value pair that overconstrains; matches no values.")
 	 (emt:doc "Response: Throw an error of predetermined type.")
 	 (emt:eg:th:with-example-examples
-	    (rtest:gives-error
+	    (emt:gives-error
 	       (emt:eg
 		  (dummy-tag 2))))))
    (nil
@@ -1235,7 +1235,7 @@ Param: A tag/value pair matching that tag (c)")
 	 (emt:doc "Params: A tag/value pair that underconstrains; matches two values.")
 	 (emt:doc "Response: Throw an error of predetermined type.")
 	 (emt:eg:th:with-example-examples
-	    (rtest:gives-error
+	    (emt:gives-error
 	       (emt:eg
 		  (dummy-tag 0))))))
    (nil
@@ -1273,7 +1273,7 @@ Params: That tag, bare.")
 Params: That tag, with a value.")
 	 (emt:doc "Response: Throw an error of predetermined type.")
 	 (emt:eg:th:with-example-examples-2
-	    (rtest:gives-error
+	    (emt:gives-error
 	       (emt:eg
 		  (c 1))))))
    (nil
@@ -1396,7 +1396,7 @@ tag.")
 	       (library emt:eg)
 	       (topic map))
 	    (assert
-	       (rtest:sets=
+	       (emt:sets=
 		  (emt:eg:map discriminator x x)
 		  '(small medium))
 	       t)
@@ -1417,7 +1417,7 @@ tag.")
 			 (emt:eg
 			    (part string))))))
 	       (assert
-		  (rtest:sets= results
+		  (emt:sets= results
 		     '((2 "wee")
 			 (14 "medium string"))))
 	       t))))
@@ -1442,7 +1442,7 @@ already have been narrowed out of our scope.")
 	       (topic map)
 	       (not-medium))
 	    (assert
-	       (rtest:sets=
+	       (emt:sets=
 		  (emt:eg:map discriminator x x)
 		  '(small))
 	       t)
@@ -1463,7 +1463,7 @@ already have been narrowed out of our scope.")
 			 (emt:eg
 			    (part string))))))
 	       (assert
-		  (rtest:sets= results
+		  (emt:sets= results
 		     '((2 "wee"))))
 	       t)))))
 
@@ -1476,7 +1476,7 @@ already have been narrowed out of our scope.")
 	 (emt:doc "Situation: Using the usual examples.")
 	 (emt:doc "Response: Returns the expected value.")
 	 (emt:eg:th:with-example-examples
-	    (rtest:sets=
+	    (emt:sets=
 	       (emt:eg:all-tags)
 	       '(dummy-tag a b)))))
    (nil
@@ -1484,7 +1484,7 @@ already have been narrowed out of our scope.")
 	 (emt:doc "Situation: Using the second examples.")
 	 (emt:doc "Response: Returns the expected value.")
 	 (emt:eg:th:with-example-examples-2
-	    (rtest:sets=
+	    (emt:sets=
 	       (emt:eg:all-tags)
 	       '(dummy-tag a b c))))))
 
@@ -1517,7 +1517,7 @@ Param: dummy-tag.")
 	       (library emt:eg)
 	       (topic map))
 	    (assert
-	       (rtest:sets=
+	       (emt:sets=
 		  (emt:eg:all-tag-args 'discriminator)
 		  '(small medium))
 	       t)
@@ -1533,7 +1533,7 @@ already have been narrowed out of our scope.")
 	       (topic map)
 	       (not-medium))
 	    (assert
-	       (rtest:sets=
+	       (emt:sets=
 		  (emt:eg:all-tag-args 'discriminator)
 		  '(small))
 	       t)

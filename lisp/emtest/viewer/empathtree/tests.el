@@ -1,4 +1,4 @@
-;;;_ rtest.el --- Tests for empathtree
+;;;_ emtest/viewer/empathtree/tests.el --- Tests for empathtree
 
 ;;;_. Headers
 ;;;_ , License
@@ -63,7 +63,7 @@
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'rtest)
+(provide 'emtest/viewer/empathtree/tests)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -71,4 +71,4 @@
 ;;;_  + End:
 
 ;;;_ , End
-;;; rtest.el ends here
+;;; emtest/viewer/empathtree/tests.el ends here

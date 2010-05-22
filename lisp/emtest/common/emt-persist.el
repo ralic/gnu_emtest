@@ -29,12 +29,6 @@
 
 ;;;_ , Requires
 
-;;The rtests in here are all obsolete.
-(require 'rtest-define)
-(require 'emtest/testhelp/eg)
-(require 'emtest/testhelp/deep-type-checker)
-
-
 ;;The only backend supported at this time is persist.el.  
 (require 'tinydb/persist)
 (require 'utility/uuid)
@@ -45,7 +39,7 @@
 ;;;_ , Structures
 ;;;_  . Placeholder objects
 ;;Moved [[file:~/projects/emtest/lisp/result-types.el::_%20NEW%20diagnostic%20info][here]]
-
+;;And are obsolete in favor of TESTRAL types.
 ;;;_  . Database objects
 ;;;_   , Db object, as in the database
 (defstruct (emt:db:single
@@ -112,45 +106,6 @@
 	 (t (error "Argument %s is not a comparand"
 	       arg-ix)))))
 
-;;;_   , Tests
-'
-(put 'emt:extract-got 'rtest:test-thru
-   'emt:persist:accept-correct)
-
-;;;_  . emt:extract-got+exp-pair-list
-'
-(defun emt:extract-got+exp-pair-list (diag-call)
-   ""
-   (check-type diag-call emt:result:diag:call)
-   (let
-      ((call-sexp
-	  (emt:result:diag:call-call-sexp diag-call)))
-      ;;For now, only handle `equal'
-      (unless
-	 (eq (car call-sexp) 'equal)
-	 (error "Unrecognized functor %s" (car call-sexp)))
-      (list
-	 (list (second call-sexp) (third call-sexp))
-	 (list (third call-sexp) (second call-sexp)))))
-
-;;;_   , Tests
-'
-(put 'emt:extract-got+exp-pair-list 'rtest:test-thru
-   'emt:extract-got+placeholder)
-
-;;;_  . emt:extract:pair-list->got
-'
-(defun emt:extract:pair-list->got (pair-list placeholder)
-   ""
-   (check-type placeholder emt:db:version-index.)
-
-   (let*
-      ((cell (assoc placeholder pair-list)))
-      (when cell
-	 (second cell))))
-
-;;;_   , Tests
-;;It's direct
 ;;;_  . emt:persist:view-obj
 ;;;###autoload
 (defun emt:persist:view-obj (tried)
@@ -177,35 +132,6 @@
 	 (insert value))
       (pop-to-buffer buf)))
 
-;;;_   , Tests
-'
-(rtest:deftest emt:persist:view-obj
-
-
-   '
-   (  "Manual test of `emt:persist:view-obj'."
-      (emt:eg:narrow 
-	 ((project emtest)(library persist)(section persist-viewer))
-	 (emt:db:internal:ts:mock (emt:eg (type whole-db))
-	    (emt:persist:view-obj
-	       (emt:eg (type tried) (foundp t))))))
-   ;;Very obsolete now.
-   '
-   (  "Manual test of `emt:persist:view-obj' ~in situ~."
-      (emt:eg:narrow 
-	 ((project emtest)(library persist)(section persist-viewer))
-	 (require 't/emt-persist "t/emt-persist.el")
-	 (require 'plain-viewer)
-	 (emt:db:internal:ts:mock (emt:eg (type whole-db))
-	    (emt:viewer:plain:ts
-	       (emt:eg (type result-diag)(foundp t))
-	       'emt:diag:tried
-
-	       ;;Test body
-	       (call-interactively #'emt:persist:view-obj)))))
-   
-   
-   )
 ;;;_  . emt:persist:accept-correct
 ;;;###autoload
 (defun emt:persist:accept-correct (call tried)
@@ -244,62 +170,7 @@
 	 (emt:extract-got call arg-ix))))
 
 
-;;;_   , Tests
-'
-(rtest:deftest emt:persist:accept-correct
-
-   ;;Very obsolete now.
-   '
-   (  "Test of `emt:persist:accept-correct' ~in situ~."
-      (emt:eg:narrow 
-	 ((project emtest)(library persist)(section persist-viewer))
-	 (require 't/emt-persist "t/emt-persist.el")
-	 (require 'plain-viewer)
-	 (emt:db:internal:ts:mock ()
-	    (emt:viewer:plain:ts
-	       (emt:eg (type result-diag)(foundp nil))
-	       'emt:diag:tried
-
-	       (call-interactively #'emt:persist:accept-correct)
-	       (assert
-		  (equal
-		     (emt:db:get-all-values 
-			(emt:eg (type archive-placeholder) )
-			'correct-answer)
-		     (list
-			(emt:eg (type data)(name got)))))
-	       t))))
-   
-   )
-
 ;;;_ , Interface for testing with persists
-;;;_  . Example objects
-'
-(defconst emt:persist:xmp:af39c81f-229e-4d30-84a3-7842123fba35
-   (emt:eg:define xmp:af39c81f-229e-4d30-84a3-7842123fba35
-      ((project emtest)(library tester)(section emt:funcall))
-      (transparent-tags () (type subtype))
-      (item
-	 ((type placeholder)(subtype archive))
-	 (make-emt:db:id-index.
-	    :id "a"
-	    :backend '(persist "Dummy")))
-      (item
-	 ((type placeholder)(subtype version))
-	 (make-emt:db:version-index.
-	    :id-index (emt:eg (type placeholder)(subtype archive))
-	    :version-id "v.1"))
-   
-
-      ;;A bit wobbly - careful of the symbol vs function-quoted symbol
-      ;;distinction.
-      (item
-	 ((type call-sexp))
-	 (list #'equal 
-	    1 
-	    (emt:eg (type placeholder)(subtype archive))))
-      ))
-
 
 ;;;_  . emt:persist:value
 
@@ -411,35 +282,6 @@
 		 (emt:db:single->use-category obj)
 		 filter)))))
 
-;;;_   , Tests
-'
-(rtest:deftest emt:db:get-versions
-
-   (  "Situation: ID has no versions
-Response: Return the empty list."
-      (emt:eg:narrow 
-	 ((project emtest)(library persist)(count 0))
-	 (with-mock
-	    (stub emt:db:by-ix:get-record =>
-	       (emt:eg (type emt:db:persist-archive)))
-	    (equal
-	       (emt:db:get-versions (emt:eg (type id)))
-	       (emt:eg (type versions))))))
-   
-   (  "Situation: ID has 1 version
-Response: Return a list of that version."
-      (emt:eg:narrow 
-	 ((project emtest)(library persist)(count 1))
-	 (with-mock
-	    (stub emt:db:by-ix:get-record =>
-	       (emt:eg (type emt:db:persist-archive)))
-	    (equal
-	       (emt:db:get-versions (emt:eg (type id)))
-	       (emt:eg (type versions))))))
-
-   ;;Want more tests. Add after emt:eg:define is stronger
-
-   )
 ;;;_  . emt:db:get-all-values
 ;;Now mostly just a test helper
 (defun emt:db:get-all-values (id &optional filter)
@@ -448,33 +290,6 @@ Response: Return a list of that version."
       #'emt:db:single:get-value
       (emt:db:get-versions id filter)))
 
-;;;_   , Tests
-'
-(rtest:deftest emt:db:get-all-values
-
-   (  "Situation: ID has no versions
-Response: Return the empty list."
-      (emt:eg:narrow 
-	 ((project emtest)(library persist)(count 0))
-	 (with-mock
-	    (stub emt:db:by-ix:get-record =>
-	       (emt:eg (type emt:db:persist-archive)))
-	    (equal
-	       (emt:db:get-all-values (emt:eg (type id)))
-	       (emt:eg (type values))))))
-   
-   (  "Situation: ID has 1 version
-Response: Return a list of that version."
-      (emt:eg:narrow 
-	 ((project emtest)(library persist)(count 1))
-	 (with-mock
-	    (stub emt:db:by-ix:get-record =>
-	       (emt:eg (type emt:db:persist-archive)))
-	    (equal
-	       (emt:db:get-all-values (emt:eg (type id)))
-	       (emt:eg (type values))))))
-   
-   )
 ;;;_  . emt:db:get-value
 (defun emt:db:get-value (version-placeholder)
    "Gets the value corresponding to VERSION-PLACEHOLDER."
@@ -490,13 +305,6 @@ Response: Return a list of that version."
 	 (emt:db:persist-archive:get-single 
 	    persist-archive
 	    version-id))))
-
-
-
-;;;_   , Tests
-;;Tested thru `emt:persist:view-obj' (Tests are manual)
-
-
 
 ;;;_  . emt:db:set
 (defun emt:db:set (id category object-value)
@@ -514,55 +322,6 @@ Response: Return a list of that version."
 	     :creation-time (current-time))))
       (emt:db:single:create obj id)))
 
-;;;_   , Test helpers
-
-;;With a mock database and with id bound neatly.
-'
-(defmacro* emt:db:set:th ((&keys initial-db) ((id-sym id)) &rest body)
-   "
-ID-SYM will be bound to a `emt:db:id-index.' as if by `let'"
-   
-   `(let
-       ((,id-sym 
-	   (make-emt:db:id-index.
-	      :id ,id
-	      :backend 'dummy)))
-
-       (emt:db:internal:ts:mock ,initial-db
-	  ,@body)))
-
-
-;;;_   , Tests
-'
-(rtest:deftest emt:db:set
-   (  "Operation: In a known database, save a value, then read it.
-Response: The object has been added.
-It has the correct value."
-
-      (emt:db:set:th (:initial-db ())
-	 ((id "1"))
-	 (emt:db:set id 'correct-answer 12)
-
-	 ;;Check database's type
-	 (emty:check 
-	    (emt:db:internal:get-all id) 
-	    emt:db:whole)
-
-	 ;;Can't use `emt:db:get-value' because that wants to know a
-	 ;;version id.  But there's only one entry, so see it.
-	 (let
-	    ((value-list
-		(emt:db:get-all-values id 'correct-answer)))
-
-
-	    ;;It was empty and now has one element.  Single element
-	    ;;would not be removed (say by expiration).
-	    (assert (= (length value-list) 1))
-	    (assert
-	       (= (car value-list) 12))
-	    t)))
-   
-   )
 
 ;;;_  . emt:db:decategorize-all
 (defun emt:db:decategorize-all (id filter)
@@ -572,27 +331,6 @@ It has the correct value."
       ()
       
       ))
-;;;_   , Tests
-'
-(rtest:deftest emt:db:decategorize-all
-   ;;Mock db seer and putter and read db after
-   '
-   (  "Situation: There are none in the category.
-Response: Database does not change."
-      (progn) ;;Test-form
-      )
-   '
-   (  "Situation: There is one in the category
-Response: It gets demoted to the parent."
-      (progn) ;;Test-form
-      )
-   '
-   (  "Situation: There is one in a subcategory
-Response: It gets demoted to the parent."
-      (progn) ;;Test-form
-      )
-
-   )
 ;;;_  . emt:db:change-cat
 (defun emt:db:change-cat (version-id new-cat)
    ""
@@ -601,18 +339,6 @@ Response: It gets demoted to the parent."
       ()
       
       ))
-;;;_   , Tests
-'
-(rtest:deftest emt:db:change-cat
-   ;;Mock db seer and putter and read db after, and then fetch the
-   ;;category of that version-id
-   '
-   (  "Situation: The respective version has some category
-Response: It has the new category."
-      (progn) ;;Test-form
-      )
-   
-   )
 
 ;;;_ , Use-categories interface
 ;;;_  . emt:db:use:subtype-of
@@ -626,20 +352,6 @@ A and B must be use-categories"
       (correct-type   (memq b '(correct-type nil)))
       (wrong-answer   (memq b '(wrong-answer nil)))
       (nil (eq b nil))))
-
-;;;_   , Tests
-'
-(rtest:deftest emt:db:use:subtype-of
-
-   (  "Params: A child and its parent
-Response: Return non-nil."
-      (and (emt:db:use:subtype-of 'correct-answer 'correct-type) t))
-   
-   (  "Params: A parent and its child
-Response: Return nil."
-      (not (emt:db:use:subtype-of 'correct-type 'correct-answer)))
-      
-   )
 
 ;;;_  . emt:db:use:parent-of
 (defun emt:db:use:parent-of (a)
@@ -660,14 +372,6 @@ Response: Return nil."
 ;;;_   , emt:db:single:get-value
 
 (defalias 'emt:db:single:get-value 'emt:db:single->value)
-;;;_    . Tests
-
-'
-(rtest:deftest emt:db:single:get-value
-   ;;Right now it's direct.  Later we may support indirection thru
-   ;;`find-value', and then will need tests for both situations.
-   ;;
-   )
 
 
 ;;;_   , emt:db:single:get-notes
@@ -685,8 +389,6 @@ Response: Return nil."
 ;;;_  . persist-archives
 ;;;_   , emt:db:persist-archive:ctor
 (defalias 'emt:db:persist-archive:ctor 'make-emt:db:persist-archive)
-;;;_ , Test data
-;;Moved
 
 ;;;_ , singletons wrt the whole database
 ;;;_  . emt:db:single:create
@@ -718,9 +420,6 @@ Response: Return nil."
 
 
 
-;;;_   , Tests
-;;Tested thru `emt:db:set'
-
 ;;;_ , persist-archives as containers
 ;;;_  . emt:db:persist-archive:get-single
 (defun emt:db:persist-archive:get-single (persist-archive version-id)
@@ -731,9 +430,6 @@ Response: Return nil."
 	  (emt:db:persist-archive->list persist-archive)))
       
       (find version-id list :key #'emt:db:single->version-id)))
-
-;;;_   , Tests
-;;Tested thru `emt:persist:view-obj'
 
 ;;;_  . emt:db:persist-archive:ctor
 ;;;_  . emt:db:persist-archive:map
@@ -768,47 +464,6 @@ If CREATE-P is non-nil, create it if it doesn't exist."
 	 db (emt:db:id-index.-id index) create-p)))
 
 
-;;;_  . emt:db:by-ix:create-record
-
-;;Obsolete.  Just wraps `emt:db:whole:update-record'
-'
-(defun emt:db:by-ix:create-record (index persist-archive)
-   ""
-   (check-type persist-archive emt:db:persist-archive)
-
-   (emt:db:internal:with-db
-      (db (emt:db:id-index.-backend index)) 
-      'read/write
-      (emt:db:whole:add-record 
-	 persist-archive
-	 db 
-	 (emt:db:id-index.-id index))))
-
-
-;;;_  . emt:db:by-ix:update-record
-;;Obsolete.  Would just wrap
-;;`emt:db:whole:update-record' anyways
-'
-(defun emt:db:by-ix:update-record (persist-archive index)
-   ""
-   (check-type persist-archive emt:db:persist-archive)
-   (let*
-      ((db (emt:db:internal:get-all (emt:db:id-index.-backend index)))
-	 (arc-id (emt:db:id-index.-id index)))
-      (check-type db emt:db:whole)
-
-      (setf
-	 (emt:db:whole->list db)
-	 (cons
-	    persist-archive
-	    (remove* arc-id (emt:db:whole->list db) 
-	       :key #'car
-	       ;;:key #'emt:db:persist-archive->id
-	       ))
-	 )
-      (emt:db:internal:set-all 
-	 (emt:db:id-index.-backend index)
-	 db)))
 
 
 ;;;_ , Functions about records in the db

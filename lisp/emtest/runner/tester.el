@@ -26,13 +26,9 @@
 
 
 ;;;_ , Requires
-
-(eval-and-compile
-   (when (not (require 'emtest/testhelp/testpoint nil t))
-      (defmacro emtp (id args &rest rest) 
-	 (declare 
-	    (debug (symbolp (&rest form) body)))
-	 `(progn ,@rest))))
+(eval-when-compile
+   (require 'emtest/testhelp/testpoint/requirer)
+   (emtp:require))
 (eval-when-compile
    (require 'cl))
 (require 'emtest/common/result-types)
