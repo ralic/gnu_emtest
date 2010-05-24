@@ -44,10 +44,11 @@
 With `cl' loaded, use it as (incf emtt:testrun-counter)." )
 ;;;_  . emtt:receiver-f
 ;;$$MOVE ME belongs in a config library
-;;Cheat for now: Always know to use emviewer.  Later use a
-;;customizable variable.  Default to using `emtest/viewer/emviewer'
+;;Cheat for now: Always know to use emviewer2.  Later use a
+;;customizable variable.
 (defconst emtt:receiver-f
-   #'emtest:viewer:receive
+   ;;#'emtest:viewer:receive
+   #'emtv2:tester-cb
    "" )
 
 ;;;_ , emtt:dispatch-normal

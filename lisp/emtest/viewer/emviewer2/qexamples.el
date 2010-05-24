@@ -1,11 +1,11 @@
-;;;_ emtest/viewer/emviewer/qexamples.el --- Quoted examples for Emviewer
+;;;_ emtest/viewer/emviewer2/qexamples.el --- Quoted examples for Emviewer2
 
 ;;;_. Headers
 ;;;_ , License
 ;; Copyright (C) 2010  Tom Breton (Tehom)
 
 ;; Author: Tom Breton (Tehom) <tehom@panix.com>
-;; Keywords: lisp, maint, internal
+;; Keywords: maint, internal
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -30,51 +30,26 @@
 ;;;_ , Requires
 
 (require 'emtest/runner/define)
+(require 'emtest/runner/launch/testhelp)
+(require 'emtest/testhelp/standard)
+(require 'emtest/viewer/emviewer2)
+(require 'emtest/viewer/emviewer2/testhelp)
+
 
 ;;;_. Body
 
-;;End-to-end viewing.  
 '
 (emtt:ts:run-test 
    '(nil
        ((emt:doc "Situation: testing an example") 
 	  (error "An example error"))) 
-   #'emtest:viewer:receive)
-
-'  ;;To show the result
-(pp
-   (let 
-      ((l))
-      (emtt:ts:run-test 
-	 '(nil
-	     ((emt:doc "Situation: testing an example") 
-		(error "An example error"))) 
- 	 #'(lambda (r)
- 	      (push r l)))
-      l))
-
+   #'emtv2:tester-cb)
 
 '
-(emtest:ts:run-test
-   (nil
+(emtv2:ts:run-test
+   '(nil
        ((emt:doc "Situation: testing an example") 
 	  (error "An example error"))))
-
-
-;;;_. Purely testing testing
-'
-(emt:deftest-3 example-test-0
-   ;;Clause 0, empty.
-   (()))
-
-
-'
-(emt:deftest-3 example-test-1
-   ;;Clause 0, simple
-   (()
-      (error "An example error for `example-test-1'")
-      ))
-
 
 ;;;_. Footers
 ;;;_ , Provides
@@ -87,4 +62,4 @@
 ;;;_  + End:
 
 ;;;_ , End
-;;; emtest/viewer/emviewer/qexamples.el ends here
+;;; emtest/viewer/emviewer2/qexamples.el ends here

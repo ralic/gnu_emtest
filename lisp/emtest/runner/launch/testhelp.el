@@ -61,6 +61,13 @@ Results are passed to function CALLBACK."
 Results are passed to function CALLBACK.
 NB, TEST-FORM is a *test-form*, which is a list, usually nil
 followed by a form."
+
+   ;;Validate that form is right.  
+
+   ;;$$IMPROVE ME There should be an explicit type for this, in
+   ;;test-support for emt-define.
+   (check-type test-form (list t t))
+
    (emt:test-finder:top 
       (make-emt:test-ID:e-n:form
 	 :test-form test-form)

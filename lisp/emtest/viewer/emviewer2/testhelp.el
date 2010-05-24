@@ -1,4 +1,4 @@
-;;;_ emtest/viewer/emviewer/qexamples.el --- Quoted examples for Emviewer
+;;;_ emtest/viewer/emviewer2/testhelp.el --- Testhelp for emviewer2
 
 ;;;_. Headers
 ;;;_ , License
@@ -29,57 +29,44 @@
 
 ;;;_ , Requires
 
-(require 'emtest/runner/define)
+(require 'emtest/viewer/emviewer2)
+(require 'emtest/runner/launch/testhelp)
+
 
 ;;;_. Body
 
-;;End-to-end viewing.  
-'
-(emtt:ts:run-test 
-   '(nil
-       ((emt:doc "Situation: testing an example") 
-	  (error "An example error"))) 
-   #'emtest:viewer:receive)
+(defun emtv2:ts:run-test (form)
+   ""
+   
+   (emtt:ts:run-test form #'emtv2:ts:run-test:callback))
 
-'  ;;To show the result
-(pp
-   (let 
-      ((l))
-      (emtt:ts:run-test 
-	 '(nil
-	     ((emt:doc "Situation: testing an example") 
-		(error "An example error"))) 
- 	 #'(lambda (r)
- 	      (push r l)))
-      l))
+;;;_ , The callback 
+(defun emtv2:ts:run-test:callback (report)
+   ""
+   
+   (check-type report emt:testral:report)
+   (emtv2:tester-cb report))
 
+;;;_ , emtv2:ts:with-mock-viewer
 
-'
-(emtest:ts:run-test
-   (nil
-       ((emt:doc "Situation: testing an example") 
-	  (error "An example error"))))
+(defmacro emtv2:ts:with-mock-viewer (&rest body)
+   ""
+   
+   `(with-temp-buffer
+       (let
+	  (
+	     emtv2:receiver
+	     emtv2:result-root
+	     (emtv2:report-buffer
+		(current-buffer)))
 
-
-;;;_. Purely testing testing
-'
-(emt:deftest-3 example-test-0
-   ;;Clause 0, empty.
-   (()))
-
-
-'
-(emt:deftest-3 example-test-1
-   ;;Clause 0, simple
-   (()
-      (error "An example error for `example-test-1'")
-      ))
+	  ,@body)))
 
 
 ;;;_. Footers
 ;;;_ , Provides
 
-;;Nothing.  This is not a library.
+(provide 'emtest/viewer/emviewer2/testhelp)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -87,4 +74,4 @@
 ;;;_  + End:
 
 ;;;_ , End
-;;; emtest/viewer/emviewer/qexamples.el ends here
+;;; emtest/viewer/emviewer2/testhelp.el ends here

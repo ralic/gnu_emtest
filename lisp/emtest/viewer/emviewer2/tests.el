@@ -1,4 +1,4 @@
-;;;_ emtest/viewer/emviewer/tests.el --- Emtest tests for Emviewer
+;;;_ emtest/viewer/emviewer2/tests.el --- Tests for emviewer2
 
 ;;;_. Headers
 ;;;_ , License
@@ -32,23 +32,25 @@
 (require 'emtest/runner/define)
 (require 'emtest/viewer/emviewer)
 (require 'emtest/viewer/emviewer/testhelp)
-(require 'emtest/common/testral-types/testhelp)
 (require 'emtest/testhelp/persist)
 (require 'emtest/testhelp/eg)
-(require 'emtest/testhelp/mocks/filebuf)
+(require 'emtest/common/testral-types/testhelp)
 
 ;;;_. Body
-;;;_ , emtest/viewer/emviewer
+;;;_ , emtv2:td:dir
+(defconst emtv2:td:dir emtve:td:dir)
+
+;;;_ , emtest/viewer/emviewer2
 (emt:deftest-3
-   ((of 'emtest/viewer/emviewer)
+   ((of 'emtest/viewer/emviewer2)
       (db-id
-	 `(persist ,emtve:td:dir))
+	 `(persist ,emtv2:td:dir))
       (:surrounders
 	 '((emt:eg:with emt:testral:thd:examples ()))))
    
    ;;Tests of just the viewer.
    (()
-      (emtve:ts:with-mock-viewer
+      (emtv2:ts:with-mock-viewer
 	 (emtest:viewer:receive
 	    (emt:eg (type report)(name just-test-runner)))
 
@@ -57,7 +59,7 @@
 	       "dbid:yygeryl0jwe0"))))
    
    (()
-      (emtve:ts:with-mock-viewer
+      (emtv2:ts:with-mock-viewer
 	 (emtest:viewer:receive
 	    (emt:eg (type report)(role original-add)(what-test test-1)))
 
@@ -66,7 +68,7 @@
 
 
    (()
-      (emtve:ts:with-mock-viewer
+      (emtv2:ts:with-mock-viewer
 	 (emtest:viewer:receive
 	    (emt:eg (type report)(what-test test-2)))
 
@@ -79,7 +81,7 @@
       ;;And capture the intermediate result stuff - gotta rewrite,
       ;;basically like above or like rewriting "receive" and also
       ;;testing it with set=.
-      (emtve:ts:with-mock-viewer
+      (emtv2:ts:with-mock-viewer
 	 (emtest:ts:run-test
 	    '("Situation: testing an example" 
 		(error "An example error")))
@@ -91,7 +93,7 @@
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'emtest/viewer/emviewer/tests)
+(provide 'emtest/viewer/emviewer2/tests)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -99,4 +101,4 @@
 ;;;_  + End:
 
 ;;;_ , End
-;;; emtest/viewer/emviewer/tests.el ends here
+;;; emtest/viewer/emviewer2/tests.el ends here

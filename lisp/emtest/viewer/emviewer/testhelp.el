@@ -34,17 +34,22 @@
 (require 'emtest/runner/launch)
 
 ;;;_. Body
-;;$$RENAME ME emtt:ts:run-test-x ?
+;;;_ , Constants
+(defconst emtve:td:dir 
+   (emtb:expand-filename-by-load-file "persist")
+   "The file where the database is located" )
+
+;;;_ , emtest:ts:run-test
+
+;;$$RENAME ME emtve:ts:run-test Name is different from launch's from
+;;`emtt:ts:run-test'
 (defun emtest:ts:run-test (form)
    ""
    
-   ;;First validate that form is right.  There should be a type for
-   ;;this, in test-support for emt-define.  For now, expect a string.
-   (check-type form (list string t))
-   
    (emtt:ts:run-test form #'emtest:ts:run-test:callback))
 
-;;;_ , The callback 
+;;;_  . The callback 
+;;$$RENAME ME emtve:ts:run-test:callback
 (defun emtest:ts:run-test:callback (report)
    ""
    
@@ -68,6 +73,8 @@
 	  ,@body)))
 
 ;;;_ , emt:emviewer:th:check-buffer-string
+;;$$MOVE ME
+;;Really for helping persist
 (defun emt:emviewer:th:check-buffer-string (id)
    "Check that current buffer's contents matches what ID identifies."
    ;;Can set the current result to persist by evalling this in buffer.
