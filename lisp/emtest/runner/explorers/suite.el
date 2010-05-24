@@ -52,11 +52,11 @@
 	    (dotimes (n (length clause-list))
 	       (push  
 		  (emtt:make-explorable
-		     :id
+		     :how-to-run
 		     (make-emt:test-ID:e-n:indexed-clause
 			:clause-index n
 			:suite-sym suite-sym)
-		     :path-prefix 
+		     :prestn-path 
 		     (append 
 			path
 			(list (format "Clause %d" n)))

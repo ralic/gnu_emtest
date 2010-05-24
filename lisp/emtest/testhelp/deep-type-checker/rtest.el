@@ -283,7 +283,7 @@ Response: The initial elements must match them."
    (  "Sanity checks for `cl-make-type-test'."
       (let
 	 ((emty:use t))
-	 (let-noprops
+	 (emt:let-noprops
 	    '(struct1)
 	    (defstruct struct1
 	       field1)
@@ -309,7 +309,7 @@ Response: The initial elements must match them."
 
    (  "Situation: A normal struct definition, no slot type spec.
 Response: Typep passes it no matter what's in the field."
-      (let-noprops
+      (emt:let-noprops
 	 '(struct1)
 	 (defstruct struct1
 	    field1)
@@ -324,7 +324,7 @@ Response: Typep passes it no matter what's in the field."
 `typep' is used and the flag `emty:use' has its global
 value of `nil.'
 Response: Typep passes it no matter what's in the field."
-      (let-noprops
+      (emt:let-noprops
 	 '(struct1)
 	 (defstruct struct1
 	    (field1 nil :type integer))
@@ -342,7 +342,7 @@ Response: Typep passes it no matter what's in the field."
 Response: Typep passes it no matter what's in the field."
       (let
 	 ((emty:use t))
-	 (let-noprops
+	 (emt:let-noprops
 	    '(struct1)
 	    (defstruct struct1
 	       (field1 nil :type integer))
@@ -356,7 +356,7 @@ Response: Typep passes it no matter what's in the field."
 	    t)))
 
    (  "Situation: A struct definition with a simple slot type spec."
-      (let-noprops
+      (emt:let-noprops
 	 '(struct1)
 	 (defstruct struct1
 	    (field1 nil :type integer))
@@ -380,7 +380,7 @@ Response: Typep passes it no matter what's in the field."
 
    (  "Situation: A struct definition with a simple slot type spec.
 The name spec is not a bare symbol"
-      (let-noprops
+      (emt:let-noprops
 	 '(struct1)
 	 (defstruct (struct1 (:type vector) :named)
 	    (field1 nil :type integer))
@@ -402,7 +402,7 @@ The name spec is not a bare symbol"
 	 t))
 
    (  "Situation: A struct definition with several slot type specs."
-      (let-noprops
+      (emt:let-noprops
 	 '(struct1)
 	 (defstruct struct1
 	    (field1 nil :type integer)
@@ -437,7 +437,7 @@ The name spec is not a bare symbol"
 
 
    (  "Situation: Slot type spec is to another struct."
-      (let-noprops
+      (emt:let-noprops
 	 '(struct0 struct1)
 	 (defstruct struct0
 	    field0)
@@ -464,7 +464,7 @@ The name spec is not a bare symbol"
    (  "Situation: Slot type spec is a list of a built-in type
 Object has the right type for that slot.
 Response: emty:check accepts it."
-      (let-noprops
+      (emt:let-noprops
 	 '(struct1)
 	 (defstruct struct1
 	    (field1 nil :type (repeat integer)))
@@ -494,7 +494,7 @@ Response: emty:check accepts it."
 	 t))
    
    (  "Situation: Slot type spec is to a list of another struct."
-      (let-noprops
+      (emt:let-noprops
 	 '(struct0 struct1)
 	 (defstruct struct0
 	    field0)
@@ -531,7 +531,7 @@ Response: emty:check accepts it."
    (  "Situation: Slot type spec is a list of its own type.
 Object has the right type for that slot.
 Response: emty:check accepts it."
-      (let-noprops
+      (emt:let-noprops
 	 '(struct1)
 	 (defstruct struct1
 	    (field1 nil :type (repeat struct1)))
@@ -573,7 +573,7 @@ Response: emty:check accepts it."
 `emt:trace:stored-diag'."
       (let
 	 (emt:trace:stored-diag)
-	 (let-noprops
+	 (emt:let-noprops
 	    '(struct1)
 	    (defstruct struct1
 	       (field1 nil :type integer))

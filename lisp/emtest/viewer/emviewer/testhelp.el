@@ -39,25 +39,20 @@
    (emtb:expand-filename-by-load-file "persist")
    "The file where the database is located" )
 
-;;;_ , emtest:ts:run-test
-
-;;$$RENAME ME emtve:ts:run-test Name is different from launch's from
-;;`emtt:ts:run-test'
-(defun emtest:ts:run-test (form)
+;;;_ , emtve:ts:run-test
+(defun emtve:ts:run-test (form)
    ""
    
-   (emtt:ts:run-test form #'emtest:ts:run-test:callback))
+   (emtt:ts:run-test form #'emtve:ts:run-test:callback))
 
 ;;;_  . The callback 
-;;$$RENAME ME emtve:ts:run-test:callback
-(defun emtest:ts:run-test:callback (report)
+(defun emtve:ts:run-test:callback (report)
    ""
    
    (check-type report emt:testral:report)
-   (emtest:viewer:receive report))
+   (emtve:tester-cb report))
 
 ;;;_ , emtve:ts:with-mock-viewer
-
 (defmacro emtve:ts:with-mock-viewer (&rest body)
    ""
    
@@ -66,7 +61,7 @@
 	  (
 	     emtve:receiver
 	     emtve:chewie
-	     emtve:result-root
+	     emtve:pathtree
 	     (emtve:report-buffer
 		(current-buffer)))
 

@@ -106,8 +106,8 @@ You may want to use this to umount a ramdisk"
    ""
    (expand-file-name filename
       (if load-file-name
-	 (file-name-directory load-file-name))))
-
+	 (file-name-directory 
+	    (file-truename load-file-name)))))
 
 ;;;_ , Setup file
 
@@ -432,9 +432,8 @@ if given, must be a function."
 	 (error "File name should be absolute"))
       (emtb:file-contents filename)))
 
-;;;_  . emtb:contents
-;;$$RENAME ME emtb:get-contents
-(defun* emtb:contents (default-dir &key file dir string &allow-other-keys)
+;;;_  . emtb:get-contents
+(defun* emtb:get-contents (default-dir &key file dir string &allow-other-keys)
    "Get contents, according to arguments.
 For internal use by filebuf.  Outside callers probably want
 `emtb:file-contents-absname'."
@@ -547,12 +546,12 @@ What is given can be:
 	 ((or file string)
 	    (emtb:string-matches
 	       str
-	       (apply #'emtb:contents nil args)
+	       (apply #'emtb:get-contents nil args)
 	       regex-marks
 	       (if regex-marks
 		  (mapcar
 		     #'(lambda (val)
-			  (apply #'emtb:contents dir val))
+			  (apply #'emtb:get-contents dir val))
 		     validate-re))))
 	 
 	 (sexp

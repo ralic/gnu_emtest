@@ -36,15 +36,14 @@
 
 ;;;_. Body
 
-;;;_ , Variables
+;;;_ , Variables (OBSOLESCENT all)
+
 ;;;_  . emt:eg:all-examples
 (defvar emt:eg:all-examples
    ()
    "List of all examples.
 Don't change this except thru `emt:eg:narrow' and its worker functions" )
-;;$$RENAMEME to emt:eg:*all-prpty-makers*.  But this may go away soon
-;;anyways.
-(defvar emt:eg:all-prpty-makers
+(defvar emt:eg:*all-prpty-makers*
    ()
    "List of property-makers, which will apply properties to any new element.
 Each element is of the type `emt:eg:example'" )
@@ -167,9 +166,9 @@ This variable is `let' in appropriate scopes" )
       (remove* id
 	 emt:eg:all-examples
 	 :key #'emt:example.-definer-id))
-   (setq emt:eg:all-prpty-makers
+   (setq emt:eg:*all-prpty-makers*
       (remove* id
-	 emt:eg:all-prpty-makers
+	 emt:eg:*all-prpty-makers*
 	 :key #'emt:example.-definer-id)))
 
 ;;;_   , emt:eg:propty-match-ctxt-p
@@ -263,8 +262,8 @@ Return the new list of examples."
 	     emt:eg:all-examples))
 
    ;;Record the property-makers.
-   (setq emt:eg:all-prpty-makers
-      (append prpty-makers emt:eg:all-prpty-makers)))
+   (setq emt:eg:*all-prpty-makers*
+      (append prpty-makers emt:eg:*all-prpty-makers*)))
 
 ;;;_   , emt:eg:see-a-new-example
 (defun emt:eg:see-a-new-example (x)
@@ -353,7 +352,7 @@ Return the new list of examples."
    (condition-case err
       (progn
 	 (emt:eg:see-a-new-example
-	    (emt:eg:valuedef->example v id emt:eg:all-prpty-makers))
+	    (emt:eg:valuedef->example v id emt:eg:*all-prpty-makers*))
 	 '())
       ('emt:eg:err:not-found
 	 (list v))))
@@ -437,7 +436,7 @@ Transparent tags are exactly those tags named in the
 
       ;;We do this on a list, for historical reasons.
       ;;Put any new property-makers in place. They are stored in
-      ;;special variable emt:eg:all-prpty-makers
+      ;;special variable emt:eg:*all-prpty-makers*
       (emt:eg:see-new-prpty-makers
 	 (mapcar
 	    #'(lambda (v)
@@ -476,7 +475,7 @@ Should document the structure here."
    ""
    
    `(let
-       ((emt:eg:all-prpty-makers)
+       ((emt:eg:*all-prpty-makers*)
 	  (emt:eg:all-examples))
        (emt:eg:define-f nil ',group-args)
        emt:eg:all-examples))

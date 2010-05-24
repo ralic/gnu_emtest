@@ -99,10 +99,9 @@
    (destructuring-bind (how-to-run dummy suite) entry
       (let*
 	 ( 
-	    (id (emtt:explorable->path-prefix how-to-run))
-	    ;;Includes a possible prefix.
+	    (id (emtt:explorable->prestn-path how-to-run))
 	    (presentation-path (append prefix id))
-	    (key (emtt:explorable->id how-to-run)))
+	    (key (emtt:explorable->how-to-run how-to-run)))
 	 ;;Handle special case: If suite reports that it has disappeared,
 	 ;;remove it from alist and from tree.  (How from tree?)
 	 (if
@@ -129,7 +128,7 @@
 		     (setf
 			(emtvr:suite-newstyle-testrun-id old-cell)
 			testrun-id
-			(emtvr:suite-newstyle-suite old-cell)
+			(emtvr:suite-newstyle-result old-cell)
 			suite)
 		     (funcall 
 			(emtvr:data-tree-insert-cb receiver)
@@ -143,7 +142,7 @@
 			    :how-to-run        how-to-run
 			    :presentation-path presentation-path
 			    :testrun-id        testrun-id
-			    :suite             suite)))
+			    :result            suite)))
 		     (push cell (emtvr:data-alist receiver))
 		     (funcall 
 			(emtvr:data-tree-insert-cb receiver)

@@ -395,7 +395,7 @@ Can't use `emt:eg' in body."
    
    `(let
        (  (emt:eg:all-examples ())
-	  (emt:eg:all-prpty-makers ()))
+	  (emt:eg:*all-prpty-makers* ()))
        ,@body))
 
 
@@ -496,10 +496,10 @@ by the dummy definers (which deliberately re-use the same ID).")
 	    (member* 'dummy-id emt:eg:all-examples :key #'emt:example\.-definer-id))))
    (nil
       (progn
-	 (emt:doc "Validation: `emt:eg:all-prpty-makers' does not have anything
+	 (emt:doc "Validation: `emt:eg:*all-prpty-makers*' does not have anything
 defined by the dummy definers (which deliberately re-use the same ID).")
 	 (not
-	    (member* 'dummy-id emt:eg:all-prpty-makers :key #'emt:example\.-definer-id))))
+	    (member* 'dummy-id emt:eg:*all-prpty-makers* :key #'emt:example\.-definer-id))))
    (nil
       (progn
 	 (emt:doc "Situation: There are no examples in `emt:eg:all-examples'.
@@ -1562,7 +1562,7 @@ already have been narrowed out of our scope.")
 
 
 ;;;_  . Tests
-(emt:deftest-3 emt:eg:browse:format-relative-distinction
+(emt:deftest-3 emt:eg:browse:->stage-1
    '(nil
        (progn
 	  (emt:doc "Situation: WRITEME.")
@@ -1570,7 +1570,7 @@ already have been narrowed out of our scope.")
 	  (progn
 	     (assert
 		(equal
-		   (emt:eg:browse:format-relative-distinction
+		   (emt:eg:browse:->stage-1
 		      (emt:eg:browse:make-relative-distinction :item
 			 (emt:eg
 			    (type eg-item)
@@ -1584,7 +1584,7 @@ already have been narrowed out of our scope.")
 	  (progn
 	     (assert
 		(equal
-		   (emt:eg:browse:format-relative-distinction
+		   (emt:eg:browse:->stage-1
 		      (list
 			 (emt:eg:browse:make-relative-distinction :item
 			    (emt:eg

@@ -120,7 +120,7 @@ Response: Reports a failure but essentially nothing special is reported."
 
    (  "Situation: SUITE-SYM has a test suite defined.
 Response: That test-suite is run.  A result is returned."
-      (let-noprops '(dummy-sym)
+      (emt:let-noprops '(dummy-sym)
 	 (emt:deftest-3 dummy-sym
 	    (nil (progn (emt:doc "Docstring"))))
 	 (emtp:eval
@@ -157,7 +157,7 @@ Situation: Suite has two clauses defined.
 Full exploration is used (Meaningless for now)
 Response: Just two clauses are run.
 Those suites have distinct IDs."
-      (let-noprops '(dummy-sym)
+      (emt:let-noprops '(dummy-sym)
 	 (emt:deftest-3 dummy-sym
 	    (() (progn (emt:doc "Clause 1")))
 	    (() (progn (emt:doc "Clause 2"))))
@@ -200,7 +200,7 @@ Those suites have distinct IDs."
    (  "Situation: A clause has changed within a suite.
 Operation: That test suite is run.
 Behavior: The clause still gets the same test-ID as before."
-      (let-noprops '(dummy-sym)
+      (emt:let-noprops '(dummy-sym)
 	 (emt:deftest-3 dummy-sym
 	    (() (progn (emt:doc "Clause 1") (original-form))))
 
@@ -265,7 +265,7 @@ Behavior: The clause still gets the same test-ID as before."
 
 
 ;;;_  . Tests
-(rtest:deftest emtt:library
+(rtest:deftest emt:library
 
    (  "Situation: In the known (count 2) context of libraries and
 suites.
@@ -275,9 +275,9 @@ Response: The suite-handler part runs exactly twice
 \(Not tested: Exactly those two suites are seen.)
 \(Not tested: Those suites have distinct IDs.)
 "
-      (emtt:library:th ((count 2))
+      (emt:library:th ((count 2))
 	 (emtp:eval
-	    (emtt:library
+	    (emt:library
 	       (emt:eg (type sym))
 	       ;;$$Library does not return a result object yet.  Will
 	       ;;type-check it.  But for now, we can't pass any

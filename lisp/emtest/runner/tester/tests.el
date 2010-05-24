@@ -69,7 +69,7 @@ Does not signal error.")
 	 (emt:doc "Situation: A test is defined with properties.
 That test is now being run.
 Behavior: `emtt:get-properties' returns the relevant property.")
-	 (let-noprops
+	 (emt:let-noprops
 	    '(dummy-sym)
 	    (emt:deftest-3
 	       ((of 'dummy-sym)

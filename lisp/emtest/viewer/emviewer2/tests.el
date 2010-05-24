@@ -51,7 +51,7 @@
    ;;Tests of just the viewer.
    (()
       (emtv2:ts:with-mock-viewer
-	 (emtest:viewer:receive
+	 (emtve:tester-cb
 	    (emt:eg (type report)(name just-test-runner)))
 
 	 (emt:emviewer:th:check-buffer-string
@@ -60,7 +60,7 @@
    
    (()
       (emtv2:ts:with-mock-viewer
-	 (emtest:viewer:receive
+	 (emtve:tester-cb
 	    (emt:eg (type report)(role original-add)(what-test test-1)))
 
 	 (emt:emviewer:th:check-buffer-string
@@ -69,7 +69,7 @@
 
    (()
       (emtv2:ts:with-mock-viewer
-	 (emtest:viewer:receive
+	 (emtve:tester-cb
 	    (emt:eg (type report)(what-test test-2)))
 
 	 (emt:emviewer:th:check-buffer-string
@@ -82,7 +82,7 @@
       ;;basically like above or like rewriting "receive" and also
       ;;testing it with set=.
       (emtv2:ts:with-mock-viewer
-	 (emtest:ts:run-test
+	 (emtve:ts:run-test
 	    '("Situation: testing an example" 
 		(error "An example error")))
 

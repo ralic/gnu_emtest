@@ -495,15 +495,11 @@ especially in configuration testing for new installations"
 	      (:conc-name emtt:explorable->)
 	      (:constructor emtt:make-explorable))
    "All the information needed to specify how to run a test or suite/"
-   ;;$$RENAME ME how-to-run
-   (id () 
+   (how-to-run () 
       :type emt:test-ID:e-n
       :doc "What to launch for this exploration.")
    
-   ;;$$RENAME ME presentation-path
-   ;;May become rv-prestn-path and be represented in the reverse
-   ;;order, most local component first.
-   (path-prefix () 
+   (prestn-path () 
       :type emt:testral:partial-suite-id
       :doc "The presentation path so far")
 

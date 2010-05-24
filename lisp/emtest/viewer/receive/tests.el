@@ -127,12 +127,13 @@
 			      '(emt:eg
 				  (type presentation-path)
 				  (what-test test-1)))
-			   (make-emtvr:suite-newstyle :presentation-path
+			   (make-emtvr:suite-newstyle 
+			      :presentation-path
 			      (eval
 				 '(emt:eg
 				     (type presentation-path)
 				     (what-test test-1)))
-			      :suite
+			      :result
 			      (eval
 				 '(emt:eg
 				     (type suite)
@@ -197,12 +198,13 @@
 			      '(emt:eg
 				  (type presentation-path)
 				  (what-test test-1)))
-			   (make-emtvr:suite-newstyle :presentation-path
+			   (make-emtvr:suite-newstyle 
+			      :presentation-path
 			      (eval
 				 '(emt:eg
 				     (type presentation-path)
 				     (what-test test-1)))
-			      :suite
+			      :result
 			      (eval
 				 '(emt:eg
 				     (type suite)
@@ -282,12 +284,13 @@
 			      '(emt:eg
 				  (type presentation-path)
 				  (what-test test-2)))
-			   (make-emtvr:suite-newstyle :presentation-path
+			   (make-emtvr:suite-newstyle 
+			      :presentation-path
 			      (eval
 				 '(emt:eg
 				     (type presentation-path)
 				     (what-test test-2)))
-			      :suite
+			      :result
 			      (eval
 				 '(emt:eg
 				     (type suite)

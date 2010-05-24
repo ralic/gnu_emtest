@@ -246,31 +246,31 @@
 	 (item
 	    ((name just-test-runner))
 	    (emtt:make-explorable
-	       :id          (make-emt:test-ID:e-n:hello)
-	       :path-prefix () 
+	       :how-to-run  (make-emt:test-ID:e-n:hello)
+	       :prestn-path () 
 	       :properties  ()
 	       :aliases     ()))
 	 (item
 	    ((what-test index-1))
 	    (emtt:make-explorable
-	       :id          (emt:eg (type how-to-run)(what-test index-1))
-	       :path-prefix ()  ;;Empty presentation name
+	       :how-to-run  (emt:eg (type how-to-run)(what-test index-1))
+	       :prestn-path ()  ;;Empty presentation name
 	       :properties  ()
 	       :aliases     ()))
 	 
 	 (item
 	    ((what-test test-1))
 	    (emtt:make-explorable
-	       :id          (emt:eg (type how-to-run)(what-test test-1))
-	       :path-prefix (emt:eg (type presentation-name)(what-test test-1))
+	       :how-to-run  (emt:eg (type how-to-run)(what-test test-1))
+	       :prestn-path (emt:eg (type presentation-name)(what-test test-1))
 	       :properties  ()
 	       :aliases     ()))
 
 	 (item
 	    ((what-test test-2))
 	    (emtt:make-explorable
-	       :id          (emt:eg (type how-to-run)(what-test test-2))
-	       :path-prefix (emt:eg (type presentation-name)(what-test test-2))
+	       :how-to-run  (emt:eg (type how-to-run)(what-test test-2))
+	       :prestn-path (emt:eg (type presentation-name)(what-test test-2))
 	       :properties  ()
 	       :aliases     ())))
       
@@ -387,7 +387,7 @@
 	       (what-test test-1))
 	    (emtm:make-pattern
 	       (make-emtvr:suite-newstyle
-		  :suite 
+		  :result 
 		  (eval
 		     '(emt:eg (type suite)(what-test test-1)(role original-add)))
 		  :how-to-run
@@ -408,7 +408,7 @@
 	       (what-test test-1))
 	    (emtm:make-pattern
 	       (make-emtvr:suite-newstyle
-		  :suite 
+		  :result 
 		  (eval
 		     '(emt:eg (type suite)(what-test test-1)(role replace)))
 		  :how-to-run

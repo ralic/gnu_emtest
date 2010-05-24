@@ -103,7 +103,7 @@
 		  (emt:view:suite-newstyle
 		     (let
 			((s
-			    (emtvr:suite-newstyle-suite
+			    (emtvr:suite-newstyle-result
 			       (emt:view:suite-newstyle-cell data))))
 			(etypecase s 
 			   (null) 

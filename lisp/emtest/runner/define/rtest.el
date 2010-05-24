@@ -66,7 +66,7 @@
 
    (  "Situation: A test is defined.
 Response: Destructuring finds the expected clauses."
-      (let-noprops '(dummy-sym)
+      (emt:let-noprops '(dummy-sym)
 	 (emt:deftest-2 dummy-sym
 	    ("Docstring" (progn 12)))
 	 (emtt:destructure-suite 'dummy-sym
@@ -80,7 +80,7 @@ Response: Destructuring finds the expected clauses."
    
    (  "Situation: A test is defined with properties
 Response: Destructuring finds the expected properties."
-      (let-noprops '(dummy-sym)
+      (emt:let-noprops '(dummy-sym)
 	 (emt:deftest-2 dummy-sym
 	    (props 
 	       (db-id "my-db")
@@ -114,7 +114,7 @@ Response: Destructuring finds the expected properties."
 
    (  "Situation: A test is defined.
 Response: Destructuring finds the expected clauses."
-      (let-noprops '(dummy-sym)
+      (emt:let-noprops '(dummy-sym)
 	 (emt:deftest-3 dummy-sym
 	    (test (progn 12)))
 	 (emtt:destructure-suite-3 'dummy-sym
@@ -127,7 +127,7 @@ Response: Destructuring finds the expected clauses."
 
    (  "Situation: A test is defined with properties
 Response: Destructuring finds the expected properties."
-      (let-noprops '(dummy-sym)
+      (emt:let-noprops '(dummy-sym)
 	 (emt:deftest-3
 	    (
 	       (of    'dummy-sym)

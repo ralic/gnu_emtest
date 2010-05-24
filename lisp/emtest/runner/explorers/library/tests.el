@@ -38,7 +38,7 @@
 ;;;_  . Constants
 ;;;_   , emtt:launch:th:examples-dir
 (defconst emtt:launch:th:examples-dir
-      (emt:expand-filename-by-load-file "examples/find-libs/") 
+      (emtb:expand-filename-by-load-file "examples/find-libs/") 
       "Directory where find-libs examples are" )
 
 ;;;_   , emtt:launch:thd:examples
@@ -85,9 +85,9 @@
 	    (emt:eg (type file-load-history))))))
 
 
-;;;_   , emtt:library:th
+;;;_   , emt:library:th
 
-(defmacro emtt:library:th 
+(defmacro emt:library:th 
    (+tagset &rest body)
    "Run BODY in an environment with a certain example library defined.
 +TAGSET is a tagset narrowing, as for `eg'."
@@ -104,7 +104,7 @@
 		   :ignore-tags (count))))
 
 	  ;;Define the suites (protected by a noprops)
-	  (let-noprops suite-sym-list
+	  (emt:let-noprops suite-sym-list
 	     (dolist (sym suite-sym-list)
 		(eval ,'`(emt:deftest-3 ,sym ())))
 	     ;;Now do the tests
@@ -119,7 +119,7 @@
       (progn
 	 (emt:doc "Situation: There are two suites in the library.")
 	 (emt:doc "Response: Return a list of those suites' symbols.")
-	 (emtt:library:th
+	 (emt:library:th
 	    ((count 2))
 	    (let*
 	       ((syms
@@ -136,7 +136,7 @@
 
 ;;;_  . Tests
 ;;$$FIXME
-(emt:deftest-3 emtt:library
+(emt:deftest-3 emt:library
    (nil
       (progn
 	 (emt:doc "Situation: In the known (count 2) context of libraries and
@@ -147,10 +147,10 @@ Full exploration is used (Meaningless for now)")
 \\(Not tested: Exactly those two suites are seen.)
 \\(Not tested: Those suites have distinct IDs.)
 ")
-	 (emtt:library:th
+	 (emt:library:th
 	    ((count 2))
 	    (emtp:eval
-	       (emtt:library
+	       (emt:library
 		  (emt:eg
 		     (type sym))
 		  ;;$$FIX ME Library does not return a result object

@@ -55,7 +55,7 @@
    
    `(let
        (  (emt:eg:all-examples        ,(or examples ()))
-	  (emt:eg:all-prpty-makers     ()))
+	  (emt:eg:*all-prpty-makers*     ()))
        ,@body))
 
 

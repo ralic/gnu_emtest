@@ -29,12 +29,11 @@
 
 ;;;_. Code:
 
-;;;_ , form-by-option
+;;;_ , uti:form-by-option
 
-;;$$RENAME ME.
 ;;$$MOVE ME - into utilities
 ;;;###autoload
-(defmacro form-by-option (options key make-form &optional make-form-else)
+(defmacro uti:form-by-option (options key make-form &optional make-form-else)
    "Return a form that interprets KEY in OPTIONS.
 MAKE-FORM and MAKE-FORM-ELSE should be functions of one variable that
 return a form."
@@ -51,15 +50,6 @@ return a form."
 
 
 
-
-;;;_ , emt:expand-filename-by-load-file
-
-;;;###autoload
-(defun emt:expand-filename-by-load-file (filename)
-   ""
-   (expand-file-name filename
-      (if load-file-name
-	 (file-name-directory (file-truename load-file-name)))))
 
 ;;;_ , emt:gives-error
 
@@ -96,11 +86,8 @@ return a form."
 	   `(catch ',tag ,form))
       (if (listp tags) tags (list tags))
       :initial-value inner-body))
-;;;_  . Tests
-(put 'emt:throws-x 'emt:test-thru
-   'emt:throws)
 ;;;_ , Test helper `emt:throws'
-
+;;;###autoload
 (defmacro emt:throws (tags &rest body)
    ""
    
@@ -119,6 +106,7 @@ return a form."
 
 
 ;;;_ , emt:assert-throws
+;;;###autoload
 (defmacro emt:assert-throws (tags &rest body)
    ""
    
@@ -131,7 +119,7 @@ return a form."
 	      (error "Tag was not thrown")))))
 
 ;;;_ , emt:bags=
-
+;;;###autoload
 (defsubst emt:bags= (set1 set2 &rest flags)
    "Like `emt:sets=' but consider duplicate elements."
    ;;This works because `subsetp' accepts improper subsets.
@@ -148,7 +136,7 @@ return a form."
 (put 'emt:sets= 'emt:equal-test t)
 
 ;;;_ , emt:sets=
-
+;;;###autoload
 (defsubst emt:sets= (set1 set2 &rest flags)
    ""
 
@@ -181,8 +169,9 @@ return a form."
 	 ;;If we fell thru, we never found it, so give `nil'
 	 nil)))
 
-;;;_ , emt/util/collect-in-tree
-(defun emt/util/collect-in-tree (predicate tree)
+;;;_ , emt:collect-in-tree
+;;;###autoload
+(defun emt:collect-in-tree (predicate tree)
    "Return a list of the items in TREE satisfying PREDICATE.
 Do not return matching items that are within other matching items."
    (if (funcall predicate tree)
@@ -193,14 +182,14 @@ Do not return matching items that are within other matching items."
 	       #'append
 	       (mapcar
 		  #'(lambda (el)
-		       (emt/util/collect-in-tree predicate el))
+		       (emt:collect-in-tree predicate el))
 		  tree)))
 	 (t ()))))
 
 
-;;;_ , let-noprops
+;;;_ , emt:let-noprops
 ;;;###autoload
-(defmacro let-noprops (syms-form &rest body)
+(defmacro emt:let-noprops (syms-form &rest body)
    "Run BODY with symbols temporarily stripped of its properties.
 When done, restore each symbol's original list of properties.
 SYMS-FORM is a form to make a list of symbols."
@@ -220,8 +209,9 @@ SYMS-FORM is a form to make a list of symbols."
 	     ;;Restore each symbol's old property list (Uses cl)
 	     (map nil #'setplist ,syms old-props)))))
 
-;;;_ , let-unbound
-(defmacro let-unbound (syms-form &rest body)
+;;;_ , emt:let-unbound
+;;;###autoload
+(defmacro emt:let-unbound (syms-form &rest body)
    ""
    (let
       ((syms (eval syms-form)))
@@ -233,8 +223,9 @@ SYMS-FORM is a form to make a list of symbols."
 
 
 
-;;;_ , flet-unbound
-(defmacro flet-unbound (syms-form &rest body)
+;;;_ , emt:flet-unbound
+;;;###autoload
+(defmacro emt:flet-unbound (syms-form &rest body)
    ""
    (let
       ((syms (eval syms-form)))

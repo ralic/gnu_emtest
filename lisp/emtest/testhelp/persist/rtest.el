@@ -38,7 +38,7 @@
    (  "Situation: `emt:trace:properties' has the db-id property bound.
 Param: The backend param is not given.
 Response: The value of the `db-id' property is used as backend."
-      (let-noprops '(dummy-sym)
+      (emt:let-noprops '(dummy-sym)
 	 (emt:deftest-3 
 	    ((of 'dummy-sym) 
 	       (db-id "my-db"))

@@ -29,9 +29,10 @@
 
 ;;;_ , Requires
 
-(require 'emtest/testhelp/misc) ;;For `emt/util/collect-in-tree'
-(require 'emtest/testhelp/testpoint/requirer)
-(emtp:require)
+(require 'emtest/testhelp/misc) ;;For `emt:collect-in-tree'
+(eval-when-compile
+   (require 'emtest/testhelp/testpoint/requirer)
+   (emtp:require))
 (eval-when-compile
    (require 'cl))
 
@@ -339,7 +340,7 @@ This looks at ref count and does nothing if = 0."
 		  ;;Ie, collect elements that pass a test.
 		  (let 
 		     ((refs
-			 (emt/util/collect-in-tree 
+			 (emt:collect-in-tree 
 			    #'(lambda (x)
 				 (and
 				    (listp x)

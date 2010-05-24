@@ -39,7 +39,7 @@
    '(nil
        ((emt:doc "Situation: testing an example") 
 	  (error "An example error"))) 
-   #'emtest:viewer:receive)
+   #'emtve:tester-cb)
 
 '  ;;To show the result
 (pp
@@ -55,7 +55,7 @@
 
 
 '
-(emtest:ts:run-test
+(emtve:ts:run-test
    (nil
        ((emt:doc "Situation: testing an example") 
 	  (error "An example error"))))

@@ -48,9 +48,6 @@
    (id () :type emtvr:suite-newstyle-id
       :doc "The \"official\" id.")
 
-   ;;Was a emt:test-ID:e-n
-   ;;$$CHANGED to a emtt:explorable
-   ;;Could even be a `emtt:method'
    (how-to-run ():type emtt:explorable
       :doc "How to run this as a test.")
 
@@ -63,8 +60,7 @@
    (testrun-id ()
       :type emt:testral:testrun-id
       :doc "The ID of the testrun that created this result.")
-   ;;$$RENAME ME  "result"
-   (suite ()     
+   (result ()     
       :type (or null 
 	       emt:testral:suite 
 	       emt:testral:test-runner-info)

@@ -31,15 +31,15 @@
 
 
 ;;;_. Body
-;;;_  . form-by-option
+;;;_  . uti:form-by-option
 
-(emt:deftest-3 form-by-option
+(emt:deftest-3 uti:form-by-option
    (nil
       (progn
 	 (emt:doc "Expands form according to data in options")
 	 (rtest:retvalue->status
 	    (equal
-	       (form-by-option
+	       (uti:form-by-option
 		  '((x bar baz))
 		  'x
 		  #'(lambda
@@ -52,7 +52,7 @@
 	 (emt:doc "With a FORM-ELSE given, expands it when option isn't given.")
 	 (rtest:retvalue->status
 	    (equal
-	       (form-by-option nil 'x nil
+	       (uti:form-by-option nil 'x nil
 		  #'(lambda
 		       (x)
 		       '(foo)))
@@ -122,7 +122,9 @@ Body does throw the tag in question.")
 	       '(example-tag-1 example-tag-2)
 	       (throw 'example-tag-2 nil))
 	    t))))
-
+;;;_  . Tests
+(put 'emt:throws-x 'emt:test-thru
+   'emt:throws)
 
 ;;;_ , emt:assert-throws
 
@@ -225,37 +227,37 @@ Body does throw the tag in question.")
 		     13)))
 	    t))))
 
-;;;_ , emt/util/collect-in-tree
-(emt:deftest-3 emt/util/collect-in-tree
+;;;_ , emt:collect-in-tree
+(emt:deftest-3 emt:collect-in-tree
    (nil
       (progn
 	 (emt:doc "Situation: The root of the tree matches PREDICATE.")
 	 (emt:doc "Response: Return a list of just it.")
 	 (equal
-	    (emt/util/collect-in-tree #'integerp 12)
+	    (emt:collect-in-tree #'integerp 12)
 	    '(12))))
    (nil
       (progn
 	 (emt:doc "Situation: Some items in tree match PREDICATE.")
 	 (emt:doc "Response: Return a list of them.")
 	 (equal
-	    (emt/util/collect-in-tree #'integerp
+	    (emt:collect-in-tree #'integerp
 	       '((a 12 b)
 		   12))
 	    '(12 12)))))
 
 
-;;;_ , let-noprops
-(emt:deftest-3 let-noprops
+;;;_ , emt:let-noprops
+(emt:deftest-3 emt:let-noprops
    (nil
       (progn
-	 (emt:doc "Proves: `let-noprops' temporarily rebinds properties.")
-	 (let-noprops
+	 (emt:doc "Proves: `emt:let-noprops' temporarily rebinds properties.")
+	 (emt:let-noprops
 	    '(foo)
 	    (assert
 	       (null
 		  (symbol-plist 'foo)))
-	    (let-noprops
+	    (emt:let-noprops
 	       '(foo)
 	       (put 'foo 'example-prop 13))
 	    (assert
@@ -264,8 +266,8 @@ Body does throw the tag in question.")
 	    t)))
    (nil
       (progn
-	 (emt:doc "Proves: `let-noprops' temporarily sets properties null.")
-	 (let-noprops
+	 (emt:doc "Proves: `emt:let-noprops' temporarily sets properties null.")
+	 (emt:let-noprops
 	    '(foo)
 	    (assert
 	       (null
@@ -275,7 +277,7 @@ Body does throw the tag in question.")
 	       (equal
 		  (symbol-plist 'foo)
 		  '(example-prop 13)))
-	    (let-noprops
+	    (emt:let-noprops
 	       '(foo)
 	       (assert
 		  (null
@@ -287,18 +289,18 @@ Body does throw the tag in question.")
 	    t))))
 
 
-;;;_ , let-unbound
-(emt:deftest-3 let-unbound
+;;;_ , emt:let-unbound
+(emt:deftest-3 emt:let-unbound
    (nil
       (progn
 	 (emt:doc "Param: literal list of symbol `foo'.")
 	 (emt:doc "Response: `foo' is initially unbound in the body.
-After `let-unbound' runs, foo is bound again.")
+After `emt:let-unbound' runs, foo is bound again.")
 	 (progn
 	    (defconst foo t)
 	    (assert
 	       (boundp 'foo))
-	    (let-unbound
+	    (emt:let-unbound
 	       '(foo)
 	       (assert
 		  (not
@@ -311,14 +313,14 @@ After `let-unbound' runs, foo is bound again.")
       (progn
 	 (emt:doc "Param: symbolic list of symbol `foo'.")
 	 (emt:doc "Response: `foo' is initially unbound in the body.
-After `let-unbound' runs, foo is bound again.")
+After `emt:let-unbound' runs, foo is bound again.")
 	 (let
 	    ((syms
 		'(foo)))
 	    (defconst foo t)
 	    (assert
 	       (boundp 'foo))
-	    (let-unbound syms
+	    (emt:let-unbound syms
 	       (assert
 		  (not
 		     (boundp 'foo))))
@@ -327,18 +329,18 @@ After `let-unbound' runs, foo is bound again.")
 	    (makunbound 'foo)
 	    t))))
 
-;;;_ , flet-unbound
-(emt:deftest-3 flet-unbound
+;;;_ , emt:flet-unbound
+(emt:deftest-3 emt:flet-unbound
    (nil
       (progn
 	 (emt:doc "Param: literal list of symbol `foo'.")
 	 (emt:doc "Response: `foo' is initially unbound in the body.
-After `let-unbound' runs, foo is bound again.")
+After `emt:let-unbound' runs, foo is bound again.")
 	 (progn
 	    (defun foo nil)
 	    (assert
 	       (fboundp 'foo))
-	    (flet-unbound
+	    (emt:flet-unbound
 	       '(foo)
 	       (assert
 		  (not
@@ -351,14 +353,14 @@ After `let-unbound' runs, foo is bound again.")
       (progn
 	 (emt:doc "Param: symbolic list of symbol `foo'.")
 	 (emt:doc "Response: `foo' is initially unbound in the body.
-After `let-unbound' runs, foo is bound again.")
+After `emt:let-unbound' runs, foo is bound again.")
 	 (let
 	    ((syms
 		'(foo)))
 	    (defun foo nil)
 	    (assert
 	       (fboundp 'foo))
-	    (flet-unbound syms
+	    (emt:flet-unbound syms
 	       (assert
 		  (not
 		     (fboundp 'foo))))

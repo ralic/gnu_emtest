@@ -86,10 +86,8 @@ DATA-LIST must be a list of alists."
 	    (let*
 	       (
 		  (cell (emt:view:suite-newstyle-cell suite))
-		  ;;$$RENAME ELSEWHERE - Naming is muddled here.
-		  ;;"suite" appears with two different meanings.
 		  (object
-		     (emtvr:suite-newstyle-suite cell)))
+		     (emtvr:suite-newstyle-result cell)))
 	       (append
 		  (emtvf:headline-w-badnesses 
 		     (1+ depth)

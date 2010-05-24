@@ -48,7 +48,7 @@
 
    (  "Situation: Just the test runner."
       (emtve:ts:with-mock-viewer
-	 (emtest:viewer:receive
+	 (emtve:tester-cb
 	    (emt:eg (type report)(name just-test-runner)))
 
 	 (emt:emviewer:th:check-buffer-string
@@ -59,7 +59,7 @@
       
    ("Situation: Report one test-1."
       (emtve:ts:with-mock-viewer
-	 (emtest:viewer:receive
+	 (emtve:tester-cb
 	    (emt:eg (type report)(role original-add)(what-test test-1)))
 
 	 (emt:emviewer:th:check-buffer-string
@@ -70,7 +70,7 @@
 
    ("Situation: Report test-2."
       (emtve:ts:with-mock-viewer
-	 (emtest:viewer:receive
+	 (emtve:tester-cb
 	    (emt:eg (type report)(what-test test-2)))
 
 	 (emt:emviewer:th:check-buffer-string
@@ -82,10 +82,10 @@
  * Receive just test-runner
  * Then receive another report."
       (emtve:ts:with-mock-viewer
-	 (emtest:viewer:receive
+	 (emtve:tester-cb
 	    (emt:eg (type report)(name just-test-runner)))
 
-	 (emtest:viewer:receive
+	 (emtve:tester-cb
 	    (emt:eg 
 	       (type report)
 	       (role original-add)
@@ -98,14 +98,14 @@
 
    ("Operation: Receives a report, then an update."
       (emtve:ts:with-mock-viewer
-	 (emtest:viewer:receive
+	 (emtve:tester-cb
 	    (emt:eg 
 	       (type report)
 	       (role original-add)
 	       (what-test test-1)))
 
 	 ;;Now receive the second one
-	 (emtest:viewer:receive
+	 (emtve:tester-cb
 	    (emt:eg 
 	       (type report)
 	       (role replace)
@@ -121,17 +121,17 @@
  * receive another report
  * report an update."
       (emtve:ts:with-mock-viewer
-	 (emtest:viewer:receive
+	 (emtve:tester-cb
 	    (emt:eg (type report)(name just-test-runner)))
 
-	 (emtest:viewer:receive
+	 (emtve:tester-cb
 	    (emt:eg 
 	       (type report)
 	       (role original-add)
 	       (what-test test-1)))
 
 	 ;;Now receive the second one
-	 (emtest:viewer:receive
+	 (emtve:tester-cb
 	    (emt:eg 
 	       (type report)
 	       (role replace)
@@ -150,7 +150,7 @@
       ;;basically like above or like rewriting "receive" and also
       ;;testing it with set=.
       (emtve:ts:with-mock-viewer
-	 (emtest:ts:run-test
+	 (emtve:ts:run-test
 	    '("Situation: testing an example" 
 		(error "An example error")))
 

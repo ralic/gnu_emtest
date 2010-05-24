@@ -47,7 +47,7 @@ With `cl' loaded, use it as (incf emtt:testrun-counter)." )
 ;;Cheat for now: Always know to use emviewer2.  Later use a
 ;;customizable variable.
 (defconst emtt:receiver-f
-   ;;#'emtest:viewer:receive
+   ;;#'emtve:tester-cb
    #'emtv2:tester-cb
    "" )
 
@@ -181,10 +181,9 @@ PROMPT is a prompt string"
 	      (cdr lib-data)))
       t))
 
-;;;_ , emtt:library
-;;$$RENAME ME emt:library because it's an entry point
+;;;_ , emt:library
 ;;;###autoload
-(defun emtt:library (library &optional receiver)
+(defun emt:library (library &optional receiver)
    "Run the test suites of LIBRARY"
    
    (interactive

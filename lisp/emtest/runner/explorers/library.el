@@ -99,11 +99,11 @@
 	    (mapcar
 	       #'(lambda (suite-sym)
 		    (emtt:make-explorable
-		       :id
+		       :how-to-run
 		       (make-emt:test-ID:e-n:suite
 			  :suite-ID suite-sym)
 		       ;;CHANGED to append lib name.
-		       :path-prefix 
+		       :prestn-path 
 		       (append 
 			  path
 			  (list (symbol-name suite-sym)))

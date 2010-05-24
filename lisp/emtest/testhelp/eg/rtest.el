@@ -471,7 +471,7 @@ Can't use `emt:eg' in body."
    
    `(let
        (  (emt:eg:all-examples ())
-	  (emt:eg:all-prpty-makers ()))
+	  (emt:eg:*all-prpty-makers* ()))
        ,@body))
 
 
@@ -566,10 +566,10 @@ by the dummy definers (which deliberately re-use the same ID)."
 	 (member* 'dummy-id emt:eg:all-examples
 	    :key #'emt:example.-definer-id)))
    
-   (  "Validation: `emt:eg:all-prpty-makers' does not have anything
+   (  "Validation: `emt:eg:*all-prpty-makers*' does not have anything
 defined by the dummy definers (which deliberately re-use the same ID)."
       (not
-	 (member* 'dummy-id emt:eg:all-prpty-makers
+	 (member* 'dummy-id emt:eg:*all-prpty-makers*
 	    :key #'emt:example.-definer-id)))
    
    ;;These tests let `emt:eg:all-examples' to known values so that
@@ -1682,7 +1682,7 @@ Response: WRITEME."
 
 
 ;;;_  . Tests
-(rtest:deftest emt:eg:browse:format-relative-distinction
+(rtest:deftest emt:eg:browse:->stage-1
    ;;Should type-check the output, if that were possible.
    '
    (  "Situation: WRITEME.
@@ -1690,7 +1690,7 @@ Response: WRITEME."
       (progn
 	 (assert
 	    (equal
-	       (emt:eg:browse:format-relative-distinction
+	       (emt:eg:browse:->stage-1
 		  (emt:eg:browse:make-relative-distinction
 		     :item (emt:eg (type eg-item)(name 0))))
 	    
@@ -1706,7 +1706,7 @@ Response: WRITEME."
       (progn
 	 (assert
 	    (equal
-	       (emt:eg:browse:format-relative-distinction
+	       (emt:eg:browse:->stage-1
 		  (list
 		     (emt:eg:browse:make-relative-distinction
 			:item

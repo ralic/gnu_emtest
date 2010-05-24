@@ -124,7 +124,7 @@ Response: List contains that one entry."
 			   :presentation-path
 			   (eval 
 			      '(emt:eg (type presentation-path)(what-test test-1)))
-			   :suite
+			   :result
 			   (eval 
 			      '(emt:eg (type suite)(what-test test-1)(role original-add)))
 			   ))))
@@ -190,7 +190,7 @@ Response: List contains just that one entry, not duplicated."
 			   :presentation-path 
 			   (eval 
 			      '(emt:eg (type presentation-path)(what-test test-1)))
-			   :suite
+			   :result
 			   (eval 
 			      '(emt:eg (type suite)(what-test test-1)(role replace)))
 			   ))))
@@ -271,7 +271,7 @@ Response: List contains both entries."
 			   :presentation-path 
 			   (eval 
 			      '(emt:eg (type presentation-path)(what-test test-2)))
-			   :suite
+			   :result
 			   (eval 
 			      '(emt:eg (type suite)(what-test test-2)))
 			   ))))

@@ -60,24 +60,21 @@
 An `emtve' or `nil'." )
 (defvar emtve:report-buffer nil 
    "" )
-;;result object from receive.  Now it should live here.
-;;$$RENAME ME emtve:pathtree
-(defvar emtve:result-root nil 
-   "" )
+(defvar emtve:pathtree nil 
+   "Result object from receive." )
 (defvar emtve:chewie nil 
    "" )
 (defvar emtve:receiver 
    nil ;;Should be made by setup.  Of type `emtvr:data'
    "" )
 ;;;_ , Pathtree callback functions 
-;;;_  . emtest:viewer:receive-cb
-;;$$RENAME ME emtve:receive-cb
-(defun emtest:viewer:receive-cb (presentation-path cell)
+;;;_  . emtve:receive-cb
+(defun emtve:receive-cb (presentation-path cell)
    "Emviewer callback that `receive' gets.
 It just tells a pathtree to add this node."
    (emtvp:add/replace-node
       ;;The pathtree root
-      emtve:result-root 
+      emtve:pathtree 
       ;;The path
       presentation-path
       ;;The data
@@ -144,8 +141,8 @@ It just tells a pathtree to add this node."
 ;;;_ , Setup emtest:viewer:setup-if-needed
 (defun emtest:viewer:setup-if-needed ()
    ""
-   (unless emtve:result-root
-      (setq emtve:result-root
+   (unless emtve:pathtree
+      (setq emtve:pathtree
 	 (emtvp:make-empty-tree-newstyle
 	    #'emtest:viewer:pathtree-cb
 	    ;;Default makes the base type.
@@ -169,7 +166,7 @@ It just tells a pathtree to add this node."
 	 (erase-buffer)
 	 (setq emtve:chewie
 	    (chewie:make-chewie
-	       (emtvp-root emtve:result-root)
+	       (emtvp-root emtve:pathtree)
 	       '()
 	       #'emtvf:top
 	       #'emt:plain-viewer:insert
@@ -182,21 +179,18 @@ It just tells a pathtree to add this node."
       (setq emtve:receiver
 	 (make-emtvr:data
 	    :alist ()
-	    :tree-insert-cb #'emtest:viewer:receive-cb
+	    :tree-insert-cb #'emtve:receive-cb
 	    ;;:tree-remove-cb Not yet
 	    ))))
 
 
-;;;_ , emtest:viewer:receive
-;;$$RENAME ME emtve:tester-cb
-;;This is the callback for emtest to use.  For now, this is always the
-;;one.  Later, customization could control what is used.
-(defun emtest:viewer:receive (report)
-   ""
+;;;_ , emtve:tester-cb
+(defun emtve:tester-cb (report)
+   "The Emviewer callback for emtest to use"
    (check-type report emt:testral:report)
    (emtest:viewer:setup-if-needed)
    (emtvr:newstyle emtve:receiver report)
-   (emtvp:freshen emtve:result-root)
+   (emtvp:freshen emtve:pathtree)
    (pop-to-buffer emtve:report-buffer))
 
 ;;;_ , emt:relaunch-all

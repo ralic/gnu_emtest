@@ -46,7 +46,6 @@
 
 ;;;_. Body
 ;;;_ , Doc
-;;$$RENAME these emtt: because they are not entry points.
 ;;;_  . emt:doc
 ;;;###autoload
 (defun emt:doc (str &rest r)

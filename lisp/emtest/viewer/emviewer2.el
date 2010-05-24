@@ -54,7 +54,7 @@
    "Receiver object, of type `emtvr:data'" )
 ;;;_ , Glue functions
 ;;;_  . emtv2:receive-cb
-;;Only different from `emtest:viewer:receive-cb' in that it knows a
+;;Only different from `emtve:receive-cb' in that it knows a
 ;;different pathtree variable.
 (defun emtv2:receive-cb (presentation-path cell)
    "Emviewer callback that `receive' gets.

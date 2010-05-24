@@ -62,7 +62,7 @@
 ;;;_ , Data
 ;;;_  . 
 (defconst emtmv:th:examples-dir
-      (emt:expand-filename-by-load-file "examples") 
+      (emtb:expand-filename-by-load-file "examples") 
       "Directory where examples are" )
 
 ;;;_  . emtmv:th:data
@@ -227,7 +227,7 @@ Call this inside a narrowing to (which WHICH)."
        (flet
 	  ((foo:fun1)))
        ;;Insulate properties too
-       (let-noprops
+       (emt:let-noprops
 	  '(foo:old:unshared
 	      foo:new:unshared
 	      foo:var1 foo:var2 foo:fun1)))
@@ -254,7 +254,7 @@ Call this inside a narrowing to (which WHICH)."
    (nil
       (let
 	 ((oa (make-vector 255 0)))
-	 (let-noprops '(a)
+	 (emt:let-noprops '(a)
 	    (put 'a 'prop 12)
 	    (emt:doc "Situation: Symbol a has a certain property.")
 	    (emt:doc "Operation: Copy the symbol by name to OA.")

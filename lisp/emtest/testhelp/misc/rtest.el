@@ -33,14 +33,14 @@
 (require 'rtest-define)
 
 ;;;_. Body
-;;;_  . form-by-option
+;;;_  . uti:form-by-option
 
-(rtest:deftest form-by-option
+(rtest:deftest uti:form-by-option
 
    ("Expands form according to data in options"
       (rtest:retvalue->status
 	 (equal
-	    (form-by-option
+	    (uti:form-by-option
 	       '((x bar baz))
 	       'x
 	       #'(lambda
@@ -53,7 +53,7 @@
    ("With a FORM-ELSE given, expands it when option isn't given."
       (rtest:retvalue->status
 	 (equal
-	    (form-by-option nil 'x nil
+	    (uti:form-by-option nil 'x nil
 	       #'(lambda
 		    (x)
 		    '(foo)))
@@ -201,48 +201,48 @@ Response: Return nil."
 	 t))
       
    )
-;;;_ , emt/util/collect-in-tree
-(rtest:deftest emt/util/collect-in-tree
+;;;_ , emt:collect-in-tree
+(rtest:deftest emt:collect-in-tree
 
    (  "Situation: The root of the tree matches PREDICATE.
 Response: Return a list of just it."
       (equal
-	 (emt/util/collect-in-tree #'integerp 12)
+	 (emt:collect-in-tree #'integerp 12)
 	 '(12)))
    
       (  "Situation: Some items in tree match PREDICATE.
 Response: Return a list of them."
       (equal
-	 (emt/util/collect-in-tree #'integerp '((a 12 b) 12))
+	 (emt:collect-in-tree #'integerp '((a 12 b) 12))
 	 '(12 12)))
    
    )
 
-;;;_ , let-noprops
-(rtest:deftest let-noprops
+;;;_ , emt:let-noprops
+(rtest:deftest emt:let-noprops
 
-   (  "Proves: `let-noprops' temporarily rebinds properties."
-      (let-noprops '(foo)
+   (  "Proves: `emt:let-noprops' temporarily rebinds properties."
+      (emt:let-noprops '(foo)
 	 ;;Now `foo' has no properties
 	 (assert (null (symbol-plist 'foo)))
-	 ;;Inside a nested let-noprops, give `foo' a property
-	 (let-noprops '(foo)
+	 ;;Inside a nested emt:let-noprops, give `foo' a property
+	 (emt:let-noprops '(foo)
 	    (put 'foo 'example-prop 13))
 
 	 ;;Outside, `foo' once again has no properties
 	 (assert (null (symbol-plist 'foo)))
 	 t))
    
-   (  "Proves: `let-noprops' temporarily sets properties null."
-      (let-noprops '(foo)
+   (  "Proves: `emt:let-noprops' temporarily sets properties null."
+      (emt:let-noprops '(foo)
 	 ;;Now `foo' has no properties
 	 (assert (null (symbol-plist 'foo)))
 	 ;;Give `foo' a property
 	 (put 'foo 'example-prop 13)
 	 (assert (equal (symbol-plist 'foo) '(example-prop 13)))
 
-	 (let-noprops '(foo)
-	    ;;Inside a nested let-noprops, `foo' once again has no
+	 (emt:let-noprops '(foo)
+	    ;;Inside a nested emt:let-noprops, `foo' once again has no
 	    ;;properties
 	    (assert (null (symbol-plist 'foo))))
 	 
@@ -252,20 +252,20 @@ Response: Return a list of them."
    
    )
 
-;;;_ , let-unbound
-(rtest:deftest let-unbound
+;;;_ , emt:let-unbound
+(rtest:deftest emt:let-unbound
    ;;Bootstrap problem: To test this, we'd really like to have itself,
    ;;to insulate the test from the environment.
 
    (  "Param: literal list of symbol `foo'.
 Response: `foo' is initially unbound in the body.
-After `let-unbound' runs, foo is bound again."
+After `emt:let-unbound' runs, foo is bound again."
       (progn
 	 (defconst foo t)
 	 ;;Validation
 	 (assert (boundp 'foo))
 
-	 (let-unbound '(foo)
+	 (emt:let-unbound '(foo)
 	    (assert (not (boundp 'foo))))
 	 (assert (boundp 'foo))
 
@@ -275,14 +275,14 @@ After `let-unbound' runs, foo is bound again."
    
    (  "Param: symbolic list of symbol `foo'.
 Response: `foo' is initially unbound in the body.
-After `let-unbound' runs, foo is bound again."
+After `emt:let-unbound' runs, foo is bound again."
       (let
 	 ((syms '(foo)))
 	 (defconst foo t)
 	 ;;Validation
 	 (assert (boundp 'foo))
 
-	 (let-unbound syms
+	 (emt:let-unbound syms
 	    (assert (not (boundp 'foo))))
 	 (assert (boundp 'foo))
 
@@ -292,20 +292,20 @@ After `let-unbound' runs, foo is bound again."
    
    ;;Not tested: Cleanliness: Doesn't capture `syms' etc.
    )
-;;;_ , flet-unbound
-(rtest:deftest flet-unbound
+;;;_ , emt:flet-unbound
+(rtest:deftest emt:flet-unbound
    ;;Bootstrap problem: To test this, we'd really like to have itself,
    ;;to insulate the test from the environment.
 
    (  "Param: literal list of symbol `foo'.
 Response: `foo' is initially unbound in the body.
-After `let-unbound' runs, foo is bound again."
+After `emt:let-unbound' runs, foo is bound again."
       (progn
 	 (defun foo ())
 	 ;;Validation
 	 (assert (fboundp 'foo))
 
-	 (flet-unbound '(foo)
+	 (emt:flet-unbound '(foo)
 	    (assert (not (fboundp 'foo))))
 	 (assert (fboundp 'foo))
 
@@ -315,14 +315,14 @@ After `let-unbound' runs, foo is bound again."
    
    (  "Param: symbolic list of symbol `foo'.
 Response: `foo' is initially unbound in the body.
-After `let-unbound' runs, foo is bound again."
+After `emt:let-unbound' runs, foo is bound again."
       (let
 	 ((syms '(foo)))
 	 (defun foo ())
 	 ;;Validation
 	 (assert (fboundp 'foo))
 
-	 (flet-unbound syms
+	 (emt:flet-unbound syms
 	    (assert (not (fboundp 'foo))))
 	 (assert (fboundp 'foo))
 

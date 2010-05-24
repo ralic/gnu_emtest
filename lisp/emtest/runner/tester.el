@@ -79,7 +79,7 @@ Each one must be a `emtt:explorable'" )
    (let*
       (
 	 (test-id ;;Type `emt:test-ID:e-n'
-	    (emtt:explorable->id next))
+	    (emtt:explorable->how-to-run next))
 	 (props
 	    (emtt:explorable->properties next))
 	 (one-report
@@ -171,8 +171,8 @@ Each one must be a `emtt:explorable'" )
       (  (emt:test-finder:pending-list ()))
       (push
 	 (emtt:make-explorable
-	    :id what-to-run
-	    :path-prefix path-prefix
+	    :how-to-run  what-to-run
+	    :prestn-path path-prefix
 	    :properties ())
 	 emt:test-finder:pending-list)
 

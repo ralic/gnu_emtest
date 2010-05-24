@@ -45,7 +45,7 @@ Define a test in Emtest
 
 ;;;***
 
-;;;### (autoloads (emtt:library emt:defun-at-point) "emtest/runner/launch"
+;;;### (autoloads (emt:library emt:defun-at-point) "emtest/runner/launch"
 ;;;;;;  "runner/launch.el" (19362 38201))
 ;;; Generated autoloads from runner/launch.el
 
@@ -58,7 +58,7 @@ Does nothing if the buffer is not in a known lisp mode.
 
 \(fn ARG)" t nil)
 
-(autoload (quote emtt:library) "emtest/runner/launch" "\
+(autoload (quote emt:library) "emtest/runner/launch" "\
 Run the test suites of LIBRARY
 
 \(fn LIBRARY)" t nil)
@@ -113,12 +113,12 @@ Purpose: For consise use inside test code.
 
 ;;;***
 
-;;;### (autoloads (emt:util:all-different let-noprops emt:somewhere-in-tree
-;;;;;;  emt:expand-filename-by-load-file form-by-option) "emtest/testhelp/misc"
+;;;### (autoloads (emt:util:all-different emt:let-noprops emt:somewhere-in-tree
+;;;;;;  emt:expand-filename-by-load-file uti:form-by-option) "emtest/testhelp/misc"
 ;;;;;;  "testhelp/misc.el" (19362 38439))
 ;;; Generated autoloads from testhelp/misc.el
 
-(autoload (quote form-by-option) "emtest/testhelp/misc" "\
+(autoload (quote uti:form-by-option) "emtest/testhelp/misc" "\
 Return a form that interprets KEY in OPTIONS.
 MAKE-FORM and MAKE-FORM-ELSE should be functions of one variable that
 return a form.
@@ -135,7 +135,7 @@ return a form.
 
 \(fn FUNC TREE &rest ARGS)" nil nil)
 
-(autoload (quote let-noprops) "emtest/testhelp/misc" "\
+(autoload (quote emt:let-noprops) "emtest/testhelp/misc" "\
 Run BODY with symbols temporarily stripped of its properties.
 When done, restore each symbol's original list of properties.
 SYMS-FORM is a form to make a list of symbols.

@@ -107,7 +107,7 @@
    "Insert skeleton to define an examples directory"
    (read-string "Package name:" )
    "(defconst "str":th:examples-dir
-      (emt:expand-filename-by-load-file \"examples\") 
+      (emtb:expand-filename-by-load-file \"examples\") 
       \"Directory where examples are\" )"
    )
 

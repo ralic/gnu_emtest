@@ -73,11 +73,8 @@
 		    kv))
 	    reference-tagset))))
 
-;;;_  . emt:eg:browse:format-relative-distinction
-;;$$Rename emt:eg:browse:->stage-1
-;;formatter could help abbreviate this.  Supply the control stuff and
-;;client supplies the clauses.
-(defun emt:eg:browse:format-relative-distinction (obj)
+;;;_  . emt:eg:browse:->stage-1
+(defun emt:eg:browse:->stage-1 (obj)
    ""
    
    (typecase obj
@@ -101,7 +98,7 @@
       ;;a list vs setting up a sequence.
       (cons
 	 `(sequence
-	     ,@(mapcar #'emt:eg:browse:format-relative-distinction obj)))))
+	     ,@(mapcar #'emt:eg:browse:->stage-1 obj)))))
 
 ;;;_  . emt:eg:browse:top
 
@@ -135,7 +132,7 @@
 	    ;;Punt for now
 	    grouped)
 	 (stage-1-formatted
-	    (emt:eg:browse:format-relative-distinction summarized)))
+	    (emt:eg:browse:->stage-1 summarized)))
       (formatter:display-from-stage1
 	 stage-1-formatted
 	 "*EG browse*")))
