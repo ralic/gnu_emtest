@@ -188,7 +188,7 @@ It just tells a pathtree to add this node."
 
 
 ;;;_ , emtest:viewer:receive
-
+;;$$RENAME ME emtve:tester-cb
 ;;This is the callback for emtest to use.  For now, this is always the
 ;;one.  Later, customization could control what is used.
 (defun emtest:viewer:receive (report)
