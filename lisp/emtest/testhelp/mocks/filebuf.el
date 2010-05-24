@@ -333,20 +333,25 @@ You may want to use this to umount a ramdisk"
 	    (set-visited-file-name abs-name t nil)))))
 ;;;_   , emtb:find-file-goto-text
 
-;;Deprecated.  This has been split into `emtb:cautious-find-file'
-;;and the part that manages loc-string and (now) prepare-f
-
-;;May become only a test helper.  Arg LOC-STRING need not be optional.
-
-;;$$OBSOLESCENT Prepare to replace this.  Several tests use it and
-;;emtb:find-file-2 uses it with no options.  `emtb:find-file-2' itself
-;;is obsolescent.
+;;$$OBSOLESCENT 
+;;This is now only a test helper.
+;;$$MOVE ME but first encap and share those checks.
 
 (defun emtb:find-file-goto-text (filename &optional loc-string)
    ""
+   ;;$$SHARE THESE checks.  
+   ;;$$USE THEM in the other places that absolute is checked.  It's
+   ;;appropriate in all of those.
+   (unless
+      (file-name-absolute-p filename)
+      (error "Filename %s is not absolute" filename))
+
+   (unless
+      (file-exists-p filename)
+      (error "File %s doesn't exist" filename))
 
    (let
-      ((buf (emtb:cautious-find-file filename)))
+      ((buf (find-file filename)))
       (with-current-buffer buf
 	 ;;Almost replaceable.
 	 (if loc-string
