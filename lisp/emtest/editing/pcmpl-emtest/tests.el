@@ -29,6 +29,13 @@
 
 ;;;_ , Requires
 
+(require 'pcmpl-elisp)
+(require 'emtest/editing/pcmpl-emtest)
+(require 'emtest/testhelp/tagnames)
+(require 'emtest/testhelp/tagnames/testhelp)
+(require 'emtest/testhelp/mocks/filebuf)
+(require 'emtest/testhelp/standard)
+(require 'emtest/runner/define)
 
 
 ;;;_. Body
