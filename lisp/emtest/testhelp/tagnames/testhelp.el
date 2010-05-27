@@ -58,6 +58,104 @@
 	  (emtg:*all-prpty-makers*     ()))
        ,@body))
 
+;;;_  . Define example data
+;;This can't use tagnames because of bootstrap issues.
+;;;_   , emtg:thd:example-examples
+(defconst emtg:thd:example-examples
+   (list
+      ;;0 examples in (dummy-tag 0)
+
+      ;;1 example in (dummy-tag 1)
+      ;;Also tagged (a t)
+      (emtg:make-example
+	 :definer-id 'dummy-id
+	 :tagset    '((dummy-tag 1) (a t))
+	 :value      'tag-1-a)
+
+      ;;2 examples in (dummy-tag 2)
+      ;;Also tagged (a t) and (b t) (one each) 
+      (emtg:make-example
+	 :definer-id 'dummy-id
+	 :tagset    '((dummy-tag 2) (a t))
+	 :value      'tag-2-a)
+
+      (emtg:make-example
+	 :definer-id 'dummy-id
+	 :tagset    '((dummy-tag 2) (b t))
+	 :value      'tag-2-b))
+   
+   "Example of a list of examples in their full storage format" )
+
+;;;_   , emtg:thd:example-examples-2
+(defconst emtg:thd:example-examples-2
+   (cons
+      (emtg:make-example
+	 :definer-id 'dummy-id
+	 :tagset    '(c)
+	 :value      'c)
+      emtg:thd:example-examples)
+   "" )
+
+;;;_   , emtg:th:with-example-examples
+;;$$CHANGING  The new design barely needs this.
+(defmacro emtg:th:with-example-examples (&rest body)
+   ""
+   ;;Values all name the example they occur in
+   `(let
+       ;;The larger tagset constrainer is empty.
+       (  (emtg:tagset ())
+	  (emtg:all-examples emtg:thd:example-examples))
+       ,@body))
+
+;;;_   , emtg:th:with-example-examples-2
+;;$$CHANGING  The new design barely needs this.
+(defmacro emtg:th:with-example-examples-2 (&rest body)
+   ""
+   ;;Values all name the example they occur in
+   `(let
+       ;;The larger tagset constrainer is empty.
+       (  (emtg:tagset ())
+	  (emtg:all-examples emtg:thd:example-examples-2))
+       ,@body))
+
+;;For bootstrap reasons, these examples can't be defined with
+;;`emtg:define'
+(defconst emtg:define:td:typical-helper-retval
+   (emtg:make-helper-rettype
+      :value-info
+      (list
+	 (emtg:make-valuedef-type
+	    :tagset '((dummy-tag 1))
+	    :value-form 12)))
+   
+   "" )
+
+(defconst emtg:define:td:docstring-1
+   "A dummy docstring"
+   "" )
+
+;;;_  . emtg:thd:examples
+
+(defconst emtg:thd:examples
+   (emtg:define+
+      ((project emtest)(library emtg)(section external))
+      (transparent-tags () (type))
+      (item ((type docstring))
+	 emtg:define:td:docstring-1)
+      (item ((type eg-item)(name 0))
+	 (emtg:make-example
+	    :definer-id 'dont-care
+	    :value `(doc ,(emtg:value 
+			     :narrow ((type docstring))
+			     :ignore-tags (name)))
+	    :tagset '((dummy-tag 1))))
+      (item ((type eg-item)(name 1))
+	 (emtg:make-example
+	    :definer-id 'dont-care
+	    :value 'dont-care
+	    :tagset '((dummy-tag 1))
+	    :property-list 
+	    (list '(other-prop other-value))))))
 
 
 ;;;_. Footers

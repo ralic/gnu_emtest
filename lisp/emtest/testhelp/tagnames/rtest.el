@@ -32,64 +32,6 @@
 (require 'emtest/testhelp/tagnames/testhelp)
 ;;;_. Body
 
-;;;_  . Define example data
-;;This can't use tagnames because of bootstrap issues.
-;;;_   , emtg:thd:example-examples
-(defconst emtg:thd:example-examples
-   (list
-      ;;0 examples in (dummy-tag 0)
-
-      ;;1 example in (dummy-tag 1)
-      ;;Also tagged (a t)
-      (emtg:make-example
-	 :definer-id 'dummy-id
-	 :tagset    '((dummy-tag 1) (a t))
-	 :value      'tag-1-a)
-
-      ;;2 examples in (dummy-tag 2)
-      ;;Also tagged (a t) and (b t) (one each) 
-      (emtg:make-example
-	 :definer-id 'dummy-id
-	 :tagset    '((dummy-tag 2) (a t))
-	 :value      'tag-2-a)
-
-      (emtg:make-example
-	 :definer-id 'dummy-id
-	 :tagset    '((dummy-tag 2) (b t))
-	 :value      'tag-2-b))
-   
-   "Example of a list of examples in their full storage format" )
-
-;;;_   , emtg:thd:example-examples-2
-(defconst emtg:thd:example-examples-2
-   (cons
-      (emtg:make-example
-	 :definer-id 'dummy-id
-	 :tagset    '(c)
-	 :value      'c)
-      emtg:thd:example-examples)
-   "" )
-
-;;;_   , emtg:th:with-example-examples
-(defmacro emtg:th:with-example-examples (&rest body)
-   ""
-   ;;Values all name the example they occur in
-   `(let
-       ;;The larger tagset constrainer is empty.
-       (  (emtg:tagset ())
-	  (emtg:all-examples emtg:thd:example-examples))
-       ,@body))
-
-;;;_   , emtg:th:with-example-examples-2
-(defmacro emtg:th:with-example-examples-2 (&rest body)
-   ""
-   ;;Values all name the example they occur in
-   `(let
-       ;;The larger tagset constrainer is empty.
-       (  (emtg:tagset ())
-	  (emtg:all-examples emtg:thd:example-examples-2))
-       ,@body))
-
 ;;;_ , Tests of emtg:th:validate-helper-retval
 
 ;;;_  . Test data
