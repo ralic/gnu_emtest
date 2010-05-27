@@ -42,10 +42,10 @@
    (let* 
       (
 	 (suite-sym
-	    (emt:test-ID:e-n:suite-suite-ID test-id))
+	    (emthow:suite->suite-ID test-id))
 	 (path
 	    (list (symbol-name suite-sym))))
-      (emtt:destructure-suite-3 suite-sym
+      (emtd:destructure-suite-3 suite-sym
 	 (let
 	    (  
 	       (rv-list-to-run '()))
@@ -53,7 +53,7 @@
 	       (push  
 		  (emtt:make-explorable
 		     :how-to-run
-		     (make-emt:test-ID:e-n:indexed-clause
+		     (emthow:make-indexed-clause
 			:clause-index n
 			:suite-sym suite-sym)
 		     :prestn-path 
@@ -62,12 +62,12 @@
 			(list (format "Clause %d" n)))
 		     ;;Each clause has the properties of the suite
 		     ;;(and for now, only those).  `props' comes from
-		     ;;`emtt:destructure-suite-3', not from arglist.
+		     ;;`emtd:destructure-suite-3', not from arglist.
 		     :properties props)
 		  rv-list-to-run))
 	    (list
 	       (reverse rv-list-to-run)
-	       (make-emt:testral:suite
+	       (emt:testral:make-suite
 		  :contents 
 		  (emt:testral:make-runform-list
 		     :els (reverse rv-list-to-run))
@@ -80,7 +80,7 @@
 ;;;_ , Insinuate
 ;;Autoloads that put this on a list:
 
-'(#'emt:test-ID:e-n:suite-p #'emtt:explore-suite "suite")
+'(#'emthow:suite-p #'emtt:explore-suite "suite")
 
 
 ;;;_. Footers

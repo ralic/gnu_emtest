@@ -32,7 +32,7 @@
 (require 'emtest/runner/launch)  ;;launch is not actually used in here.
 (require 'emtest/runner/tester)
 (require 'emtest/testhelp/misc)
-(require 'emtest/testhelp/eg)
+(require 'emtest/testhelp/tagnames)
 (require 'emtest/common/result-types)
 
 ;;;_. Body
@@ -43,13 +43,13 @@
    "Run the test suite associated with SUITE-SYM.
 Results are passed to function CALLBACK."
    
-   (emt:test-finder:top
+   (emtt:test-finder:top
       ;;$$UPDATE ME - will need to change what it makes.  
 
-      ;;$$REFACTOR ME Would like to use `emtt:run-suite'.  Perhaps
-      ;;these can process arglist and then apply, and `emtt:run-suite'
+      ;;$$REFACTOR ME Would like to use `emtl:run-suite'.  Perhaps
+      ;;these can process arglist and then apply, and `emtl:run-suite'
       ;;etc can take all the args.
-      (make-emt:test-ID:e-n:suite
+      (emthow:make-suite
 	 :suite-ID suite-sym) 
       '()
       "0" 
@@ -68,8 +68,8 @@ followed by a form."
    ;;test-support for emt-define.
    (check-type test-form (list t t))
 
-   (emt:test-finder:top 
-      (make-emt:test-ID:e-n:form
+   (emtt:test-finder:top 
+      (emthow:make-form
 	 :test-form test-form)
       (or prefix (list "test-form"))
       (or testrun-id "0")

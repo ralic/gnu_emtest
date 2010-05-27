@@ -32,8 +32,8 @@
 
 ;;;_. Body
 
-;;;_   , emt/trail:build-code
-(emt:deftest-3 emt/trail:build-code
+;;;_   , emter:build-code
+(emt:deftest-3 emter:build-code
    (nil
       (progn
 	 (emt:doc "Situation: Consists of a single direct should-item.
@@ -42,11 +42,11 @@ Simplified: The arg to that is always t - can't fail.")
 	 (emt:doc "Operation: Eval the form.
 When that var is non-nil, form has no error.
 When that var is nil, form has error.")
-	 (emt/trail:build-code:thm2
+	 (emter:build-code:thm2
 	    (:inputs
 	       '((t . t))
 	       :bindings nil :precedence-pairs 'nil :sym code)
-	    (emt/trail:build-code:th:w-bindings-passes-p nil t code)
+	    (emter:build-code:th:w-bindings-passes-p nil t code)
 	    t)))
    (nil
       (progn
@@ -58,16 +58,16 @@ Simplified: The arg to that is a variable from outside.")
 	 (emt:doc "Sub-response: form passes (has no error)")
 	 (emt:doc "Sub-situation: that var is nil.")
 	 (emt:doc "Sub-response: form fails.")
-	 (emt/trail:build-code:thm2
+	 (emter:build-code:thm2
 	    (:inputs
 	       '((t . my-var))
 	       :bindings
 	       ((my-var t))
 	       :precedence-pairs 'nil :sym code)
-	    (emt/trail:build-code:th:w-bindings-passes-p
+	    (emter:build-code:th:w-bindings-passes-p
 	       '((my-var t))
 	       t code)
-	    (emt/trail:build-code:th:w-bindings-passes-p
+	    (emter:build-code:th:w-bindings-passes-p
 	       '((my-var nil))
 	       nil code)
 	    t)))
@@ -81,22 +81,22 @@ simple variables.")
 	 (emt:doc "Sub-response: Form passes.")
 	 (emt:doc "Sub-situation: Those variables are not equal.")
 	 (emt:doc "Sub-response: Form fails.")
-	 (emt/trail:build-code:thm2
+	 (emter:build-code:thm2
 	    (:inputs
 	       '((t equal var1 var2))
 	       :bindings
 	       ((var1 t)
 		  (var2 t))
 	       :precedence-pairs 'nil :sym code)
-	    (emt/trail:build-code:th:w-bindings-passes-p
+	    (emter:build-code:th:w-bindings-passes-p
 	       '((var1 t)
 		   (var2 t))
 	       t code)
-	    (emt/trail:build-code:th:w-bindings-passes-p
+	    (emter:build-code:th:w-bindings-passes-p
 	       '((var1 t)
 		   (var2 t))
 	       t code)
-	    (emt/trail:build-code:th:w-bindings-passes-p
+	    (emter:build-code:th:w-bindings-passes-p
 	       '((var1 13)
 		   (var2 14))
 	       nil code)
@@ -106,7 +106,7 @@ simple variables.")
 	 (emt:doc "Shows: Works in the presence of previous items")
 	 (emt:doc "Situation: An `equal' should and two dummy elements.")
 	 (emt:doc "Response: The sub-situations behave as expected.")
-	 (emt/trail:build-code:thm2
+	 (emter:build-code:thm2
 	    (:inputs
 	       '((nil . 100)
 		   (nil . 123)
@@ -115,15 +115,15 @@ simple variables.")
 	       ((var1 t)
 		  (var2 t))
 	       :precedence-pairs 'nil :sym code)
-	    (emt/trail:build-code:th:w-bindings-passes-p
+	    (emter:build-code:th:w-bindings-passes-p
 	       '((var1 t)
 		   (var2 t))
 	       t code)
-	    (emt/trail:build-code:th:w-bindings-passes-p
+	    (emter:build-code:th:w-bindings-passes-p
 	       '((var1 t)
 		   (var2 t))
 	       t code)
-	    (emt/trail:build-code:th:w-bindings-passes-p
+	    (emter:build-code:th:w-bindings-passes-p
 	       '((var1 13)
 		   (var2 14))
 	       nil code)
@@ -133,29 +133,29 @@ simple variables.")
 	 (emt:doc "Shows: Use of previous trail items.")
 	 (emt:doc "Situation: An `equal' fed from two items, which directly are variables")
 	 (emt:doc "Response: The sub-situations behave as expected.")
-	 (emt/trail:build-code:thm2
+	 (emter:build-code:thm2
 	    (:inputs
 	       '((nil . var1)
 		   (nil . var2)
 		   (t equal
-		      (emt/trail:value 0)
-		      (emt/trail:value 1)))
+		      (emter:value 0)
+		      (emter:value 1)))
 	       :bindings
 	       ((var1 t)
 		  (var2 t))
 	       :precedence-pairs
-	       '((2 1 emt/trail:value)
-		   (2 0 emt/trail:value))
+	       '((2 1 emter:value)
+		   (2 0 emter:value))
 	       :sym code)
-	    (emt/trail:build-code:th:w-bindings-passes-p
+	    (emter:build-code:th:w-bindings-passes-p
 	       '((var1 t)
 		   (var2 t))
 	       t code)
-	    (emt/trail:build-code:th:w-bindings-passes-p
+	    (emter:build-code:th:w-bindings-passes-p
 	       '((var1 t)
 		   (var2 t))
 	       t code)
-	    (emt/trail:build-code:th:w-bindings-passes-p
+	    (emter:build-code:th:w-bindings-passes-p
 	       '((var1 13)
 		   (var2 14))
 	       nil code)
@@ -165,31 +165,31 @@ simple variables.")
 	 (emt:doc "Shows: Can use chains of input:")
 	 (emt:doc "Situation: An `equal' fed from two items, which directly are variables")
 	 (emt:doc "Response: The sub-situations behave as expected.")
-	 (emt/trail:build-code:thm2
+	 (emter:build-code:thm2
 	    (:inputs
 	       '((nil . var1)
-		   (nil emt/trail:value 0)
+		   (nil emter:value 0)
 		   (nil . var2)
 		   (t equal
-		      (emt/trail:value 1)
-		      (emt/trail:value 2)))
+		      (emter:value 1)
+		      (emter:value 2)))
 	       :bindings
 	       ((var1 t)
 		  (var2 t))
 	       :precedence-pairs
-	       '((3 1 emt/trail:value)
-		   (3 2 emt/trail:value)
-		   (1 0 emt/trail:value))
+	       '((3 1 emter:value)
+		   (3 2 emter:value)
+		   (1 0 emter:value))
 	       :sym code)
-	    (emt/trail:build-code:th:w-bindings-passes-p
+	    (emter:build-code:th:w-bindings-passes-p
 	       '((var1 t)
 		   (var2 t))
 	       t code)
-	    (emt/trail:build-code:th:w-bindings-passes-p
+	    (emter:build-code:th:w-bindings-passes-p
 	       '((var1 t)
 		   (var2 t))
 	       t code)
-	    (emt/trail:build-code:th:w-bindings-passes-p
+	    (emter:build-code:th:w-bindings-passes-p
 	       '((var1 13)
 		   (var2 14))
 	       nil code)
@@ -200,35 +200,35 @@ simple variables.")
 	 (emt:doc "Situation: An `equal' fed from twice each from two items, which
 directly are variables.")
 	 (emt:doc "Response: The sub-situations behave as expected.")
-	 (emt/trail:build-code:thm2
+	 (emter:build-code:thm2
 	    (:inputs
 	       '((nil . var1)
 		   (nil . var2)
 		   (t equal
 		      (list
-			 (emt/trail:value 0)
-			 (emt/trail:value 0))
+			 (emter:value 0)
+			 (emter:value 0))
 		      (list
-			 (emt/trail:value 1)
-			 (emt/trail:value 1))))
+			 (emter:value 1)
+			 (emter:value 1))))
 	       :bindings
 	       ((var1 t)
 		  (var2 t))
 	       :precedence-pairs
-	       '((2 1 emt/trail:value)
-		   (2 1 emt/trail:value)
-		   (2 0 emt/trail:value)
-		   (2 0 emt/trail:value))
+	       '((2 1 emter:value)
+		   (2 1 emter:value)
+		   (2 0 emter:value)
+		   (2 0 emter:value))
 	       :sym code)
-	    (emt/trail:build-code:th:w-bindings-passes-p
+	    (emter:build-code:th:w-bindings-passes-p
 	       '((var1 t)
 		   (var2 t))
 	       t code)
-	    (emt/trail:build-code:th:w-bindings-passes-p
+	    (emter:build-code:th:w-bindings-passes-p
 	       '((var1 t)
 		   (var2 t))
 	       t code)
-	    (emt/trail:build-code:th:w-bindings-passes-p
+	    (emter:build-code:th:w-bindings-passes-p
 	       '((var1 13)
 		   (var2 14))
 	       nil code)

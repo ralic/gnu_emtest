@@ -51,7 +51,7 @@
 (defun emt:doc (str &rest r)
    ""
    (emt:testral:add-note
-      (make-emt:testral:doc :str str)))
+      (emt:testral:make-doc :str str)))
 
 ;;;_  . emt:stage
 ;;$$WRITE ME
@@ -66,13 +66,13 @@
 
 ;;Usage will be something like:
 '
-(emt:eg:narrow-f
+(emtg:narrow-f
    `(list (list ',tag ,name))
    `(emt:stage 
      ("Iteration" ;;Name
       ;;$$CHANGE ME This will become a parameter note
       (emt:testral:add-note
-       (make-emt:testral:doc 
+       (emt:testral:make-doc 
 	:str 
 	(concat 
 	 (prin1-to-string ',tag)
@@ -80,15 +80,14 @@
 	 (prin1-to-string ,name)))))
      ,@body))
 
-;;;_ , emtt:all
+;;;_ , emth:try-all
 ;;For now, it only watches for errors.  Doesn't try to logically
 ;;conjoin branches.
 ;;Early, I want it to map over the branches, so we can wrap map forms
 ;;in this.
-;;$$CHANGE ME - be a function; take lambdas, not forms.
 ;;$$TEST ME
-;;$$USE ME  In particular, emt:eg:map should use emtt:map&trap
-(defmacro emtt:all (&rest forms)
+;;$$USE ME  In particular, emtg:map should use emth:map&trap
+(defmacro emth:try-all (&rest forms)
    "Error if any branch errors, but try all branches"
    (let
       ((form (make-symbol "form")))
@@ -96,11 +95,13 @@
 	  ((emtt:*abort-p* nil))
 	  (declare (special emtt:*abort-p*))
 	  (dolist (,form ',forms)
-	     (emtt:trap-errors ,form))
+	     (emth:trap-errors ,form))
 	  (when emtt:*abort-p*
 	     (signal emt:already-handled ())))))
 
-(defun emtt:map&trap (func list)
+;;$$TEST ME
+;;$$USE ME  In particular, emtg:map should use emth:map&trap
+(defun emth:map&trap (func list)
    ""
    (declare (special emtt:*abort-p*))
    (let
@@ -108,20 +109,20 @@
 	 (results
 	    (mapcar
 	       #'(lambda (el)
-		    (emtt:trap-errors (funcall func el)))
+		    (emth:trap-errors (funcall func el)))
 	       list)))
       
       (if emtt:*abort-p*
 	 (signal emt:already-handled ())
 	 results)))
 
-;;Usage: On forms, just (emtt:map&trap #'eval form-list)
+;;Usage: On forms, just (emth:map&trap #'eval form-list)
 
 
 ;;;_ , "should"
-;;;_  . emt:wrap-form
-;; Obsolete
-(defun emt:wrap-form (form)
+;;;_  . emth:wrap-form
+;; OBSOLESCENT.  Only used in `emth:should-f;
+(defun emth:wrap-form (form)
    ""
 
    (if
@@ -131,9 +132,9 @@
       `(emt:funcall (function ,(car form)) ,@(cdr form))
       form))
 
-;;;_  . emt:should-f
+;;;_  . emth:should-f
 ;;Done in an obsolete way
-(defun emt:should-f (form)
+(defun emth:should-f (form)
    ""
    ;;$ADDME When `emt:testral:*parent-id*' etc are not bound, act like
    ;;plain `assert'.  Or possibly push results onto a ring that can be
@@ -143,9 +144,6 @@
 
    (let*
       (
-;; 	 (report 
-;; 	    (make-emt:result:event:grade
-;; 	       :form form))
 	 (parent-id emt:testral:*parent-id*)
 	 ;;Use a counter or a uuid.
 	 (id (incf emt:testral:*id-counter*))
@@ -156,7 +154,7 @@
 	 ;;see it
 	 (badnesses '()))
       (emt:testral:add-note
-	 (make-emt:testral:check:push
+	 (emt:testral:make-check:push
 	    :info (list (list 'form form))
 	    :parent-id parent-id
 	    :id id))
@@ -175,14 +173,9 @@
 	 (condition-case err
 	    (let*
 	       (  
-		  (form-x (emt:wrap-form form))
+		  (form-x (emth:wrap-form form))
 		  (retval
 		     (eval form-x)))
-	       
-	       ;;Obsolete
-;; 	       (setf (emt:result:event:grade-grade report) 
-;; 		  (if retval 'pass 'fail))
-	       ;;NEW
 	       (unless retval
 		  (push '(failed) badnesses))
 	       retval)
@@ -204,15 +197,9 @@
 	       (pushnew '(ungraded) badnesses)
 	       (signal (car err)(cdr err))))
 
-;; 	 (if
-;; 	    (boundp 'emt:trace:current-event-list)
-;; 	    (push report emt:trace:current-event-list)
-;; 	    ;;$$Want an error specific to emtest
-;; 	    (signal 'error report))
-
 	 ;;This is now the meat of the operation.
 	 (emt:testral:add-note
-	    (make-emt:testral:check:pop
+	    (emt:testral:make-check:pop
 	       :parent-id parent-id
 	       :id id
 	       ;;Punt
@@ -220,17 +207,17 @@
 
 
 ;;;_  . should
-;;Done in an obsolete way
+;;Essentially unused except a bit of exploration in early development.
 ;;;###autoload
 (defmacro* should (form &key doc)
    ""
 
-   `(emt:should-f ',form))
+   `(emth:should-f ',form))
 
 
 ;;;_   , Test helper
 
-(defmacro* emt:should:th 
+(defmacro* emth:should:th 
    ((&key 
        initial-stored 
        (report-control emt:report-control:thd:report-all))

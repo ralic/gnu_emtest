@@ -1,4 +1,4 @@
-;;;_ emtest/testhelp/eg/testhelp.el --- Testhelp for eg
+;;;_ emtest/testhelp/tagnames/testhelp.el --- Testhelp for tagnames
 
 ;;;_. Headers
 ;;;_ , License
@@ -28,34 +28,34 @@
 
 
 ;;;_ , Requires
-(require 'emtest/testhelp/eg)
+(require 'emtest/testhelp/tagnames)
 ;;;_. Body
 
-;;;_  .  Test helper emt:eg:th:validate-helper-retval
+;;;_  .  Test helper emtg:th:validate-helper-retval
 ;;$$Could just use deep-type-check
-(defun emt:eg:th:validate-helper-retval (retval)
+(defun emtg:th:validate-helper-retval (retval)
    "Validate a helpers' return value as the right type"
    (and
-      (emt:eg:helper-rettype.-p retval)
+      (emtg:helper-rettype-p retval)
       (let
-	 ((value-info (emt:eg:helper-rettype.-value-info retval)))
+	 ((value-info (emtg:helper-rettype->value-info retval)))
 	 (and
 	    (listp value-info)
 	    (every
-	       #'emt:eg:valuedef-type.-p
+	       #'emtg:valuedef-type-p
 	       value-info)))))
 
 ;;;_  . Handle adding definitions
 
 ;;;_   , Test helper
 ;;$$CHANGING  The new design barely needs this.
-(defmacro* emt:eg:define:th:with-empty-tagset
+(defmacro* emtg:define:th:with-empty-tagset
    ((&key examples) &rest body)
    ""
    
    `(let
-       (  (emt:eg:all-examples        ,(or examples ()))
-	  (emt:eg:*all-prpty-makers*     ()))
+       (  (emtg:all-examples        ,(or examples ()))
+	  (emtg:*all-prpty-makers*     ()))
        ,@body))
 
 
@@ -63,7 +63,7 @@
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'emtest/testhelp/eg/testhelp)
+(provide 'emtest/testhelp/tagnames/testhelp)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -71,4 +71,4 @@
 ;;;_  + End:
 
 ;;;_ , End
-;;; emtest/testhelp/eg/testhelp.el ends here
+;;; emtest/testhelp/tagnames/testhelp.el ends here

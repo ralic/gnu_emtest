@@ -32,20 +32,22 @@
 (eval-when-compile
    (require 'cl))
 ;;;_. Body
-;;;_ , emtvr:suite-newstyle-id
+;;;_ , emtvr:suite-newstyle->id
 
-(deftype emtvr:suite-newstyle-id ()
+(deftype emtvr:suite-newstyle->id ()
    "Can be a UUID string or a how-to-run object"
-   '(or string emt:test-ID:e-n))
+   '(or string emthow))
 
 ;;;_ , emtvr:suite-newstyle
 
 ;;This is cted by receive.
 ;;Note that changes will affect basically just `emtvr:one-newstyle'.
 
-(defstruct emtvr:suite-newstyle
+(defstruct (emtvr:suite-newstyle
+	    (:constructor emtvr:make-suite-newstyle)
+	    (:conc-name emtvr:suite-newstyle->))
    "Report element in receive tree"
-   (id () :type emtvr:suite-newstyle-id
+   (id () :type emtvr:suite-newstyle->id
       :doc "The \"official\" id.")
 
    (how-to-run ():type emtt:explorable
@@ -72,7 +74,9 @@
 ;;;_  . Base 
 
 ;;Emviewer uses this as the content element in pathtree nodes.
-(defstruct emt:view:presentable
+(defstruct (emt:view:presentable
+	    (:constructor emt:view:make-presentable)
+	    (:conc-name emt:view:presentable->))
    ""
    ;;Summarized badnesses from all subtrees.  They are summarized
    ;;treewise, including any badnesses from this node.
@@ -82,7 +86,9 @@
 
 
 ;;;_  . Suite in tree (as by emviewer)
-(defstruct (emt:view:suite-newstyle 
+(defstruct (emt:view:suite-newstyle
+	    (:constructor emt:view:make-suite-newstyle)
+	    (:conc-name emt:view:suite-newstyle->)
 	      (:include emt:view:presentable))
    ""
    ;;Just for suite nodes.
@@ -90,6 +96,8 @@
 
 ;;;_  . TESTRAL finished
 (defstruct (emt:view:TESTRAL
+	    (:constructor emt:view:make-TESTRAL)
+	    (:conc-name emt:view:TESTRAL->)
 	      (:include emt:view:presentable))
    ""
 
@@ -101,6 +109,8 @@
 
 ;;;_  . TESTRAL unexpanded leaf
 (defstruct (emt:view:TESTRAL-unexpanded
+	    (:constructor emt:view:make-TESTRAL-unexpanded)
+	    (:conc-name emt:view:TESTRAL-unexpanded->)
 	      (:include emt:view:presentable))
    ""
    ;;The list of applicable nodes (generally in another list)

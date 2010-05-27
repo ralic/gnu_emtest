@@ -35,7 +35,10 @@
 ;;;_. Body
 ;;;_ , Receive reports alist
 ;;;_  . Structure holding parameters for alist receive
-(defstruct emtvr:data
+(defstruct (emtvr:data
+	    (:constructor emtvr:make-data)
+	    (:conc-name emtvr:data->)
+	    (:copier nil))
    ""
    alist
    tree-insert-cb
@@ -46,7 +49,7 @@
 (defun emtvr:make-empty-alist (insert remove)
    ""
    
-   (make-emtvr:data
+   (emtvr:make-data
       :alist '()
       :tree-insert-cb insert
       :tree-remove-cb remove))
@@ -59,14 +62,14 @@
    (check-type report emt:testral:report)
    (let
       (  (testrun-id 
-	    (emt:testral:report-testrun-id report))
+	    (emt:testral:report->testrun-id report))
 	 (prefix 
 	    (append
-	       (list (emt:testral:report-tester-id report))
-	       (emt:testral:report-test-id-prefix report))))
+	       (list (emt:testral:report->tester-id report))
+	       (emt:testral:report->test-id-prefix report))))
       
       ;;For each suite in the report, 
-      (dolist (entry (emt:testral:report-suites report))
+      (dolist (entry (emt:testral:report->suites report))
 	 (emtvr:one-newstyle receiver entry testrun-id prefix))))
 
 ;;;_  . emtvr:test-gone-p
@@ -78,7 +81,7 @@
       (find
 	 '(bad-before-test not-found)
 	 ;;Can also be test-runner
-	 (emt:testral:suite-badnesses suite)
+	 (emt:testral:suite->badnesses suite)
 	 :test #'equal)))
 
 ;;;_  . emtvr:one-newstyle
@@ -108,44 +111,44 @@
 	    (emtvr:test-gone-p suite)
 	    (progn
 	       (setf
-		  (emtvr:data-alist receiver)
-		  (delete* key (emtvr:data-alist receiver)
+		  (emtvr:data->alist receiver)
+		  (delete* key (emtvr:data->alist receiver)
 		     :test #'equal
-		     :key #'emtvr:suite-newstyle-id))
+		     :key #'emtvr:suite-newstyle->id))
 	       (funcall 
-		  (emtvr:data-tree-remove-cb receiver)
+		  (emtvr:data->tree-remove-cb receiver)
 		  presentation-path))
 	    
 	    ;;The normal case:
 	    (let
 	       ((old-cell
-		   (find key (emtvr:data-alist receiver)
-		      :key #'emtvr:suite-newstyle-id)))
+		   (find key (emtvr:data->alist receiver)
+		      :key #'emtvr:suite-newstyle->id)))
 	       (if old-cell
 		  ;;Cell is already present.  Alter it.  Still replace
 		  ;;the node in the pathtree.
 		  (progn
 		     (setf
-			(emtvr:suite-newstyle-testrun-id old-cell)
+			(emtvr:suite-newstyle->testrun-id old-cell)
 			testrun-id
-			(emtvr:suite-newstyle-result old-cell)
+			(emtvr:suite-newstyle->result old-cell)
 			suite)
 		     (funcall 
-			(emtvr:data-tree-insert-cb receiver)
+			(emtvr:data->tree-insert-cb receiver)
 			presentation-path old-cell))
 	    
 		  ;;It's not present in alist.  Insert it.
 		  (let 
 		     ((cell
-			 (make-emtvr:suite-newstyle
+			 (emtvr:make-suite-newstyle
 			    :id                key
 			    :how-to-run        how-to-run
 			    :presentation-path presentation-path
 			    :testrun-id        testrun-id
 			    :result            suite)))
-		     (push cell (emtvr:data-alist receiver))
+		     (push cell (emtvr:data->alist receiver))
 		     (funcall 
-			(emtvr:data-tree-insert-cb receiver)
+			(emtvr:data->tree-insert-cb receiver)
 			presentation-path cell))))))))
 
 ;;;_. Footers

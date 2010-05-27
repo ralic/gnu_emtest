@@ -60,7 +60,7 @@
 ;;library requires.  Gotta control execution, though.  Don't want to
 ;;run them too eagerly.  So this would have to return more than just a
 ;;symbol for each.  In fact, it could become the workhorse for the
-;;`emt:test-ID:e-n:library:elisp-load' case
+;;`emthow:library:elisp-load' case
 (defun emtt:lib-sym->suites (lib-sym)
    ""
    (let*
@@ -89,7 +89,7 @@
    (let* 
       (  
 	 (lib-sym
-	    (emt:test-ID:e-n:library:elisp-load-load-name test-id))
+	    (emthow:library:elisp-load->load-name test-id))
 	 ;;See [[id:li6i8qd0xxe0][Refactoring dispatchers]]
 	 (suite-list
 	    (emtt:lib-sym->suites lib-sym))
@@ -100,7 +100,7 @@
 	       #'(lambda (suite-sym)
 		    (emtt:make-explorable
 		       :how-to-run
-		       (make-emt:test-ID:e-n:suite
+		       (emthow:make-suite
 			  :suite-ID suite-sym)
 		       ;;CHANGED to append lib name.
 		       :prestn-path 
@@ -113,7 +113,7 @@
 	       suite-list)))
       (list
 	 nil
-	 (make-emt:testral:suite
+	 (emt:testral:make-suite
 	    :contents
 	    (emt:testral:make-runform-list
 	       :els list-to-run)

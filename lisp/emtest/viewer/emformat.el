@@ -85,14 +85,14 @@ DATA-LIST must be a list of alists."
 	 (emt:view:suite-newstyle
 	    (let*
 	       (
-		  (cell (emt:view:suite-newstyle-cell suite))
+		  (cell (emt:view:suite-newstyle->cell suite))
 		  (object
-		     (emtvr:suite-newstyle-result cell)))
+		     (emtvr:suite-newstyle->result cell)))
 	       (append
 		  (emtvf:headline-w-badnesses 
 		     (1+ depth)
 		     name
-		     (emt:view:presentable-sum-badnesses suite)
+		     (emt:view:presentable->sum-badnesses suite)
 		     data-list)
 		  (etypecase object
 		     (emt:testral:test-runner-info
@@ -114,7 +114,7 @@ DATA-LIST must be a list of alists."
 			   (list
 			      "Results for " name "\n")
 
-			   ;;(emtvr:suite-newstyle-how-to-run cell)
+			   ;;(emtvr:suite-newstyle->how-to-run cell)
 			   ;;`how-to-run' informs a button.
 			   ;;NB, this will now be a `emtt:explorable'
 			   ;;or even a `emtt:method', not an :e-n as
@@ -124,7 +124,7 @@ DATA-LIST must be a list of alists."
 			   ;;canonical fields yet.
 			   ;;Use `emtvf:info'
 
-			   (etypecase (emt:testral:suite-contents object)
+			   (etypecase (emt:testral:suite->contents object)
 			      (emt:testral:runform-list
 				 (hiformat:map 
 				    ;;Formatting for each child
@@ -141,8 +141,8 @@ DATA-LIST must be a list of alists."
 			      (emt:testral:note-list
 				 (hiformat:map
 				    #'emtvf:TESTRAL
-				    (emt:testral:note-list-notes
-				       (emt:testral:suite-contents object))
+				    (emt:testral:note-list->notes
+				       (emt:testral:suite->contents object))
 				    :data-loal data-list
 				    :separator '("\n")
 				    :els=0 '("No notes")))
@@ -177,7 +177,7 @@ DATA-LIST must be a list of alists."
 		     (emtvf:headline-w-badnesses 
 			(1+ depth)
 			name
-			(emt:view:presentable-sum-badnesses suite)
+			(emt:view:presentable->sum-badnesses suite)
 			data-list)
 
 		     "\n"
@@ -212,11 +212,11 @@ DATA-LIST must be a list of alists."
 		  `((nl-if-none)
 		      "Error raised: "
 		      ,(prin1-to-string
-			 (emt:testral:error-raised-err obj))
+			 (emt:testral:error-raised->err obj))
 		      "\n"))
 	       (emt:testral:doc
 		  `((nl-if-none)
-		      ,(emt:testral:doc-str obj)
+		      ,(emt:testral:doc->str obj)
 		      "\n"))
 	       (t '((nl-if-none )
 		      "A TESTRAL note (alone)"

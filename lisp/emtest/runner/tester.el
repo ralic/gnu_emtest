@@ -48,7 +48,9 @@
 ;;;_ , Info available to tests (Not used yet)
 ;;;_  . Type `emtt:top-data'
 ;;$$USE ME
-(defstruct emtt:top-data
+(defstruct (emtt:top-data
+	    (:constructor emtt:make-top-data)
+	    (:conc-name emtt:top-data->))
    ""
    (report-func () :type (satisfies #'functionp)))
 
@@ -75,10 +77,10 @@ Each one must be a `emtt:explorable'" )
 ;;;_  . emtt:explore-one
 (defun emtt:explore-one (next func)
    ""
-   ;;(check-type test-id emt:test-ID:e-n)
+   ;;(check-type test-id emthow)
    (let*
       (
-	 (test-id ;;Type `emt:test-ID:e-n'
+	 (test-id ;;Type `emthow'
 	    (emtt:explorable->how-to-run next))
 	 (props
 	    (emtt:explorable->properties next))
@@ -86,25 +88,25 @@ Each one must be a `emtt:explorable'" )
 	    (emtp tp:a084136e-8f02-49a5-ac0d-9f65509cedf2
 	       (test-id)
 	       (typecase test-id
-		  (emt:test-ID:e-n:form
+		  (emthow:form
 		     (emtt:explore-literal-clause
 			test-id props))
 
-		  (emt:test-ID:e-n:indexed-clause
+		  (emthow:indexed-clause
 		     (emtt:explore-indexed-clause
 			test-id props))
 		  
-		  (emt:test-ID:e-n:suite
+		  (emthow:suite
 		     (emtt:explore-suite test-id props))
 		  
-		  (emt:test-ID:e-n:library:elisp-load
+		  (emthow:library:elisp-load
 		     (emtt:explore-library test-id props))
 		  
 		  ;;Tell receiver about this tester
-		  (emt:test-ID:e-n:hello
+		  (emthow:hello
 		     (list
 			nil
-			(make-emt:testral:test-runner-info
+			(emt:testral:make-test-runner-info
 			   :name "Emtest"
 			   ;;:version "4.2"
 			   ;;$$COLLECT ME from the explorers.  This
@@ -120,12 +122,12 @@ Each one must be a `emtt:explorable'" )
 		     ;;such method.
 		     (list
 			nil
-			(make-emt:testral:suite
+			(emt:testral:make-suite
 			   :contents 
-			   (make-emt:testral:note-list
+			   (emt:testral:make-note-list
 			      :notes 
 			      (list
-				 (make-emt:testral:error-raised
+				 (emt:testral:make-error-raised
 				    :err 
 				    '(error 
 					"Unrecognized internal explore type")
@@ -148,7 +150,7 @@ Each one must be a `emtt:explorable'" )
 	    emt:test-finder:pending-list))
 
       (funcall func
-	 (make-emt:testral:report
+	 (emt:testral:make-report
 	    :testrun-id "0" ;;Punt
 	    :tester-id "0"  ;;Punt
 	    :test-id-prefix '()	    ;;Not used by this tester
@@ -160,11 +162,11 @@ Each one must be a `emtt:explorable'" )
 		  (second one-report)))))))
 
 
-;;;_  . emt:test-finder:top
+;;;_  . emtt:test-finder:top
 
 ;;$$RECONSIDER MY INTERFACE what-to-run may become an
 ;;`emtt:explorable' and be pushed as itself.  Callers must take notice.
-(defun emt:test-finder:top (what-to-run path-prefix testrun-id report-cb)
+(defun emtt:test-finder:top (what-to-run path-prefix testrun-id report-cb)
    ""
    
    (let
@@ -186,7 +188,7 @@ Each one must be a `emtt:explorable'" )
 	    (emtt:explore-one next report-cb)))
 
       (funcall report-cb
-	 (make-emt:testral:report
+	 (emt:testral:make-report
 	    :run-done-p t
 	    :testrun-id "0" ;;Punt
 	    :tester-id "0"  ;;Punt

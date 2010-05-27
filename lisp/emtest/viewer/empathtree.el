@@ -71,13 +71,14 @@
       ;;throw out when `end' is seen.
       (emtvr:combine-badnesses
 	 (mapcar
-	    #'emt:testral:base-badnesses
-	    ;;Was `emt:view:suite-newstyle-start'.
-	    (emt:view:TESTRAL-unexpanded-start data)))))
+	    #'emt:testral:base->badnesses
+	    ;;Was `emt:view:suite-newstyle->start'.
+	    (emt:view:TESTRAL-unexpanded->start data)))))
 ;;;_  . emtvr:sum-node-badnesses
-;;Rename `emtvr:sum-viewnode-badnesses'
+;;$$RENAME `emtvr:sum-viewnode-badnesses'
 ;;Design: Maybe split into accessor and summer.  Accessor should be
-;;conformer: It will set its own node right after children are all made right.
+;;conformer: It will set its own node right after children are all
+;;made right.
 
 ;;Node data is covariant with this.
 (defun emtvr:sum-node-badnesses (node)
@@ -91,7 +92,7 @@
 	 (input-badnesses
 	    (mapcar
 	       #'(lambda (child)
-		    (emt:view:presentable-sum-badnesses
+		    (emt:view:presentable->sum-badnesses
 		       (emtvp-node-data child)))
 	       (emtvp-node-children node)))
 	 ;;Gives a list of badnesses.
@@ -103,12 +104,12 @@
 		  (emt:view:suite-newstyle
 		     (let
 			((s
-			    (emtvr:suite-newstyle-result
-			       (emt:view:suite-newstyle-cell data))))
+			    (emtvr:suite-newstyle->result
+			       (emt:view:suite-newstyle->cell data))))
 			(etypecase s 
 			   (null) 
 			   (emt:testral:suite
-			      (emt:testral:suite-badnesses s))
+			      (emt:testral:suite->badnesses s))
 			   (emt:testral:test-runner-info
 			      '()))))
 		  (emt:view:TESTRAL '())
@@ -121,7 +122,7 @@
 		  own-badnesses
 		  input-badnesses))))
       (setf
-	 (emt:view:presentable-sum-badnesses data)
+	 (emt:view:presentable->sum-badnesses data)
 	 sum-badnesses)
       sum-badnesses))
 

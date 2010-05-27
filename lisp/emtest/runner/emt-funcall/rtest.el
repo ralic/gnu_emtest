@@ -33,7 +33,7 @@
 
 ;;;_  . Tests
 (put 'emt:trace:protect 'rtest:test-thru
-   'emt:should-f)
+   'emth:should-f)
 ;;;_  . Tests
 (rtest:deftest emt:trace:add-to-stored-diag
 

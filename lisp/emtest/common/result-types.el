@@ -33,6 +33,7 @@
 (require 'emtest/common/testral-types)
 ;;;_. Body
 ;;;_ , Root
+;;$$OBSOLESCENT
 (defstruct emt:result-base
    "The base class of test results"
    ;;No fields.
@@ -42,9 +43,11 @@
 
 ;;;_   , Placeholder types
 ;;;_    . Placeholder of a set of versions
-
-(defstruct emt:db:id-index.
-   "Archive placeholder object"		;
+;;$$MOVE ME Only persist functionality needs to see these types.
+(defstruct (emt:db:id-index
+	    (:constructor emt:db:make-id-index)
+	    (:conc-name emt:db:id-index->))
+   "Archive placeholder object"
    ;;Not neccessarily a simple type.
    id
    ;;Backend info - a list, first arg selects db functionality, other
@@ -53,9 +56,11 @@
    cache  ;;Unused for now.
    )
 ;;;_    . placeholder of a version
-(defstruct emt:db:version-index.
+(defstruct (emt:db:version-index
+	    (:constructor emt:db:make-version-index)
+	    (:conc-name emt:db:version-index->))
    "Version placeholder object"
-   (id-index () :type emt:db:id-index.)
+   (id-index () :type emt:db:id-index)
    ;;The version of the object provided, as understood by the backend.
    ;;Will eventually be used for versioning.
    version-id
@@ -67,8 +72,9 @@
 
 ;;;_   , Database types are with the implementation code
 
-;;;_  . (RETHUNK) Group
-
+;;;_  . ($$OBSOLESCENT) Group
+;;$$OBSOLESCENT
+;;This and deriveds are still in use in the examples.
 (defstruct (emt:result-group (:include emt:result-base))
    ""
    (grouping nil :type emt:test-ID)
@@ -209,8 +215,10 @@
    (events nil :type emt:result:event:group))
 
 
-;;;_  . (RETHUNK) Test event
+;;;_  . ($$OBSOLESCENT) Test event
 
+;;$$OBSOLESCENT Still used in some places (testhelp, old tests of
+;;should, plain-viewer)
 (defstruct (emt:result:event (:include emt:result-base))
    ""
    id ;;ID type is undecided.
@@ -270,8 +278,8 @@
    (info-about () :type (repeat emt:result:info-about))
    (diagnostic-info () :type (repeat emt:result:diag:bool)))
 
-;;;_  . Info-about (NO, these should be list objects)
-
+;;;_  . Info-about ($$OBSOLETE, these should be list objects)
+;;$$OBSOLESCENT - used in testhelp examples and in plain-viewer
 (defstruct emt:result:info-about
    ""
    )
@@ -364,18 +372,19 @@ especially in configuration testing for new installations"
 (defstruct (emt:result:info-about:tried-persist 
 	      (:include emt:result:info-about))
    ""
-   (placeholder () :type emt:db:version-index.)
+   (placeholder () :type emt:db:version-index)
    (unique () :type (member t none-found too-many-found))
    (placeholder-ix () :type integer))  ;;0-based
 
 
-;;;_  . (REORGANIZE ME) Test ID
+;;;_  . Test ID
+;;;_   , Original type ($$OBSOLETE)
 (defstruct emt:test-ID
    ""
    (context () :type (repeat (list emt:test-ID:context:key *)))
-   (explore-next () :type emt:test-ID:e-n))
+   (explore-next () :type emthow))
 
-;;;_   , Context (OBSOLETE)
+;;;_   , Context ($$OBSOLETE)
 
 ;;Keys include testrun-ID, tester-ID, and user extensions.  For Elisp,
 ;;Symbol as Suite-ID.
@@ -389,114 +398,154 @@ especially in configuration testing for new installations"
        ;;'(satisfies)
        ))
 
-;;;_    . Suite-ID (OBSOLETE)
-;;A symbol
-;;;_    . clause-ID (OBSOLETE)
-;;To be determined, see "design.org" for some possibilities.
 
-;;;_   , Explore-next (NOT obsolete)
-;;Most of this could be moved into runner/ directory.  
-;;;_    . Base
-(defstruct emt:test-ID:e-n
+;;;_ , emthow
+;;Most of this could be moved into runner/explorers/ directory.  
+;;;_  . Base
+(defstruct (emthow
+	    (:constructor emthow:make)
+	    (:conc-name emthow->))
    ""
    ;;Abstract.
    )
-;;;_    . emt:test-ID:e-n:hello
-(defstruct (emt:test-ID:e-n:hello (:include emt:test-ID:e-n))
+;;;_  . emthow:hello
+(defstruct (emthow:hello
+	    (:constructor emthow:make-hello)
+	    (:conc-name emthow:hello->)
+	    (:include emthow))
    "")
 
-;;;_    . emt:test-ID:e-n:invalid
-(defstruct (emt:test-ID:e-n:invalid (:include emt:test-ID:e-n))
+;;;_  . emthow:invalid
+(defstruct (emthow:invalid
+	    (:constructor emthow:make-invalid)
+	    (:conc-name emthow:invalid->)
+	    (:include emthow))
    "")
 
-;;;_    . emt:test-ID:e-n:suite
-(defstruct (emt:test-ID:e-n:suite (:include emt:test-ID:e-n))
+;;;_  . emthow:suite
+(defstruct (emthow:suite
+	    (:constructor emthow:make-suite)
+	    (:conc-name emthow:suite->)
+	    (:include emthow))
    ""
    ;;Type not expressed.  Co-varies with tester.
    ;;$$This is NOT emt:testral:suite-id, which is just a name.
    suite-ID)
 
-;;;_    . emt:test-ID:e-n:form
-(defstruct (emt:test-ID:e-n:form (:include emt:test-ID:e-n))
+;;;_  . emthow:form
+(defstruct (emthow:form
+	    (:constructor emthow:make-form)
+	    (:conc-name emthow:form->)
+	    (:include emthow))
    ""
    ;;A test form.
    test-form
    )
-;;;_    . emt:test-ID:e-n:indexed-clause
+;;;_  . emthow:indexed-clause
 ;;Formerly was called `*:unique-clause'
-(defstruct (emt:test-ID:e-n:indexed-clause (:include emt:test-ID:e-n))
+(defstruct (emthow:indexed-clause
+	    (:constructor emthow:make-indexed-clause)
+	    (:conc-name emthow:indexed-clause->)
+	    (:include emthow))
    ""
    (suite-sym () :type symbol)
    ;;Formerly index was considered part of context.
    (clause-index 0 :type integer))
 
 
-;;;_    . emt:test-ID:e-n:library
-(defstruct (emt:test-ID:e-n:library (:include emt:test-ID:e-n))
+;;;_  . emthow:library
+(defstruct (emthow:library
+	    (:constructor emthow:make-library)
+	    (:conc-name emthow:library->)
+	    (:include emthow))
    ""
    ;;Abstract.
    )
 ;;Not settled yet
-(defstruct (emt:test-ID:e-n:library:elisp-load 
-	      (:include emt:test-ID:e-n:library))
-   ""
-   load-name
-   )
-(defstruct (emt:test-ID:e-n:library:elisp-file 
-	      (:include emt:test-ID:e-n:library))
-   ""
-   file-name
-   )
+(defstruct (emthow:library:elisp-load
+	    (:constructor emthow:make-library:elisp-load)
+	    (:conc-name emthow:library:elisp-load->)
+	    (:include emthow:library))
+  ""
+  load-name
+  )
+(defstruct (emthow:library:elisp-file
+	    (:constructor emthow:make-library:elisp-file)
+	    (:conc-name emthow:library:elisp-file->)
+	    (:include emthow:library))
+  ""
+  file-name
+  )
 
-;;;_    . emt:test-ID:e-n:project
+;;;_  . emthow:project
 ;;Not settled yet
-(defstruct (emt:test-ID:e-n:project (:include emt:test-ID:e-n))
-   ""
-   name
-   )
+(defstruct (emthow:project
+	    (:constructor emthow:make-project)
+	    (:conc-name emthow:project->)
+	    (:include emthow))
+  ""
+  name
+  )
 
-;;;_    . emt:test-ID:e-n:all-projects
-(defstruct (emt:test-ID:e-n:all-projects (:include emt:test-ID:e-n))
+;;;_  . emthow:all-projects
+(defstruct (emthow:all-projects
+	    (:constructor emthow:make-all-projects)
+	    (:conc-name emthow:all-projects->)
+	    (:include emthow))
    ""
    ;;No fields
    )
 
-;;;_    . emt:test-ID:e-n:all-libraries
-(defstruct (emt:test-ID:e-n:all-libraries (:include emt:test-ID:e-n))
+;;;_  . emthow:all-libraries
+(defstruct (emthow:all-libraries
+	    (:constructor emthow:make-all-libraries)
+	    (:conc-name emthow:all-libraries->)
+	    (:include emthow))
    ""
    ;;No fields
    )
 
-;;;_    . emt:test-ID:e-n:all-testers
-(defstruct (emt:test-ID:e-n:all-testers (:include emt:test-ID:e-n))
+;;;_  . emthow:all-testers
+(defstruct (emthow:all-testers
+	    (:constructor emthow:make-all-testers)
+	    (:conc-name emthow:all-testers->)
+	    (:include emthow))
    ""
    )
 
-;;;_    . emt:test-ID:e-n:from-t-dir
-(defstruct (emt:test-ID:e-n:from-t-dir (:include emt:test-ID:e-n))
+;;;_  . emthow:from-t-dir
+(defstruct (emthow:from-t-dir
+	    (:constructor emthow:make-from-t-dir)
+	    (:conc-name emthow:from-t-dir->)
+	    (:include emthow))
    ""
    (dir-name () :type string))
 
 
-;;;_    . emt:test-ID:e-n:from-dir
-(defstruct (emt:test-ID:e-n:from-dir (:include emt:test-ID:e-n))
+;;;_  . emthow:from-dir
+(defstruct (emthow:from-dir
+	    (:constructor emthow:make-from-dir)
+	    (:conc-name emthow:from-dir->)
+	    (:include emthow))
    ""
    (dir-name () :type string))
-;;;_    . emt:test-ID:e-n:dynamic
-(defstruct (emt:test-ID:e-n:dynamic 
-	      (:include emt:test-ID:e-n))
+;;;_  . emthow:dynamic
+(defstruct (emthow:dynamic
+	    (:constructor emthow:make-dynamic)
+	    (:conc-name emthow:dynamic->)
+	      (:include emthow))
    "Special method to make explorables at runtime."
    name
    params)
 
 
-;;;_   , emtt:explorable (Full runnable)
+;;;_  . emtt:explorable (Full runnable)
 (defstruct (emtt:explorable
 	      (:conc-name emtt:explorable->)
 	      (:constructor emtt:make-explorable))
    "All the information needed to specify how to run a test or suite/"
    (how-to-run () 
-      :type emt:test-ID:e-n
+      :type emthow
       :doc "What to launch for this exploration.")
    
    (prestn-path () 
@@ -508,37 +557,25 @@ especially in configuration testing for new installations"
       :doc "The properties that this explorable has when it's run")
    ;;Aliases might also allow a string as UUID
    (aliases () 
-      :type (repeat emt:test-ID:e-n) 
+      :type (repeat emthow) 
       :doc "A possibly empty list of other IDs that would launch the
       same thing")) 
 
-;;;_   , emtt:dynamic-method
-(defstruct emtt:dynamic-method
+;;;_  . emtt:dynamic-method
+;;$$USE ME
+(defstruct (emtt:dynamic-method
+	    (:constructor emtt:make-dynamic-method)
+	    (:conc-name emtt:dynamic-method->))
    "A dynamic exploration method."
    name
    keys)
 
-;;;_   , emtt:method (Union of those types)
+;;;_  . emtt:method (Union of those types)
+;;$$USE ME
 (deftype emtt:method ()
-   ", for test-runner-info"
+   "A static or dynamic exploration method, for test-runner-info"
    '(or emtt:dynamic-method emtt:explorable))
 
-
-;;;_  . emt:test-info (OBSOLETE)
-;;Doesn't seem to be used anywhere.  
-'
-(defstruct emt:test-info
-   ""
-   test-ID
-   control
-   )
-
-;;;_  . unmet-dependency
-;;Unsettled
-(defstruct emt:result-what-dependency
-   ""
-   ;;Abstract.  No fields
-   )
 
 ;;;_  . diagnostic-info (OBSOLETE in favor of TESTRAL)
 
@@ -546,6 +583,7 @@ especially in configuration testing for new installations"
 ;;;_    . emt:result:diag:bool
 ;;This class is abstract.  If it is ever tried to be used, make a new
 ;;class for it using this as a base.
+'
 (defstruct emt:result:diag:bool
    "Base class for boolean-value things in diagnostic traces"
 
@@ -554,13 +592,14 @@ especially in configuration testing for new installations"
 
 
 ;;;_    . emt:result:diag:error
+'
 (defstruct (emt:result:diag:error (:include emt:result:diag:bool))
    ""
    error)
 
 
 ;;;_    . emt:result:diag:call
-
+'
 (defstruct (emt:result:diag:call (:include emt:result:diag:bool))
    ""
    call-sexp
@@ -569,7 +608,7 @@ especially in configuration testing for new installations"
 
 
 ;;;_    . emt:result:diag:logic
-
+'
 (defstruct (emt:result:diag:logic (:include emt:result:diag:bool))
    "Used to trace `and', `or', `not', etc."
    (functor nil :type symbol)
@@ -577,24 +616,27 @@ especially in configuration testing for new installations"
 
 ;;;_   , Try-types
 ;;;_    . Base type emt:result:diag:tried.
+'
 (defstruct emt:result:diag:tried.
    "Tried to use something as substitute argument"
    ;;0-based
    (arg-ix () :type integer))
 
 ;;;_    . emt:result:diag:tried-persist-archive.
+'
 (defstruct (emt:result:diag:tried-persist-archive.
 	      (:include emt:result:diag:tried.))
    "Tried to use a persist archive as substitute argument"
-   (placeholder () :type emt:db:id-index.)
+   (placeholder () :type emt:db:id-index)
    (use-category () :type emt:persist:use-category)
    (reason () :type (member t too-many-found none-found)))
 
 ;;;_    . emt:result:diag:tried-persist-version.
+'
 (defstruct (emt:result:diag:tried-persist-version.
 	      (:include emt:result:diag:tried.))
    "Tried to use a persist version as substitute argument"
-   (placeholder () :type emt:db:version-index.)
+   (placeholder () :type emt:db:version-index)
    ;;Don't really need this because placeholder provides it.
    ;;(use-category () :type emt:persist:use-category)
 
@@ -609,6 +651,7 @@ especially in configuration testing for new installations"
 ;;(bad-before-test not-found) badness
 ;;
 '(deftype emt:result-badness () '(member fail ungraded dormant))
+'
 (deftype emt:result-badness () t)
 
 ;;;_   , Summary info
@@ -628,7 +671,6 @@ especially in configuration testing for new installations"
 (deftype emt:testral:partial-suite-id () '(repeat emt:testral:id-element))
 (deftype emt:testral:prefix-suite-id () '(repeat emt:testral:id-element))
 ;;;_   , Others
-;;Could have been an integer instead.
 (defalias 'emt:testral:testrun-id-p 'stringp)
 (defalias 'emt:testral:tester-id-p 'stringp)
 
@@ -636,87 +678,13 @@ especially in configuration testing for new installations"
 
 ;;$$REMOVE ME - This is unclear, and I have changed the approach
 ;;This is obsolete, see [[id:4v4h3s20mze0][Representing them]]
+'
 (defalias 'emt:testral:explore-method-id-p 'stringp)
+'
 (deftype emt:testral:explore-id ()
    "How to run an explorable."
    '(list* emt:testral:explore-method-id (repeat t)))
 
-;;;_   , emt:testral:both-ids (Both)
-
-;;$$OBSOLETE NEVER USED
-;;This has merged with emtt:explorable.
-'
-(defstruct emt:testral:both-ids
-   "ID sufficient to both name and (re)run a runnable."
-   
-   (id () 
-      :type emt:test-ID
-      :doc "Test ID, sufficient to run the test again")
-   (aliases () :type (repeat emt:test-ID) 
-      :doc "A possibly empty list of aliases")
-   (presentation-path () 
-      :type emt:testral:partial-suite-id
-      :doc "Suggested path to the test result's presentation in the viewer"))
-
-
-
-
-;;;_  . NEW for viewer (All moved or deleted)
-;;;_   , (OBSOLESCENT) TESTRAL notes in viewer
-'
-(defstruct emt:view:testral
-   ""
-   ;;No name/id/testrun, that pertains to suites.
-   (main () :type (or emt:testral:alone emt:testral:push))
-   (end  () :type (or null emt:testral:pop))
-   (args () :type (repeat emt:testral:separate))
-
-   ;;Maybe cache what type of children we're holding: testral or
-   ;;note-list.  (Rename `testral' symbol.  `testral-scoped'?)
-   (child-type () :type (member scoped tails nil))
-   (children () 
-      :type 
-      (or 
-	 ;;For when we haven't scoped children yet.  The lists
-	 ;;correspond to after main and after each arg.
-	 (repeat (repeat emt:testral:base))  
-	 (repeat emt:view:testral)))
-   (display-info ()  :type (or null emt:view:display:base)))
-
-;;;_   , (OBSOLETE) Suite nodes in viewer
-'
-(defstruct emt:view:suite
-   ""
-   (name ()      :type emt:testral:id-element)
-   (full-id ()   :type emt:testral:suite-id)
-   (unique-id () :type (or string null))
-   ;;This is becoming more of a datestamp/circumstance info.
-   (testrun-id ():type emt:testral:testrun-id)
-   ;;OR info for a particular tester
-   (suite ()     :type (or null emt:testral:suite))
-   ;;$$CHANGE ME to emtt:explorable
-   (how-to-run ():type emt:test-ID:e-n)
-   ;;Actual known children.  This is the n-ary part of the structure.
-   ;;NB, even if suite is given, it only tells us their ids, so this
-   ;;info is not available in suite.
-   (child-type () :type (member suite testral nil))
-   ;;$$DESIGNME What about children that have not been reported, but
-   ;;where we know how to run them?  That may be heterogeneous
-   (children () 
-      :type 
-      (or 
-	 (repeat emt:view:suite)
-	 (repeat emt:view:testral)))  
-   ;;Summarized badnesses, including any from suite.
-   (sum-badnesses () :type (repeat emt:result-badness))
-   (display-info ()  :type (or null emt:view:display:base)))
-
-;;;_   , (OBSOLETE) Display info
-;;;_    . (OBSOLESCENT) Base emt:view:display:base
-;;Empty.  Don't make ctor etc.
-'
-(defstruct emt:view:display:base
-   "")
 
 ;;;_. Footers
 ;;;_ , Provides

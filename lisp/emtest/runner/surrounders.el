@@ -35,9 +35,10 @@
 
 ;;;_. Body
 ;;;_ , Utilities
-;;May belong in a utility library instead.
-;;;_  . emtt:get-properties
-(defun emtt:get-properties (prop-sym prop-list)
+;;Belongs in a utility library instead.
+;;$$MOVE ME
+;;;_  . utim:get-properties
+(defun utim:get-properties (prop-sym prop-list)
    ""
    
    (let
@@ -97,8 +98,8 @@ Not implemented yet."
       (dolist (i rv-protectors form)
 	 (setq form (list i form)))))
 
-;;;_  . emtt:add-surrounders
-(defun emtt:add-surrounders (form surrounders props)
+;;;_  . emts:add-surrounders
+(defun emts:add-surrounders (form surrounders props)
    "Add SURROUNDERS around FORM.
 SURROUNDERS is a list whose elements must each be either:
  * A list.
@@ -116,7 +117,7 @@ PROPS is a property list."
 		   surrounder-0)
 		((functionp surrounder-0)
 		   ;;$$MAKE ME SAFE Protect this call.  Use
-		   ;;`emtt:trap-errors'?  And examine `emtt:*abort-p*'
+		   ;;`emth:trap-errors'?  And examine `emtt:*abort-p*'
 		   ;;afterwards.
 		   (funcall surrounder-0 props))
 		(t
@@ -133,7 +134,7 @@ PROPS is the property list of the form."
    (append
       emtts:always-surrounders
       emtts:extra-surrounders
-      (emtt:get-properties :surrounders props)))
+      (utim:get-properties :surrounders props)))
 
 
 ;;;_   , Some surrounders
@@ -151,9 +152,10 @@ PROPS is the property list of the form."
 
 ;;Can't easily automatically test that it in fact debugs.
 
-;;;_    . emtt:trap-errors
+;;;_    . emth:trap-errors
 ;;$$USE ME
-(defmacro emtt:trap-errors (&rest body)
+;;$$MOVE ME To standard testhelp
+(defmacro emth:trap-errors (&rest body)
    ""
    `(progn
        (declare (special emt:testral:*events-seen* emtt:*abort-p*))
@@ -166,7 +168,7 @@ PROPS is the property list of the form."
 	  ;;may be somehow wrong?)
 	  (error
 	     (push
-		(make-emt:testral:error-raised
+		(emt:testral:make-error-raised
 		   :err err
 		   :badnesses '(ungraded))
 		emt:testral:*events-seen*)

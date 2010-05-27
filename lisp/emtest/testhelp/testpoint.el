@@ -103,7 +103,7 @@ many times as expected")
 ;;;_ , Make clause forms
 ;;;_  . Accumulator type
 
-(emt:accumulator:define
+(utiacc:define
    (emtp:clause-formdata 
       (:type list)
       (:copier nil)
@@ -224,7 +224,7 @@ many times as expected")
 (defun emtp:get-combined-clause-forms (testpoint-forms)
    ""
 
-   (emt:accumulator:collect 
+   (utiacc:collect 
       #'emtp:make-clause-form
       testpoint-forms
       'emtp:clause-formdata))
@@ -311,7 +311,7 @@ many times as expected")
 			  ((finally-form
 			      `(apply 
 				  ,final-form
-				  (emt:accumulator:transpose 
+				  (utiacc:transpose 
 				     emtp:*collected*
 				     ,collector-num-slots
 				     #'nth))))

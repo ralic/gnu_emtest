@@ -82,7 +82,7 @@
 	  (equal
 	     (buffer-string)
 	     (condition-case err
-		(emt:persist:value id)
+		(emt:db:single-value id)
 		;;For now, can't be more specific than `error'
 		(error
 		   (message "Couldn't get persisting value")

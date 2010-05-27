@@ -29,7 +29,7 @@
 
 ;;;_ , Requires
 
-(require 'emtest/testhelp/misc) ;;For `emt:collect-in-tree'
+(require 'emtest/testhelp/misc) ;;For `emth:collect-in-tree'
 (eval-when-compile
    (require 'emtest/testhelp/testpoint/requirer)
    (emtp:require))
@@ -38,10 +38,10 @@
 
 ;;;_. Body
 ;;;_ , Structures
-(defstruct (emt/trail:item
+(defstruct (emter:item
 	      (:copier nil)
-	      (:conc-name emt/trail:item->)
-	      (:constructor emt/trail:make-item))
+	      (:conc-name emter:item->)
+	      (:constructor emter:make-item))
    "Info for one item on the eval trail"
    expression
    value
@@ -55,34 +55,34 @@
 
 
 ;;;_ , Config
-(defconst emt/trail:buf-name "*Trail buffer*" 
-   "Buffer name for emt/trail" )
+(defconst emter:buf-name "*Trail buffer*" 
+   "Buffer name for emter" )
 ;;;_ , Variables
-;;;_  . emt/trail:value-list
-(defvar emt/trail:value-list () 
-   "List of values for emt/trail" )
-;;;_  . emt/trail/eg-narrowing
-;;Just for emt:eg generator
-(defvar emt/trail/eg-narrowing () "" )
-;;;_ , emt/trail:record-item
-(defun emt/trail:record-item (expression value)
+;;;_  . emter:value-list
+(defvar emter:value-list () 
+   "List of values for emter" )
+;;;_  . emter/eg-narrowing
+;;Just for emtg generator
+(defvar emter/eg-narrowing () "" )
+;;;_ , emter:record-item
+(defun emter:record-item (expression value)
    ""
 
    (let*
-      (  (index (length emt/trail:value-list))
+      (  (index (length emter:value-list))
 	 (item
-	    (emt/trail:make-item
+	    (emter:make-item
 	       :expression expression
 	       :value value
 	       :index index)))
       ;;It must go at the end, to preserve correct indexing.
-      (setq emt/trail:value-list
-	 (append emt/trail:value-list (list item)))
+      (setq emter:value-list
+	 (append emter:value-list (list item)))
 
       (emtp tp:8efac1de-09d4-4865-bea2-d3df2b211ad3 ()
 	 (let
 	    ((buf
-		(get-buffer-create emt/trail:buf-name)))
+		(get-buffer-create emter:buf-name)))
 	    (with-current-buffer buf
 	       ;;Not (point-max).  Even if buffer were narrowed for
 	       ;;some reason, we still must print at the end.
@@ -97,8 +97,8 @@
 	    (pop-to-buffer buf)))))
 
 
-;;;_ , emt/trail:eval-expression
-(defun emt/trail:eval-expression (eval-expression-arg)
+;;;_ , emter:eval-expression
+(defun emter:eval-expression (eval-expression-arg)
    "Evaluate EVAL-EXPRESSION-ARG and store it on the trail"
    (interactive
       (list (read-from-minibuffer "Eval: "
@@ -106,7 +106,7 @@
 	       'read-expression-history)))
    (let
       ((val (eval eval-expression-arg)))
-      (emt/trail:record-item eval-expression-arg val)))
+      (emter:record-item eval-expression-arg val)))
 
 ;;;_  . Tests
 
@@ -114,19 +114,19 @@
 
 ;;;_ , Building code
 ;;;_  . Structures
-(defstruct (emt/trail:superitem 
+(defstruct (emter:superitem 
 	      (:type list)
 	      (:copier nil)
-	      (:conc-name emt/trail:superitem->)
-	      (:constructor emt/trail:make-superitem))
+	      (:conc-name emter:superitem->)
+	      (:constructor emter:make-superitem))
    ""
    item
    src-info)
 
-(defstruct (emt/trail:code-source
+(defstruct (emter:code-source
 	      (:copier nil)
-	      (:conc-name emt/trail:code-source->)
-	      (:constructor emt/trail:make-code-source))
+	      (:conc-name emter:code-source->)
+	      (:constructor emter:make-code-source))
    "Data about a piece of code source, either value or expression."
 
    ;;(which () :type (member expression value))
@@ -134,36 +134,36 @@
    (binding-p () :type bool)
    surface-form
    real-form)
-(defstruct (emt/trail:src-info
+(defstruct (emter:src-info
 	      (:copier nil)
-	      (:conc-name emt/trail:src-info->)
-	      (:constructor emt/trail:make-src-info))
+	      (:conc-name emter:src-info->)
+	      (:constructor emter:make-src-info))
    "Data about an item relative to  a single generation run."
-   (item            () :type emt/trail:item)
+   (item            () :type emter:item)
    (visited-p       () :type bool)
    (refs            () :type (repeat *))
-   (value-info      () :type emt/trail:code-source)
-   (expression-info () :type emt/trail:code-source))
+   (value-info      () :type emter:code-source)
+   (expression-info () :type emter:code-source))
 
-;;;_  . emt/trail:destructure-superitem
-(defmacro emt/trail:destructure-superitem (fields superitem &rest body)
+;;;_  . emter:destructure-superitem
+(defmacro emter:destructure-superitem (fields superitem &rest body)
    ""
    ;;$$ANNOTATE ME - move edebug spec into here
    `(destructuring-bind ,fields ,superitem ,@body))
-(def-edebug-spec emt/trail:destructure-superitem
+(def-edebug-spec emter:destructure-superitem
    (sexp form body))
 
-;;;_  . emt/trail:build-expression-code 
-(defun emt/trail:build-expression-code (source indexing)
+;;;_  . emter:build-expression-code 
+(defun emter:build-expression-code (source indexing)
    "Builds a form corresponding to an expression.
 Will do substitutions.
 Handles making `should' or `assert' as well."
-   (emt/trail:destructure-superitem (item src-info) source
+   (emter:destructure-superitem (item src-info) source
       (let*
 	 ((raw-form
-	     (emt/trail:item->expression item))
+	     (emter:item->expression item))
 	    (refs
-	       (emt/trail:src-info->refs src-info))
+	       (emter:src-info->refs src-info))
 	    ;;Alist mapping each ref to the surface form it
 	    ;;should be replaced by.
 	    (ref-alist
@@ -171,9 +171,9 @@ Handles making `should' or `assert' as well."
 		  #'(lambda (ref)
 		       (cons 
 			  ref
-			  (emt/trail:code-source->surface-form
-			     (emt/trail:src-info->expression-info
-				(emt/trail:superitem->src-info
+			  (emter:code-source->surface-form
+			     (emter:src-info->expression-info
+				(emter:superitem->src-info
 				   ;;$$Encap this lookup.
 				   (nth (second ref) indexing))))))
 		  refs))
@@ -182,7 +182,7 @@ Handles making `should' or `assert' as well."
 	       (sublis ref-alist raw-form))
 	    (form-2
 	       (if
-		  (emt/trail:item->should item)
+		  (emter:item->should item)
 		  ;;This might be parameterized - make "assert" or
 		  ;;"should" depending on something.
 		  `(assert 
@@ -193,14 +193,14 @@ Handles making `should' or `assert' as well."
 		  form-1)))
 	 form-2)))
 
-;;;_  . emt/trail:code-src-setup-local-form
-(defun emt/trail:code-src-setup-local-form (code-src build-core-f)
+;;;_  . emter:code-src-setup-local-form
+(defun emter:code-src-setup-local-form (code-src build-core-f)
    "Build the local forms for this.
 Assumes everything it references has already been built for.
 This looks at ref count and does nothing if = 0."
    
    (when
-      (> (emt/trail:code-source->count code-src) 0)
+      (> (emter:code-source->count code-src) 0)
       (let
 	 (
 	    ;;Maybe make a name.  `nil' or a symbol.  Punt for now.
@@ -209,30 +209,30 @@ This looks at ref count and does nothing if = 0."
 	 ;;NAME could take item's per-generator data into account.
 	 ;;Let a hook build it via `run-hook-with-args-until-success'.
 	 ;;Each is passed item and code-source.
-	 '(> (emt/trail:code-source->count code-src) 1)
+	 '(> (emter:code-source->count code-src) 1)
 		  
 	 ;;Callback to get deep form.
 	 (setf
-	    (emt/trail:code-source->real-form code-src)
+	    (emter:code-source->real-form code-src)
 	    (funcall build-core-f))
 		  
 	 ;;Set up surface stuff.
 	 (if name
 	    (progn 
 	       (setf
-		  (emt/trail:code-source->surface-form code-src)
+		  (emter:code-source->surface-form code-src)
 		  name)
 	       (setf
-		  (emt/trail:code-source->binding-p code-src)
+		  (emter:code-source->binding-p code-src)
 		  t))
 	    (setf
-	       (emt/trail:code-source->surface-form code-src)
-	       (emt/trail:code-source->real-form code-src))))))
+	       (emter:code-source->surface-form code-src)
+	       (emter:code-source->real-form code-src))))))
 
-;;;_  . emt/trail:code-src-add-to-form
-(defun emt/trail:code-src-add-to-form (form code-src)
+;;;_  . emter:code-src-add-to-form
+(defun emter:code-src-add-to-form (form code-src)
    ""
-   (if (> (emt/trail:code-source->count code-src) 0)
+   (if (> (emter:code-source->count code-src) 0)
       (progn
 	 ;;For bindings, add a `let*' if there is none
 	 ;;(transform a progn), otherwise add to its
@@ -243,79 +243,79 @@ This looks at ref count and does nothing if = 0."
 
 	 ;;For now, incoming form is assumed to be a `progn'
 	 `(progn 
-	     ,(emt/trail:code-source->surface-form code-src)
+	     ,(emter:code-source->surface-form code-src)
 	     ,@(cdr form)))
       form))
 
-;;;_  . emt/trail:src-info-incf-count
-(defun emt/trail:code-source-incf-count (src-info which)
+;;;_  . emter:src-info-incf-count
+(defun emter:code-source-incf-count (src-info which)
    ""
 
    (let
       ((code-source
 	  (ecase which 
 	     (value
-		(emt/trail:src-info->value-info 
+		(emter:src-info->value-info 
 		   src-info))
 	     (expression
-		(emt/trail:src-info->expression-info 
+		(emter:src-info->expression-info 
 		   src-info)))))
-   (incf (emt/trail:code-source->count code-source))))
+   (incf (emter:code-source->count code-source))))
 
-;;;_  . emt/trail:build-code 
-(defun emt/trail:build-code ()
+;;;_  . emter:build-code 
+(defun emter:build-code ()
    ""
 
    (let*
       (
 	 ;;An indexing list, must have same indexing that trail has.
-	 ;;Of type (repeat emt/trail:superitem)
+	 ;;Of type (repeat emter:superitem)
 	 (superitem-list
 	    (mapcar 
 	       #'(lambda (x)
-		    (emt/trail:make-superitem
+		    (emter:make-superitem
 		       :item x 
 		       :src-info
-		       (emt/trail:make-src-info
+		       (emter:make-src-info
 			  :item x
 			  :expression-info
-			  (emt/trail:make-code-source)
+			  (emter:make-code-source)
 			  :value-info
-			  (emt/trail:make-code-source))))
+			  (emter:make-code-source))))
 	       
-	       emt/trail:value-list))
+	       emter:value-list))
 
 	 ;;List of the items marked "should" (ie, should be non-nil in a test)
-	 ;;Of type (repeat emt/trail:item)
+	 ;;Of type (repeat emter:item)
 	 (should-list
 	    ;;Non-destructive.
-	    (remove* nil emt/trail:value-list
+	    (remove* nil emter:value-list
 	       :test-not
 	       #'(lambda (dummy item)
 		    ;;Punt, because this field is still just a bool.
-		    (emt/trail:item->should item))))
+		    (emter:item->should item))))
 
 	 ;;Initial set of needed-items.  
-	 ;;Of type (repeat emt/trail:superitem)
+	 ;;Of type (repeat emter:superitem)
 	 (pending
 	    (mapcar
 	       #'(lambda (item)
 		    (let*
 		       (  (superitem
-			     (nth (emt/trail:item->index item)
+			     (nth (emter:item->index item)
 				superitem-list))
-			  (src-info (emt/trail:superitem->src-info superitem)))
+			  (src-info (emter:superitem->src-info superitem)))
 		       
 		       ;;Count is 1 because we will generate a should
 		       ;;that refers to it.
-		       (emt/trail:code-source-incf-count 
+		       (emter:code-source-incf-count 
 			  src-info
 			  'expression)
 		       superitem))
 	       should-list))
 	 
 	 ;;Items that will contribute to the final source.
-	 ;;Of type (repeat emt/trail:superitem)
+	 ;;Of type (repeat emter:superitem)
 	 (needed-items ()))
 
       ;;Tests are interested in which elements are initial.  (This
@@ -328,11 +328,11 @@ This looks at ref count and does nothing if = 0."
       (while pending
 	 (let
 	    ((superitem (pop pending)))
-	    (emt/trail:destructure-superitem (item src-info) superitem
+	    (emter:destructure-superitem (item src-info) superitem
 	       ;;Don't revisit items we already visited.  Since the
 	       ;;flag means "explored" we can get it twice.
-	       (unless (emt/trail:src-info->visited-p src-info)
-		  (setf (emt/trail:src-info->visited-p src-info) t)
+	       (unless (emter:src-info->visited-p src-info)
+		  (setf (emter:src-info->visited-p src-info) t)
 
 		  (push superitem needed-items)
 
@@ -340,21 +340,21 @@ This looks at ref count and does nothing if = 0."
 		  ;;Ie, collect elements that pass a test.
 		  (let 
 		     ((refs
-			 (emt:collect-in-tree 
+			 (emth:collect-in-tree 
 			    #'(lambda (x)
 				 (and
 				    (listp x)
 				    (memq
 				       (car x)
-				       '(emt/trail:value
-					   emt/trail:value-always))))
-			    (emt/trail:item->expression item))))
+				       '(emter:value
+					   emter:value-always))))
+			    (emter:item->expression item))))
 		     
 		     ;;Store refs so that
-		     ;;`emt/trail:build-expression-code' needn't look for
+		     ;;`emter:build-expression-code' needn't look for
 		     ;;them again.
 		     (setf
-			(emt/trail:src-info->refs src-info)
+			(emter:src-info->refs src-info)
 			refs)
 	       
 		     ;;For each ref...
@@ -365,19 +365,19 @@ This looks at ref count and does nothing if = 0."
 			;;Increment the ref count of the thing it
 			;;references
 			(case (car ref)
-			   (emt/trail:value
+			   (emter:value
 			      (let*
 				 ((index (second ref))
 				    (its-src-info
-				       (emt/trail:superitem->src-info 
+				       (emter:superitem->src-info 
 					  (nth index superitem-list))))
-				 (emt/trail:code-source-incf-count 
+				 (emter:code-source-incf-count 
 				    its-src-info
 				    'expression)
 				 (emtp 
 				    tp:ea524bc6-1e65-4c90-8772-ab94c916a375
 				    (
-				       (emt/trail:item->index item)
+				       (emter:item->index item)
 				       index 
 				       (car ref)))
 
@@ -387,24 +387,24 @@ This looks at ref count and does nothing if = 0."
 				 ;;onto PENDING so we will explore it.
 				 (unless nil
 				    (setf 
-				       (emt/trail:src-info->visited-p 
+				       (emter:src-info->visited-p 
 					  its-src-info)
 				       t)
 				    (push 
 				       (nth index superitem-list) 
 				       pending))))
 		     
-			   (emt/trail:value-always
+			   (emter:value-always
 			      (let
 				 ((index (second ref)))
 				 (emtp 
 				    tp:ea524bc6-1e65-4c90-8772-ab94c916a375
 				    (
-				       (emt/trail:item->index item)
+				       (emter:item->index item)
 				       index 
 				       (car ref)))
-				 (emt/trail:code-source-incf-count 
-				    (emt/trail:superitem->src-info 
+				 (emter:code-source-incf-count 
+				    (emter:superitem->src-info 
 				       (nth index superitem-list))
 				    'value))))))))))
       
@@ -414,22 +414,22 @@ This looks at ref count and does nothing if = 0."
 	 (sort* needed-items #'<
 	    :key
 	    #'(lambda (info)
-		 (emt/trail:item->index (emt/trail:superitem->item info)))))
+		 (emter:item->index (emter:superitem->item info)))))
 
       ;;Root first, create local forms for each source
       (dolist (source needed-items)
-	 (emt/trail:destructure-superitem (item src-info) source
+	 (emter:destructure-superitem (item src-info) source
 
-	    (emt/trail:code-src-setup-local-form
-	       (emt/trail:src-info->expression-info src-info)
+	    (emter:code-src-setup-local-form
+	       (emter:src-info->expression-info src-info)
 	       #'(lambda ()
-		    (emt/trail:build-expression-code source superitem-list)))
+		    (emter:build-expression-code source superitem-list)))
 	    
-	    (emt/trail:code-src-setup-local-form
-	       (emt/trail:src-info->value-info src-info)
-	       ;;Will be a hook to allow making eg definitions.
+	    (emter:code-src-setup-local-form
+	       (emter:src-info->value-info src-info)
+	       ;;Will be a hook to allow making tagnames definitions.
 	       #'(lambda ()
-		    (emt/trail:item->value item)))))
+		    (emter:item->value item)))))
       
       ;;Build whole code.
       (let
@@ -438,15 +438,15 @@ This looks at ref count and does nothing if = 0."
 	 ;;before).  Really, we're reducing an initial value across
 	 ;;the list.
 	 (dolist (superitem (reverse needed-items))
-	    (emt/trail:destructure-superitem (item src-info) superitem
+	    (emter:destructure-superitem (item src-info) superitem
 	       (setq form
-		  (emt/trail:code-src-add-to-form 
+		  (emter:code-src-add-to-form 
 		     form 
-		     (emt/trail:src-info->expression-info src-info)))
+		     (emter:src-info->expression-info src-info)))
 	       (setq form
-		  (emt/trail:code-src-add-to-form 
+		  (emter:code-src-add-to-form 
 		     form 
-		     (emt/trail:src-info->value-info src-info)))))
+		     (emter:src-info->value-info src-info)))))
 	 
 	 ;;Add any whole-scope management (by generators)
 
@@ -457,39 +457,40 @@ This looks at ref count and does nothing if = 0."
 
 
 ;;;_   , Test helpers 
-;;;_    . emt/trail:build-code:th
-(defun emt/trail:build-code:th (input-list)
+;;$$MOVE ME
+;;;_    . emter:build-code:th
+(defun emter:build-code:th (input-list)
    ""
    
    (emtp:eval
       (dolist (input input-list)
 	 ;;Build item.
 	 (destructuring-bind (should &rest expression) input
-	    (emt/trail:record-item expression (eval expression))
+	    (emter:record-item expression (eval expression))
 	    ;;SHOULD tells us to set up a should.
 	    (when should
 	       (setf
-		  (emt/trail:item->should
-		     (car (last emt/trail:value-list)))
+		  (emter:item->should
+		     (car (last emter:value-list)))
 		  t))))
       ;;Testpoint to skip displaying the item.
       (tp* (:id tp:8efac1de-09d4-4865-bea2-d3df2b211ad3 :count nil)())))
 
-;;;_    . emt/trail:build-code:thm
-(defmacro emt/trail:build-code:thm (input-list bindings &rest body)
-   "Run BODY with `emt/trail:value-list' in a particular state.
+;;;_    . emter:build-code:thm
+(defmacro emter:build-code:thm (input-list bindings &rest body)
+   "Run BODY with `emter:value-list' in a particular state.
 INPUT-LIST elements are in the form (SHOULD . EXPRESSION).
 BINDINGS are as for a `let'"
    
-   `(let ((emt/trail:value-list ())
+   `(let ((emter:value-list ())
 	    ,@bindings)
-       (emt/trail:build-code:th ,input-list)
+       (emter:build-code:th ,input-list)
        ,@body))
-;;;_    . emt/trail:build-code:th2
-(defun emt/trail:build-code:th2 (precedence-pairs)
+;;;_    . emter:build-code:th2
+(defun emter:build-code:th2 (precedence-pairs)
    ""
    (emtp:eval
-      (emt/trail:build-code)
+      (emter:build-code)
       ;;Testpoint per dependency
       (tp*
 	 (:id tp:ea524bc6-1e65-4c90-8772-ab94c916a375
@@ -499,25 +500,25 @@ BINDINGS are as for a `let'"
 	 (emt:tp:collect (list got-index want-index type)))
       (finally (:bindings ((precedence-pairs precedence-pairs))) (depend-set)
 	 (assert
-	    (emt:sets= depend-set 
+	    (emth:sets= depend-set 
 	       precedence-pairs)
 	    t))))
-;;;_    . emt/trail:build-code:thm2
-(defmacro* emt/trail:build-code:thm2 
+;;;_    . emter:build-code:thm2
+(defmacro* emter:build-code:thm2 
    ((&key inputs bindings precedence-pairs sym) &rest body)
    ""
    
-   `(emt/trail:build-code:thm
+   `(emter:build-code:thm
        ,inputs
        ,bindings
        (let
 	  ((,sym
-	      (emt/trail:build-code:th2 ,precedence-pairs)))
+	      (emter:build-code:th2 ,precedence-pairs)))
 	  ,@body)))
 
 
-;;;_    . emt/trail:build-code:th:w-bindings-passes-p
-(defun emt/trail:build-code:th:w-bindings-passes-p 
+;;;_    . emter:build-code:th:w-bindings-passes-p
+(defun emter:build-code:th:w-bindings-passes-p 
    (bindings should-pass-p code)
    ""
 
@@ -530,7 +531,7 @@ BINDINGS are as for a `let'"
 	      ,code))
 	 ;;Eval it.  Does it err?
 	 (errs-p
-	    (emt:gives-error
+	    (emth:gives-error
 	       (eval form))))
       
       ;;Test that it errored just if it should.
@@ -542,8 +543,8 @@ BINDINGS are as for a `let'"
 
 
 
-;;;_ , emt/trail:export-code
-(defun emt/trail:export-code ()
+;;;_ , emter:export-code
+(defun emter:export-code ()
    "Build and export code"
    ;;For now, just use one exporter
    (let*
@@ -551,21 +552,18 @@ BINDINGS are as for a `let'"
       
       ))
 
-;;;_  . Tests
-;;It should be direct
-
 ;;;_ , Accessors
-;;;_  . emt/trail:value
-(defsubst emt/trail:value (index)
+;;;_  . emter:value
+(defsubst emter:value (index)
    ""
-   (emt/trail:item->value
-      (nth index emt/trail:value-list)))
+   (emter:item->value
+      (nth index emter:value-list)))
 
-;;;_  . emt/trail:value-always
-(defalias 'emt/trail:value-always 'emt/trail:value)
+;;;_  . emter:value-always
+(defalias 'emter:value-always 'emter:value)
 ;;;_ , Exporters
-;;;_  . emt/trail:export-to-kill-ring
-(defun emt/trail:export-to-kill-ring (code)
+;;;_  . emter:export-to-kill-ring
+(defun emter:export-to-kill-ring (code)
    ""
    
    (let*

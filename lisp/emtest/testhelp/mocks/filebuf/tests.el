@@ -24,30 +24,30 @@
 
 ;;;_ , Commentary:
 
-;;Only a few examples use emt:eg.  Most or all should.
+;;Only a few examples use emtg.  Most or all should.
 
 ;;;_ , Requires
 
 (require 'emtest/runner/define)
 (require 'emtest/testhelp/mocks/filebuf)
 (require 'emtest/testhelp/mocks/filebuf/testhelp)
-(require 'emtest/testhelp/eg)
+(require 'emtest/testhelp/tagnames)
 (require 'emtest/testhelp/standard)
 (require 'emtest/editing/insert)
 
 ;;;_. Body
-;;;_   , with-buffer-containing-buildform
-(put 'with-buffer-containing-buildform 'emt:test-thru 'with-buffer-containing-object)
+;;;_   , emtb:with-buf-f
+(put 'emtb:with-buf-f 'emt:test-thru 'emtb:with-buf)
 
 
-;;;_    . with-buffer-containing-object
+;;;_    . emtb:with-buf
 
-(emt:deftest-3 with-buffer-containing-object
+(emt:deftest-3 emtb:with-buf
    (nil
       (progn
 	 (emt:doc "Param: :string STRING is given
 Reaction: Fill the buffer with exactly STRING")
-	 (with-buffer-containing-object
+	 (emtb:with-buf
 	    (:string "abc")
 	    (equal
 	       (buffer-string)
@@ -58,7 +58,7 @@ Reaction: Fill the buffer with exactly STRING")
 Reaction: Fill the buffer with exactly a printed representation of
 OBJECT")
 	 (equal
-	    (with-buffer-containing-object
+	    (emtb:with-buf
 	       (:sexp
 		  '(1 5))
 	       (emtb:buffer-object))
@@ -67,7 +67,7 @@ OBJECT")
       (progn
 	 (emt:doc "Param: :point-replaces STR is given.
 Reaction: The first occurence of STR is deleted ")
-	 (with-buffer-containing-object
+	 (emtb:with-buf
 	    (:string "abcdef" :point-replaces "cd")
 	    (equal
 	       (buffer-string)
@@ -76,14 +76,14 @@ Reaction: The first occurence of STR is deleted ")
       (progn
 	 (emt:doc "Param: :point-replaces STR is given.
 Reaction: Point is now where STR was ")
-	 (with-buffer-containing-object
+	 (emtb:with-buf
 	    (:string "abcdef" :point-replaces "cd")
 	    (looking-at "ef$"))))
    (nil
       (progn
 	 (emt:doc "Shows: :point-replaces can cause parts of an object to be unprinted.")
 	 (equal
-	    (with-buffer-containing-object
+	    (emtb:with-buf
 	       (:sexp
 		  '(ab cd ef)
 		  :point-replaces "cd")
@@ -96,7 +96,7 @@ Reaction: Point is now where STR was ")
 	    ((win
 		(current-window-configuration)))
 	    (ignore-errors
-	       (with-buffer-containing-object
+	       (emtb:with-buf
 		  (:string "abc")
 		  (error "A deliberate error")))
 	    (equal win
@@ -105,22 +105,22 @@ Reaction: Point is now where STR was ")
    (nil
       (progn
 	 (emt:doc "Exercise the `visited-name' feature.")
-	 (emt:eg:with emtb:thd:examples
+	 (emtg:with emtb:thd:examples
 	    ((project emtest)
 	       (library mockbuf))
 	    (let
 	       ((master-file
-		   (emt:eg
+		   (emtg
 		      (role master)
 		      (type filename)))
 		  (slave-file
-		     (emt:eg
+		     (emtg
 			(role slave)
 			(type filename))))
 	       (when
 		  (file-exists-p slave-file)
 		  (delete-file slave-file))
-	       (with-buffer-containing-object
+	       (emtb:with-buf
 		  (:file master-file :visited-name slave-file)
 		  (save-buffer 0))
 	       (emtb:files-match master-file slave-file)))))
@@ -129,16 +129,16 @@ Reaction: Point is now where STR was ")
       (progn
 	 (emt:doc "Situation: The slave file already exists.")
 	 (emt:doc "Response: Works the same.")
-	 (emt:eg:with emtb:thd:examples
+	 (emtg:with emtb:thd:examples
 	    ((project emtest)
 	       (library mockbuf))
 	    (let
 	       ((master-file
-		   (emt:eg
+		   (emtg
 		      (role master)
 		      (type filename)))
 		  (slave-file
-		     (emt:eg
+		     (emtg
 			(role slave)
 			(type filename))))
 	       (unless
@@ -146,7 +146,7 @@ Reaction: Point is now where STR was ")
 		  (with-temp-buffer
 		     (insert "Some unmatched text")
 		     (write-file slave-file nil)))
-	       (with-buffer-containing-object
+	       (emtb:with-buf
 		  (:file master-file :visited-name slave-file)
 		  (save-buffer 0))
 	       (emtb:files-match master-file slave-file)))))
@@ -154,16 +154,16 @@ Reaction: Point is now where STR was ")
       (progn
 	 (emt:doc "Param: the symbol `tmp' is given as `:visited-name'.")
 	 (emt:doc "Behavior: Creates a temporary file.")
-	 (emt:eg:with emtb:thd:examples
+	 (emtg:with emtb:thd:examples
 	    ((project emtest)
 	       (library mockbuf))
 	    (let
 	       (slave-file
 		  (master-file
-		     (emt:eg
+		     (emtg
 			(role master)
 			(type filename))))
-	       (with-buffer-containing-object
+	       (emtb:with-buf
 		  (:file master-file :visited-name 'tmp)
 		  (setq slave-file
 		     (buffer-file-name))
@@ -174,16 +174,16 @@ Reaction: Point is now where STR was ")
 	 (emt:doc "Param: the symbol `tmp' is given as `:visited-name'.
 Neither `dir' nor `file' is given.")
 	 (emt:doc "Behavior: Creates a temporary file with those contents.")
-	 (emt:eg:with emtb:thd:examples
+	 (emtg:with emtb:thd:examples
 	    ((project emtest)
 	       (library mockbuf))
 	    (let
 	       (slave-file
 		  (master-file
-		     (emt:eg
+		     (emtg
 			(role master)
 			(type filename))))
-	       (with-buffer-containing-object
+	       (emtb:with-buf
 		  (:string "abc" :visited-name 'tmp)
 		  (setq slave-file
 		     (buffer-file-name))
@@ -197,7 +197,7 @@ Neither `dir' nor `file' is given.")
 	 (emt:doc "Shows: `sequence' works.
 Param: sequence with two strings")
 	 (emt:doc "Response: Contents of buffer are as expected.")
-	 (with-buffer-containing-object
+	 (emtb:with-buf
 	    (:sequence
 	       ((string "abc")
 		  (string "def")))
@@ -206,16 +206,16 @@ Param: sequence with two strings")
 	       "abcdef")))))
 
 
-;;;_   , with-file-containing
+;;;_   , emtb:with-file-f
 
-(emt:deftest-3 with-file-containing
+(emt:deftest-3 emtb:with-file-f
    (nil
       (progn
 	 (emt:doc "Proves: Body form is run - it changes the value of `x'.")
 	 (let
 	    ((str "abc def ghi")
 	       x)
-	    (with-file-containing
+	    (emtb:with-file-f
 	       (:string str)
 	       filename
 	       (setq x 12))
@@ -228,7 +228,7 @@ Param: sequence with two strings")
 	 (emt:doc "Proves: The filename is absolute.")
 	 (let
 	    ((str "abc def ghi"))
-	    (with-file-containing
+	    (emtb:with-file-f
 	       (:string str)
 	       filename
 	       (assert
@@ -241,7 +241,7 @@ Param: sequence with two strings")
 	 (let
 	    ((str "abc def ghi")
 	       x)
-	    (with-file-containing
+	    (emtb:with-file-f
 	       (:string str)
 	       filename
 	       (assert
@@ -252,13 +252,13 @@ Param: sequence with two strings")
 	    t)))
    (nil
       (progn
-	 (emt:doc "Proves: `with-file-containing' returns the result of running
+	 (emt:doc "Proves: `emtb:with-file-f' returns the result of running
 BODY.")
 	 (let
 	    ((str "abc def ghi"))
 	    (assert
 	       (equal
-		  (with-file-containing
+		  (emtb:with-file-f
 		     (:string str)
 		     filename 12)
 		  12)
@@ -269,7 +269,7 @@ BODY.")
 	 (emt:doc "Proves: After the body has finished running, the file is gone.")
 	 (let
 	    (filename-kept)
-	    (with-file-containing
+	    (emtb:with-file-f
 	       (:string "abc def ghi")
 	       filename
 	       (setq filename-kept filename))
@@ -282,7 +282,7 @@ BODY.")
       (progn
 	 (emt:doc "Param: The flag `:absent' is given and is non-nil.
 No file is made.")
-	 (with-file-containing
+	 (emtb:with-file-f
 	    (:absent t)
 	    filename
 	    (assert
@@ -297,7 +297,7 @@ No file is made.")
 	 (emt:doc "Response: After body has run, file no longer exists.")
 	 (let
 	    (filename-kept)
-	    (with-file-containing
+	    (emtb:with-file-f
 	       (:absent t)
 	       filename
 	       (setq filename-kept filename)
@@ -312,13 +312,13 @@ No file is made.")
 
 
 ;;;_    . emtb:cautious-insert-file
-(put 'emtb:cautious-insert-file 'emt:test-thru 'with-buffer-containing-object)
+(put 'emtb:cautious-insert-file 'emt:test-thru 'emtb:with-buf)
 
 
 
 ;;;_    . emtb:cautious-load-file (OBSOLESCENT)
 '
-(put 'emtb:cautious-load-file 'emt:test-thru 'with-buffer-containing-object)
+(put 'emtb:cautious-load-file 'emt:test-thru 'emtb:with-buf)
 
 
 
@@ -329,7 +329,7 @@ No file is made.")
       (progn
 	 (emt:doc "Situation: Filename is not absolute.")
 	 (emt:doc "Response: Error.")
-	 (emt:gives-error
+	 (emth:gives-error
 	    (emtb:find-file-goto-text ".")))))
 
 
@@ -434,7 +434,7 @@ MOTION finds a % that precedes both.")
       (progn
 	 (emt:doc "Param: `string' is given.
 Action: Treat string as the expected value.")
-	 (with-buffer-containing-object
+	 (emtb:with-buf
 	    (:string "abc def")
 	    (emtb:buf-contents-matches :string "abc def"))))
    (nil
@@ -442,7 +442,7 @@ Action: Treat string as the expected value.")
 	 (emt:doc "Param: `string' is given.
 Action: Treat string as the expected value.")
 	 (not
-	    (with-buffer-containing-object
+	    (emtb:with-buf
 	       (:string "abc def")
 	       (emtb:buf-contents-matches :string "Do not match
 ")))))
@@ -451,14 +451,14 @@ Action: Treat string as the expected value.")
 	 (emt:doc "Param: `string' and `regex-marks' are given.
 Action: Treat string as containing bounded regexps, as for
 emtb:string-matches.")
-	 (with-buffer-containing-object
+	 (emtb:with-buf
 	    (:string "abc def")
 	    (emtb:buf-contents-matches :string "abc [.*]" :regex-marks
 	       '("[" "]")))))
    (nil
       (progn
 	 (emt:doc "Behavior: Point is not moved.")
-	 (with-buffer-containing-object
+	 (emtb:with-buf
 	    (:string "abc def")
 	    (goto-char 3)
 	    (emtb:buf-contents-matches :string "abc def")
@@ -471,25 +471,25 @@ emtb:string-matches.")
 	 (emt:doc "Response: Error.")
 	 (let
 	    ((default-directory emtb:buf-contents-matches:thd:dir))
-	    (emt:gives-error
+	    (emth:gives-error
 	       (emtb:buf-contents-matches :file "yes.txt")))))
    (nil
       (progn
 	 (emt:doc "Situation: `dir' is given but expanded filename is not absolute,")
 	 (emt:doc "Response: Error.")
-	 (emt:gives-error
+	 (emth:gives-error
 	    (emtb:buf-contents-matches :file "yes.txt" :dir "."))))
    (nil
       (progn
 	 (emt:doc "Situation: File does not exist")
 	 (emt:doc "Response: Error.")
-	 (emt:gives-error
+	 (emth:gives-error
 	    (emtb:buf-contents-matches :file "invalid.txt" :dir emtb:buf-contents-matches:thd:dir))))
    (nil
       (progn
 	 (emt:doc "Param: `buf' is given.
 Action: Compare file to contents of `buf'.")
-	 (with-buffer-containing-object
+	 (emtb:with-buf
 	    (:string emtb:buf-contents-matches:thd:yes\.txt)
 	    (let
 	       ((buf
@@ -501,7 +501,7 @@ Action: Compare file to contents of `buf'.")
       (progn
 	 (emt:doc "Param: `buf' is not given.
 Action: Compare file to contents of current buffer.")
-	 (with-buffer-containing-object
+	 (emtb:with-buf
 	    (:string emtb:buf-contents-matches:thd:yes\.txt)
 	    (emtb:buf-contents-matches :file "yes.txt" :dir emtb:buf-contents-matches:thd:dir))))
    (nil
@@ -509,7 +509,7 @@ Action: Compare file to contents of current buffer.")
 	 (emt:doc "Situation: Buffer contents and file contents do not match.")
 	 (emt:doc "Response: Comparison fails.")
 	 (not
-	    (with-buffer-containing-object
+	    (emtb:with-buf
 	       (:string emtb:buf-contents-matches:thd:yes\.txt)
 	       (emtb:buf-contents-matches :file "no.txt" :dir emtb:buf-contents-matches:thd:dir)))))
    (nil
@@ -517,7 +517,7 @@ Action: Compare file to contents of current buffer.")
 	 (emt:doc "Param: `regex-marks' is given.
 Action: Treat file as containing bounded regexps, as for
 emtb:string-matches.")
-	 (with-buffer-containing-object
+	 (emtb:with-buf
 	    (:string emtb:buf-contents-matches:thd:yes\.txt)
 	    (emtb:buf-contents-matches :file "regexp-yes.txt" :dir emtb:buf-contents-matches:thd:dir :regex-marks
 	       '("[" "]")))))
@@ -526,7 +526,7 @@ emtb:string-matches.")
 	 (emt:doc "Param: `sexp' is given.
 Action: Succeed just if the buffer contains the sexp representation
 of the object.")
-	 (with-buffer-containing-object
+	 (emtb:with-buf
 	    (:string "(a b c)")
 	    (emtb:buf-contents-matches :sexp
 	       '(a b c)))))
@@ -534,7 +534,7 @@ of the object.")
       (progn
 	 (emt:doc "Param: `sexp' is given.")
 	 (emt:doc "Behavior: Point is not moved")
-	 (with-buffer-containing-object
+	 (emtb:with-buf
 	    (:string "(a b c)")
 	    (goto-char 3)
 	    (emtb:buf-contents-matches :sexp
@@ -547,7 +547,7 @@ of the object.")
 	 (emt:doc "Situation: Validator is given. It's a file that matches the
 regexp pattern.")
 	 (emt:doc "Response: Proceed normally.")
-	 (with-buffer-containing-object
+	 (emtb:with-buf
 	    (:string emtb:buf-contents-matches:thd:yes\.txt)
 	    (emtb:buf-contents-matches :file "regexp-yes.txt" :dir emtb:buf-contents-matches:thd:dir :regex-marks
 	       '("[" "]")
@@ -558,9 +558,9 @@ regexp pattern.")
 	 (emt:doc "Situation: Validator is given. It's a file that does not match
 the regexp pattern.")
 	 (emt:doc "Response: Error.")
-	 (with-buffer-containing-object
+	 (emtb:with-buf
 	    (:string emtb:buf-contents-matches:thd:yes\.txt)
-	    (emt:gives-error
+	    (emth:gives-error
 	       (emtb:buf-contents-matches :file "regexp-yes.txt" :dir emtb:buf-contents-matches:thd:dir :regex-marks
 		  '("[" "]")
 		  :validate-re
@@ -570,7 +570,7 @@ the regexp pattern.")
 	 (emt:doc "Situation: Validator given. It's a string that matches the regexp
 pattern.")
 	 (emt:doc "Response: Proceed normally.")
-	 (with-buffer-containing-object
+	 (emtb:with-buf
 	    (:string emtb:buf-contents-matches:thd:yes\.txt)
 	    (emtb:buf-contents-matches :file "regexp-yes.txt" :dir emtb:buf-contents-matches:thd:dir :regex-marks
 	       '("[" "]")
@@ -607,7 +607,7 @@ Return: those parts in order, surrounded by ^$ to match a whole string.")
 	 (emt:doc "Situation: A character class is given in bracket form.
 Recognizers are brackets.")
 	 (emt:doc "Response: Gives error")
-	 (emt:gives-error
+	 (emth:gives-error
 	    (emtb:extract-regexp "[[:digit:]*]" "[" "]"))))
    (nil
       (progn
@@ -688,7 +688,7 @@ magic regexp characters.")
       (progn
 	 (emt:doc "Param: `regex-marks' is something else.  
 Action: Error.")
-	 (emt:gives-error
+	 (emth:gives-error
 	    (emtb:string-matches "a" "a" "Just one string")))))
 
 
@@ -700,7 +700,7 @@ Action: Error.")
 	 (emt:doc "Shows: `emtb:buffer-object' reads the lisp object whose
 printed representation the current buffer contains.")
 	 (equal
-	    (with-buffer-containing-object
+	    (emtb:with-buf
 	       (:string "")
 	       (pp
 		  '(1 5)
@@ -710,9 +710,9 @@ printed representation the current buffer contains.")
    (nil
       (progn
 	 (emt:doc "Shows: `emtb:buffer-object' and
-`with-buffer-containing-object' are complementary.")
+`emtb:with-buf' are complementary.")
 	 (equal
-	    (with-buffer-containing-object
+	    (emtb:with-buf
 	       (:sexp
 		  '(ab ef))
 	       (emtb:buffer-object))

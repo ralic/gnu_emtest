@@ -38,48 +38,48 @@
 ;;;_  . Counter
 
 ;;Should probably live elsewhere.  Possibly in emtest/viewer/receive.
-;;But then emtt:dispatch-normal must move there as well.
-(defvar emtt:testrun-counter 0 
+;;But then emtl:dispatch-normal must move there as well.
+(defvar emtl:testrun-counter 0 
    "A counter used to make testrun-id.
-With `cl' loaded, use it as (incf emtt:testrun-counter)." )
-;;;_  . emtt:receiver-f
+With `cl' loaded, use it as (incf emtl:testrun-counter)." )
+;;;_  . emtl:receiver-f
 ;;$$MOVE ME belongs in a config library
 ;;Cheat for now: Always know to use emviewer2.  Later use a
 ;;customizable variable.
-(defconst emtt:receiver-f
+(defconst emtl:receiver-f
    ;;#'emtve:tester-cb
    #'emtv2:tester-cb
    "" )
 
-;;;_ , emtt:dispatch-normal
-(defun emtt:dispatch-normal (what-to-run &optional prefix receiver)
+;;;_ , emtl:dispatch-normal
+(defun emtl:dispatch-normal (what-to-run &optional prefix receiver)
    ""
-   (emt:test-finder:top 
+   (emtt:test-finder:top 
       what-to-run 
       prefix  ;;Default is the empty list.
-      (prin1-to-string (incf emtt:testrun-counter))
-      (or receiver emtt:receiver-f)))
+      (prin1-to-string (incf emtl:testrun-counter))
+      (or receiver emtl:receiver-f)))
 
-;;;_ , emtt:sexp-at-point
-
-(defun emtt:sexp-at-point (form)
+;;;_ , emt:sexp-at-point
+;;;###autoload
+(defun emt:sexp-at-point (form)
    ""
    (interactive 
       (list 
 	 (save-excursion (read (current-buffer)))))
    
-   (emtt:dispatch-normal
-      (make-emt:test-ID:e-n:form
+   (emtl:dispatch-normal
+      (emthow:make-form
 	 :test-form form)
       (list "form")))
 
-;;;_ , emtt:run-suite
-(defun emtt:run-suite (suite-sym)
+;;;_ , emtl:run-suite
+(defun emtl:run-suite (suite-sym)
    "Run the test suite associated with SUITE-SYM."
    
    ;;$$UPDATE ME - will need to change what it makes
-   (emtt:dispatch-normal 
-      (make-emt:test-ID:e-n:suite
+   (emtl:dispatch-normal 
+      (emthow:make-suite
 	 :suite-ID suite-sym)
       (list (format "Suite %s" suite-sym))))
 
@@ -101,20 +101,20 @@ Does nothing if the buffer is not in a known lisp mode."
       (when arg (eval-defun nil))
       (let
 	 ((suite-sym
-	     (emt:suite-sym-at-point)))
+	     (emtel:suite-sym-at-point)))
 	 (check-type suite-sym symbol)
-	 (emtt:run-suite suite-sym))))
+	 (emtl:run-suite suite-sym))))
 
 ;;;_  . Helpers (Lisp-syntax-reading stuff)
-
-(defconst emt:defun-types 
+;;$$MOVE ME Into editing help.
+(defconst emtel:defun-types 
   '(defun defun* defsubst defsubst* defmacro defmacro* defmethod
       deftype defadvice defstruct 
       emt:deftest-2 emt:deftest-3)
    
   "List of defun-variant symbols we might see" )
 
-(defun emt:suite-sym-at-point-x (arg)
+(defun emtel:suite-sym-at-point-x (arg)
    "Return the symbol that names the definition at point.
 With `nil' ARG, look backwards for it.
 With non-nil ARG, look forwards for it."
@@ -128,7 +128,7 @@ With non-nil ARG, look forwards for it."
 		     (current-buffer)))
 	       (symbol
 		  (if
-		     (memq type emt:defun-types)
+		     (memq type emtel:defun-types)
 		     (read
 			(current-buffer)))))
 
@@ -151,22 +151,23 @@ With non-nil ARG, look forwards for it."
 
 '(or (get symbol 'emtt:test-thru) symbol)
 
-(defun emt:suite-sym-at-point () 
+(defun emtel:suite-sym-at-point () 
    "Return the symbol of the test suite relevant to the definition at point"
    
    (or
       ;;First try to find it backwards
-      (emt:suite-sym-at-point-x nil)
+      (emtel:suite-sym-at-point-x nil)
       ;;If that fails, try to find it forwards
-      (emt:suite-sym-at-point-x -1)))
+      (emtel:suite-sym-at-point-x -1)))
 
 ;;;_ , emt:lib-at-point
 
 ;;Command: Run the library of symbol at point, or failing that, file
 ;;at point.  Give a prompt for confirmation.
 ;;Can use `symbol-file'
-;;;_ , emtl:read-testable-library
-(defun emtl:read-testable-library (prompt)
+
+;;;_ , emtel:read-testable-library
+(defun emtel:read-testable-library (prompt)
    "Interactively read the name of a library containing tests.
 PROMPT is a prompt string"
    
@@ -188,7 +189,7 @@ PROMPT is a prompt string"
    
    (interactive
       (list
-	 (emtl:read-testable-library 
+	 (emtel:read-testable-library 
 	    "Run tests of which library: ")))
    
    ;;Want to use locate-library but can't easily test it.  But with
@@ -197,12 +198,12 @@ PROMPT is a prompt string"
    (let*
       (
 	 (test-id
-	    (make-emt:test-ID:e-n:library:elisp-load
+	    (emthow:make-library:elisp-load
 	       ;;$$INSPECTME Should this by symbol or string?  Or
 	       ;;allow both?
 	       ;;Or change type to know both lib symbol and true path?
 	       :load-name (intern-soft library))))
-      (emtt:dispatch-normal test-id nil receiver)))
+      (emtl:dispatch-normal test-id nil receiver)))
 
 
 ;;;_. Footers

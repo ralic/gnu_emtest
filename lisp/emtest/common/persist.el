@@ -1,4 +1,4 @@
-;;;_ emtest/common/emt-persist.el --- Persistence for emtest
+;;;_ emtest/common/persist.el --- Persistence for emtest
 
 ;;;_. Headers
 ;;;_ , License
@@ -43,10 +43,11 @@
 ;;;_  . Database objects
 ;;;_   , Db object, as in the database
 (defstruct (emt:db:single
+	    (:constructor emt:db:make-single)
 	      (:conc-name emt:db:single->))
    
    "One version of an object, as stored in this database"
-   version-id ;;Same as `version-id' in `emt:db:version-index.'
+   version-id ;;Same as `version-id' in `emt:db:version-index'
    value      ;;Of arbitrary type
    find-value ;;Indicates any special means of finding the real value.
    (use-category () :type emt:persist:use-category)
@@ -56,12 +57,15 @@
 
 ;;;_   , All use-versions of an object
 (defstruct (emt:db:persist-archive
+	    (:constructor emt:db:make-persist-archive)
 	      (:conc-name emt:db:persist-archive->))
    "All versions of an object, as stored in this database."
    (list () :type (repeat emt:db:single)))
 
 ;;;_  . Group index
-(defstruct emt:db:group
+(defstruct (emt:db:group
+	    (:constructor emt:db:make-group)
+	    (:conc-name emt:db:group-))
    "An index to a group of records, as stored in this database."
    ;;Contents are TBD
    )
@@ -72,12 +76,13 @@
    '(or emt:db:persist-archive emt:db:group))
 ;;;_  . emt:db:record-alist
 ;;Just an alist element: (id . VALUE)
-;;ID is the same type as `id' in `emt:db:id-index.'
+;;ID is the same type as `id' in `emt:db:id-index'
 (deftype emt:db:record-alist () 
    "Record alist in a database"
    '(repeat (cons * emt:db:record)))
 ;;;_  . The database, as seen by callers.
 (defstruct (emt:db:whole
+	    (:constructor emt:db:make-whole)
 	      (:conc-name emt:db:whole->))
    "The database, as seen by callers"
    (list () :type emt:db:record-alist)
@@ -85,9 +90,11 @@
    mode)
 
 ;;;_ , Interface for using results
-;;;_  . emt:extract-got
+;;$$MOVE ME to a viewer module.
+;;$$OBSOLESCENT or at least needs heavy adapting.
+;;;_  . emt:db:view:extract
 
-(defun emt:extract-got (diag-call arg-ix)
+(defun emt:db:view:extract (diag-call arg-ix)
    ""
    (check-type diag-call emt:result:diag:call)
    (check-type arg-ix integer)
@@ -106,9 +113,9 @@
 	 (t (error "Argument %s is not a comparand"
 	       arg-ix)))))
 
-;;;_  . emt:persist:view-obj
+;;;_  . emtdb:view:view-obj
 ;;;###autoload
-(defun emt:persist:view-obj (tried)
+(defun emtdb:view:view-obj (tried)
    ""
    (interactive
       (list 
@@ -132,9 +139,9 @@
 	 (insert value))
       (pop-to-buffer buf)))
 
-;;;_  . emt:persist:accept-correct
+;;;_  . emt:db:view:accept-correct
 ;;;###autoload
-(defun emt:persist:accept-correct (call tried)
+(defun emt:db:view:accept-correct (call tried)
    ""
 
    (interactive
@@ -157,28 +164,30 @@
 	 (id 
 	    (etypecase tried
 	       (emt:result:diag:tried-persist-version.
-		  (emt:db:version-index.-id-index
+		  (emt:db:version-index->id-index
 		     (emt:result:diag:tried-persist-version.-placeholder
 			tried)))
 	       
 	       (emt:result:diag:tried-persist-archive.
 		  (emt:result:diag:tried-persist-archive.-placeholder
 		     tried)))))
-      (check-type id emt:db:id-index.)
+      (check-type id emt:db:id-index)
 
       (emt:db:set id 'correct-answer 
-	 (emt:extract-got call arg-ix))))
+	 (emt:db:view:extract call arg-ix))))
 
 
 ;;;_ , Interface for testing with persists
 
-;;;_  . emt:persist:value
+;;;_  . emt:db:single-value
 
+;;$$OBSOLESCENT
 ;;Let's keep `emt:persist' outside of here for the moment.  Also, Any
 ;;fancy rewrite-and-retry processing will occur outside of here,
 ;;possibly in a condition-case that knows which predicates that is
 ;;meaningful for.
-(defun emt:persist:value (persist-id)
+'
+(defun emt:db:single-value (persist-id)
    ""
    (let
       (
@@ -201,6 +210,7 @@
 
 ;;;_  . emt:funcall-handle-persistence-x
 ;;OBSOLESCENT
+'
 (defun emt:funcall-handle-persistence-x (args)
    ""
    (catch 'emt:funcall-handle-persistence
@@ -210,7 +220,7 @@
 		;;This helper function doesn't look at its first argument
 		:test
 		#'(lambda (dummy x)
-		     (emt:db:id-index.-p x)))))
+		     (emt:db:id-index-p x)))))
 
 	 (unless persist-arg 
 	    (throw 'emt:funcall-handle-persistence
@@ -262,9 +272,6 @@
 		  (signal 'emt:already-handled ())))))))
 
 
-;;;_   , Tests
-;;In t/emt-persist.el
-
 ;;;_ , Interface for tester helpers
 ;;;_  . emt:db:get-versions
 (defun emt:db:get-versions (id &optional filter)
@@ -296,9 +303,9 @@
 
    (let* 
       ((db-index
-	  (emt:db:version-index.-id-index version-placeholder))
+	  (emt:db:version-index->id-index version-placeholder))
 	 (version-id
-	    (emt:db:version-index.-version-id version-placeholder))
+	    (emt:db:version-index->version-id version-placeholder))
 	 (persist-archive
 	    (emt:db:by-ix:get-record db-index)))
       (emt:db:single:get-value
@@ -310,7 +317,7 @@
 (defun emt:db:set (id category object-value)
    ""
    (check-type category emt:persist:use-category)
-   (check-type id emt:db:id-index.)
+   (check-type id emt:db:id-index)
 
    (let
       ((obj 
@@ -385,20 +392,20 @@ A and B must be use-categories"
    (setf (emt:db:single->use-category obj) new-category))
 
 ;;;_   , emt:db:single:ctor
-(defalias 'emt:db:single:ctor 'make-emt:db:single)
+(defalias 'emt:db:single:ctor 'emt:db:make-single)
 ;;;_  . persist-archives
 ;;;_   , emt:db:persist-archive:ctor
-(defalias 'emt:db:persist-archive:ctor 'make-emt:db:persist-archive)
+(defalias 'emt:db:persist-archive:ctor 'emt:db:make-persist-archive)
 
 ;;;_ , singletons wrt the whole database
 ;;;_  . emt:db:single:create
 (defun emt:db:single:create (obj index)
    ""
    (check-type obj emt:db:single)
-   (check-type index emt:db:id-index.)
+   (check-type index emt:db:id-index)
    
    (emt:db:internal:with-db 
-      (db (emt:db:id-index.-backend index)) 
+      (db (emt:db:id-index->backend index)) 
       'read/write
       (let*
 	 ;;$$REPLACE ME
@@ -407,7 +414,7 @@ A and B must be use-categories"
 	 ((persist-archive
 	     (emt:db:whole:get-record
 		db
-		(emt:db:id-index.-id index) 
+		(emt:db:id-index->id index) 
 		t))
 	    (new-persist-archive
 	       (emt:db:persist-archive:create-single
@@ -416,7 +423,7 @@ A and B must be use-categories"
 	 (emt:db:whole:update-record 
 	    new-persist-archive 
 	    db 
-	    (emt:db:id-index.-id index)))))
+	    (emt:db:id-index->id index)))))
 
 
 
@@ -456,12 +463,12 @@ A and B must be use-categories"
 (defun emt:db:by-ix:get-record (index &optional create-p)
    "Return the PERSIST-ARCHIVE associated with INDEX.
 If CREATE-P is non-nil, create it if it doesn't exist."
-   (check-type index emt:db:id-index.)
+   (check-type index emt:db:id-index)
    (emt:db:internal:with-db
-      (db (emt:db:id-index.-backend index)) 
+      (db (emt:db:id-index->backend index)) 
       (if create-p 'read/write 'read)
       (emt:db:whole:get-record
-	 db (emt:db:id-index.-id index) create-p)))
+	 db (emt:db:id-index->id index) create-p)))
 
 
 
@@ -571,7 +578,7 @@ If CREATE-P is non-nil, create it if it doesn't exist."
       ((filename  ;;Is this an index or the list to one?
 	  (second backend)))
       '
-      (make-emt:db:whole
+      (emt:db:make-whole
 	 :list
 	 (tehom-persist-buffer-as-const-obj filename x () #'listp
 	    x))
@@ -594,7 +601,7 @@ If CREATE-P is non-nil, create it if it doesn't exist."
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'emtest/common/emt-persist)
+(provide 'emtest/common/persist)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -602,4 +609,4 @@ If CREATE-P is non-nil, create it if it doesn't exist."
 ;;;_  + End:
 
 ;;;_ , End
-;;; emtest/common/emt-persist.el ends here
+;;; emtest/common/persist.el ends here

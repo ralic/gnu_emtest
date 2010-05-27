@@ -30,7 +30,7 @@
 ;;;_ , Requires
 
 (require 'emtest/common/result-types)
-(require 'emtest/testhelp/eg)
+(require 'emtest/testhelp/tagnames)
 
 ;;;_. Body
 
@@ -38,7 +38,7 @@
 
 
 (defconst emt:result:thd:examples
-   (emt:eg:define+ ;;xmp:ebd26a0a-1392-45c5-a137-0395cb079589
+   (emtg:define+ ;;xmp:ebd26a0a-1392-45c5-a137-0395cb079589
    ((project emtest)(library result-types))
    (transparent-tags () (type name))
    
@@ -95,11 +95,11 @@
 	    :info-about ()
 	    :children 
 	    ;;If `eg' were more advanced, we could just map over names.
-	    (emt:eg:narrow ((type grade-event))
+	    (emtg:narrow ((type grade-event))
 	       (list 
-		  (emt:eg (name fail))
-		  (emt:eg (name pass))		  
-		  (emt:eg (name ungraded))))
+		  (emtg (name fail))
+		  (emtg (name pass))		  
+		  (emtg (name ungraded))))
 	    :aborted-p nil)
    
 	 (doc () "Example of a result event-group with various event children")
@@ -110,11 +110,11 @@
 	    ;; :name "An event-group which contained some other event-groups"
 	    :info-about ()
 	    :children 
-	    (emt:eg:narrow ((type event-list))
+	    (emtg:narrow ((type event-list))
 	       (list 
-		  (emt:eg (name simple))
-		  (emt:eg (name has-info-about))
-		  (emt:eg (name has-child-events))))
+		  (emtg (name simple))
+		  (emtg (name has-info-about))
+		  (emtg (name has-child-events))))
 	    :aborted-p nil)
    
 	 (doc () "Example of a result event-group with other event-groups as children")
@@ -127,11 +127,11 @@
 	    :info-about ()
 	    :children 
 	    (list 
-	       (emt:eg (type grade-event) (name pass))
-	       (emt:eg (type event-list)       (name simple))
-	       (emt:eg (type grade-event) (name ungraded))
-	       (emt:eg (type event-list)       (name has-info-about))
-	       (emt:eg (type grade-event) (name fail)))
+	       (emtg (type grade-event) (name pass))
+	       (emtg (type event-list)       (name simple))
+	       (emtg (type grade-event) (name ungraded))
+	       (emtg (type event-list)       (name has-info-about))
+	       (emtg (type grade-event) (name fail)))
 	    :aborted-p nil)
    
 	 (doc () "Example of a result event-group with other event-groups as children")
@@ -143,12 +143,12 @@
 	    :info-about ()
 	    :children 
 	    (list 
-	       (emt:eg (type event-list)       (name simple))
-	       (emt:eg (type grade-event) (name pass))
-	       (emt:eg (type grade-event) (name ungraded))
-	       (emt:eg (type event-list)       (name has-info-about))
-	       (emt:eg (type grade-event) (name fail))
-	       (emt:eg (type event-list)       (name has-child-events)))
+	       (emtg (type event-list)       (name simple))
+	       (emtg (type grade-event) (name pass))
+	       (emtg (type grade-event) (name ungraded))
+	       (emtg (type event-list)       (name has-info-about))
+	       (emtg (type grade-event) (name fail))
+	       (emtg (type event-list)       (name has-child-events)))
 	    
 	    :aborted-p nil)
    
@@ -172,8 +172,8 @@
 	    :info-about ()
 	    :children 
 	    (list
-	       (emt:eg (type grade-event) (name pass))
-	       (emt:eg (type grade-event) (name ungraded)))
+	       (emtg (type grade-event) (name pass))
+	       (emtg (type grade-event) (name ungraded)))
 	    
 	    :aborted-p t)
    
@@ -189,12 +189,12 @@
 	    :grouping 
 	    (make-emt:test-ID
 	       :explore-next
-	       (make-emt:test-ID:e-n:unique-clause))
+	       (emthow:make-unique-clause))
 	    :info ()
 	    :status
 	    (make-emt:result:status:was-run
 	       :events 
-	       (emt:eg (type event-list) (name has-child-events)))))
+	       (emtg (type event-list) (name has-child-events)))))
 
       (item
 	 ((name another))
@@ -203,7 +203,7 @@
 	    (make-emt:test-ID
 	       :context '((x 0))
 	       :explore-next
-	       (make-emt:test-ID:e-n:unique-clause))
+	       (emthow:make-unique-clause))
 	    :info ()
 	    :status
 	    (make-emt:result:status:was-run

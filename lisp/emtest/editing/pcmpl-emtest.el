@@ -29,20 +29,20 @@
 
 ;;;_ , Requires
 
-(require 'emtest/testhelp/eg)
+(require 'emtest/testhelp/tagnames)
 (require 'pcmpl-elisp)
 
 ;;;_. Body
 
-;;;_ , helpers for eg library
+;;;_ , helpers for tagnames library
 
-;;;_  . pcomplete/emacs-lisp-mode/emt:eg
+;;;_  . pcomplete/emacs-lisp-mode/emtg
 ;;;###autoload
-(defun pcomplete/emacs-lisp-mode/emt:eg ()
+(defun pcomplete/emacs-lisp-mode/emtg ()
    ""
 
    (let
-      ((avail-tags (emt:eg:all-tags)))
+      ((avail-tags (emtg:all-tags)))
       (while t
 	 (pcomplete-here
 	    '(
@@ -53,7 +53,7 @@
 			 (  (tag
 			       (pcomplete-arg-as-sexp 1))
 			    (avail-args
-			       (emt:eg:all-tag-args tag)))
+			       (emtg:all-tag-args tag)))
 			 (pcomplete-here-sexps avail-args)))))
 	    nil nil nil (list avail-tags))
 
@@ -71,13 +71,13 @@
 
 	    (setq avail-tags (remove tag avail-tags))))))
 
-;;;_  . pcomplete/emacs-lisp-mode/emt:eg:narrow
+;;;_  . pcomplete/emacs-lisp-mode/emtg:narrow
 ;;;###autoload
-(defun pcomplete/emacs-lisp-mode/emt:eg:narrow ()
+(defun pcomplete/emacs-lisp-mode/emtg:narrow ()
    ""
    ;;May make a common worker instead.
    (pcomplete-nested
-      (pcomplete/emacs-lisp-mode/emt:eg)))
+      (pcomplete/emacs-lisp-mode/emtg)))
 ;;;_ , Helpers for emt-define
 ;;;_  . pcomplete/emacs-lisp-mode/emt:define-2
 ;;Adapted for emt:define-3 but untested.
@@ -93,7 +93,7 @@
 	    (save-excursion
 	       (goto-char (pcomplete-begin 'first))
 	       (up-list -1)
-	       (symbol-name (emt:suite-sym-at-point))))))
+	       (symbol-name (emtel:suite-sym-at-point))))))
 
    ;;How to indicate that this could also be a bare symbol?
    (pcomplete-nested
@@ -122,18 +122,15 @@
 Response: WRITEME."))
 
 	    ;;$$ADD ME This could volunteer common useful functors in
-	    ;;all their glory: `emt:eg:narrow',
-	    ;;`with-buffer-containing-object', `emtp:eval', etc
+	    ;;all their glory: `emtg:narrow',
+	    ;;`emtb:with-buf', `emtp:eval', etc
 	    (pcomplete-here-sexps '((progn)))))))
 
 
 
-;;;_   , Tests
-;;It's direct
-
-;;;_  . mockbuf with-buffer-containing-object
+;;;_  . emtb:with-buf
 ;;;###autoload
-(defun pcomplete/emacs-lisp-mode/with-buffer-containing-object ()
+(defun pcomplete/emacs-lisp-mode/emtb:with-buf ()
    ""
    (pcomplete-nested
       (while t
@@ -148,7 +145,7 @@ Response: WRITEME."))
 	    ;;but maybe bind help.  
 	    ;;((:sexp :printed-object))
 	    ;;Make a blank string - user can fill it in.
-	    (:string (pcomplete-here-sexps '("" (emt:eg))))
+	    (:string (pcomplete-here-sexps '("" (emtg))))
 	    ;;Pick a file
 	    ;;(:file)
 	    ;;Pick a dir.  If a value is given, we'd like to use it to
@@ -171,10 +168,10 @@ Response: WRITEME."))
    (mapcar
       #'(lambda (x)
 	   (add-to-list 'pcomplete-elisp-command-names-list x))
-      '(  "emt:eg"
-	  "emt:eg:narrow"
+      '(  "emtg"
+	  "emtg:narrow"
 	  "emt:define-2"
-	  "with-buffer-containing-object"
+	  "emtb:with-buf"
 	  )))
 
 

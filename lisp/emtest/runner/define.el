@@ -61,14 +61,16 @@
    "Equivalent to `progn' just if emtest is available."
    (cons 'progn body))
 
-;;;_ , emt:deftest-2-make-prop-eval-form
-(defun emt:deftest-2-make-prop-eval-form (spec)
+;;;_ , emtd:make-prop-eval-form
+(defun emtd:make-prop-eval-form (spec)
    ""
    
    (destructuring-bind (sym val-form) spec
       `(list ',sym ,val-form)))
 
 ;;;_ , Version 3
+;;;_  . emt:deftest
+(defalias 'emt:deftest 'emt:deftest-3)
 ;;;_  . emt:deftest-3
 ;;;###autoload
 (defmacro emt:deftest-3 (name-or-props &rest clauses)
@@ -101,15 +103,15 @@
 		'(load-file-name ,load-file-name)
 		,@(if props
 		     (mapcar
-			#'emt:deftest-2-make-prop-eval-form
+			#'emtd:make-prop-eval-form
 			props)
 		     ())))
 	  
 	  (put ,of-what 'emt:suite ',clauses))))
 
-;;;_  . emtt:destructure-suite-3
+;;;_  . emtd:destructure-suite-3
 
-(defmacro emtt:destructure-suite-3 (suite &rest body)
+(defmacro emtd:destructure-suite-3 (suite &rest body)
    "Run BODY with the contents of SUITE bound as indicated.
 SUITE must be a symbol naming a test suite.
 
@@ -130,11 +132,8 @@ SUITE must be a symbol naming a test suite.
        
        ,@body))
 
-;;;_  . emtt:destructure-clause-3
-;;No longer will provide `doc'.  This form is tentative.  Later
-;;clauses may become more complex.
-;;I've made FORM optional - also considered making FORM the rest of it.
-(defmacro emtt:destructure-clause-3 (clause &rest body)
+;;;_  . emtd:destructure-clause-3
+(defmacro emtd:destructure-clause-3 (clause &rest body)
    "Run BODY with the contents of CLAUSE bound as indicated.
 
 CLAUSE must be a clause as in a test suite, for instance any element

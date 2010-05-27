@@ -1,4 +1,4 @@
-;;;_ emtest/testhelp/eg/rtest.el --- Tests of eg
+;;;_ emtest/testhelp/tagnames/rtest.el --- Tests of eg
 
 ;;;_. Headers
 ;;;_ , License
@@ -29,85 +29,85 @@
 
 ;;;_ , Requires
 
-(require 'emtest/testhelp/eg/testhelp)
+(require 'emtest/testhelp/tagnames/testhelp)
 ;;;_. Body
 
 ;;;_  . Define example data
-;;This can't use eg because of bootstrap issues.
-;;;_   , emt:eg:thd:example-examples
-(defconst emt:eg:thd:example-examples
+;;This can't use tagnames because of bootstrap issues.
+;;;_   , emtg:thd:example-examples
+(defconst emtg:thd:example-examples
    (list
       ;;0 examples in (dummy-tag 0)
 
       ;;1 example in (dummy-tag 1)
       ;;Also tagged (a t)
-      (make-emt:example.
+      (emtg:make-example
 	 :definer-id 'dummy-id
 	 :tagset    '((dummy-tag 1) (a t))
 	 :value      'tag-1-a)
 
       ;;2 examples in (dummy-tag 2)
       ;;Also tagged (a t) and (b t) (one each) 
-      (make-emt:example.
+      (emtg:make-example
 	 :definer-id 'dummy-id
 	 :tagset    '((dummy-tag 2) (a t))
 	 :value      'tag-2-a)
 
-      (make-emt:example.
+      (emtg:make-example
 	 :definer-id 'dummy-id
 	 :tagset    '((dummy-tag 2) (b t))
 	 :value      'tag-2-b))
    
    "Example of a list of examples in their full storage format" )
 
-;;;_   , emt:eg:thd:example-examples-2
-(defconst emt:eg:thd:example-examples-2
+;;;_   , emtg:thd:example-examples-2
+(defconst emtg:thd:example-examples-2
    (cons
-      (make-emt:example.
+      (emtg:make-example
 	 :definer-id 'dummy-id
 	 :tagset    '(c)
 	 :value      'c)
-      emt:eg:thd:example-examples)
+      emtg:thd:example-examples)
    "" )
 
-;;;_   , emt:eg:th:with-example-examples
-(defmacro emt:eg:th:with-example-examples (&rest body)
+;;;_   , emtg:th:with-example-examples
+(defmacro emtg:th:with-example-examples (&rest body)
    ""
    ;;Values all name the example they occur in
    `(let
        ;;The larger tagset constrainer is empty.
-       (  (emt:eg:tagset ())
-	  (emt:eg:all-examples emt:eg:thd:example-examples))
+       (  (emtg:tagset ())
+	  (emtg:all-examples emtg:thd:example-examples))
        ,@body))
 
-;;;_   , emt:eg:th:with-example-examples-2
-(defmacro emt:eg:th:with-example-examples-2 (&rest body)
+;;;_   , emtg:th:with-example-examples-2
+(defmacro emtg:th:with-example-examples-2 (&rest body)
    ""
    ;;Values all name the example they occur in
    `(let
        ;;The larger tagset constrainer is empty.
-       (  (emt:eg:tagset ())
-	  (emt:eg:all-examples emt:eg:thd:example-examples-2))
+       (  (emtg:tagset ())
+	  (emtg:all-examples emtg:thd:example-examples-2))
        ,@body))
 
-;;;_ , Tests of emt:eg:th:validate-helper-retval
+;;;_ , Tests of emtg:th:validate-helper-retval
 
 ;;;_  . Test data
 
 ;;For bootstrap reasons, these examples can't be defined with
-;;`emt:eg:define'
+;;`emtg:define'
 
-(defconst emt:eg:define:td:typical-helper-retval
-   (make-emt:eg:helper-rettype.
+(defconst emtg:define:td:typical-helper-retval
+   (emtg:make-helper-rettype
       :value-info
       (list
-	 (make-emt:eg:valuedef-type.
+	 (emtg:make-valuedef-type
 	    :tagset '((dummy-tag 1))
 	    :value-form 12)))
    
    "" )
 
-(defconst emt:eg:define:td:docstring-1
+(defconst emtg:define:td:docstring-1
    "A dummy docstring"
    "" )
 
@@ -116,21 +116,21 @@
 ;;$$This should be shared with previous uses in tests.  But there's a
 ;;bootstrapping problem.  So define real names for these, and use
 ;;those objects here by name.
-(defconst emt:eg:thd:examples
-   (emt:eg:define+ ;;xmp:757125c0-8d83-4e75-ae31-78104b90639f
-      ((project emtest)(library emt:eg)(section external))
+(defconst emtg:thd:examples
+   (emtg:define+ ;;xmp:757125c0-8d83-4e75-ae31-78104b90639f
+      ((project emtest)(library emtg)(section external))
       (transparent-tags () (type))
       (item ((type docstring))
-	 emt:eg:define:td:docstring-1)
+	 emtg:define:td:docstring-1)
       (item ((type eg-item)(name 0))
-	 (make-emt:example.
+	 (emtg:make-example
 	    :definer-id 'dont-care
-	    :value `(doc ,(emt:eg:value 
+	    :value `(doc ,(emtg:value 
 			     :narrow ((type docstring))
 			     :ignore-tags (name)))
 	    :tagset '((dummy-tag 1))))
       (item ((type eg-item)(name 1))
-	 (make-emt:example.
+	 (emtg:make-example
 	    :definer-id 'dont-care
 	    :value 'dont-care
 	    :tagset '((dummy-tag 1))
@@ -140,10 +140,10 @@
 
       ))
 
-;;;_  . emt:eg:see-err Include errors in examples
-(defun emt:eg:see-err (form)
+;;;_  . emtg:see-err Include errors in examples
+(defun emtg:see-err (form)
    "Capture the error raised by FORM.
-Use this inside eg, otherwise you risk capturing errors that eg uses
+Use this inside tagnames, otherwise you risk capturing errors that tagnames uses
 internally.
 FORM must be a form that, when evalled, raises an error"
    
@@ -153,8 +153,8 @@ FORM must be a form that, when evalled, raises an error"
 	 ;;If it failed to raise an error, raise a (meta-)error.
 	 (error "Form failed to raise error: %s" form))
 
-      ;;If it's an eg error, re-raise it (This is important to do)
-      (emt:eg:err (signal (car err)(cdr err)))
+      ;;If it's an tagname error, re-raise it (This is important to do)
+      (emtg:err (signal (car err)(cdr err)))
       ;;Otherwise trap it and pass on its value
       (error err)))
 
@@ -162,19 +162,19 @@ FORM must be a form that, when evalled, raises an error"
 
 
 ;;;_  . Tests
-(rtest:deftest emt:eg:th:validate-helper-retval
+(rtest:deftest emtg:th:validate-helper-retval
 
-   (  "Validate this against `emt:eg:define:td:typical-helper-retval'."
-      (emt:eg:th:validate-helper-retval
-	 emt:eg:define:td:typical-helper-retval))
+   (  "Validate this against `emtg:define:td:typical-helper-retval'."
+      (emtg:th:validate-helper-retval
+	 emtg:define:td:typical-helper-retval))
 
    (  "Situation: We get a retval that's correct
 Response: Return non-nil."
-      (emt:eg:th:validate-helper-retval
-	 (make-emt:eg:helper-rettype.
+      (emtg:th:validate-helper-retval
+	 (emtg:make-helper-rettype
 	    :value-info
 	    (list
-	       (make-emt:eg:valuedef-type.
+	       (emtg:make-valuedef-type
 		  :tagset
 		  ()
 		  :value-form
@@ -184,10 +184,10 @@ Response: Return non-nil."
    (  "Situation: We get a retval that's displaced one place too high
 Response: Return nil."
       (not
-	 (emt:eg:th:validate-helper-retval
-	    (make-emt:eg:helper-rettype.
+	 (emtg:th:validate-helper-retval
+	    (emtg:make-helper-rettype
 	       :value-info
-	       (make-emt:eg:valuedef-type.
+	       (emtg:make-valuedef-type
 		  :tagset
 		  ()
 		  :value-form
@@ -196,8 +196,8 @@ Response: Return nil."
    (  "Situation: We get a retval whose contents are messed up
 Response: Return nil."
       (not
-	 (emt:eg:th:validate-helper-retval
-	    (make-emt:eg:helper-rettype.
+	 (emtg:th:validate-helper-retval
+	    (emtg:make-helper-rettype
 	       :value-info
 	       (list
 		  (list
@@ -216,7 +216,7 @@ Response: Return nil."
 (rtest:deftest emt:see-item
 
    (  "Behavior: The return value validates OK."
-      (emt:eg:th:validate-helper-retval
+      (emtg:th:validate-helper-retval
 	 (emt:see-item () () 'the-value-form)))
    
    ;;Punt `others' for now.  Later, test that it can return also a doc
@@ -227,7 +227,7 @@ Response: Return nil."
 (rtest:deftest emt:see-doc
 
    (  "Behavior: The return value validates OK."
-      (emt:eg:th:validate-helper-retval
+      (emtg:th:validate-helper-retval
 	 (emt:see-doc () () "A doc string")))
 
    ;;For now, punt but be structurally correct
@@ -240,10 +240,10 @@ Response: Return nil."
    (  "Situation: In definer, item mismatches type.
 Type spec is before item spec.
 Response: error."
-      (emt:eg:define:th:with-empty-tagset ()
+      (emtg:define:th:with-empty-tagset ()
 	 (assert
-	    (emt:gives-error
-	       (emt:eg:define
+	    (emth:gives-error
+	       (emtg:define
 		  dummy-id ()
 		  (type-must-be ((dummy-type-tag a)) integer)
 		  (item
@@ -255,10 +255,10 @@ Response: error."
    (  "Situation: In definer, item mismatches type.
 Item spec is before type spec.
 Response: error."
-      (emt:eg:define:th:with-empty-tagset ()
+      (emtg:define:th:with-empty-tagset ()
 	 (assert
-	    (emt:gives-error
-	       (emt:eg:define
+	    (emth:gives-error
+	       (emtg:define
 		  dummy-id ()
 		  (item
 		     ((dummy-type-tag a))
@@ -269,9 +269,9 @@ Response: error."
    
    (  "Situation: In definer, item matches type
 Response: item is usable as normal."
-      (emt:eg:define:th:with-empty-tagset ()
+      (emtg:define:th:with-empty-tagset ()
 
-	 (emt:eg:define
+	 (emtg:define
 	    dummy-id ()
 	    (type-must-be ((dummy-type-tag a)) symbol)
 	    (item
@@ -279,8 +279,8 @@ Response: item is usable as normal."
 	       'dummy-1-type-a))
 	 (assert
 	    (not
-	       (emt:gives-error
-		  (emt:eg (dummy-type-tag a)))))
+	       (emth:gives-error
+		  (emtg (dummy-type-tag a)))))
 	 t)))
 
 
@@ -288,28 +288,28 @@ Response: item is usable as normal."
 (rtest:deftest emt:see-group
    
    (  "Behavior: The return value validates OK."
-      (emt:eg:th:validate-helper-retval
+      (emtg:th:validate-helper-retval
 	 (emt:see-group () () '(item () the-value-form)))))
 
 
 ;;;_   , Tests
-(put 'emt:eg:remove-earlier-defs 'rtest:test-thru
-   'emt:eg:define)
+(put 'emtg:remove-earlier-defs 'rtest:test-thru
+   'emtg:define)
 
 ;;;_   , Tests
-(put 'emt:eg:propty-match-ctxt-p 'rtest:test-thru
-   'emt:eg:find-properties)
+(put 'emtg:propty-match-ctxt-p 'rtest:test-thru
+   'emtg:find-properties)
 
 ;;;_   , Tests
-(rtest:deftest emt:eg:find-properties
+(rtest:deftest emtg:find-properties
 
    (  "Situation: target-tagset exactly matches the only property.
 Response: Return list has just the value of that property."
       (equal
-	 (emt:eg:find-properties
+	 (emtg:find-properties
 	    '((dummy-tag 1))
 	    (list
-	       (make-emt:example.
+	       (emtg:make-example
 		  :definer-id 'dummy-id
 		  :tagset '((dummy-tag 1))
 		  :value '(prop-sym1 val1))))
@@ -318,218 +318,218 @@ Response: Return list has just the value of that property."
 
 
 ;;;_   , Tests
-(put 'emt:eg:apply-proplist-specials-to-example 'rtest:test-thru
+(put 'emtg:apply-proplist-specials-to-example 'rtest:test-thru
    'emt:see-type-must-be)
 
-;;;_   , emt:eg:apply-prpty-makers-to-examples
+;;;_   , emtg:apply-prpty-makers-to-examples
 
-;;;_    . Test helper emt:eg:apply-prpty-makers-to-examples:th
-(defun emt:eg:apply-prpty-makers-to-examples:th (prpty-maker example)
-   "Like `emt:eg:apply-prpty-makers-to-examples' but deals only with
+;;;_    . Test helper emtg:apply-prpty-makers-to-examples:th
+(defun emtg:apply-prpty-makers-to-examples:th (prpty-maker example)
+   "Like `emtg:apply-prpty-makers-to-examples' but deals only with
 singletons.  Returns a singleton"
    (car
-      (emt:eg:apply-prpty-makers-to-examples
+      (emtg:apply-prpty-makers-to-examples
 	 (list prpty-maker)
 	 (list example))))
 
 ;;;_   , Tests
-(rtest:deftest emt:eg:apply-prpty-makers-to-examples
+(rtest:deftest emtg:apply-prpty-makers-to-examples
 
    (  "Situation: X's tagset matches PROP's.
 Response: That property is added to X's property-list."
-      (emt:eg:define:th:with-empty-tagset ()
+      (emtg:define:th:with-empty-tagset ()
 	 (let*
 	    (
-	       (docstring emt:eg:define:td:docstring-1)
+	       (docstring emtg:define:td:docstring-1)
 	       (new-x
-		  (emt:eg:apply-prpty-makers-to-examples:th
-		     (make-emt:example.
+		  (emtg:apply-prpty-makers-to-examples:th
+		     (emtg:make-example
 			:definer-id 'dont-care
 			:value `(doc ,docstring)
 			:tagset '((dummy-tag 1)))
-		     (make-emt:example.
+		     (emtg:make-example
 			:definer-id 'dont-care
 			:value 'dont-care
 			:tagset '((dummy-tag 1))
 			:property-list ()))))
 	    
 	    (equal
-	       (emt:example.-property-list new-x)
+	       (emtg:example->property-list new-x)
 	       (list
 		  `(doc ,docstring))))))
 
    (  "Situation: X's tagset matches PROP's.
 X already has a different property.
 Response: The new property is added to X's property-list."
-      (emt:eg:define:th:with-empty-tagset ()
+      (emtg:define:th:with-empty-tagset ()
 	 (let*
 	    (
-	       (docstring emt:eg:define:td:docstring-1)
+	       (docstring emtg:define:td:docstring-1)
 	       (new-x
 
-		  (emt:eg:apply-prpty-makers-to-examples:th
+		  (emtg:apply-prpty-makers-to-examples:th
 
-		     (make-emt:example.
+		     (emtg:make-example
 			:definer-id 'dont-care
 			:value `(doc ,docstring)
 			:tagset '((dummy-tag 1)))
 
-		     (make-emt:example.
+		     (emtg:make-example
 			:definer-id 'dont-care
 			:value 'dont-care
 			:tagset '((dummy-tag 1))
 			:property-list (list '(other-prop other-value))))))
 	    
 	    (rtest:sets=
-	       (emt:example.-property-list new-x)
+	       (emtg:example->property-list new-x)
 	       (list
 		  `(doc ,docstring)
 		  '(other-prop other-value))))))
    
    (  "Situation: X's tagset does not match PROP's.
 Response: X is unchanged."
-      (emt:eg:define:th:with-empty-tagset ()
+      (emtg:define:th:with-empty-tagset ()
 	 (let*
 	    (
-	       (docstring emt:eg:define:td:docstring-1)
+	       (docstring emtg:define:td:docstring-1)
 	       (new-x
 
-		  (emt:eg:apply-prpty-makers-to-examples:th
+		  (emtg:apply-prpty-makers-to-examples:th
 
-		     (make-emt:example.
+		     (emtg:make-example
 			:definer-id 'dont-care
 			:value `(doc ,docstring)
 			:tagset '((dummy-tag 1)))
 
-		     (make-emt:example.
+		     (emtg:make-example
 			:definer-id 'dont-care
 			:value 'dont-care
 			:tagset '((dummy-tag 2))
 			:property-list ()))))
 	    
 	    (equal
-	       (emt:example.-property-list new-x)
+	       (emtg:example->property-list new-x)
 	       ())))))
 
 ;;;_   , Tests
 '
-(put 'emt:eg:see-new-examples 'rtest:test-thru
-   'emt:eg:define)
+(put 'emtg:see-new-examples 'rtest:test-thru
+   'emtg:define)
 
 ;;;_   , Tests
 
-(put 'emt:eg:valuedef->example 'rtest:test-thru
-   'emt:eg:define)
+(put 'emtg:valuedef->example 'rtest:test-thru
+   'emtg:define)
 
 ;;;_  . Tests
 ;;;_   , Test helper (Maybe obsolete)
-(defmacro emt:eg:try-valuedef->example:th (&rest body)
+(defmacro emtg:try-valuedef->example:th (&rest body)
    "
-Can't use `emt:eg' in body."
+Can't use `emtg' in body."
    
    `(let
-       (  (emt:eg:all-examples ())
-	  (emt:eg:delayed-examples ()))
+       (  (emtg:all-examples ())
+	  (emtg:delayed-examples ()))
        ,@body))
 
 ;;;_   , Tests
 '  ;;OBSOLETE
-(rtest:deftest emt:eg:try-valuedef->example
+(rtest:deftest emtg:try-valuedef->example
 
    (  "Situation: Form has no error.
-Response: Put it on the examples list `emt:eg:all-examples'."
-      (emt:eg:try-valuedef->example:th
-	 (emt:eg:try-valuedef->example
-	    (make-emt:eg:valuedef-type.
+Response: Put it on the examples list `emtg:all-examples'."
+      (emtg:try-valuedef->example:th
+	 (emtg:try-valuedef->example
+	    (emtg:make-valuedef-type
 	       :value-form
 	       12)
 	    'dummy-id
 	    ())
 	 
-	 (equal (length emt:eg:all-examples) 1)))
+	 (equal (length emtg:all-examples) 1)))
    
 
-   (  "Situation: Form throws an error of type `emt:eg:err-not-available'
-Response: Put it on the delayed list `emt:eg:delayed-examples'.
+   (  "Situation: Form throws an error of type `emtg:err-not-available'
+Response: Put it on the delayed list `emtg:delayed-examples'.
 The error doesn't escape."
-      (emt:eg:try-valuedef->example:th
-	 (emt:eg:try-valuedef->example
-	    (make-emt:eg:valuedef-type.
+      (emtg:try-valuedef->example:th
+	 (emtg:try-valuedef->example
+	    (emtg:make-valuedef-type
 	       :value-form
-	       '(signal 'emt:eg:err:not-found nil))
+	       '(signal 'emtg:err:not-found nil))
 	    'dummy-id
 	    ())
-	 (equal (length emt:eg:delayed-examples) 1))))
+	 (equal (length emtg:delayed-examples) 1))))
 ;;;_  . 
 
 
 ;;;_   , Test helper
-;;Maybe just call `emt:eg:define:th:with-empty-tagset'
-(defmacro emt:eg:try-valuedef->example-2:th (&rest body)
+;;Maybe just call `emtg:define:th:with-empty-tagset'
+(defmacro emtg:try-valuedef->example-2:th (&rest body)
    "
-Can't use `emt:eg' in body."
+Can't use `emtg' in body."
    
    `(let
-       (  (emt:eg:all-examples ())
-	  (emt:eg:*all-prpty-makers* ()))
+       (  (emtg:all-examples ())
+	  (emtg:*all-prpty-makers* ()))
        ,@body))
 
 
 ;;;_  . Tests
-(rtest:deftest emt:eg:try-valuedef->example-2
+(rtest:deftest emtg:try-valuedef->example-2
 
    (  "Situation: Form has no error.
-Response: Put it on the examples list `emt:eg:all-examples'.
+Response: Put it on the examples list `emtg:all-examples'.
 Return the empty list."
-      (emt:eg:try-valuedef->example-2:th
+      (emtg:try-valuedef->example-2:th
 	 (assert
 	    (null
-	       (emt:eg:try-valuedef->example-2
-		  (make-emt:eg:valuedef-type.
+	       (emtg:try-valuedef->example-2
+		  (emtg:make-valuedef-type
 		     :value-form
 		     12)
 		  'dummy-id)))
 	 
-	 (equal (length emt:eg:all-examples) 1)))
+	 (equal (length emtg:all-examples) 1)))
    
 
-   (  "Situation: Form throws an error of type `emt:eg:err-not-available'
+   (  "Situation: Form throws an error of type `emtg:err-not-available'
 Response: The error doesn't escape.
 Return a list consisting of that example."
-      (emt:eg:try-valuedef->example-2:th
+      (emtg:try-valuedef->example-2:th
 	 (let
 	    ((valuedef
-		(make-emt:eg:valuedef-type.
+		(emtg:make-valuedef-type
 		  :value-form
-		  '(signal 'emt:eg:err:not-found nil))))
+		  '(signal 'emtg:err:not-found nil))))
 	 (assert
 	    (equal
-	       (emt:eg:try-valuedef->example-2
+	       (emtg:try-valuedef->example-2
 		  valuedef
 		  'dummy-id)
 	       (list valuedef))
 	    t)
 	 (assert
-	    (equal (length emt:eg:all-examples) 0))
+	    (equal (length emtg:all-examples) 0))
 	 t))))
 
 ;;;_  . Tests
-(put 'emt:eg:valuedef->property 'rtest:test-thru
-   'emt:eg:define)
+(put 'emtg:valuedef->property 'rtest:test-thru
+   'emtg:define)
 
 ;;;_  . Tests
-(put 'emt:eg:tagset-strip 'rtest:test-thru
-   'emt:eg:tagset-strip-transparents)
+(put 'emtg:tagset-strip 'rtest:test-thru
+   'emtg:tagset-strip-transparents)
 
 ;;;_  . Tests
-(rtest:deftest emt:eg:tagset-strip-transparents
+(rtest:deftest emtg:tagset-strip-transparents
    ;;
    (  "Situation: No transparent-tags among props
 Response: Returns exactly the tagset."
       (let
 	 ((tagset '((dummy-tag 1))))
 	 (equal
-	    (emt:eg:tagset-strip-transparents tagset ())
+	    (emtg:tagset-strip-transparents tagset ())
 	    tagset)))
 
 
@@ -538,7 +538,7 @@ Response: Returns tagset with matching tags part removed."
       (let
 	 ((tagset '((dummy-tag 1)(dummy-tag-2 2))))
 	 (equal
-	    (emt:eg:tagset-strip-transparents 
+	    (emtg:tagset-strip-transparents 
 	       tagset
 	       '((transparent-tags (dummy-tag))))
 	    
@@ -549,41 +549,41 @@ Behavior: Still works."
       (let
 	 ((tagset '(dummy-tag)))
 	 (equal
-	    (emt:eg:tagset-strip-transparents tagset ())
+	    (emtg:tagset-strip-transparents tagset ())
 	    tagset))))
 
 ;;;_  . Tests
-(put 'emt:eg:define-f 'rtest:test-thru
-   'emt:eg:define)
+(put 'emtg:define-f 'rtest:test-thru
+   'emtg:define)
 ;;;_  . Tests
 
-(rtest:deftest emt:eg:define
+(rtest:deftest emtg:define
 
    ;;Validation:
-   (  "Validation: `emt:eg:all-examples' does not have anything defined
+   (  "Validation: `emtg:all-examples' does not have anything defined
 by the dummy definers (which deliberately re-use the same ID)."
       (not
-	 (member* 'dummy-id emt:eg:all-examples
-	    :key #'emt:example.-definer-id)))
+	 (member* 'dummy-id emtg:all-examples
+	    :key #'emtg:example->definer-id)))
    
-   (  "Validation: `emt:eg:*all-prpty-makers*' does not have anything
+   (  "Validation: `emtg:*all-prpty-makers*' does not have anything
 defined by the dummy definers (which deliberately re-use the same ID)."
       (not
-	 (member* 'dummy-id emt:eg:*all-prpty-makers*
-	    :key #'emt:example.-definer-id)))
+	 (member* 'dummy-id emtg:*all-prpty-makers*
+	    :key #'emtg:example->definer-id)))
    
-   ;;These tests let `emt:eg:all-examples' to known values so that
-   ;;tagset is known.  We can't use emt:eg-style examples inside them.
+   ;;These tests let `emtg:all-examples' to known values so that
+   ;;tagset is known.  We can't use emtg-style examples inside them.
 
    ;;Mock `emt:see-group', so we can just test the inserting
    ;;functionality.  
-   (  "Situation: There are no examples in `emt:eg:all-examples'.
-Afterwards: There is an example in `emt:eg:all-examples'."
+   (  "Situation: There are no examples in `emtg:all-examples'.
+Afterwards: There is an example in `emtg:all-examples'."
       (with-mock
 	 (stub emt:see-group =>
-	    emt:eg:define:td:typical-helper-retval)
-	 (emt:eg:define:th:with-empty-tagset ()
-	    (emt:eg:define
+	    emtg:define:td:typical-helper-retval)
+	 (emtg:define:th:with-empty-tagset ()
+	    (emtg:define
 	       dummy-id 
 	       ;;Punt the other args
 	       ()
@@ -592,31 +592,31 @@ Afterwards: There is an example in `emt:eg:all-examples'."
 	    (and
 	       (equal 
 		  (length 
-		     emt:eg:all-examples)
+		     emtg:all-examples)
 		  1)
 
 	       (member
-		  (make-emt:example.
+		  (emtg:make-example
 		     :definer-id 'dummy-id
 		     :tagset '((dummy-tag 1))
 		     :value 12)
-		  emt:eg:all-examples)
+		  emtg:all-examples)
 	       t))))
    
    
    (  "Situation: One example, different definer ID.
-Afterwards: There are two examples in `emt:eg:all-examples'.  One is
+Afterwards: There are two examples in `emtg:all-examples'.  One is
 the new one"
       (with-mock
-	 (stub emt:see-group => emt:eg:define:td:typical-helper-retval)
-	 (emt:eg:define:th:with-empty-tagset
+	 (stub emt:see-group => emtg:define:td:typical-helper-retval)
+	 (emtg:define:th:with-empty-tagset
 	    (:examples
 	       (list
-		  (make-emt:example.
+		  (emtg:make-example
 		     :definer-id 'dummy-id-2
 		     :tagset '((dummy-tag 1))
 		     :value 13)))
-	    (emt:eg:define
+	    (emtg:define
 	       dummy-id 
 	       ;;Punt the other args
 	       ()
@@ -625,15 +625,15 @@ the new one"
 	    (and
 	       (equal 
 		  (length 
-		     emt:eg:all-examples)
+		     emtg:all-examples)
 		  2)
 
 	       (member
-		  (make-emt:example.
+		  (emtg:make-example
 		     :definer-id 'dummy-id
 		     :tagset '((dummy-tag 1))
 		     :value 12)
-		  emt:eg:all-examples)
+		  emtg:all-examples)
 	       t))))
    
    
@@ -641,15 +641,15 @@ the new one"
    (  "Situation: One example exists, same definer ID
 Afterwards: There is only the new example."
       (with-mock
-	 (stub emt:see-group => emt:eg:define:td:typical-helper-retval)
-	 (emt:eg:define:th:with-empty-tagset
+	 (stub emt:see-group => emtg:define:td:typical-helper-retval)
+	 (emtg:define:th:with-empty-tagset
 	    (:examples
 	       (list
-		  (make-emt:example.
+		  (emtg:make-example
 		     :definer-id 'dummy-id ;;Same ID
 		     :tagset '((dummy-tag 1))
 		     :value 13)))
-	    (emt:eg:define
+	    (emtg:define
 	       dummy-id 
 	       ;;Punt the other args
 	       ()
@@ -658,15 +658,15 @@ Afterwards: There is only the new example."
 	    (and
 	       (equal 
 		  (length 
-		     emt:eg:all-examples)
+		     emtg:all-examples)
 		  1)
 
 	       (member
-		  (make-emt:example.
+		  (emtg:make-example
 		     :definer-id 'dummy-id
 		     :tagset '((dummy-tag 1))
 		     :value 12)
-		  emt:eg:all-examples)
+		  emtg:all-examples)
 	       t))))
 
 
@@ -674,10 +674,10 @@ Afterwards: There is only the new example."
    ;;These tests test the same without mocks.  They rely on the
    ;;helpers working.
 
-   (  "Situation: There are no examples in `emt:eg:all-examples'.
-Afterwards: There is an example in `emt:eg:all-examples'."
-      (emt:eg:define:th:with-empty-tagset ()
-	 (emt:eg:define
+   (  "Situation: There are no examples in `emtg:all-examples'.
+Afterwards: There is an example in `emtg:all-examples'."
+      (emtg:define:th:with-empty-tagset ()
+	 (emtg:define
 	    dummy-id 
 	    ;;The tagset.  Everything inside is tagged with this.
 	    ((dummy-tag 1))
@@ -690,29 +690,29 @@ Afterwards: There is an example in `emt:eg:all-examples'."
 	 (and
 	    (equal 
 	       (length 
-		  emt:eg:all-examples)
+		  emtg:all-examples)
 	       1)
 
 	    (member
-	       (make-emt:example.
+	       (emtg:make-example
 		  :definer-id 'dummy-id
 		  :tagset '((dummy-tag 1))
 		  :value 12)
-	       emt:eg:all-examples)
+	       emtg:all-examples)
 	    t)))
 
    
    (  "Situation: One example, different definer ID.
-Afterwards: There are two examples in `emt:eg:all-examples'.  One is
+Afterwards: There are two examples in `emtg:all-examples'.  One is
 the new one"
-      (emt:eg:define:th:with-empty-tagset
+      (emtg:define:th:with-empty-tagset
 	 (:examples
 	    (list
-	       (make-emt:example.
+	       (emtg:make-example
 		  :definer-id 'dummy-id-2
 		  :tagset '((dummy-tag 1))
 		  :value 13)))
-	 (emt:eg:define
+	 (emtg:define
 	    dummy-id 
 	    ((dummy-tag 1))
 	    (item
@@ -724,29 +724,29 @@ the new one"
 	 (and
 	    (equal 
 	       (length 
-		  emt:eg:all-examples)
+		  emtg:all-examples)
 	       2)
 
 	    (member
-	       (make-emt:example.
+	       (emtg:make-example
 		  :definer-id 'dummy-id
 		  :tagset '((dummy-tag 1))
 		  :value 12)
-	       emt:eg:all-examples)
+	       emtg:all-examples)
 	    t)))
    
    
 
    (  "Situation: One example exists, same definer ID
 Afterwards: There is only the new example."
-      (emt:eg:define:th:with-empty-tagset
+      (emtg:define:th:with-empty-tagset
 	 (:examples
 	    (list
-	       (make-emt:example.
+	       (emtg:make-example
 		  :definer-id 'dummy-id	;;Same ID
 		  :tagset '((dummy-tag 1))
 		  :value 13)))
-	 (emt:eg:define
+	 (emtg:define
 	    dummy-id 
 	    ((dummy-tag 1))
 	    (item
@@ -758,23 +758,23 @@ Afterwards: There is only the new example."
 	 (and
 	    (equal 
 	       (length 
-		  emt:eg:all-examples)
+		  emtg:all-examples)
 	       1)
 
 	    (member
-	       (make-emt:example.
+	       (emtg:make-example
 		  :definer-id 'dummy-id
 		  :tagset '((dummy-tag 1))
 		  :value 12)
-	       emt:eg:all-examples)
+	       emtg:all-examples)
 	    ;;Needed for the moment
 	    t)))
 
    (  "Situation: One example exists, same definer ID
 Params:  The value of an item is given as a form.
 Response:: The new example have the value of the form, not the form itself."
-      (emt:eg:define:th:with-empty-tagset ()
-	 (emt:eg:define
+      (emtg:define:th:with-empty-tagset ()
+	 (emtg:define
 	    dummy-id 
 	    ((dummy-tag 1))
 	    (item
@@ -785,47 +785,47 @@ Response:: The new example have the value of the form, not the form itself."
 	 (and
 	    (equal 
 	       (length 
-		  emt:eg:all-examples)
+		  emtg:all-examples)
 	       1)
 
 	    (member
-	       (make-emt:example.
+	       (emtg:make-example
 		  :definer-id 'dummy-id
 		  :tagset '((dummy-tag 1))
 		  :value 12)
-	       emt:eg:all-examples)
+	       emtg:all-examples)
 	    t)))
 
    ;;Fixing problems
    ("Situation: A group is nested in the definition.
 Response: No error.  Behaves normally."
-      (emt:eg:define:th:with-empty-tagset ()
+      (emtg:define:th:with-empty-tagset ()
 	 (not
 	    (rtest:gives-error
-	       (emt:eg:define dummy-id 
+	       (emtg:define dummy-id 
 		  ()
 		  (group ()))))))
 
    ("Param: ID is something other than a symbol
 Response: Error"
-      (emt:eg:define:th:with-empty-tagset ()
+      (emtg:define:th:with-empty-tagset ()
 	 (rtest:gives-error
-	    (emt:eg:define
+	    (emtg:define
 	       "String instead of symbol"
 	       ()))))
 
-   (  "Situation: There are no examples in `emt:eg:all-examples'.
+   (  "Situation: There are no examples in `emtg:all-examples'.
 Params: Only a doc is defined.
 Behavior: Doesn't create an example.
-Afterwards: There is still no example in `emt:eg:all-examples'."
-      (emt:eg:define:th:with-empty-tagset ()
-	 (emt:eg:define
+Afterwards: There is still no example in `emtg:all-examples'."
+      (emtg:define:th:with-empty-tagset ()
+	 (emtg:define
 	    dummy-id 
 	    ((dummy-tag 1))
 	    (doc
 	       ()
 	       "A dummy docstring"))
-	 (null emt:eg:all-examples)))
+	 (null emtg:all-examples)))
 
 
    ;;Examples get properties that are defined in their scopes.  
@@ -835,13 +835,13 @@ Afterwards: There is still no example in `emt:eg:all-examples'."
 first. 
 The example's tagset is underneath the example's.
 Behavior: Example gets that doc as property `documentation'.
-Afterwards: There is one example in `emt:eg:all-examples'.
+Afterwards: There is one example in `emtg:all-examples'.
 It has that documentation."
-      (emt:eg:define:th:with-empty-tagset ()
+      (emtg:define:th:with-empty-tagset ()
 	 (let
 	    (
-	       (docstring emt:eg:define:td:docstring-1))
-	    (emt:eg:define
+	       (docstring emtg:define:td:docstring-1))
+	    (emtg:define
 	       dummy-id 
 	       ((dummy-tag 1))
 	       (doc
@@ -850,8 +850,8 @@ It has that documentation."
 	       (item () 12))
 	 
 	    (equal
-	       (emt:example.-property-list
-		  (car emt:eg:all-examples))
+	       (emtg:example->property-list
+		  (car emtg:all-examples))
 	       (list
 		  (list 'documentation docstring))))))
    
@@ -860,13 +860,13 @@ It has that documentation."
 Doc is defined second. 
 The example's tagset is underneath the example's.
 Behavior: example gets that doc as property `documentation'.
-Afterwards: There is one example in `emt:eg:all-examples'.
+Afterwards: There is one example in `emtg:all-examples'.
 It has that documentation."
-      (emt:eg:define:th:with-empty-tagset ()
+      (emtg:define:th:with-empty-tagset ()
 	 (let
 	    (
-	       (docstring emt:eg:define:td:docstring-1))
-	    (emt:eg:define
+	       (docstring emtg:define:td:docstring-1))
+	    (emtg:define
 	       dummy-id 
 	       ((dummy-tag 1))
 	       (item () 12)
@@ -875,121 +875,121 @@ It has that documentation."
 		  docstring))
 	 
 	    (equal
-	       (emt:example.-property-list
-		  (car emt:eg:all-examples))
+	       (emtg:example->property-list
+		  (car emtg:all-examples))
 	       (list
 		  (list 'documentation docstring))))))
    
 
 
    (  "Params: A doc and an example are defined.  
-Doc is defined first, in a separate `emt:eg:define'. 
+Doc is defined first, in a separate `emtg:define'. 
 The example's tagset is underneath the example's.
 Behavior: example gets that doc as property `documentation'.
-Afterwards: There is one example in `emt:eg:all-examples'.
+Afterwards: There is one example in `emtg:all-examples'.
 It has that documentation."
-      (emt:eg:define:th:with-empty-tagset ()
+      (emtg:define:th:with-empty-tagset ()
 	 (let
 	    (
-	       (docstring emt:eg:define:td:docstring-1))
-	    (emt:eg:define
+	       (docstring emtg:define:td:docstring-1))
+	    (emtg:define
 	       dummy-id 
 	       ((dummy-tag 1))
 	       (doc
 		  ()
 		  docstring))
 
-	    (emt:eg:define
+	    (emtg:define
 	       dummy-id-2
 	       ((dummy-tag 1))
 	       (item () 12))
 	 	 
 	    (equal
-	       (emt:example.-property-list
-		  (car emt:eg:all-examples))
+	       (emtg:example->property-list
+		  (car emtg:all-examples))
 	       (list
 		  (list 'documentation docstring))))))
    
-   ;;Internally using emt:eg
-   (  "Situation: A definition form uses `emt:eg' to get the value of
+   ;;Internally using emtg
+   (  "Situation: A definition form uses `emtg' to get the value of
 another example. 
 A `transparent-tags' has been defined that relates to this item and
 allows it to see the value.
-The `emt:eg' doesn't mention the tag that's made transparent
-\(otherwise we'd only be proving that emt:eg manages transparency)
-The `emt:eg' is still narrow enough to naturally get just one item.
+The `emtg' doesn't mention the tag that's made transparent
+\(otherwise we'd only be proving that emtg manages transparency)
+The `emtg' is still narrow enough to naturally get just one item.
 Response: Those definitions are available for use.  
 Value-maker sees that same tagset that its item sees, except for tags
 mentioned in `transparent-tags'."
-      (emt:eg:define:th:with-empty-tagset ()
+      (emtg:define:th:with-empty-tagset ()
 	 ;;Create pre-existing property and example.
-	 (emt:eg:define dummy-id-different ((dummy-tag 1))
+	 (emtg:define dummy-id-different ((dummy-tag 1))
 	    (item
 	       ((dummy-type-tag b)(other-tag b))
 	       'dummy-1-type-b)
 	    (transparent-tags () (dummy-type-tag)))
 
-	 (emt:eg:define dummy-id ((dummy-tag 1))
+	 (emtg:define dummy-id ((dummy-tag 1))
 	    (item
 	       ((dummy-type-tag a))
 	       (list 
 		  ;;Doesn't mention the tag that's made transparent
-		  (emt:eg (other-tag b)) 
+		  (emtg (other-tag b)) 
 		  "Includes another item's value")))
 	 (equal
-	    (emt:eg (dummy-tag 1)(dummy-type-tag a))
+	    (emtg (dummy-tag 1)(dummy-type-tag a))
 	    (list 'dummy-1-type-b "Includes another item's value"))))
 
-   ( "Situation: A definition form uses `emt:eg' to get the value of
+   ( "Situation: A definition form uses `emtg' to get the value of
 another example.
 There's no `transparent-tags' property.
-And the narrowing tags `emt:eg' uses are distinct from the differentiating tags
+And the narrowing tags `emtg' uses are distinct from the differentiating tags
 between the examples.
 Response: Error."
-      (emt:eg:define:th:with-empty-tagset ()
+      (emtg:define:th:with-empty-tagset ()
 	 ;;Create pre-existing property and example.
-	 (emt:eg:define dummy-id-different ((dummy-tag 1))
+	 (emtg:define dummy-id-different ((dummy-tag 1))
 	    (item
 	       ((dummy-type-tag b))
 	       'dummy-1-type-b))
 	 (rtest:gives-error
-	    (emt:eg:define dummy-id ((dummy-tag 1))
+	    (emtg:define dummy-id ((dummy-tag 1))
 	       (item
 		  ((another-dummy-type-tag a))
 		  (list 
-		     (emt:eg (dummy-type-tag b)) 
+		     (emtg (dummy-type-tag b)) 
 		     "Includes another item's value"))))))
-   ;;This kinda tests emt:eg instead.
-   ( "Situation: A definition form uses `emt:eg' to get the value of
+   ;;This kinda tests emtg instead.
+   ( "Situation: A definition form uses `emtg' to get the value of
 another example.
 There's no `transparent-tags' property.
-But the narrowing tags `emt:eg' uses subsume the differentiating tags
+But the narrowing tags `emtg' uses subsume the differentiating tags
 between the examples.
 Response: Succeeds."
-      (emt:eg:define:th:with-empty-tagset ()
+      (emtg:define:th:with-empty-tagset ()
 	 ;;Create pre-existing property and example.
-	 (emt:eg:define dummy-id-different ((dummy-tag 1))
+	 (emtg:define dummy-id-different ((dummy-tag 1))
 	    (item
 	       ((same-dummy-type-tag b))
 	       'dummy-1-type-b))
 	 (not
 	    (rtest:gives-error
-	       (emt:eg:define dummy-id ((dummy-tag 1))
+	       (emtg:define dummy-id ((dummy-tag 1))
 		  (item
 		     ((same-dummy-type-tag a))
 		     (list 
-			(emt:eg (same-dummy-type-tag b)) 
+			(emtg (same-dummy-type-tag b)) 
 			"Includes another item's value")))))))
 
-   ( "Situation: A definition form uses `emt:eg' to get the value of
+   ( "Situation: A definition form uses `emtg' to get the value of
 another example.
 
 There is a `transparent-tags' property but it doesn't let that
-call of `emt:eg' see the example it's trying to use.
+call of `emtg' see the example it's trying to use.
 Response: Error."
-      (emt:eg:define:th:with-empty-tagset ()
+      (emtg:define:th:with-empty-tagset ()
 	 ;;Create pre-existing property and example.
-	 (emt:eg:define dummy-id-different ((dummy-tag 1))
+	 (emtg:define dummy-id-different ((dummy-tag 1))
 	    (item
 	       ((dummy-type-tag b))
 	       'dummy-1-type-b)
@@ -997,69 +997,69 @@ Response: Error."
 	 
 
 	 (rtest:gives-error
-	    (emt:eg:define dummy-id ((dummy-tag 1))
+	    (emtg:define dummy-id ((dummy-tag 1))
 	       (item
 		  ((another-dummy-type-tag a))
 		  (list 
-		     (emt:eg (dummy-type-tag b)) 
+		     (emtg (dummy-type-tag b)) 
 		     "Includes another item's value"))))))
 
-   ( "Situation: A definition form uses `emt:eg' to get the value of
+   ( "Situation: A definition form uses `emtg' to get the value of
 another example.
 There is a suitable `transparent-tags' property.
 The example it's trying to use doesn't exist.
 Response: Error."
-      (emt:eg:define:th:with-empty-tagset ()
-	 (emt:eg:define dummy-id-different ((dummy-tag 1))
+      (emtg:define:th:with-empty-tagset ()
+	 (emtg:define dummy-id-different ((dummy-tag 1))
 	    (transparent-tags () (a-different-tag)))
 	 (rtest:gives-error
-	    (emt:eg:define dummy-id ((dummy-tag 1))
+	    (emtg:define dummy-id ((dummy-tag 1))
 	       (item
 		  ((dummy-type-tag a))
 		  (list 
-		     (emt:eg (dummy-type-tag b)) 
+		     (emtg (dummy-type-tag b)) 
 		     "Includes another item's value"))))))
 
 
-   (  "Situation: A definition form uses `emt:eg' to get the value of
+   (  "Situation: A definition form uses `emtg' to get the value of
 another example.
 That example existed before but now doesn't.
 Response: Error."
-      (emt:eg:define:th:with-empty-tagset ()
+      (emtg:define:th:with-empty-tagset ()
 	 ;;Create pre-existing property and example.
-	 (emt:eg:define dummy-id-different ((dummy-tag 1))
+	 (emtg:define dummy-id-different ((dummy-tag 1))
 	    (transparent-tags () (dummy-type-tag)))
 	 
 	 ;;Previous call to same definer.
-	 (emt:eg:define dummy-id ((dummy-tag 1))
+	 (emtg:define dummy-id ((dummy-tag 1))
 	    (item
 	       ((dummy-type-tag b))
 	       'dummy-1-type-b))
 
 	 (rtest:gives-error
-	    (emt:eg:define dummy-id ((dummy-tag 1))
+	    (emtg:define dummy-id ((dummy-tag 1))
 		  
 	       (item
 		  ((dummy-type-tag a))
 		  (list 
-		     (emt:eg (dummy-type-tag b)) 
+		     (emtg (dummy-type-tag b)) 
 		     "Includes another item's value"))))))
 
    ;;Nested transparent-tags 
    ;;Inside groups
-   (  "Situation: A definition form uses `emt:eg' to get the value of
+   (  "Situation: A definition form uses `emtg' to get the value of
 another example. 
 A `transparent-tags' has been defined inside a group.
 It relates to this item and allows it to see the value.
-The `emt:eg' doesn't mention the tag that's made transparent
-\(otherwise we'd only be proving that emt:eg manages transparency)
-The `emt:eg' is still narrow enough to naturally get just one item.
+The `emtg' doesn't mention the tag that's made transparent
+\(otherwise we'd only be proving that emtg manages transparency)
+The `emtg' is still narrow enough to naturally get just one item.
 Response: Those definitions are available for use.  
 Value-maker sees that same tagset that its item sees, except for tags
 mentioned in `transparent-tags'."
-      (emt:eg:define:th:with-empty-tagset ()
+      (emtg:define:th:with-empty-tagset ()
 	 ;;Create pre-existing property and example.
-	 (emt:eg:define dummy-id-different ((dummy-tag 1))
+	 (emtg:define dummy-id-different ((dummy-tag 1))
 	    (item
 	       ((all-in-this-tag 1)(dummy-type-tag b)(other-tag b))
 	       'dummy-1-type-b)
@@ -1067,33 +1067,33 @@ mentioned in `transparent-tags'."
 	    (group ((all-in-this-tag 1))
 	       (transparent-tags () (dummy-type-tag))))
 
-	 (emt:eg:define dummy-id ((dummy-tag 1))
+	 (emtg:define dummy-id ((dummy-tag 1))
 	    (item
 	       ((all-in-this-tag 1)(dummy-type-tag a))
 	       (list 
 		  ;;Doesn't mention the tag that's made transparent
-		  (emt:eg (other-tag b)) 
+		  (emtg (other-tag b)) 
 		  "Includes another item's value")))
 	 (equal
-	    (emt:eg (dummy-tag 1)(dummy-type-tag a))
+	    (emtg (dummy-tag 1)(dummy-type-tag a))
 	    (list 'dummy-1-type-b "Includes another item's value"))))
 
    ;;Multiple transparent-tags' that should apply.
-   (  "Situation: A definition form uses `emt:eg' to get the value of
+   (  "Situation: A definition form uses `emtg' to get the value of
 another example. 
 Two `transparent-tags' have been defined.  Both apply to this item.
 Collectively, they remove all the blocking tags to allow it to see the
 value.
 
-The `emt:eg' doesn't mention the tag that's made transparent
-\(otherwise we'd only be proving that emt:eg manages transparency)
-The `emt:eg' is still narrow enough to naturally get just one item.
+The `emtg' doesn't mention the tag that's made transparent
+\(otherwise we'd only be proving that emtg manages transparency)
+The `emtg' is still narrow enough to naturally get just one item.
 Response: Those definitions are available for use.  
 Value-maker sees that same tagset that its item sees, except for tags
 mentioned in `transparent-tags'."
-      (emt:eg:define:th:with-empty-tagset ()
+      (emtg:define:th:with-empty-tagset ()
 	 ;;Create pre-existing property and example.
-	 (emt:eg:define dummy-id-different ((dummy-tag 1))
+	 (emtg:define dummy-id-different ((dummy-tag 1))
 	    (item
 	       ((all-in-this-tag 1)(dummy-type-tag b)
 		  (dummy-type-tag-2 b)
@@ -1102,17 +1102,17 @@ mentioned in `transparent-tags'."
 	    (transparent-tags () (dummy-type-tag))
 	    (transparent-tags ((all-in-this-tag 1)) (dummy-type-tag-2)))
 
-	 (emt:eg:define dummy-id ((dummy-tag 1))
+	 (emtg:define dummy-id ((dummy-tag 1))
 	    (item
 	       ((all-in-this-tag 1)
 		  (dummy-type-tag a)
 		  (dummy-type-tag-2 a))
 	       (list 
 		  ;;Doesn't mention the tag that's made transparent
-		  (emt:eg (other-tag b)) 
+		  (emtg (other-tag b)) 
 		  "Includes another item's value")))
 	 (equal
-	    (emt:eg (dummy-tag 1)(dummy-type-tag a))
+	    (emtg (dummy-tag 1)(dummy-type-tag a))
 	    (list 'dummy-1-type-b "Includes another item's value"))))
 
    
@@ -1124,8 +1124,8 @@ The other example and a suitable `transparent-tags' are defined
 earlier in the same definition form.
 Response: It already sees and uses the `transparent-tags' mark and the
 other example."
-      (emt:eg:define:th:with-empty-tagset ()
-	 (emt:eg:define
+      (emtg:define:th:with-empty-tagset ()
+	 (emtg:define
 	    dummy-id 
 	    ((dummy-tag 1))
 	    (transparent-tags () (dummy-type-tag))
@@ -1135,10 +1135,10 @@ other example."
 	    (item
 	       ((dummy-type-tag a))
 	       (list 
-		  (emt:eg (dummy-type-tag b)) 
+		  (emtg (dummy-type-tag b)) 
 		  "Includes another item's value")))
 	 (equal
-	    (emt:eg (dummy-tag 1)(dummy-type-tag a))
+	    (emtg (dummy-tag 1)(dummy-type-tag a))
 	    (list 'dummy-1-type-b "Includes another item's value"))))
 
 
@@ -1147,14 +1147,14 @@ The other example and a suitable `transparent-tags' are defined later in the
 same definition form.
 Response: It already sees and uses the `transparent-tags' mark and the
 other example."
-      (emt:eg:define:th:with-empty-tagset ()
-	 (emt:eg:define
+      (emtg:define:th:with-empty-tagset ()
+	 (emtg:define
 	    dummy-id 
 	    ((dummy-tag 1))
 	    (item
 	       ((dummy-type-tag a))
 	       (list 
-		  (emt:eg (dummy-type-tag b)) 
+		  (emtg (dummy-type-tag b)) 
 		  "Includes another item's value"))
 	    (transparent-tags () (dummy-type-tag))
 	    (item
@@ -1162,27 +1162,27 @@ other example."
 	       'dummy-1-type-b))
 	 
 	 (equal
-	    (emt:eg (dummy-tag 1)(dummy-type-tag a))
+	    (emtg (dummy-tag 1)(dummy-type-tag a))
 	    (list 'dummy-1-type-b "Includes another item's value"))))
    
 
    (  "Situation: Two definitions mutually uses each others values.
 Response: Error."
-      (emt:eg:define:th:with-empty-tagset ()
+      (emtg:define:th:with-empty-tagset ()
 	 (rtest:gives-error
-	    (emt:eg:define
+	    (emtg:define
 	       dummy-id 
 	       ((dummy-tag 1))
 	       (transparent-tags () (dummy-type-tag))
 	       (item
 		  ((dummy-type-tag b))
 		  (list 
-		     (emt:eg (dummy-type-tag a)) 
+		     (emtg (dummy-type-tag a)) 
 		     "First of two mutually recursive items"))
 	       (item
 		  ((dummy-type-tag a))
 		  (list 
-		     (emt:eg (dummy-type-tag b)) 
+		     (emtg (dummy-type-tag b)) 
 		     "Second of two mutually recursive items"))))))
 
    ;;YAGNI yet:
@@ -1197,137 +1197,137 @@ Response: Error."
    )
 
 ;;;_  . Tests
-(rtest:deftest emt:eg:kv-matches-p
+(rtest:deftest emtg:kv-matches-p
 
    (  "Params: Kv is the wrong type (a string)
 Response: Non-nil just if kv's key matches filter."
       (rtest:gives-error
-	 (emt:eg:kv-matches-p
+	 (emtg:kv-matches-p
 	    "Wrong type"
 	    'dummy-tag)))
 
    (  "Params: Filter is a bare symbol, kv is a key/value pair
 Response: Non-nil just if kv's key matches filter."
-      (emt:eg:kv-matches-p
+      (emtg:kv-matches-p
 	 '(dummy-tag 2)
 	 'dummy-tag))
    
    (  "Params: Filter is a bare symbol, kv is a key/value pair
 Response: Non-nil just if kv's key matches filter."
       (not
-	 (emt:eg:kv-matches-p
+	 (emtg:kv-matches-p
 	    '(a t)
 	    'dummy-tag)))
 
    (  "Params: Filter and kv are both bare symbols
 Response: Non-nil just if they match."
-      (emt:eg:kv-matches-p
+      (emtg:kv-matches-p
 	 'a
 	 'a))
 
    (  "Params: Filter and kv are both bare symbols
 Response: Non-nil just if they match."
       (not
-	 (emt:eg:kv-matches-p
+	 (emtg:kv-matches-p
 	    'a
 	    'b)))
 
    (  "Params: Filter is a key/value pair, kv is a bare symbol
 Response: Error."
       (rtest:gives-error
-	 (emt:eg:kv-matches-p
+	 (emtg:kv-matches-p
 	    'dummy-tag
 	    '(dummy-tag 2))))
    
    (  "Params: Filter and kv are both key/value pairs
 Response: Non-nil just if they match."
-      (emt:eg:kv-matches-p
+      (emtg:kv-matches-p
 	 '(dummy-tag 2)
 	 '(dummy-tag 2)))
    
    (  "Params: Filter and kv are both key/value pairs
 Response: Non-nil just if they match."
       (not 
-	 (emt:eg:kv-matches-p
+	 (emtg:kv-matches-p
 	    '(dummy-tag 2)
 	    '(dummy-tag 1))))
 
    (  "Params: Filter and kv are both key/value pairs
 Response: Non-nil just if they match."
       (not 
-	 (emt:eg:kv-matches-p
+	 (emtg:kv-matches-p
 	    '(dummy-tag 2)
 	    '(a t)))))
 
 ;;;_  . Tests
-(put 'emt:eg:some-kv-matches 'rtest:test-thru
-   'emt:eg:filter-one)
+(put 'emtg:some-kv-matches 'rtest:test-thru
+   'emtg:filter-one)
 
 ;;;_  . Test helper
-(defun emt:eg:filter-one:th (list expected-values)
+(defun emtg:filter-one:th (list expected-values)
    ""
    (rtest:sets=
       (mapcar
-	 #'emt:example.-value
+	 #'emtg:example->value
 	 list)
       expected-values))
 
 ;;;_  . Tests
-(rtest:deftest emt:eg:filter-one
+(rtest:deftest emtg:filter-one
    
-   ;;Validate emt:eg:filter-one
+   ;;Validate emtg:filter-one
    (  "Situation: Passed the entire list and a list of the values on it
 Response: Gives non-nil."
-      (emt:eg:th:with-example-examples
-	 (emt:eg:filter-one:th
-	    emt:eg:all-examples
+      (emtg:th:with-example-examples
+	 (emtg:filter-one:th
+	    emtg:all-examples
 	    '(tag-1-a tag-2-a tag-2-b))))
 
    (  "Situation: Passed the entire list and a different list of values
 Response: Gives nil."
-      (emt:eg:th:with-example-examples
+      (emtg:th:with-example-examples
 	 (not
-	    (emt:eg:filter-one:th
-	       emt:eg:all-examples
+	    (emtg:filter-one:th
+	       emtg:all-examples
 	       '(tag-1-a tag-2-b)))))
 
-   ;;Test emt:eg:filter-one itself
+   ;;Test emtg:filter-one itself
    (  "Param: A tag/value pair
 Response: Just examples matching that tag/value pair are kept."
-      (emt:eg:th:with-example-examples
-	 (emt:eg:filter-one:th
-	    (emt:eg:filter-one 
-	       emt:eg:all-examples
+      (emtg:th:with-example-examples
+	 (emtg:filter-one:th
+	    (emtg:filter-one 
+	       emtg:all-examples
 	       '(dummy-tag 1))
 	    '(tag-1-a))))
    
 
    (  "Param: A tag/value pair
 Response: Just examples matching that tag/value pair are kept."
-      (emt:eg:th:with-example-examples
-	 (emt:eg:filter-one:th
-	    (emt:eg:filter-one 
-	       emt:eg:all-examples
+      (emtg:th:with-example-examples
+	 (emtg:filter-one:th
+	    (emtg:filter-one 
+	       emtg:all-examples
 	       '(dummy-tag 2))
 	    '(tag-2-a tag-2-b))))
    
 
    (  "Param: A bare tag.
 Response: Every example matching that tag is kept."
-      (emt:eg:th:with-example-examples
-	 (emt:eg:filter-one:th
-	    (emt:eg:filter-one 
-	       emt:eg:all-examples
+      (emtg:th:with-example-examples
+	 (emtg:filter-one:th
+	    (emtg:filter-one 
+	       emtg:all-examples
 	       'a)
 	    '(tag-1-a tag-2-a))))
    
    (  "Situation: At least one example has a tagset has a bare tag.
 Param: A bare tag.
 Response: Filters normally, of course matching that tag."
-      (emt:eg:th:with-example-examples-2
-	 (emt:eg:filter-one:th
-	    (emt:eg:filter-one 
-	       emt:eg:all-examples
+      (emtg:th:with-example-examples-2
+	 (emtg:filter-one:th
+	    (emtg:filter-one 
+	       emtg:all-examples
 	       'c)
 	    '(c))))
    
@@ -1335,145 +1335,145 @@ Response: Filters normally, of course matching that tag."
    (  "Situation: At least one example has a tagset has a bare tag (c).
 Param: A tag/value pair matching that tag (c)
 Response: Error."
-      (emt:eg:th:with-example-examples-2
+      (emtg:th:with-example-examples-2
 	 (rtest:gives-error
-	    (emt:eg:filter-one:th
-	       (emt:eg:filter-one 
-		  emt:eg:all-examples
+	    (emtg:filter-one:th
+	       (emtg:filter-one 
+		  emtg:all-examples
 		  '(c t))
 	       '(c))))))
 
 
 ;;;_  . Tests
 ;;It's just about direct.
-(rtest:deftest emt:eg:filter
+(rtest:deftest emtg:filter
 
-   ;;Essentially the same as one `emt:eg' test
+   ;;Essentially the same as one `emtg' test
    ( "Params: A tag/value pair that matches just one example.
 Response: Return that example's value."
-      (emt:eg:filter-one:th
-	 (emt:eg:filter
-	    emt:eg:thd:example-examples
+      (emtg:filter-one:th
+	 (emtg:filter
+	    emtg:thd:example-examples
 	    '((dummy-tag 1)))
 	 '(tag-1-a))))
 
 
 ;;;_  . Tests
-(put 'emt:eg:get-value 'rtest:test-thru
-   'emt:eg)
+(put 'emtg:get-value 'rtest:test-thru
+   'emtg)
 
 ;;;_  . Tests
-(rtest:deftest emt:eg
+(rtest:deftest emtg
 
    ;;All these clauses are situated in the example tagset
-   ;;`emt:eg:th:with-example-examples'.
+   ;;`emtg:th:with-example-examples'.
 
    (  "Params: A tag/value pair that matches just one example.
 Response: Return that example's value."
-      (emt:eg:th:with-example-examples
+      (emtg:th:with-example-examples
 	 (equal
-	    (emt:eg (dummy-tag 1))
+	    (emtg (dummy-tag 1))
 	    'tag-1-a)))
    
    ;;Gotta improve `rtest:gives-error' for this.
    ;;Error type is TBD
    (  "Params: A tag/value pair that overconstrains; matches no values.
 Response: Throw an error of predetermined type."
-      (emt:eg:th:with-example-examples
+      (emtg:th:with-example-examples
 	 (rtest:gives-error
-	    (emt:eg (dummy-tag 2)))))
+	    (emtg (dummy-tag 2)))))
    
    ;;Error type is TBD.  A resumable error, if that was available.
    (  "Params: A tag/value pair that underconstrains; matches two values.
 Response: Throw an error of predetermined type."
-      (emt:eg:th:with-example-examples
+      (emtg:th:with-example-examples
 	 (rtest:gives-error
-	    (emt:eg (dummy-tag 0)))))
+	    (emtg (dummy-tag 0)))))
    
    
    (  "Params: A bare symbol
 Behavior: Interpret the symbol as tag whose value we don't care about.
 Response: Return the value."
-      (emt:eg:th:with-example-examples
+      (emtg:th:with-example-examples
 	 (equal
-	    (emt:eg b)
+	    (emtg b)
 	    'tag-2-b)))
    
 
    (  "Params: Several (two) tag/value pairs.
 Behavior: Constrain on both of them.
 Response: Return the value."
-      (emt:eg:th:with-example-examples
+      (emtg:th:with-example-examples
 	 (equal
-	    (emt:eg (dummy-tag 2)(a t))
+	    (emtg (dummy-tag 2)(a t))
 	    'tag-2-a)))
    
    ;;Dealing with bare tags in the tagset.
    (  "Situation: Some examples' tagsets includes a bare tag.
 Params: That tag, bare.
 Response: Return the value."
-      (emt:eg:th:with-example-examples-2
+      (emtg:th:with-example-examples-2
 	 (equal
-	    (emt:eg c)
+	    (emtg c)
 	    'c)))
    
 
    (  "Situation: Some examples' tagsets includes a bare tag.
 Params: That tag, with a value.
 Response: Throw an error of predetermined type."
-      (emt:eg:th:with-example-examples-2
+      (emtg:th:with-example-examples-2
 	 (rtest:gives-error
-	    (emt:eg (c 1)))))
+	    (emtg (c 1)))))
    
 
-   ;;Co-operation with emt:eg:narrow.  Specifically, it uses its
+   ;;Co-operation with emtg:narrow.  Specifically, it uses its
    ;;tagset in restricting what is seen.  
-   ;;This also tests `emt:eg:tagset-strip'
-   (  "Situation: Inside `emt:eg:th:with-example-examples',
-`emt:eg:narrow' has narrowed the tagset to only those with tag `a'.
+   ;;This also tests `emtg:tagset-strip'
+   (  "Situation: Inside `emtg:th:with-example-examples',
+`emtg:narrow' has narrowed the tagset to only those with tag `a'.
 Behavior: See only the examples allowed in that narrowed tagset.
 Params: (dummy-tag invalid-2), which would ordinarily fail by being
 underconstrained.
 Response: Return the value."
-      (emt:eg:th:with-example-examples
-	 (emt:eg:narrow (a) 
+      (emtg:th:with-example-examples
+	 (emtg:narrow (a) 
 	    (equal
-	       (emt:eg (dummy-tag 2))
+	       (emtg (dummy-tag 2))
 	       'tag-2-a)))))
 
 ;;;_  . Tests
-(rtest:deftest emt:eg:value
+(rtest:deftest emtg:value
 
    (  "Params: A tag/value pair that matches just one example.
 Response: Return that example's value."
-      (emt:eg:th:with-example-examples
+      (emtg:th:with-example-examples
 	 (equal
-	    (emt:eg:value :narrow ((dummy-tag 1)))
+	    (emtg:value :narrow ((dummy-tag 1)))
 	    'tag-1-a)))
    
-   ;;This also tests `emt:eg:tagset-strip'
-   (  "Same as an emt:eg test, but with `emt:eg:value' in place of
-`emt:eg'.
+   ;;This also tests `emtg:tagset-strip'
+   (  "Same as an emtg test, but with `emtg:value' in place of
+`emtg'.
 
-Situation: Inside `emt:eg:th:with-example-examples',
-`emt:eg:narrow' has narrowed the tagset to only those with tag `a'.
+Situation: Inside `emtg:th:with-example-examples',
+`emtg:narrow' has narrowed the tagset to only those with tag `a'.
 Behavior: See only the examples allowed in that narrowed tagset.
 Params: (dummy-tag invalid-2), which would ordinarily fail by being
 underconstrained.
 Response: Return the value."
 
-	 (emt:eg:th:with-example-examples
-	    (emt:eg:narrow (a) 
+	 (emtg:th:with-example-examples
+	    (emtg:narrow (a) 
 	       (equal
-		  (emt:eg:value :narrow ((dummy-tag 2)))
+		  (emtg:value :narrow ((dummy-tag 2)))
 		  'tag-2-a)))))
 
 ;;;_  . Tests
-(put 'emt:eg:narrow-f 'rtest:test-thru
-   'emt:eg)
+(put 'emtg:narrow-f 'rtest:test-thru
+   'emtg)
 
 ;;;_  . Tests
-(rtest:deftest emt:eg:ignore-tags
+(rtest:deftest emtg:ignore-tags
    '  ;;Not written.  It was tested thru one use in
    ;;`org-for-code.el'
    (  "Situation: WRITEME.
@@ -1485,10 +1485,10 @@ Response: WRITEME."
 
 ;;;_  . Test
 
-(rtest:deftest emt:eg:narrow
+(rtest:deftest emtg:narrow
 
    ;;Non-looping operation
-   ;;Can constrain what emt:eg sees
+   ;;Can constrain what emtg sees
    '
    (  "Situation: There are two examples, different values for a given
 tag.
@@ -1497,7 +1497,7 @@ Response: Only the matching example is seen."
       (progn)
       )
 
-   ;;Can co-operate with `emt:eg'
+   ;;Can co-operate with `emtg'
    
 
    ;;Looping operation, only after emt can accept results:
@@ -1509,10 +1509,10 @@ Response: Only the matching example is seen."
 
    ;;Is informed by emt tester.
    )
-;;;_  . Test data for emt:eg:map
-(defconst emt:eg:thd:examples-2
-   (emt:eg:define+ ;;xmp:1a424ae8-1c28-4875-bdac-6ba6ad9d1a5e
-      ((project emtest)(library emt:eg)(topic map))
+;;;_  . Test data for emtg:map
+(defconst emtg:thd:examples-2
+   (emtg:define+ ;;xmp:1a424ae8-1c28-4875-bdac-6ba6ad9d1a5e
+      ((project emtest)(library emtg)(topic map))
       (group
 	 ((discriminator small)(not-medium))
 	 (item
@@ -1528,7 +1528,7 @@ Response: Only the matching example is seen."
 	    ((part string)) "medium string"))))
 
 ;;;_  . Tests
-(rtest:deftest emt:eg:map
+(rtest:deftest emtg:map
 
    (  "Situation: The defined examples
 Operation: Iterate over values of `discriminator'.
@@ -1537,21 +1537,21 @@ Response:
  * Each part passes a type test
  * Returning a list of the parts, we get the expected set."
 
-      (emt:eg:with emt:eg:thd:examples-2
-	 ((project emtest)(library emt:eg)(topic map))
+      (emtg:with emtg:thd:examples-2
+	 ((project emtest)(library emtg)(topic map))
 	 (assert
 	    (rtest:sets= 
-	       (emt:eg:map discriminator x x)
+	       (emtg:map discriminator x x)
 	       '(small medium))
 	    t)
 	 (let
 	    ((results
-		(emt:eg:map discriminator x
-		   (check-type (emt:eg (part number)) integer)
-		   (check-type (emt:eg (part string)) string)
+		(emtg:map discriminator x
+		   (check-type (emtg (part number)) integer)
+		   (check-type (emtg (part string)) string)
 		   (list
-		      (emt:eg (part number))
-		      (emt:eg (part string))))))
+		      (emtg (part number))
+		      (emtg (part string))))))
 
 	    (assert (rtest:sets= results 
 		       '(  (2 "wee")
@@ -1561,29 +1561,29 @@ Response:
    (  "Param: NAME is nil
 Response: No errors."
 
-      (emt:eg:with emt:eg:thd:examples-2
-	 ((project emtest)(library emt:eg)(topic map))
-	 (emt:eg:map discriminator nil t)
+      (emtg:with emtg:thd:examples-2
+	 ((project emtest)(library emtg)(topic map))
+	 (emtg:map discriminator nil t)
 	 t))
    
    ( "Situation: The tag has associated values (`medium') that should
 already have been narrowed out of our scope.
 Response: Those values are not visited."
-      (emt:eg:with emt:eg:thd:examples-2
-	 ((project emtest)(library emt:eg)(topic map)(not-medium))
+      (emtg:with emtg:thd:examples-2
+	 ((project emtest)(library emtg)(topic map)(not-medium))
 	 (assert
 	    (rtest:sets= 
-	       (emt:eg:map discriminator x x)
+	       (emtg:map discriminator x x)
 	       '(small))
 	    t)
 	 (let
 	    ((results
-		(emt:eg:map discriminator x
-		   (check-type (emt:eg (part number)) integer)
-		   (check-type (emt:eg (part string)) string)
+		(emtg:map discriminator x
+		   (check-type (emtg (part number)) integer)
+		   (check-type (emtg (part string)) string)
 		   (list
-		      (emt:eg (part number))
-		      (emt:eg (part string))))))
+		      (emtg (part number))
+		      (emtg (part string))))))
 
 	    (assert
 	       (rtest:sets= results 
@@ -1592,38 +1592,38 @@ Response: Those values are not visited."
 
 
 ;;;_  . Tests
-(rtest:deftest emt:eg:all-tags
+(rtest:deftest emtg:all-tags
 
    (  "Situation: Using the usual examples.
 Response: Returns the expected value."
-      (emt:eg:th:with-example-examples
+      (emtg:th:with-example-examples
 	 (rtest:sets=
-	    (emt:eg:all-tags)
+	    (emtg:all-tags)
 	    '(dummy-tag a b))))
    
    (  "Situation: Using the second examples.
 Response: Returns the expected value."
-      (emt:eg:th:with-example-examples-2
+      (emtg:th:with-example-examples-2
 	 (rtest:sets=
-	    (emt:eg:all-tags)
+	    (emtg:all-tags)
 	    '(dummy-tag a b c)))))
 
 ;;;_  . Tests
-(rtest:deftest emt:eg:all-tag-args
+(rtest:deftest emtg:all-tag-args
 
    (  "Situation: Using the usual examples.
 Param: dummy-tag.
 Response: Returns a list of the values that dummy-tag takes."
-      (emt:eg:th:with-example-examples
+      (emtg:th:with-example-examples
 	 (equal 
-	    (emt:eg:all-tag-args 'dummy-tag)
+	    (emtg:all-tag-args 'dummy-tag)
 	    '(1 2))))
 
    (  "Situation: Using the second examples, which have a bare tag.
 Response: Returns the symbol `no-arg'."
-      (emt:eg:th:with-example-examples-2
+      (emtg:th:with-example-examples-2
 	 (equal 
-	    (emt:eg:all-tag-args 'c)
+	    (emtg:all-tag-args 'c)
 	    'no-arg)))
    
    ;;YAGNI: When the tag sometimes has an arg and sometimes not (thus
@@ -1631,15 +1631,15 @@ Response: Returns the symbol `no-arg'."
    ;;situation.
 
    ;;Visits just values that are still populated.  Tests use data from
-   ;;`emt:eg:map'
+   ;;`emtg:map'
 
    (  "Operation: Visit values of `discriminator'
 Response: Finds the expected ones."
-      (emt:eg:with emt:eg:thd:examples-2
-	 ((project emtest)(library emt:eg)(topic map))
+      (emtg:with emtg:thd:examples-2
+	 ((project emtest)(library emtg)(topic map))
 	 (assert
 	    (rtest:sets= 
-	       (emt:eg:all-tag-args 'discriminator)
+	       (emtg:all-tag-args 'discriminator)
 	       '(small medium))
 	    t)
 	 t))
@@ -1650,26 +1650,26 @@ Response: Finds the expected ones."
    (  "Situation: The tag has associated values (`medium') that should
 already have been narrowed out of our scope.
 Response: Those values are not found."
-      (emt:eg:with emt:eg:thd:examples-2
-	 ((project emtest)(library emt:eg)(topic map)(not-medium))
+      (emtg:with emtg:thd:examples-2
+	 ((project emtest)(library emtg)(topic map)(not-medium))
 	 (assert
 	    (rtest:sets= 
-	       (emt:eg:all-tag-args 'discriminator)
+	       (emtg:all-tag-args 'discriminator)
 	       '(small))
 	    t)
 	 t)))
 
 ;;;_  . Tests
-(rtest:deftest emt:eg:browse:item->relative-distinction
+(rtest:deftest emtg:browse:item->relative-distinction
    '  ;;An inspection test
    (  "Situation: WRITEME.
 Response: WRITEME."
       (progn
 	 (assert
 	    (equal
-	       (emt:eg:browse:item->relative-distinction
-		  (emt:eg (type eg-item)(name 0))
-		  '((project emtest)(library emt:eg)(topic map)))
+	       (emtg:browse:item->relative-distinction
+		  (emtg (type eg-item)(name 0))
+		  '((project emtest)(library emtg)(topic map)))
 	       ;;Persister.  But we don't care about the item
 	       ;;field, which merely must match the input.  Only the
 	       ;;other fields should persist.  See
@@ -1682,7 +1682,7 @@ Response: WRITEME."
 
 
 ;;;_  . Tests
-(rtest:deftest emt:eg:browse:->stage-1
+(rtest:deftest emtg:browse:->stage-1
    ;;Should type-check the output, if that were possible.
    '
    (  "Situation: WRITEME.
@@ -1690,9 +1690,9 @@ Response: WRITEME."
       (progn
 	 (assert
 	    (equal
-	       (emt:eg:browse:->stage-1
-		  (emt:eg:browse:make-relative-distinction
-		     :item (emt:eg (type eg-item)(name 0))))
+	       (emtg:browse:->stage-1
+		  (emtg:browse:make-relative-distinction
+		     :item (emtg (type eg-item)(name 0))))
 	    
 	       ;;Here put a persisting version
 	       )
@@ -1706,14 +1706,14 @@ Response: WRITEME."
       (progn
 	 (assert
 	    (equal
-	       (emt:eg:browse:->stage-1
+	       (emtg:browse:->stage-1
 		  (list
-		     (emt:eg:browse:make-relative-distinction
+		     (emtg:browse:make-relative-distinction
 			:item
-			(emt:eg (type eg-item)(name 0)))
-		     (emt:eg:browse:make-relative-distinction
+			(emtg (type eg-item)(name 0)))
+		     (emtg:browse:make-relative-distinction
 			:item
-			(emt:eg (type eg-item)(name 1)))))
+			(emtg (type eg-item)(name 1)))))
 	       
 	       ;;Here put a persisting version
 	       )
@@ -1723,14 +1723,14 @@ Response: WRITEME."
 ;;;_  . Tests
 
 ;;These are inspection tests.
-(rtest:deftest emt:eg:browse:top
+(rtest:deftest emtg:browse:top
    '
    (  "Situation: WRITEME.
 Response: WRITEME."
       ;;Inspect this
-      (emt:eg:browse:top
-	 '((project emtest)(library emt:eg)(topic map))
-	 '((project emtest)(library emt:eg)(topic map)))))
+      (emtg:browse:top
+	 '((project emtest)(library emtg)(topic map))
+	 '((project emtest)(library emtg)(topic map)))))
 
 
 
@@ -1739,7 +1739,7 @@ Response: WRITEME."
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'emtest/testhelp/eg/rtest)
+(provide 'emtest/testhelp/tagnames/rtest)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -1747,4 +1747,4 @@ Response: WRITEME."
 ;;;_  + End:
 
 ;;;_ , End
-;;; emtest/testhelp/eg/rtest.el ends here
+;;; emtest/testhelp/tagnames/rtest.el ends here

@@ -8,16 +8,16 @@
 ;;No, I had to temporarily edit it by hand.
 
 
-;;;### (autoloads (emt:persist:accept-correct emt:persist:view-obj)
+;;;### (autoloads (emt:db:view:accept-correct emtdb:view:view-obj)
 ;;;;;;  "common/emt-persist" "common/emt-persist.el" (19362 37313))
 ;;; Generated autoloads from common/emt-persist.el
 
-(autoload (quote emt:persist:view-obj) "emtest/common/emt-persist" "\
+(autoload (quote emtdb:view:view-obj) "emtest/common/persist" "\
 
 
 \(fn TRIED)" t nil)
 
-(autoload (quote emt:persist:accept-correct) "emtest/common/emt-persist" "\
+(autoload (quote emt:db:view:accept-correct) "emtest/common/persist" "\
 
 
 \(fn CALL TRIED)" t nil)
@@ -83,16 +83,16 @@ Return non-nil if FORM evaluates to a value of type TYPE.
 
 ;;;***
 
-;;;### (autoloads (emt:eg:map emt:eg:narrow emt:eg:value emt:eg)
+;;;### (autoloads (emtg:map emtg:narrow emtg:value emtg)
 ;;;;;;  "testhelp/eg" "testhelp/eg.el" (19362 38439))
 ;;; Generated autoloads from testhelp/eg.el
 
-(autoload (quote emt:eg) "emtest/testhelp/eg" "\
+(autoload (quote emtg) "emtest/testhelp/tagnames" "\
 
 
 \(fn &rest KV-LIST)" nil (quote macro))
 
-(autoload (quote emt:eg:value) "emtest/testhelp/eg" "\
+(autoload (quote emtg:value) "emtest/testhelp/tagnames" "\
 
 Takes keywords
   NARROW - A tagset to narrow by.
@@ -100,20 +100,20 @@ Takes keywords
 
 \(fn &key NARROW IGNORE-TAGS)" nil (quote macro))
 
-(autoload (quote emt:eg:narrow) "emtest/testhelp/eg" "\
+(autoload (quote emtg:narrow) "emtest/testhelp/tagnames" "\
 Execute BODY in a particular examples tagset.
 Purpose: For consise use inside test code.
 
 \(fn KV-FILTER &rest BODY)" nil (quote macro))
 
-(autoload (quote emt:eg:map) "emtest/testhelp/eg" "\
+(autoload (quote emtg:map) "emtest/testhelp/tagnames" "\
 
 
 \(fn TAG NAME &rest BODY)" nil (quote macro))
 
 ;;;***
 
-;;;### (autoloads (emt:util:all-different emt:let-noprops emt:somewhere-in-tree
+;;;### (autoloads (emth:all-different emth:let-noprops emth:somewhere-in-tree
 ;;;;;;  emt:expand-filename-by-load-file uti:form-by-option) "emtest/testhelp/misc"
 ;;;;;;  "testhelp/misc.el" (19362 38439))
 ;;; Generated autoloads from testhelp/misc.el
@@ -130,19 +130,19 @@ return a form.
 
 \(fn FILENAME)" nil nil)
 
-(autoload (quote emt:somewhere-in-tree) "emtest/testhelp/misc" "\
+(autoload (quote emth:somewhere-in-tree) "emtest/testhelp/misc" "\
 
 
 \(fn FUNC TREE &rest ARGS)" nil nil)
 
-(autoload (quote emt:let-noprops) "emtest/testhelp/misc" "\
+(autoload (quote emth:let-noprops) "emtest/testhelp/misc" "\
 Run BODY with symbols temporarily stripped of its properties.
 When done, restore each symbol's original list of properties.
 SYMS-FORM is a form to make a list of symbols.
 
 \(fn SYMS-FORM &rest BODY)" nil (quote macro))
 
-(autoload (quote emt:util:all-different) "emtest/testhelp/misc" "\
+(autoload (quote emth:all-different) "emtest/testhelp/misc" "\
 Return non-nil just if all members of SET are different.
 
 \(fn SET &optional TEST)" nil nil)
@@ -213,22 +213,22 @@ Insert a skeleton related to emtest
 
 ;;;***
 
-;;;### (autoloads (pcomplete-emtest-setup pcomplete/emacs-lisp-mode/with-buffer-containing-object
-;;;;;;  pcomplete/emacs-lisp-mode/emt:eg:narrow pcomplete/emacs-lisp-mode/emt:eg)
+;;;### (autoloads (pcomplete-emtest-setup pcomplete/emacs-lisp-mode/emtb:with-buf
+;;;;;;  pcomplete/emacs-lisp-mode/emtg:narrow pcomplete/emacs-lisp-mode/emtg)
 ;;;;;;  "editing/pcmpl-emtest" "editing/pcmpl-emtest.el" (19362 38561))
 ;;; Generated autoloads from editing/pcmpl-emtest.el
 
-(autoload (quote pcomplete/emacs-lisp-mode/emt:eg) "emtest/editing/pcmpl-emtest" "\
+(autoload (quote pcomplete/emacs-lisp-mode/emtg) "emtest/editing/pcmpl-emtest" "\
 
 
 \(fn)" nil nil)
 
-(autoload (quote pcomplete/emacs-lisp-mode/emt:eg:narrow) "emtest/editing/pcmpl-emtest" "\
+(autoload (quote pcomplete/emacs-lisp-mode/emtg:narrow) "emtest/editing/pcmpl-emtest" "\
 
 
 \(fn)" nil nil)
 
-(autoload (quote pcomplete/emacs-lisp-mode/with-buffer-containing-object) "emtest/editing/pcmpl-emtest" "\
+(autoload (quote pcomplete/emacs-lisp-mode/emtb:with-buf) "emtest/editing/pcmpl-emtest" "\
 
 
 \(fn)" nil nil)

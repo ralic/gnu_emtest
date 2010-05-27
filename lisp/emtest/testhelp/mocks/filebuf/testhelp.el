@@ -42,7 +42,7 @@
 
 ;;;_  . Master/slave files
 (defconst emtb:thd:examples
-   (emt:eg:define+
+   (emtg:define+
       ((project emtest)(library mockbuf))
       (item
 	 ((role master)(type filename))

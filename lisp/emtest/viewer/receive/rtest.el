@@ -50,14 +50,14 @@
    ;;Add reports.  Lists should contain what's expected.
    (  "Situation: Empty report.
 Response: List still contains nothing."
-      (emt:eg:with emt:testral:thd:examples ()
+      (emtg:with emt:testral:thd:examples ()
 	 (let*
 	    ((nodes-freshened '())
 	       (remember-freshened-node
 		  #'(lambda (x y)
 		       (push (list x y) nodes-freshened)))
 	       (receiver (emtvr:make-empty-alist remember-freshened-node #'ignore))
-	       (report (emt:eg
+	       (report (emtg
 			  (project emtest)
 			  (sub-project testral)
 			  (library types)
@@ -67,7 +67,7 @@ Response: List still contains nothing."
 	    ;;Still an empty list
 	    (assert
 	       (equal
-		  (emtvr:data-alist receiver)
+		  (emtvr:data->alist receiver)
 		  '())
 	       t)
 	    ;;No callbacks happened
@@ -82,14 +82,14 @@ Response: List still contains nothing."
    ;;Report w/1 entry
    (  "Situation: Have added a report w/1 entry
 Response: List contains that one entry."
-      (emt:eg:with emt:testral:thd:examples ()
+      (emtg:with emt:testral:thd:examples ()
 	 (let*
 	    ((nodes-freshened '())
 	       (remember-freshened-node
 		  #'(lambda (x y)
 		       (push (list x y) nodes-freshened)))
 	       (receiver (emtvr:make-empty-alist remember-freshened-node #'ignore))
-	       (report (emt:eg
+	       (report (emtg
 			  (project emtest)
 			  (sub-project testral)
 			  (library types)
@@ -101,16 +101,16 @@ Response: List contains that one entry."
 	    ;;A list with just that entry
 	    (assert
 	       (emtm
-		  (emtvr:data-alist receiver)
+		  (emtvr:data->alist receiver)
 		  (list
 		     (eval 
-			'(emt:eg
+			'(emtg
 			    (type receive-alist-item)
 			    (role original-add)
 			    (what-test test-1)))))
 	       t)
 	    (assert
-	       (= (length (emtvr:data-alist receiver)) 1)
+	       (= (length (emtvr:data->alist receiver)) 1)
 	       t)
 	    ;;One callback happened
 	    (assert
@@ -119,14 +119,14 @@ Response: List contains that one entry."
 		  (list
 		     (list
 			(eval 
-			   '(emt:eg (type presentation-path)(what-test test-1)))
-			(make-emtvr:suite-newstyle
+			   '(emtg (type presentation-path)(what-test test-1)))
+			(emtvr:make-suite-newstyle
 			   :presentation-path
 			   (eval 
-			      '(emt:eg (type presentation-path)(what-test test-1)))
+			      '(emtg (type presentation-path)(what-test test-1)))
 			   :result
 			   (eval 
-			      '(emt:eg (type suite)(what-test test-1)(role original-add)))
+			      '(emtg (type suite)(what-test test-1)(role original-add)))
 			   ))))
 	       t)
 	    t)))
@@ -136,7 +136,7 @@ Response: List contains that one entry."
    (  "Situation: Have added a report w/1 entry.
 Operation:  Another report with a different result for the same test.
 Response: List contains just that one entry, not duplicated."
-      (emt:eg:with emt:testral:thd:examples ()
+      (emtg:with emt:testral:thd:examples ()
 	 (let*
 	    ((nodes-freshened '())
 	       (remember-freshened-node
@@ -144,7 +144,7 @@ Response: List contains just that one entry, not duplicated."
 		       (push (list x y) nodes-freshened)))
 	       (receiver (emtvr:make-empty-alist remember-freshened-node #'ignore)))
 	    (emtvr:newstyle receiver 
-	       (emt:eg
+	       (emtg
 		  (project emtest)
 		  (sub-project testral)
 		  (library types)
@@ -155,7 +155,7 @@ Response: List contains just that one entry, not duplicated."
 	    (setq nodes-freshened '())
 	    ;;Add a report that just overrides the original
 	    (emtvr:newstyle receiver 
-	       (emt:eg
+	       (emtg
 		  (project emtest)
 		  (sub-project testral)
 		  (library types)
@@ -166,16 +166,16 @@ Response: List contains just that one entry, not duplicated."
 	    ;;A list with just that entry
 	    (assert
 	       (emtm
-		  (emtvr:data-alist receiver)
+		  (emtvr:data->alist receiver)
 		  (list
 		     (eval 
-			'(emt:eg
+			'(emtg
 			    (type receive-alist-item)
 			    (role replace)
 			    (what-test test-1)))))
 	       t)
 	    (assert
-	       (= (length (emtvr:data-alist receiver)) 1)
+	       (= (length (emtvr:data->alist receiver)) 1)
 	       t)
 
 	    ;;One (new) callback happened
@@ -185,14 +185,14 @@ Response: List contains just that one entry, not duplicated."
 		  (list
 		     (list
 			(eval 
-			   '(emt:eg (type presentation-path)(what-test test-1)))
-			(make-emtvr:suite-newstyle
+			   '(emtg (type presentation-path)(what-test test-1)))
+			(emtvr:make-suite-newstyle
 			   :presentation-path 
 			   (eval 
-			      '(emt:eg (type presentation-path)(what-test test-1)))
+			      '(emtg (type presentation-path)(what-test test-1)))
 			   :result
 			   (eval 
-			      '(emt:eg (type suite)(what-test test-1)(role replace)))
+			      '(emtg (type suite)(what-test test-1)(role replace)))
 			   ))))
 	       t)
 	    t)))
@@ -201,7 +201,7 @@ Response: List contains just that one entry, not duplicated."
    (  "Situation: Have added a report w/1 entry.
 Operation: Report removes previous report.
 Response: List no longer contains that entry; it is empty."
-      (emt:eg:with emt:testral:thd:examples
+      (emtg:with emt:testral:thd:examples
 	 ((project emtest)(sub-project testral)(library types))
 	 (let*
 	    ((nodes-freshened '())
@@ -211,13 +211,13 @@ Response: List no longer contains that entry; it is empty."
 	       (receiver 
 		  (emtvr:make-empty-alist remember-freshened-node #'ignore)))
 	    (emtvr:newstyle receiver 
-	       (emt:eg
+	       (emtg
 		  (type report)
 		  (role original-add)
 		  (what-test test-1)))
 
 	    (emtvr:newstyle receiver 
-	       (emt:eg
+	       (emtg
 		  (type report)
 		  (role remove-previous)
 		  (what-test test-1)))
@@ -225,7 +225,7 @@ Response: List no longer contains that entry; it is empty."
 	    ;;An empty list again
 	    (assert
 	       (equal
-		  (emtvr:data-alist receiver)
+		  (emtvr:data->alist receiver)
 		  '())
 	       t)
 
@@ -236,7 +236,7 @@ Response: List no longer contains that entry; it is empty."
    (  "Situation: Have added a report w/1 entry.
 Operation: Add a second report
 Response: List contains both entries."
-      (emt:eg:with emt:testral:thd:examples
+      (emtg:with emt:testral:thd:examples
 	 ((project emtest)(sub-project testral)(library types))
 	 (let*
 	    ((nodes-freshened '())
@@ -246,7 +246,7 @@ Response: List contains both entries."
 	       (receiver 
 		  (emtvr:make-empty-alist remember-freshened-node #'ignore)))
 	    (emtvr:newstyle receiver 
-	       (emt:eg
+	       (emtg
 		  (type report)
 		  (role original-add)
 		  (what-test test-1)))
@@ -254,7 +254,7 @@ Response: List contains both entries."
 	    ;;Empty the callback list
 	    (setq nodes-freshened '())
 	    (emtvr:newstyle receiver 
-	       (emt:eg (type report)(what-test test-2)))
+	       (emtg (type report)(what-test test-2)))
 
 	    ;;Test that we have the right contents.  Skip for now
 	    ;;because emtm doesn't have a set matcher yet.
@@ -266,14 +266,14 @@ Response: List contains both entries."
 		  (list
 		     (list
 			(eval 
-			   '(emt:eg (type presentation-path)(what-test test-2)))
-			(make-emtvr:suite-newstyle
+			   '(emtg (type presentation-path)(what-test test-2)))
+			(emtvr:make-suite-newstyle
 			   :presentation-path 
 			   (eval 
-			      '(emt:eg (type presentation-path)(what-test test-2)))
+			      '(emtg (type presentation-path)(what-test test-2)))
 			   :result
 			   (eval 
-			      '(emt:eg (type suite)(what-test test-2)))
+			      '(emtg (type suite)(what-test test-2)))
 			   ))))
 	       t)
 
@@ -286,7 +286,7 @@ Response: List contains both entries."
    (  "Situation: Empty tree.
 Operation: Add a report w/2 entries.
 Response: List contains both entries."
-      (emt:eg:with emt:testral:thd:examples ()
+      (emtg:with emt:testral:thd:examples ()
 	 (let*
 	    ((nodes-freshened '())
 	       (remember-freshened-node

@@ -33,7 +33,7 @@
 (require 'emtest/viewer/emviewer)
 (require 'emtest/viewer/emviewer/testhelp)
 (require 'emtest/testhelp/persist)
-(require 'emtest/testhelp/eg)
+(require 'emtest/testhelp/tagnames)
 (require 'emtest/common/testral-types/testhelp)
 
 ;;;_. Body
@@ -46,13 +46,13 @@
       (db-id
 	 `(persist ,emtv2:td:dir))
       (:surrounders
-	 '((emt:eg:with emt:testral:thd:examples ()))))
+	 '((emtg:with emt:testral:thd:examples ()))))
    
    ;;Tests of just the viewer.
    (()
       (emtv2:ts:with-mock-viewer
 	 (emtve:tester-cb
-	    (emt:eg (type report)(name just-test-runner)))
+	    (emtg (type report)(name just-test-runner)))
 
 	 (emt:emviewer:th:check-buffer-string
 	    (emt:persist 
@@ -61,7 +61,7 @@
    (()
       (emtv2:ts:with-mock-viewer
 	 (emtve:tester-cb
-	    (emt:eg (type report)(role original-add)(what-test test-1)))
+	    (emtg (type report)(role original-add)(what-test test-1)))
 
 	 (emt:emviewer:th:check-buffer-string
 	    (emt:persist "dbid:mf660gq0jwe0"))))
@@ -70,7 +70,7 @@
    (()
       (emtv2:ts:with-mock-viewer
 	 (emtve:tester-cb
-	    (emt:eg (type report)(what-test test-2)))
+	    (emtg (type report)(what-test test-2)))
 
 	 (emt:emviewer:th:check-buffer-string
 	    (emt:persist "dbid:l7w6gjq0jwe0"))))

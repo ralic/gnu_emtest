@@ -37,13 +37,17 @@
    "Make suitable requires for testpoint"
 
    ;;Should examine compile flags, if we're compiling.
-   ;;This is if file was not definitely wanting tp
+   ;;This is if file was not definitely wanting testpoint
    '(dont-compile
-       (unless (require 'emtest/testhelp/testpoint nil t)
-	  ;;And mark the testpoints as being dormant
-	  (defmacro emtp (id args &rest rest) 
-	     (declare (debug (symbolp (&rest form) body)))
-	     `(progn ,@rest)))))
+       )
+
+   ;;$$IMPROVE ME
+   '(unless (require 'emtest/testhelp/testpoint nil t)
+      ;;And mark the testpoints as being dormant
+      (defmacro emtp (id args &rest rest) 
+	 (declare (debug (symbolp (&rest form) body)))
+	 `(progn ,@rest)))
+   )
 
 ;;;_. Footers
 ;;;_ , Provides

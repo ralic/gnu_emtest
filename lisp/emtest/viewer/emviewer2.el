@@ -65,7 +65,7 @@ It just tells a pathtree to add this node."
       ;;The path
       presentation-path
       ;;The data
-      (make-emt:view:suite-newstyle 
+      (emt:view:make-suite-newstyle 
 	 :list '()
 	 :cell cell)))
 
@@ -118,7 +118,7 @@ It just tells a pathtree to add this node."
 	    #'emtv2:pathtree-cb
 	    ;;Default makes the base type.
 	    #'(lambda ()
-		 (make-emt:view:presentable
+		 (emt:view:make-presentable
 		    :list '()))
 	    'emt:view:suite-newstyle)))
 
@@ -130,7 +130,7 @@ It just tells a pathtree to add this node."
    (unless 
       emtv2:receiver
       (setq emtv2:receiver
-	 (make-emtvr:data
+	 (emtvr:make-data
 	    :alist ()
 	    :tree-insert-cb #'emtv2:receive-cb
 	    ;;:tree-remove-cb Not yet
@@ -171,7 +171,7 @@ It just tells a pathtree to add this node."
    (emtvr:newstyle emtv2:receiver report)
    (emtvp:freshen emtv2:pathtree)
    (when
-      (emt:testral:report-run-done-p report)
+      (emt:testral:report->run-done-p report)
       (emtv2:print-all (emtvp-root emtv2:pathtree))
       (pop-to-buffer emtv2:report-buffer)))
 

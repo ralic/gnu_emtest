@@ -31,18 +31,18 @@
 
 
 (require 'rtest-define)
-(require 'emtest/testhelp/eg)
+(require 'emtest/testhelp/tagnames)
 
-;;Just because emt:wrap-form was tested with the persist examples.
+;;Just because emth:wrap-form was tested with the persist examples.
 (require 'emtest/testhelp/persist)  
 
 ;;;_. Body
-;;;_ , emt:wrap-form
-;;;_  . emt:wrap-form:thd:examples
+;;;_ , emth:wrap-form
+;;;_  . emth:wrap-form:thd:examples
 
-(defconst emt:wrap-form:thd:examples
-   (emt:eg:define+ ;;xmp:26ef7f1f-ce61-4284-8175-29a7fc7e4ef5
-      ((project emtest)(library tester)(section emt:wrap-form))
+(defconst emth:wrap-form:thd:examples
+   (emtg:define+ ;;xmp:26ef7f1f-ce61-4284-8175-29a7fc7e4ef5
+      ((project emtest)(library tester)(section emth:wrap-form))
       (group
 	 ()
 	 (item ((type form)(subtype original))
@@ -51,24 +51,24 @@
 	    '(emt:funcall #'equal 1 2)))))
 
 
-;;;_  . emt:wrap-form ;; Obsolete
-(rtest:deftest emt:wrap-form
+;;;_  . emth:wrap-form ;; Obsolete
+(rtest:deftest emth:wrap-form
 
    (  "Shows: It wraps the examples as expected."
-      (emt:eg:with emt:wrap-form:thd:examples
-	 ((project emtest)(library tester)(section emt:wrap-form))
+      (emtg:with emth:wrap-form:thd:examples
+	 ((project emtest)(library tester)(section emth:wrap-form))
 	 (assert
 	    (equal
-	       (emt:wrap-form (emt:eg (type form)(subtype original)))
-	        (emt:eg (type form)(subtype wrapped)))
+	       (emth:wrap-form (emtg (type form)(subtype original)))
+	        (emtg (type form)(subtype wrapped)))
 	    t)
 	 t))
 
    ("Shows: The wrapped examples behave as expected"
-      (emt:eg:with emt:persist:thd:examples
+      (emtg:with emt:persist:thd:examples
 	 ((project emtest)(library persist)(count 1))
 	 (emt:db:internal:ts:mock
-	    (emt:eg (type whole-db))
+	    (emtg (type whole-db))
 
 	    ;;A version that doesn't de-reference the placeholder. It
 	    ;;fails.  Make sure this stays outside of "should" - but see
@@ -76,8 +76,8 @@
 	    (let
 	       ((success
 		   (equal
-		      (emt:persist (emt:eg (type id)) 'dummy)
-		      (car (emt:eg (type values))))))
+		      (emt:persist (emtg (type id)) 'dummy)
+		      (car (emtg (type values))))))
 	       ;;And pass both values.
 	       (assert (not success) nil))
 	 
@@ -86,28 +86,28 @@
 	    (assert
 	       (emt:funcall
 		  #'equal
-		  (emt:persist (emt:eg (type id)) 'dummy)
-		  (car (emt:eg (type values)))))
+		  (emt:persist (emtg (type id)) 'dummy)
+		  (car (emtg (type values)))))
 
-	    ;;A version that implicitly uses emt:funcall.  `emt:wrap-form'
+	    ;;A version that implicitly uses emt:funcall.  `emth:wrap-form'
 	    ;;adds it.
 
 	    (assert
 	       (eval
-		  (emt:wrap-form
+		  (emth:wrap-form
 		     '(equal
-			 (emt:persist (emt:eg (type id)) 'dummy)
-			 (car (emt:eg (type values)))))))
+			 (emt:persist (emtg (type id)) 'dummy)
+			 (car (emtg (type values)))))))
 	       
 	    t))))
-;;;_  . emt:should-f
-(put 'emt:should-f 'rtest:test-thru
+;;;_  . emth:should-f
+(put 'emth:should-f 'rtest:test-thru
    'should)
 
 ;;;_  . emt:standard:thd:examples
 
 (defconst emt:standard:thd:examples
-   (emt:eg:define+ ;;xmp:bf4883a1-50ae-4fdf-815a-98ecdfc26a2a
+   (emtg:define+ ;;xmp:bf4883a1-50ae-4fdf-815a-98ecdfc26a2a
       ((project emtest) (library tester))
       (group 
 	 ((name pass))
@@ -178,13 +178,13 @@
    
    (  "Situation: A form that returns non-nil.
 Response: Collect a passing grade."
-      (emt:eg:with emt:standard:thd:examples
+      (emtg:with emt:standard:thd:examples
 	 ((project emtest) (library tester)(name pass))
 	 (let
 	    ((stored-grades 
-		(emt:should:th () 
+		(emth:should:th () 
 		   (ignore-errors
-		      (eval `(should ,(emt:eg (type form))))))))
+		      (eval `(should ,(emtg (type form))))))))
 
 	    (and
 	       (equal (length stored-grades) 1)
@@ -192,21 +192,21 @@ Response: Collect a passing grade."
 		  ((grade (car stored-grades)))
 		  (and
 		     (equal (emt:result:event:grade-grade grade) 
-			(emt:eg (type grade)))
+			(emtg (type grade)))
 		     (equal 
 			(emt:result:event:grade-form grade) 
-			(emt:eg (type form)))
+			(emtg (type form)))
 		     ))))))
    
 (  "Situation: A form that returns non-nil.
 That forms is (null nil) which somehow has behaved oddly - different
 than t.  So does (eq t t) Maybe forms behave differently, but they shouldn't.
 Response: Collect a passing grade."
-      (emt:eg:with emt:standard:thd:examples
+      (emtg:with emt:standard:thd:examples
 	 ((project emtest) (library tester)(name pass))
 	 (let
 	    ((stored-grades 
-		(emt:should:th () 
+		(emth:should:th () 
 		   (ignore-errors
 		      (eval `(should (null nil)))))))
 
@@ -216,23 +216,23 @@ Response: Collect a passing grade."
 		  ((grade (car stored-grades)))
 		  (and
 		     (equal (emt:result:event:grade-grade grade) 
-			(emt:eg (type grade)))
+			(emtg (type grade)))
 		     (equal 
 			(emt:result:event:grade-form grade) 
-			(emt:eg (type form)))
+			(emtg (type form)))
 		     ))))))   
    
    
    
    (  "Situation: A form that returns nil.
 Response: Collect a failing grade."
-      (emt:eg:with emt:standard:thd:examples
+      (emtg:with emt:standard:thd:examples
 	 ((project emtest) (library tester)(name fail))
 	 (let
 	    ((stored-grades 
-		(emt:should:th () 
+		(emth:should:th () 
 		   (ignore-errors
-		      (eval `(should ,(emt:eg (type form))))))))
+		      (eval `(should ,(emtg (type form))))))))
 
 	    (and
 	       (equal (length stored-grades) 1)
@@ -240,22 +240,22 @@ Response: Collect a failing grade."
 		  ((grade (car stored-grades)))
 		  (and
 		     (equal (emt:result:event:grade-grade grade) 
-			(emt:eg (type grade)))
+			(emtg (type grade)))
 		     (equal 
 			(emt:result:event:grade-form grade) 
-			(emt:eg (type form)))
+			(emtg (type form)))
 		     ))))))
 
 
    (  "Event: Something in the form errors.
 Behavior: Collect an ungraded grade."
-      (emt:eg:with emt:standard:thd:examples
+      (emtg:with emt:standard:thd:examples
 	 ((project emtest) (library tester)(name ungraded))
 	 (let
 	    ((stored-grades 
-		(emt:should:th () 
+		(emth:should:th () 
 		   (ignore-errors
-		      (eval `(should ,(emt:eg (type form))))))))
+		      (eval `(should ,(emtg (type form))))))))
 
 	    (and
 	       (equal (length stored-grades) 1)
@@ -263,16 +263,16 @@ Behavior: Collect an ungraded grade."
 		  ((grade (car stored-grades)))
 		  (and
 		     (equal (emt:result:event:grade-grade grade) 
-			(emt:eg (type grade)))
+			(emtg (type grade)))
 		     (equal 
 			(emt:result:event:grade-form grade) 
-			(emt:eg (type form)))
+			(emtg (type form)))
 		     ))))))
 
    	 ;;$$`should' should not invoke the debugger inside it,
 	 ;;except if deliberately made to do so.  Test
 	 ;;and fix this. It does in the test of
-         ;;`emt:suite-sym-at-point', but that may be because that's in
+         ;;`emtel:suite-sym-at-point', but that may be because that's in
          ;;rtest not emtest yet.  That may be considered acceptable.
          ;;However, emtest isn't yet handling those errors.  That's a
          ;;problem. 
@@ -281,13 +281,13 @@ Behavior: Collect an ungraded grade."
 
    (  "Event: Something in the form provides diagnostic trace
 Behavior: Collect the diagnostic trace.  Grade as usual"
-      (emt:eg:with emt:standard:thd:examples
+      (emtg:with emt:standard:thd:examples
 	 ((project emtest) (library tester)(name fail-comparison))
 	 (let
 	    ((stored-grades 
-		(emt:should:th () 
+		(emth:should:th () 
 		   (ignore-errors
-		      (eval `(should ,(emt:eg (type form))))))))
+		      (eval `(should ,(emtg (type form))))))))
 
 	    (and
 	       (equal (length stored-grades) 1)
@@ -295,14 +295,14 @@ Behavior: Collect the diagnostic trace.  Grade as usual"
 		  ((grade (car stored-grades)))
 		  (and
 		     (equal (emt:result:event:grade-grade grade) 
-			(emt:eg (type grade)))
+			(emtg (type grade)))
 		     (equal 
 			(emt:result:event:grade-form grade) 
-			(emt:eg (type form)))
+			(emtg (type form)))
 		     '  ;;$$REWRITE ME for TESTRAL
 		     (equal
 			(emt:result:event:grade-diagnostic-info grade)
-			(emt:eg (type diag-trace)))
+			(emtg (type diag-trace)))
 		     
 		     ))))))
 
@@ -310,13 +310,13 @@ Behavior: Collect the diagnostic trace.  Grade as usual"
 
    (  "Event: Something in the form errors.
 Behavior: Collect the appropriate diagnostic trace."
-      (emt:eg:with emt:standard:thd:examples
+      (emtg:with emt:standard:thd:examples
 	 ((project emtest) (library tester)(name ungraded))
 	 (let
 	    ((stored-grades 
-		(emt:should:th () 
+		(emth:should:th () 
 		   (ignore-errors
-		      (eval `(should ,(emt:eg (type form))))))))
+		      (eval `(should ,(emtg (type form))))))))
 
 	    (and
 	       (equal (length stored-grades) 1)
@@ -324,27 +324,27 @@ Behavior: Collect the appropriate diagnostic trace."
 		  ((grade (car stored-grades)))
 		  (and
 		     (equal (emt:result:event:grade-grade grade) 
-			(emt:eg (type grade)))
+			(emtg (type grade)))
 		     (equal 
 			(emt:result:event:grade-form grade) 
-			(emt:eg (type form)))
+			(emtg (type form)))
 		     '  ;;$$REWRITE ME for TESTRAL
 		     (equal
 			(emt:result:event:grade-diagnostic-info grade)
-			(emt:eg (type diag-trace)))
+			(emtg (type diag-trace)))
 		     
 		     ))))))
 
    (  "Situation: Several things are traced
 Response: Trace occurs in forward order, not reversed (ie, it gets
 unreversed after all the pushing)"
-      (emt:eg:with emt:standard:thd:examples
+      (emtg:with emt:standard:thd:examples
 	 ((project emtest) (library tester)(name fail-double-comparison))
 	 (let
 	    ((stored-grades 
-		(emt:should:th () 
+		(emth:should:th () 
 		   (ignore-errors
-		      (eval `(should ,(emt:eg (type form))))))))
+		      (eval `(should ,(emtg (type form))))))))
 
 	    (and
 	       (equal (length stored-grades) 1)
@@ -352,21 +352,21 @@ unreversed after all the pushing)"
 		  ((grade (car stored-grades)))
 		  (and
 		     (equal (emt:result:event:grade-grade grade) 
-			(emt:eg (type grade)))
+			(emtg (type grade)))
 		     (equal 
 			(emt:result:event:grade-form grade) 
-			(emt:eg (type form)))
+			(emtg (type form)))
 		     '  ;;$$REWRITE ME for TESTRAL
 		     (equal
 			(emt:result:event:grade-diagnostic-info grade)
-			(emt:eg (type diag-trace)))
+			(emtg (type diag-trace)))
 		     
 		     ))))))
 
 
 
    ;;We wrap `equal' etc in `emt:funcall', so it can understand
-   ;;persists, etc.  But we actually test `emt:wrap-form', because
+   ;;persists, etc.  But we actually test `emth:wrap-form', because
    ;;`should' doesn't have a nice test-disclosing return value nor
    ;;reliably throw an error.
 
@@ -394,15 +394,15 @@ unreversed after all the pushing)"
    ;;If `doc' errors, that should not keep the form from running.
    )
 
-;;;_  . emtt:map&trap
+;;;_  . emth:map&trap
 
-(emt:deftest-3 emtt:map&trap
+(emt:deftest-3 emth:map&trap
    (nil
       (progn
 	 (emt:doc "Proves: Maps over values.")
 	 (assert
 	    (equal
-	       (emtt:map&trap
+	       (emth:map&trap
 		  #'eval
 		  '(12 (+ 1 2)))
 	       '(12 3)))))
@@ -412,8 +412,8 @@ unreversed after all the pushing)"
 	 (emt:doc "Situation: First form errors. Second one increments
       a variable")
 	 (assert
-	    (emt:gives-error
-	       (emtt:map&trap
+	    (emth:gives-error
+	       (emth:map&trap
 		  #'eval 
 		  '((error "Example error")
 		      (incf a)))))

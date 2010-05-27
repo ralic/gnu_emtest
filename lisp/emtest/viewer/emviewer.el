@@ -44,7 +44,10 @@
    "*Emtest Report (emviewer)*")
 ;;;_ , Types
 ;;$$USEME in place of the many globals
-(defstruct emtve
+(defstruct (emtve
+	    (:constructor emtve:make)
+	    (:conc-name emtve->)
+	    (:copier nil))
    "An emviewer object"
    (report-buffer () :type (satisfies bufferp))
    (result-root   () :type emtvp)
@@ -78,13 +81,13 @@ It just tells a pathtree to add this node."
       ;;The path
       presentation-path
       ;;The data
-      (make-emt:view:suite-newstyle 
+      (emt:view:make-suite-newstyle 
 	 :list (wookie:make-dlist)
 	 :cell cell)))
 ;;;_  . emtve:vp-node->dlist
 (defun emtve:vp-node->dlist (obj)
    ""
-   (emt:view:presentable-list
+   (emt:view:presentable->list
       (emtvp-node-data obj)))
 
 ;;;_  . emtest:viewer:pathtree-cb
@@ -147,7 +150,7 @@ It just tells a pathtree to add this node."
 	    #'emtest:viewer:pathtree-cb
 	    ;;Default makes the base type.
 	    #'(lambda ()
-		 (make-emt:view:presentable
+		 (emt:view:make-presentable
 		    :list (wookie:make-dlist)))
 	    'emt:view:suite-newstyle)))
 
@@ -177,7 +180,7 @@ It just tells a pathtree to add this node."
    (unless 
       emtve:receiver
       (setq emtve:receiver
-	 (make-emtvr:data
+	 (emtvr:make-data
 	    :alist ()
 	    :tree-insert-cb #'emtve:receive-cb
 	    ;;:tree-remove-cb Not yet

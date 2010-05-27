@@ -32,78 +32,25 @@
 
 ;;;_. Body
 
-;;;_  . emt:deftest-2-make-prop-eval-form
-(rtest:deftest emt:deftest-2-make-prop-eval-form
+;;;_  . emtd:make-prop-eval-form
+(rtest:deftest emtd:make-prop-eval-form
 
    (  "Shows: Makes a form that evals as expected."
       (progn
 	 (assert
 	    (equal
 	       (eval
-		  (emt:deftest-2-make-prop-eval-form '(four (+ 2 2))))
+		  (emtd:make-prop-eval-form '(four (+ 2 2))))
 	       '(four 4))
 	    t)
 	 ;;Is not over-evalled.
 	 (assert
 	    (equal
 	       (eval
-		  (emt:deftest-2-make-prop-eval-form '(four-form '(+ 2 2))))
+		  (emtd:make-prop-eval-form '(four-form '(+ 2 2))))
 	       '(four-form (+ 2 2)))
 	    t)
 	 t)))
-
-;;;_  . emt:deftest-2
-'  ;;OBSOLETE
-(put 'emt:deftest-2 'rtest:test-thru
-   'emtt:destructure-suite)
-;;;_  . Tests
-
-;;There's a bootstrap problem in defining a suite to test this, so
-;;this has to be run manually.  For now it's in rtest so no bootstrap
-;;issue. 
-'  ;;OBSOLETE
-(rtest:deftest emtt:destructure-suite
-
-   (  "Situation: A test is defined.
-Response: Destructuring finds the expected clauses."
-      (emt:let-noprops '(dummy-sym)
-	 (emt:deftest-2 dummy-sym
-	    ("Docstring" (progn 12)))
-	 (emtt:destructure-suite 'dummy-sym
-	    (assert
-	       (= (length clause-list) 1) t)
-	    (emtt:destructure-clause
-	       (car clause-list)
-	       (equal form '(progn 12)))
-	    t)))
-   
-   
-   (  "Situation: A test is defined with properties
-Response: Destructuring finds the expected properties."
-      (emt:let-noprops '(dummy-sym)
-	 (emt:deftest-2 dummy-sym
-	    (props 
-	       (db-id "my-db")
-	       (four (+ 2 2))
-	       (four-form '(+ 2 2)))
-	    ("Docstring" (progn 12)))
-	 (emtt:destructure-suite 'dummy-sym
-	    (assert
-	       (equal
-		  (assoc 'db-id props)
-		  '(db-id "my-db")))
-	    (assert
-	       (equal
-		  (assoc 'four props)
-		  '(four 4))
-	       t)
-	    (assert
-	       (equal
-		  (assoc 'four-form props)
-		  '(four-form (+ 2 2)))
-	       t)
-	    t))))
-
 
 ;;;_  . emt:deftest-3
 
@@ -114,20 +61,20 @@ Response: Destructuring finds the expected properties."
 
    (  "Situation: A test is defined.
 Response: Destructuring finds the expected clauses."
-      (emt:let-noprops '(dummy-sym)
+      (emth:let-noprops '(dummy-sym)
 	 (emt:deftest-3 dummy-sym
 	    (test (progn 12)))
-	 (emtt:destructure-suite-3 'dummy-sym
+	 (emtd:destructure-suite-3 'dummy-sym
 	    (assert
 	       (= (length clause-list) 1) t)
-	    (emtt:destructure-clause-3
+	    (emtd:destructure-clause-3
 	       (car clause-list)
 	       (equal form '(progn 12)))
 	    t)))
 
    (  "Situation: A test is defined with properties
 Response: Destructuring finds the expected properties."
-      (emt:let-noprops '(dummy-sym)
+      (emth:let-noprops '(dummy-sym)
 	 (emt:deftest-3
 	    (
 	       (of    'dummy-sym)
@@ -135,7 +82,7 @@ Response: Destructuring finds the expected properties."
 	       (four  (+ 2 2))
 	       (four-form '(+ 2 2)))
 	    (test (progn 12)))
-	 (emtt:destructure-suite-3 'dummy-sym
+	 (emtd:destructure-suite-3 'dummy-sym
 	    (assert
 	       (equal
 		  (assoc 'db-id props)

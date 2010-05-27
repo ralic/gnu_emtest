@@ -37,37 +37,47 @@
 ;;;_  . TESTRAL types
 ;;;_   , Base class
 
-(defstruct emt:testral:base
-   ""
-   id ;;Shared just between scope co-ordinating notes
-   ;;Not clear that parent-id is of general use.
-   parent-id ;;`nil' for root events that have no parent.
-   info
+(defstruct (emt:testral:base
+	    (:constructor emt:testral:make-base)
+	    (:conc-name emt:testral:base->))
+  "The TESTRAL base type"
+  id	    ;;Shared just between scope co-ordinating notes
+  ;;Not clear that parent-id is of general use.
+  parent-id ;;`nil' for root events that have no parent.
+  info
 
-   ;;Reflects only the note's's intrinsic problems.  Even push/pops
-   ;;need it in case (say) a whole stage is dormantized or aborted.
-   (badnesses () :type (repeat emt:result-badness)))
+  ;;Reflects only the note's's intrinsic problems.  Even push/pops
+  ;;need it in case (say) a whole stage is dormantized or aborted.
+  (badnesses () :type (repeat emt:result-badness)))
 
 ;;;_   , Basic notes 
 ;;(All inherit from the base class, none have data)
 ;;;_    . Alone
 (defstruct (emt:testral:alone
+	    (:constructor emt:testral:make-alone)
+	    (:conc-name emt:testral:alone->)
 	      (:include emt:testral:base))
    ""
    )
 ;;;_    . Push
 (defstruct (emt:testral:push
+	    (:constructor emt:testral:make-push)
+	    (:conc-name emt:testral:push->)
 	      (:include emt:testral:base))
    ""
    fenceposting ;;
    )
 ;;;_    . Pop
 (defstruct (emt:testral:pop
+	    (:constructor emt:testral:make-pop)
+	    (:conc-name emt:testral:pop->)
 	      (:include emt:testral:base))
    ""
    )
 ;;;_    . Separate
 (defstruct (emt:testral:separate
+	    (:constructor emt:testral:make-separate)
+	    (:conc-name emt:testral:separate->)
 	      (:include emt:testral:base))
    ""
    )
@@ -75,79 +85,80 @@
 ;;;_   , Specific ones
 ;;;_    . Doc
 (defstruct (emt:testral:doc
+	    (:constructor emt:testral:make-doc)
+	    (:conc-name emt:testral:doc->)
 	      (:include emt:testral:alone))
    "A note indicating a docstring"
    (str () :type string))
 
 ;;;_    . Check
-;;"Should" will ct these.
 (defstruct (emt:testral:check:push
+	    (:constructor emt:testral:make-check:push)
+	    (:conc-name emt:testral:check:push->)
 	      (:include emt:testral:push))
    ""
    )
 (defstruct (emt:testral:check:pop
+	    (:constructor emt:testral:make-check:pop)
+	    (:conc-name emt:testral:check:pop->)
 	      (:include emt:testral:pop))
    ""
    )
 ;;;_    . Stage
 (defstruct (emt:testral:stage:push
+	    (:constructor emt:testral:make-stage:push)
+	    (:conc-name emt:testral:stage:push->)
 	      (:include emt:testral:push))
    ""
    (name () :type string))
 
 (defstruct (emt:testral:stage:pop
+	    (:constructor emt:testral:make-stage:pop)
+	    (:conc-name emt:testral:stage:pop->)
 	      (:include emt:testral:pop))
    ""
    )
 
 ;;;_    . Error-raised
 (defstruct (emt:testral:error-raised
+	    (:constructor emt:testral:make-error-raised)
+	    (:conc-name emt:testral:error-raised->)
 	      (:include emt:testral:alone))
    ""
    (err () :type t))
-
-;;;_   , (Obsolete) TESTRAL notes in a DLL
-'  ;;Obsolete
-'
-(deftype emt:result-node () 
-   'emt:testral:base)
-
-
-   '(satisfies 
-       (lambda (obj)
-	  ;;Breaks encap, but we can't just use `dll-element' to get
-	  ;;it because we don't know dll.
-	  (typep (elib-node-data obj) emt:testral:base)))
-
 
 ;;;_   , Contents discrimination for suite type
 
 ;;;_    . emt:testral:runform-list
 (defstruct (emt:testral:runform-list
-	      (:constructor emt:testral:make-runform-list))
-   "List of explorables"
-
-   ;;$$CHANGED, Was emt:test-ID:e-n
-   (els () :type (repeat emtt:explorable)))
+	    (:constructor emt:testral:make-runform-list)
+	    (:conc-name emt:testral:runform-list->))
+  
+  "List of explorables"
+  (els () :type (repeat emtt:explorable)))
 ;;;_    . emt:testral:note-list
-(defstruct emt:testral:note-list
-   ""
-   (notes () :type (repeat emt:testral:base)))
+(defstruct (emt:testral:note-list
+	    (:constructor emt:testral:make-note-list)
+	    (:conc-name emt:testral:note-list->))
+  ""
+  (notes () :type (repeat emt:testral:base)))
 
 ;;;_   , TESTRAL general report
 
-(defstruct emt:testral:report
-   "A report sent by test-runner to viewer"
-   (testrun-id     () :type emt:testral:testrun-id)
-   (tester-id      () :type emt:testral:tester-id)
-   (run-done-p     () :type bool)
-   ;;This is really visible-path prefix.
-   (test-id-prefix () :type emt:testral:prefix-suite-id)
-   (suites () :type 
-      (repeat
-	 ;;Maybe this should be a type too.  NB, it's a list because
-	 ;;it is a list in `emtvr:one-newstyle'
-	 (list 
+(defstruct (emt:testral:report
+	    (:constructor emt:testral:make-report)
+	    (:conc-name emt:testral:report->))
+  "A report sent by test-runner to viewer"
+  (testrun-id     () :type emt:testral:testrun-id)
+  (tester-id      () :type emt:testral:tester-id)
+  (run-done-p     () :type bool)
+  ;;This is really visible-path prefix.
+  (test-id-prefix () :type emt:testral:prefix-suite-id)
+  (suites () :type 
+	  (repeat
+	   ;;Maybe this should be a type too.  NB, it's a list because
+	   ;;it is a list in `emtvr:one-newstyle'
+	   (list 
 	    ;;$$CHANGED
 	    emtt:explorable
 	    null ;;let's leave that an empty list for now
@@ -156,27 +167,31 @@
 ;;;_   , Suites etc specific reports
 
 ;;;_   , test-runner info
-(defstruct emt:testral:test-runner-info
-   "Info describing a tester."
-   (name    ()  :type string)
-   (version "0" :type string)
-   ;;$$CHANGE ME - See [[id:b4sjlt20mze0][Test-runner info]]
-   ;;Type should become (repeat emtt:method)
-   (explore-methods-supported () :type (repeat emt:testral:explore-method-id)))
+(defstruct (emt:testral:test-runner-info
+	    (:constructor emt:testral:make-test-runner-info)
+	    (:conc-name emt:testral:test-runner-info->))
+  "Info describing a tester."
+  (name    ()  :type string)
+  (version "0" :type string)
+  ;;$$CHANGE ME - See [[id:b4sjlt20mze0][Test-runner info]]
+  ;;Type should become (repeat emtt:method)
+  (explore-methods-supported () :type (repeat emt:testral:explore-method-id)))
 
 
 ;;;_   , NEW suite
-(defstruct emt:testral:suite
-   ""
-   ;;Either TESTRAL list or ids of child suites or nil.
-   (contents () 
-      :type 
-      (or 
-	 emt:testral:note-list
-	 emt:testral:runform-list
-	 null)) 
-   (badnesses () :type (repeat emt:result-badness))
-   info)
+(defstruct (emt:testral:suite
+	    (:constructor emt:testral:make-suite)
+	    (:conc-name emt:testral:suite->))
+  ""
+  ;;Either TESTRAL list or ids of child suites or nil.
+  (contents () 
+	    :type 
+	    (or 
+	     emt:testral:note-list
+	     emt:testral:runform-list
+	     null)) 
+  (badnesses () :type (repeat emt:result-badness))
+  info)
 
 ;;;_   , (Suggested) emt:testral:problem
 ;;Name?  emt:testral:bad-launch

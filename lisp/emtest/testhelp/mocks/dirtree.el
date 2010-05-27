@@ -144,7 +144,7 @@ SPEC can be any of the following:
    ;;Can this ever legitimately receive a file repr for either?
    (check-type a emtmd:repr-contents)
    (check-type b emtmd:repr-contents)
-   (emt:sets= a b
+   (emth:sets= a b
       :test
       #'(lambda (a b)
 	   (etypecase a

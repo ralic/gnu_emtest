@@ -38,7 +38,7 @@
 ;;New PLAN
 ;;
 
-;;Use `with-buffer-containing-object' as the main entry point here.
+;;Use `emtb:with-buf' as the main entry point here.
 ;;This is largely done now.
 
 ;;Better document its args.
@@ -52,14 +52,14 @@
 ;;need to know the path that we copied stuff to.
 
 ;;Maybe make read-final an available function rather than an argument
-;;to `with-buffer-containing-object'?  Clearer and more flexible.
+;;to `emtb:with-buf'?  Clearer and more flexible.
 ;;Some informational functions around here are applicable too:
 ;;emtb:files-match, emtb:buf-is-file-at, emtb:buf-is-file.
 
 ;; When we do want saving to go somewhere else, that should be
 ;;effected by giving further args to `emtb:cautious-load-file'.  A
 ;;tmp-dir argument computed by mockbuf itself?  Used just if
-;;`with-buffer-containing-object' gets an additional argument.  And
+;;`emtb:with-buf' gets an additional argument.  And
 ;;(actually found this needed earlier) sometimes we need the visited
 ;;filename for informational purposes.
 
@@ -114,16 +114,16 @@ You may want to use this to umount a ramdisk"
 ;;;_  . Buffer containing known contents
 ;;;_   , Formdata structure emtb:bufcontaining:formdata
 
-;;;_   , with-buffer-containing-object
+;;;_   , emtb:with-buf
 
-(defmacro with-buffer-containing-object (args &rest body)
+(defmacro emtb:with-buf (args &rest body)
    ""
-   (apply #'with-buffer-containing-buildform body args))
+   (apply #'emtb:with-buf-f body args))
 
-;;;_    . Worker `with-buffer-containing-buildform'
+;;;_    . Worker `emtb:with-buf-f'
 
 ;;Key `:printed-object' has been replaced by key`:sexp'
-(defun* with-buffer-containing-buildform 
+(defun* emtb:with-buf-f 
    (body &key printed-object sexp string file dir visited-name
       point-replaces
       sequence)
@@ -191,8 +191,8 @@ You may want to use this to umount a ramdisk"
 	 )
       args))
 
-;;;_  . File containing known contents
-(defmacro with-file-containing (args var &rest body)
+;;;_  . emtb:with-file-f
+(defmacro emtb:with-file-f (args var &rest body)
    ""
    (let
       ((temp-file-sym (make-symbol "temp-file")))
@@ -209,7 +209,7 @@ You may want to use this to umount a ramdisk"
 	  
 	  (unless
 	     --absent
-	     (with-buffer-containing-object ,args 
+	     (emtb:with-buf ,args 
 		(write-file ,temp-file-sym)))
 	  
 	  (unwind-protect
@@ -222,7 +222,7 @@ You may want to use this to umount a ramdisk"
 (defmacro emtb:string-containing-object (spec)
    ""
 
-   `(with-buffer-containing-object ,spec
+   `(emtb:with-buf ,spec
       (buffer-string)))
 
 ;;;_   , Tests
@@ -251,7 +251,7 @@ You may want to use this to umount a ramdisk"
 ;;Take an optional alist associating string to mark.
 ;;If not passed, use current buffer's local value.  If there's none,
 ;;error and explain.
-;;`with-buffer-containing-object' should set that list up.
+;;`emtb:with-buf' should set that list up.
 
 ;;    Approach: Have a file marking that means to delete the marking,
 ;;    text and all, but keep a mark and an alist relating text to mark.
@@ -333,7 +333,6 @@ You may want to use this to umount a ramdisk"
 	    (set-visited-file-name abs-name t nil)))))
 ;;;_   , emtb:find-file-goto-text
 
-;;$$OBSOLESCENT 
 ;;This is now only a test helper.
 ;;$$MOVE ME but first encap and share those checks.
 

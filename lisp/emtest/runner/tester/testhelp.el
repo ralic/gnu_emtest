@@ -44,8 +44,8 @@
 (defun emtt:th:explore-one (form callback &optional testrun-id)
    ""
    ;;Test thru top call for now.
-   (emt:test-finder:top 
-      (make-emt:test-ID:e-n:form
+   (emtt:test-finder:top 
+      (emthow:make-form
 	 :test-form form)
       (list "form")
       (or testrun-id "0")

@@ -29,7 +29,7 @@
 
 ;;;_ , Requires
 
-(require 'emtest/testhelp/eg)
+(require 'emtest/testhelp/tagnames)
 (require 'emtest/runner/tester)
 (require 'emtest/testhelp/standard)
 (require 'emtest/runner/define)
@@ -43,7 +43,7 @@
 
 ;;;_   , emtt:launch:thd:examples
 (defconst emtt:launch:thd:examples
-   (emt:eg:define+
+   (emtg:define+
       ((project emtest)(library tester)(section entry-points))
       (transparent-tags () (type))
       (group
@@ -52,37 +52,37 @@
 	 (item ((type count)) 2)
 	 (item ((type suite-sym-list)) '(foo bar))
 	 ;;$RENAME ME Maybe rename it feature-sym
-	 (item ((type sym)) (intern (emt:eg (type name))))
+	 (item ((type sym)) (intern (emtg (type name))))
 	 (item ((type file-load-history))
 	    `( ,(concat
 		   emtt:launch:th:examples-dir
-		   (emt:eg (type name))
+		   (emtg (type name))
 		   ".el")
-		,@(emt:eg (type suite-sym-list)) 
-		(provide . ,(emt:eg (type sym))))))
+		,@(emtg (type suite-sym-list)) 
+		(provide . ,(emtg (type sym))))))
       (group
 	 ((count 1))
 	 (item ((type name)) "example-1")
 	 (item ((type count)) 1)
 	 (item ((type suite-sym-list)) '(foo))
-	 (item ((type sym)) (intern (emt:eg (type name))))
+	 (item ((type sym)) (intern (emtg (type name))))
 	 (item ((type file-load-history))
 	    `( ,(concat
 		   emtt:launch:th:examples-dir
-		   (emt:eg (type name))
+		   (emtg (type name))
 		   ".el")
-		,@(emt:eg (type suite-sym-list)) 
-		(provide . ,(emt:eg (type sym))))))
+		,@(emtg (type suite-sym-list)) 
+		(provide . ,(emtg (type sym))))))
 
 
       (item ((type load-path-entry)(num 0))
 	 emtt:launch:th:examples-dir)
       (item ((type load-path))
-	 (emt:eg:map num nil
-	    (emt:eg (type load-path-entry))))
+	 (emtg:map num nil
+	    (emtg (type load-path-entry))))
       (item ((type load-history))
-	 (emt:eg:map count nil
-	    (emt:eg (type file-load-history))))))
+	 (emtg:map count nil
+	    (emtg (type file-load-history))))))
 
 
 ;;;_   , emt:library:th
@@ -92,19 +92,19 @@
    "Run BODY in an environment with a certain example library defined.
 +TAGSET is a tagset narrowing, as for `eg'."
    
-   `(emt:eg:with emtt:launch:thd:examples ,+tagset
+   `(emtg:with emtt:launch:thd:examples ,+tagset
        (let
-	  ((suite-sym-list (emt:eg (type suite-sym-list)))
-	     (load-path (emt:eg:value 
+	  ((suite-sym-list (emtg (type suite-sym-list)))
+	     (load-path (emtg:value 
 			   :narrow ((type load-path))
 			   :ignore-tags (count num)))
 	     (load-history 
-		(emt:eg:value 
+		(emtg:value 
 		   :narrow ((type load-history)) 
 		   :ignore-tags (count))))
 
 	  ;;Define the suites (protected by a noprops)
-	  (emt:let-noprops suite-sym-list
+	  (emth:let-noprops suite-sym-list
 	     (dolist (sym suite-sym-list)
 		(eval ,'`(emt:deftest-3 ,sym ())))
 	     ;;Now do the tests
@@ -124,12 +124,12 @@
 	    (let*
 	       ((syms
 		   (emtt:lib-sym->suites
-		      (emt:eg
+		      (emtg
 			 (type sym)))))
 	       (assert
 		  (equal
 		     (length syms)
-		     (emt:eg
+		     (emtg
 			(type count)))
 		  t)
 	       t)))))
@@ -151,7 +151,7 @@ Full exploration is used (Meaningless for now)")
 	    ((count 2))
 	    (emtp:eval
 	       (emt:library
-		  (emt:eg
+		  (emtg
 		     (type sym))
 		  ;;$$FIX ME Library does not return a result object
 		  ;;yet.  Will type-check it.  But for now, we can't
@@ -159,14 +159,14 @@ Full exploration is used (Meaningless for now)")
 		  ;;emt:result-group)
 		  #'ignore)
 	       (tp-reached tp:798212b4-1abe-4779-beb1-baf53ff39a8c
-		  (emt:eg
+		  (emtg
 		     (type count)))
 	       (tp*
 		  (:id tp:a084136e-8f02-49a5-ac0d-9f65509cedf2 :count nil :fallthru t)
 		  (test-id)
 		  (typecase test-id
 		     ;;Intercept suite
-		     (emt:test-ID:e-n:suite
+		     (emthow:suite
 			;;A reached-point for counting invocations.
 			(emtp tp:798212b4-1abe-4779-beb1-baf53ff39a8c nil)
 			;;Don't try to explore its clauses, return
@@ -174,7 +174,7 @@ Full exploration is used (Meaningless for now)")
 			(throw 'emtp:tag-return nil))
 		     ;;Make library itself fall thru to handler, whose
 		     ;;behavior is what we're testing.
-		     (emt:test-ID:e-n:library:elisp-load t)
+		     (emthow:library:elisp-load t)
 		     ;;We don't expect to see any other types of
 		     ;;explores.
 		     (t

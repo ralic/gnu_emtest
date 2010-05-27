@@ -37,13 +37,13 @@
 ;;;_   , emtts:surround
 
 
-;;;_    . emtt:trap-errors
+;;;_    . emth:trap-errors
 
-(rtest:deftest emtt:trap-errors
+(rtest:deftest emth:trap-errors
    (  "Shows: Works with `emtts:surround'."
       (equal
 	 (eval
-	    (emtt:add-surrounders 12 '((emtt:trap-errors)) ()))
+	    (emts:add-surrounders 12 '((emth:trap-errors)) ()))
 	 
 	 12))
    
@@ -54,8 +54,8 @@ Does not signal error."
       (progn
 	 (assert
 	    (not
-	       (emt:gives-error
-		  (emtt:trap-errors
+	       (emth:gives-error
+		  (emth:trap-errors
 		     (signal 'emt:already-handled ())))))
 	 t))
    
@@ -65,13 +65,13 @@ Does not signal error."
 
 
 
-;;;_ , emtt:get-properties
-(rtest:deftest emtt:get-properties
+;;;_ , utim:get-properties
+(rtest:deftest utim:get-properties
 
    (  "Situation: A test is defined with properties.
 That test is now being run.
-Behavior: `emtt:get-properties' returns the relevant property."
-      (emt:let-noprops '(dummy-sym)
+Behavior: `utim:get-properties' returns the relevant property."
+      (emth:let-noprops '(dummy-sym)
 	 (emt:deftest-3 
 	    (
 	       (of 'dummy-sym)
@@ -91,12 +91,12 @@ Behavior: `emtt:get-properties' returns the relevant property."
 	       (progn
 		  (assert
 		     (equal
-			(emtt:get-properties 'db-id)
+			(utim:get-properties 'db-id)
 			"my-db")
 		     t)
 		  (assert
 		     (equal
-			(emtt:get-properties 'example-dir)
+			(utim:get-properties 'example-dir)
 			"examples/")
 		     t))))
 	 t)))
@@ -114,11 +114,11 @@ Behavior: `emtt:get-properties' returns the relevant property."
 ;;;_  . emtt:explore-one
 
 (put 'emtt:explore-one 'rtest:test-thru
-   'emt:test-finder:top)
+   'emtt:test-finder:top)
 
-;;;_   , emt:test-finder:top
+;;;_   , emtt:test-finder:top
 
-(rtest:deftest emt:test-finder:top
+(rtest:deftest emtt:test-finder:top
    
    (  "Shows: It passes callback an `emt:testral:report'."
       (progn

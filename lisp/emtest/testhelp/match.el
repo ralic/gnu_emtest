@@ -28,7 +28,7 @@
 
 
 ;;;_ , Requires
-(require 'emtest/testhelp/eg)
+(require 'emtest/testhelp/tagnames)
 (eval-when-compile
    (require 'cl))
 
@@ -41,7 +41,7 @@
 ;;;_. Body
 ;;;_ , Structures
 ;;;_  . Accumulator definition
-(emt:accumulator:define 
+(utiacc:define 
    (emtm:formdata
       (:constructor emtm:make-formdata)
       (:conc-name emtm:formdata->))
@@ -216,7 +216,7 @@ PATTERN is headed by governor"
 	       pattern-els)))
 
       ;;Result: All the forms we just made.
-      (emt:accumulator:list->object
+      (utiacc:list->object
 	 (list*
 	    (emtm:make-formdata
 	       :form-LIST 
@@ -233,7 +233,7 @@ PATTERN is headed by governor"
 ;;;_   , Test examples
 
 (defconst emtm:govs:thd:examples
-   (emt:eg:define+ ;;xmp:3be9cd9e-25f7-4f9d-9304-8afc1680d17a
+   (emtg:define+ ;;xmp:3be9cd9e-25f7-4f9d-9304-8afc1680d17a
       ((project emtest)
 	 (library emtm)
 	 (section emtm:govs:list))
@@ -340,7 +340,7 @@ PATTERN is headed by governor"
 		  ;;from a mere binding, wrt dependencies.
 		  :form `(identity ,ret-sym))))
 
-	 (emt:accumulator:list->object
+	 (utiacc:list->object
 	    (append
 	       (list
 		  (emtm:make-formdata
@@ -817,7 +817,7 @@ KEYS is a list of all field-names."
 				 (second cell)))
 			 data-list)))
 	     
-		(emt:accumulator:list->object
+		(utiacc:list->object
 		   (append
 		      (list 
 			 (emtm:make-formdata

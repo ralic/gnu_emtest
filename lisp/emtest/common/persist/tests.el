@@ -1,4 +1,4 @@
-;;;_ emtest/common/emt-persist/tests.el --- Test code for emt-persist
+;;;_ emtest/common/persist/tests.el --- Test code for emt-persist
 
 ;;;_. Headers
 ;;;_ , License
@@ -29,24 +29,24 @@
 
 ;;;_ , Requires
 
-(require 'emtest/common/emt-persist/testhelp)
-(require 'emtest/testhelp/eg)
+(require 'emtest/common/persist/testhelp)
+(require 'emtest/testhelp/tagnames)
 (require 'emtest/testhelp/deep-type-checker)
 (require 'el-mock)
 
 ;;;_. Body
 ;;;_ , Interface for using results
-;;;_  . emt:extract-got+placeholder
-;;;_  . emt:extract-got
+;;;_  . emt:db:view:extract+placeholder
+;;;_  . emt:db:view:extract
 
 ;;;_   , Tests
 
-;;;_  . emt:persist:view-obj
+;;;_  . emtdb:view:view-obj
 
 ;;;_   , Tests
 ;;Still in emt-persist
 
-;;;_  . emt:persist:accept-correct
+;;;_  . emt:db:view:accept-correct
 
 ;;;_   , Tests
 ;;Still in emt-persist
@@ -70,38 +70,38 @@
 	 (emt:doc "Situation: ID has no versions")
 	 (emt:doc "")
 	 (emt:doc "Response: Return the empty list.")
-	 (emt:eg:with emt:persist:thd:examples
+	 (emtg:with emt:persist:thd:examples
 	    ((project emtest)
 	       (library persist)
 	       (count 0))
 	    (with-mock
 	       (stub emt:db:by-ix:get-record =>
-		  (emt:eg
+		  (emtg
 		     (type emt:db:persist-archive)))
 	       (equal
 		  (emt:db:get-versions
-		     (emt:eg
+		     (emtg
 			(type id)))
-		  (emt:eg
+		  (emtg
 		     (type versions)))))))
    (nil
       (progn
 	 (emt:doc "Situation: ID has 1 version")
 	 (emt:doc "")
 	 (emt:doc "Response: Return a list of that version.")
-	 (emt:eg:with emt:persist:thd:examples
+	 (emtg:with emt:persist:thd:examples
 	    ((project emtest)
 	       (library persist)
 	       (count 1))
 	    (with-mock
 	       (stub emt:db:by-ix:get-record =>
-		  (emt:eg
+		  (emtg
 		     (type emt:db:persist-archive)))
 	       (equal
 		  (emt:db:get-versions
-		     (emt:eg
+		     (emtg
 			(type id)))
-		  (emt:eg
+		  (emtg
 		     (type versions))))))))
 
 ;;;_  . emt:db:get-all-values
@@ -112,38 +112,38 @@
 	 (emt:doc "Situation: ID has no versions")
 	 (emt:doc "")
 	 (emt:doc "Response: Return the empty list.")
-	 (emt:eg:with emt:persist:thd:examples
+	 (emtg:with emt:persist:thd:examples
 	    ((project emtest)
 	       (library persist)
 	       (count 0))
 	    (with-mock
 	       (stub emt:db:by-ix:get-record =>
-		  (emt:eg
+		  (emtg
 		     (type emt:db:persist-archive)))
 	       (equal
 		  (emt:db:get-all-values
-		     (emt:eg
+		     (emtg
 			(type id)))
-		  (emt:eg
+		  (emtg
 		     (type values)))))))
    (nil
       (progn
 	 (emt:doc "Situation: ID has 1 version")
 	 (emt:doc "")
 	 (emt:doc "Response: Return a list of that version.")
-	 (emt:eg:with emt:persist:thd:examples
+	 (emtg:with emt:persist:thd:examples
 	    ((project emtest)
 	       (library persist)
 	       (count 1))
 	    (with-mock
 	       (stub emt:db:by-ix:get-record =>
-		  (emt:eg
+		  (emtg
 		     (type emt:db:persist-archive)))
 	       (equal
 		  (emt:db:get-all-values
-		     (emt:eg
+		     (emtg
 			(type id)))
-		  (emt:eg
+		  (emtg
 		     (type values))))))))
 
 ;;;_  . emt:db:get-value
@@ -249,14 +249,14 @@ It has the correct value.")
        (progn
 	  (emt:doc "Situation: find-value field is `nil'")
 	  (emt:doc "Response: Just return the value field.")
-	  (emt:eg:with emt:persist:thd:examples
+	  (emtg:with emt:persist:thd:examples
 	     ((project emtest)
 		(library persist)
 		(count 0))
 	     ;;$$REWRITE ME Use testpoint instead.
 	     (with-mock
 		(stub emt:db:by-ix:get-record =>
-		   (emt:eg
+		   (emtg
 		      (type emt:db:persist-archive))))))))
 
 
@@ -302,7 +302,7 @@ It has the correct value.")
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'emtest/common/emt-persist/tests)
+(provide 'emtest/common/persist/tests)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -310,4 +310,4 @@ It has the correct value.")
 ;;;_  + End:
 
 ;;;_ , End
-;;; emtest/common/emt-persist/tests.el ends here
+;;; emtest/common/persist/tests.el ends here

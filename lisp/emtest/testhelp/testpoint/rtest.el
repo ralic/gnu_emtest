@@ -134,13 +134,13 @@ earlier error."
 	 (emtp:eval
 	    (progn
 	       (signal 
-		  'emt:example-error 
+		  'emth:example-error 
 		  "This error keeps the testpoint from being run")
 	       ;;NOT REACHED
 	       (emtp:td:1 1 1))
 	    (tp* (:id id-1 :count 1) (arg a)))
 	 ('emtp:miscount nil)
-	 ('emt:example-error t)))
+	 ('emth:example-error t)))
 
    (  "Shows: Miscount error is not withheld if a throw occurs.
 Situation: Foo is mocked.
@@ -206,7 +206,7 @@ Response: `emtp:eval's value is the finally clause's value."
 Response: Error."
       (progn
 	 (assert
-	    (emt:gives-error
+	    (emth:gives-error
 	       (emtp:eval
 		  nil
 		  (finally () ()
@@ -299,7 +299,7 @@ The old version of foo is restored"
 	    ((old-foo-func (symbol-function 'foo)))
 	    (assert
 	       (not
-		  (emt:gives-error
+		  (emth:gives-error
 		     (emtp:eval
 			(list
 			   (foo)
@@ -317,7 +317,7 @@ The old version of foo is restored"
 	 (let
 	    ((old-foo-func (symbol-function 'foo)))
 	    (assert
-	       (emt:gives-error
+	       (emth:gives-error
 		  (emtp:eval
 		     (list
 			(foo))
@@ -383,7 +383,7 @@ Response: The check signals an error."
 		,(emtp:counter:incf-form counter)
 		,(emtp:counter:incf-form counter)
 		;;Get an error
-		(emt:gives-error
+		(emth:gives-error
 		   ,(emtp:counter:check-form counter))
 		t))))
    

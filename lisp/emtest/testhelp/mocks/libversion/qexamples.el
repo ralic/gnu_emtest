@@ -47,7 +47,7 @@
 ;;test-definition insulator?
 (progn
    ;;Set up a module (Using the examples we already have)
-   (emt:eg:with emtmv:th:data ()
+   (emtg:with emtmv:th:data ()
       (emtmv:th:load))
 
 
@@ -57,13 +57,13 @@
    (emt:deftest-3 
       ((of 'emtest/testhelp/mocks/libversion:th:suite)
 	 (:surrounders 
-	    '((emt:eg:with emtmv:th:data ()))))
+	    '((emtg:with emtmv:th:data ()))))
       (nil
 	 (progn
 	    (emt:doc "Situation: Test is called in state `new' but we
 have set up tester to use old version in test forms.")
 	    (emt:doc "Response: Has the values of old version.")
-	    (emt:eg:narrow ((which old))
+	    (emtg:narrow ((which old))
 	       (emtmv:th:check-all)))))
 
    ;;Set tester to use that module.
@@ -74,7 +74,7 @@ have set up tester to use old version in test forms.")
    
 
    ;;Run tester, launch in `new' mode. (For now this is manual)
-   (emtt:run-suite 'emtest/testhelp/mocks/libversion:th:suite)
+   (emtl:run-suite 'emtest/testhelp/mocks/libversion:th:suite)
 
    ;;Expect (via tester itself) the `old' results.
    )

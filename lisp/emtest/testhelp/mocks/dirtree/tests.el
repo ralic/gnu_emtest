@@ -29,7 +29,7 @@
 
 ;;;_ , Requires
 
-(require 'emtest/testhelp/eg)
+(require 'emtest/testhelp/tagnames)
 (require 'emtest/testhelp/mocks/dirtree)
 ;;;_. Body
 ;;;_ , Master examples
@@ -44,7 +44,7 @@
 ;;  No topdir groups compare equal to each other.
 ;;  Each group has exactly one that's marked (flavor vanilla).
 (defconst emtmd:thd:examples
-   (emt:eg:define+ ;;xmp:nfnesor01xe0
+   (emtg:define+ ;;xmp:nfnesor01xe0
       ((project emtest)
 	 (library mocks))
       (group
@@ -109,61 +109,61 @@
    (nil
       (progn
 	 (emt:doc "Shows: An example's nametree is equal to itself.")
-	 (emt:eg:with emtmd:thd:examples ()
-	    (emt:eg:map topdir prefix
+	 (emtg:with emtmd:thd:examples ()
+	    (emtg:map topdir prefix
 	       (assert
 		  (emtmd:repr-contents-equal
-		     (emt:eg (type nametree)(flavor vanilla))
-		     (emt:eg (type nametree)(flavor vanilla)))
+		     (emtg (type nametree)(flavor vanilla))
+		     (emtg (type nametree)(flavor vanilla)))
 		  t)))))
    (nil
       (progn
 	 (emt:doc 
 	    "Shows: an example's nametree compare true to a permutation of itself.")
-	 (emt:eg:with emtmd:thd:examples ()
-	    (emt:eg:map topdir prefix
+	 (emtg:with emtmd:thd:examples ()
+	    (emtg:map topdir prefix
 	       (let
 		  ((perms  
 		      ;;This works OK even if the permutation key
 		      ;;isn't present for any
-		      (emt:eg:all-tag-args 'permutation)))
+		      (emtg:all-tag-args 'permutation)))
 		  (when
 		     (> (length perms) 1)
 		     ;;For now, there are at most 2 permutations so we
 		     ;;don't loop over the list and we know their
 		     ;;names (So there's no need to get fancy with
-		     ;;`emt:eg:value')
+		     ;;`emtg:value')
 		     (assert
 			(emtmd:repr-contents-equal
-			   (emt:eg (type nametree)(permutation 0))
-			   (emt:eg (type nametree)(permutation 1)))
+			   (emtg (type nametree)(permutation 0))
+			   (emtg (type nametree)(permutation 1)))
 			t)))))))
    (nil
       (progn
 	 (emt:doc "An example's nametree is not equal to any others.")
 	 (emt:doc "Why: We constructed the examples to all be distinct.")
-	 (emt:eg:with emtmd:thd:examples ()
-	    (emt:eg:map topdir prefix-a
+	 (emtg:with emtmd:thd:examples ()
+	    (emtg:map topdir prefix-a
 	       (let
 		  ((nametree-a
-		      (emt:eg (type nametree)(flavor vanilla))))
+		      (emtg (type nametree)(flavor vanilla))))
 		  (emt:doc "Loop over examples, filtering out the one
    the outer loop chose.")
-		  (emt:eg:with emtmd:thd:examples ()
-		     (emt:eg:map topdir prefix-b
+		  (emtg:with emtmd:thd:examples ()
+		     (emtg:map topdir prefix-b
 			(unless (string= prefix-a prefix-b)
 			   (assert
 			      (not
 				 (emtmd:repr-contents-equal
 				    nametree-a
-				    (emt:eg (type nametree)(flavor vanilla))))
+				    (emtg (type nametree)(flavor vanilla))))
 			      t)))))))))
 
    )
 
 ;;;_ , emtmd:get-repr-contents
 '
-(emt:eg:with emtmd:thd:examples ()
+(emtg:with emtmd:thd:examples ()
    (emt:doc "Situation: Using master examples")
    (emt:doc "Operation: Call emtmd:get-repr-contents on examples")
    (let
@@ -173,7 +173,7 @@
       (emt:doc "Result: Matches what's expected.")
       (assert
 	 (emtmd:repr-contents-equal nametree 
-	    (emt:eg (project emtest)(library mocks)(topdir "3")
+	    (emtg (project emtest)(library mocks)(topdir "3")
 	       (flavor vanilla)
 	       (type nametree)))
 	 t)))
@@ -182,9 +182,9 @@
    ((of 'emtmd:get-repr-contents)
       (:surrounders
 	 '(
-	    (emt:eg:with emtmd:thd:examples 
+	    (emtg:with emtmd:thd:examples 
 	       ((project emtest)(library mocks)))
-	     (emt:eg:map topdir prefix))))
+	     (emtg:map topdir prefix))))
    
    ;;Pre-requisite: `emtmd:repr-contents-equal'
 
@@ -199,7 +199,7 @@
 	    (emt:doc "Result: Matches what's expected.")
 	    (assert
 	       (emtmd:repr-contents-equal nametree 
-		  (emt:eg (type nametree)(flavor vanilla)))
+		  (emtg (type nametree)(flavor vanilla)))
 	       t)
 	       
 	    (emt:doc "Cross-validation: Does not match any another's
@@ -207,15 +207,15 @@
 	    (emt:doc "Why: We constructed the examples to all be distinct.")
 	    (let
 	       ((nametree-a
-		   (emt:eg (type nametree)(flavor vanilla))))
-	       (emt:eg:with emtmd:thd:examples ()
-		  (emt:eg:map topdir prefix-b
+		   (emtg (type nametree)(flavor vanilla))))
+	       (emtg:with emtmd:thd:examples ()
+		  (emtg:map topdir prefix-b
 		     (unless (string= prefix prefix-b)
 			(assert
 			   (not
 			      (emtmd:repr-contents-equal
 				 nametree-a
-				 (emt:eg (type nametree)(flavor vanilla))))
+				 (emtg (type nametree)(flavor vanilla))))
 			   t))))))))
 
    (()
@@ -227,7 +227,7 @@
 	 (let
 	    (
 	       (has-sources  
-		  (emt:eg:all-tag-args 'source)))
+		  (emtg:all-tag-args 'source)))
 	    (when
 	       (> (length has-sources) 1)
 	       (let
@@ -238,7 +238,7 @@
 		  (emt:doc "Result: Matches the contents.")
 		  (assert
 		     (emtmd:repr-contents-equal nametree 
-			(emt:eg 
+			(emtg 
 			   (type nametree)
 			   (source file)))
 		     t))))))
@@ -253,7 +253,7 @@
 	       (has-wrong  
 		  ;;This works OK even if the permutation key
 		  ;;isn't present for any
-		  (emt:eg:all-tag-args 'contents-right)))
+		  (emtg:all-tag-args 'contents-right)))
 	    (when
 	       (> (length has-wrong) 1)
 	       (let
@@ -265,7 +265,7 @@
 		  (assert
 		     (not
 			(emtmd:repr-contents-equal nametree 
-			   (emt:eg 
+			   (emtg 
 			      (type nametree)
 			      (contents-right nil))))
 		     t)))
@@ -289,11 +289,11 @@
 	     )))
 
    (nil
-      (emt:eg:with emtmd:thd:examples 
+      (emtg:with emtmd:thd:examples 
 	 ((project emtest)(library mocks))
-	 (emt:eg:map topdir prefix
+	 (emtg:map topdir prefix
 	    (emtmd:with-dirtree
-	       (:repr (emt:eg (type nametree)(flavor vanilla)))
+	       (:repr (emtg (type nametree)(flavor vanilla)))
 	       (emt:doc "Param: Spec is a repr.")
 	       (emt:doc "Operation: Get directory contents.")
 	       (let* 
@@ -304,7 +304,7 @@
 		  (assert
 		     (emtmd:repr-contents-equal 
 			repr-contents
-			(emt:eg 
+			(emtg 
 			   (type nametree)
 			   (flavor vanilla)))
 		     t))

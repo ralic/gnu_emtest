@@ -34,7 +34,7 @@
 (require 'emtest/viewer/emviewer/testhelp)
 ;;$$RETHINK ME
 ;;Maybe should require the testhelp instead.
-(require 'emtest/common/emt-persist) 
+(require 'emtest/common/persist) 
 (require 'emtest/common/testral-types/testhelp)
 ;;;_. Body
 
@@ -49,7 +49,7 @@
    (  "Situation: Just the test runner."
       (emtve:ts:with-mock-viewer
 	 (emtve:tester-cb
-	    (emt:eg (type report)(name just-test-runner)))
+	    (emtg (type report)(name just-test-runner)))
 
 	 (emt:emviewer:th:check-buffer-string
 	    (emt:persist 
@@ -60,7 +60,7 @@
    ("Situation: Report one test-1."
       (emtve:ts:with-mock-viewer
 	 (emtve:tester-cb
-	    (emt:eg (type report)(role original-add)(what-test test-1)))
+	    (emtg (type report)(role original-add)(what-test test-1)))
 
 	 (emt:emviewer:th:check-buffer-string
 	    (emt:persist "dbid:mf660gq0jwe0"
@@ -71,7 +71,7 @@
    ("Situation: Report test-2."
       (emtve:ts:with-mock-viewer
 	 (emtve:tester-cb
-	    (emt:eg (type report)(what-test test-2)))
+	    (emtg (type report)(what-test test-2)))
 
 	 (emt:emviewer:th:check-buffer-string
 	    (emt:persist "dbid:l7w6gjq0jwe0"
@@ -83,10 +83,10 @@
  * Then receive another report."
       (emtve:ts:with-mock-viewer
 	 (emtve:tester-cb
-	    (emt:eg (type report)(name just-test-runner)))
+	    (emtg (type report)(name just-test-runner)))
 
 	 (emtve:tester-cb
-	    (emt:eg 
+	    (emtg 
 	       (type report)
 	       (role original-add)
 	       (what-test test-1)))
@@ -99,14 +99,14 @@
    ("Operation: Receives a report, then an update."
       (emtve:ts:with-mock-viewer
 	 (emtve:tester-cb
-	    (emt:eg 
+	    (emtg 
 	       (type report)
 	       (role original-add)
 	       (what-test test-1)))
 
 	 ;;Now receive the second one
 	 (emtve:tester-cb
-	    (emt:eg 
+	    (emtg 
 	       (type report)
 	       (role replace)
 	       (what-test test-1)))
@@ -122,17 +122,17 @@
  * report an update."
       (emtve:ts:with-mock-viewer
 	 (emtve:tester-cb
-	    (emt:eg (type report)(name just-test-runner)))
+	    (emtg (type report)(name just-test-runner)))
 
 	 (emtve:tester-cb
-	    (emt:eg 
+	    (emtg 
 	       (type report)
 	       (role original-add)
 	       (what-test test-1)))
 
 	 ;;Now receive the second one
 	 (emtve:tester-cb
-	    (emt:eg 
+	    (emtg 
 	       (type report)
 	       (role replace)
 	       (what-test test-1)))

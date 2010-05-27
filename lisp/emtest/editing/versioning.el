@@ -236,6 +236,39 @@ FILENAME is the filename of an existing rtest file"
    ;;Pop that buffer up - maybe
    )
 
+;;;_ , emtvers:make-defstruct-explicit
+;;Usage:
+;;Place point on already-paranthesized struct name.  It can have
+;;properties already such as :include.
+;;Command `emtvers:make-defstruct-explicit'
+;;In dired with all potentially affected files marked, query-replace
+;;the symbols with their better-behaved counterparts.
+
+(fset 'emtvers:canonize-defstruct
+   [C-M-kp-left ?\C-  C-M-kp-right ?\M-w ?\C-x ?r ?s ?a ?\C-m ?\C-i ?( ?: ?c ?o ?n ?s ?t ?r ?u ?c ?t ?o ?r ?  ?m ?a ?k ?e ?- ?\C-x ?r ?i ?a ?\C-\M-u C-M-kp-right ?\C-m ?\C-i ?( ?: ?c ?o ?n ?c ?- ?n ?a ?m ?e ?  ?\C-x ?r ?i ?a C-M-kp-right ?- ?\C-\M-u C-M-kp-right ?\C-m ?\C-i ?( ?: ?c ?o ?p ?i ?e ?r ?  ?n ?i ?l ?\C-\M-u C-M-kp-right])
+
+;;How: First, put point in register b for that buffer
+;;Go to where the thing is and grab name
+;;Go to query buffer
+;;Begin query-replace with paste
+;;User will edit the name and start the replacing
+;;Replace it everywhere.
+(fset 'emtvers:replace-everywhere
+   [?\C-  C-kp-left ?\C-  C-M-kp-right ?\C-x ?r ?s ?a ?\C-x ?r ?j ?b ?Q ?\C-x ?r ?i ?a return up])
+
+;;;_  . Examples
+;;With point-replaces "!"
+'
+(defstruct (fo!o)
+   ""
+   )
+;;Becomes:
+'
+(defstruct (foo
+	    (:constructor make-foo)
+	    (:conc-name foo-))
+   ""
+   )
 
 ;;;_. Footers
 ;;;_ , Provides

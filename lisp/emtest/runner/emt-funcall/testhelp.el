@@ -29,7 +29,7 @@
 
 ;;;_ , Requires
 
-(require 'emtest/testhelp/eg)
+(require 'emtest/testhelp/tagnames)
 ;;;_. Body
 
 ;;;_  . Test helper data

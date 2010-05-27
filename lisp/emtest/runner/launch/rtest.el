@@ -36,39 +36,39 @@
 
 (require 'emtest/runner/define)
 (require 'emtest/runner/tester)
-(require 'emtest/testhelp/eg)
+(require 'emtest/testhelp/tagnames)
 (require 'emtest/testhelp/mocks/filebuf)
 (require 'emtest/testhelp/deep-type-checker)
 (require 'emtest/testhelp/testpoint)
 (require 'emtest/testhelp/standard)
-(require 'emtest/testhelp/misc) ;;For emt:util:all-different
+(require 'emtest/testhelp/misc) ;;For emth:all-different
 
 ;;;_. Body
 
 ;;;_  . Tests
 
-(rtest:deftest emtt:sexp-at-point
+(rtest:deftest emt:sexp-at-point
 
    ;;This can only be tested fully-manually.
    '
    (  "Situation: WRITEME.
 Response: WRITEME."
-      (emtt:sexp-at-point
+      (emt:sexp-at-point
 	 '("Situation: While executing a dummy test with no checks"
 	     (progn))))
 
    '  
    (  "Situation: WRITEME.
 Response: WRITEME."
-      (emtt:sexp-at-point
+      (emt:sexp-at-point
 	 '("Situation: While executing a dummy test
 with a successful check.   The test is fully written out." 
-	     (emt:should-f t))))
+	     (emth:should-f t))))
    
    '
    (  "Situation: WRITEME.
 Response: WRITEME."
-      (emtt:sexp-at-point
+      (emt:sexp-at-point
 	 '("Situation: While executing a dummy test with a successful
 check.  The test is a macro.
 "
@@ -77,13 +77,13 @@ check.  The test is a macro.
    '
    (  "Situation: WRITEME.
 Response: WRITEME."
-      (emtt:sexp-at-point
+      (emt:sexp-at-point
 	 '("Situation: While executing a dummy test with a failing check"
 	     (should nil))))
    '
    (  "Situation: Body raises an error of type `emt:already-handled'.
 Response: Reports a failure but essentially nothing special is reported."
-      (emtt:sexp-at-point
+      (emt:sexp-at-point
 	 '("Situation: While executing a dummy test that raises
 `emt:already-handled'."
 	     (signal 'emt:already-handled ())))))
@@ -103,12 +103,12 @@ Response: Reports a failure but essentially nothing special is reported."
 	    (test-id)
 	    (typecase test-id
 	       ;;Intercept clause
-	       (emt:test-ID:e-n:indexed-clause
+	       (emthow:indexed-clause
 		  (push test-id test-id-list)
 		  ;;Don't try to run it, return instead.
 		  (throw 'emtp:tag-return nil))
 	       ;;Let suite fall thru to handler
-	       (emt:test-ID:e-n:suite t)
+	       (emthow:suite t)
 	       ;;We don't expect to see any other types of
 	       ;;explores.
 	       (t
@@ -120,7 +120,7 @@ Response: Reports a failure but essentially nothing special is reported."
 
    (  "Situation: SUITE-SYM has a test suite defined.
 Response: That test-suite is run.  A result is returned."
-      (emt:let-noprops '(dummy-sym)
+      (emth:let-noprops '(dummy-sym)
 	 (emt:deftest-3 dummy-sym
 	    (nil (progn (emt:doc "Docstring"))))
 	 (emtp:eval
@@ -136,15 +136,15 @@ Response: That test-suite is run.  A result is returned."
 	       (test-id)
 	       (typecase test-id
 		  ;;Intercept clause, count it
-		  (emt:test-ID:e-n:indexed-clause
-		     ;;NOT emt:test-ID:e-n:form
+		  (emthow:indexed-clause
+		     ;;NOT emthow:form
 		     ;;A reached-point for counting invocations.
 		     (emtp tp:798212b4-1abe-4779-beb1-baf53ff39a8c
 			())
 		     ;;Fall thru
 		     t)
 		  ;;Let suite fall thru to handler
-		  (emt:test-ID:e-n:suite t)
+		  (emthow:suite t)
 		  ;;We don't expect to see any other types of
 		  ;;explores.
 		  (t
@@ -157,7 +157,7 @@ Situation: Suite has two clauses defined.
 Full exploration is used (Meaningless for now)
 Response: Just two clauses are run.
 Those suites have distinct IDs."
-      (emt:let-noprops '(dummy-sym)
+      (emth:let-noprops '(dummy-sym)
 	 (emt:deftest-3 dummy-sym
 	    (() (progn (emt:doc "Clause 1")))
 	    (() (progn (emt:doc "Clause 2"))))
@@ -179,20 +179,20 @@ Those suites have distinct IDs."
 		  (test-id)
 		  (typecase test-id
 		     ;;Intercept clause, count it
-		     (emt:test-ID:e-n:indexed-clause
-			;;NOT emt:test-ID:e-n:form
+		     (emthow:indexed-clause
+			;;NOT emthow:form
 			(emtp tp:798212b4-1abe-4779-beb1-baf53ff39a8c
 			   (test-id))
 			;;Don't try to run it, return instead.
 			(throw 'emtp:tag-return nil))
 		     ;;Let suite fall thru to handler
-		     (emt:test-ID:e-n:suite t)
+		     (emthow:suite t)
 		     ;;We don't expect to see any other types of
 		     ;;explores.
 		     (t
 			(error "This test shouldn't reach here")))))
 	    (assert
-	       (emt:util:all-different all-test-ids)
+	       (emth:all-different all-test-ids)
 	       t))
 	 t))
    
@@ -200,7 +200,7 @@ Those suites have distinct IDs."
    (  "Situation: A clause has changed within a suite.
 Operation: That test suite is run.
 Behavior: The clause still gets the same test-ID as before."
-      (emt:let-noprops '(dummy-sym)
+      (emth:let-noprops '(dummy-sym)
 	 (emt:deftest-3 dummy-sym
 	    (() (progn (emt:doc "Clause 1") (original-form))))
 
@@ -228,9 +228,9 @@ Behavior: The clause still gets the same test-ID as before."
 ;;;_  . emtt:defun-at-point
 ;;emtt:defun-at-point is direct, it just joins other functions
 
-;;;_   , emt:suite-sym-at-point
+;;;_   , emtel:suite-sym-at-point
 
-(emt:deftest-3 emt:suite-sym-at-point
+(emt:deftest-3 emtel:suite-sym-at-point
 
    ;;Need example text, presumably from one or more example files.
    ;;They are in "t/examples/editor/find-names/1.el"
@@ -249,19 +249,19 @@ Behavior: The clause still gets the same test-ID as before."
    ;;!In test clause.
 
    ;;Something else or nothing (don't care) should be found for "After
-   ;;all foo definitions" (not (eq (emt:suite-sym-at-point) 'foo))
+   ;;all foo definitions" (not (eq (emtel:suite-sym-at-point) 'foo))
 
 
    ;;Nothing should be found in empty file (Make from string)
    (()
-      (with-buffer-containing-object 
+      (emtb:with-buf 
 	 (:string "\n\n\n\n")
 	 (emt:doc "Situation: In empty file.")
 	 (emt:doc "Response: Return `nil'.")
 	 (emacs-lisp-mode)
 	 (should
 	    (null 
-	       (emt:suite-sym-at-point))))))
+	       (emtel:suite-sym-at-point))))))
 
 
 ;;;_  . Tests
@@ -278,7 +278,7 @@ Response: The suite-handler part runs exactly twice
       (emt:library:th ((count 2))
 	 (emtp:eval
 	    (emt:library
-	       (emt:eg (type sym))
+	       (emtg (type sym))
 	       ;;$$Library does not return a result object yet.  Will
 	       ;;type-check it.  But for now, we can't pass any
 	       ;;argument. 
@@ -286,7 +286,7 @@ Response: The suite-handler part runs exactly twice
 	       #'ignore)
 	       
 	    (tp-reached tp:798212b4-1abe-4779-beb1-baf53ff39a8c 
-	       (emt:eg (type count)))
+	       (emtg (type count)))
 	    (tp* 
 	       (  :id tp:a084136e-8f02-49a5-ac0d-9f65509cedf2 
 		  :count nil
@@ -294,7 +294,7 @@ Response: The suite-handler part runs exactly twice
 	       (test-id)
 	       (typecase test-id
 		  ;;Intercept suite
-		  (emt:test-ID:e-n:suite
+		  (emthow:suite
 		     ;;A reached-point for counting invocations.
 		     (emtp tp:798212b4-1abe-4779-beb1-baf53ff39a8c
 			())
@@ -302,7 +302,7 @@ Response: The suite-handler part runs exactly twice
 		     ;;instead.
 		     (throw 'emtp:tag-return nil))
 		  ;;Let library fall thru to handler
-		  (emt:test-ID:e-n:library:elisp-load t)
+		  (emthow:library:elisp-load t)
 		  ;;We don't expect to see any other types of
 		  ;;explores.
 		  (t

@@ -51,12 +51,12 @@ return a form."
 
 
 
-;;;_ , emt:gives-error
-
+;;;_ , emth:gives-error
+;;$$MOVE ME into standard
 ;;This does not support knowing the error data, just the error symbol.
 ;;If you want to check that, use `condition-case' directly.
 
-(defmacro emt:gives-error (form &optional error-sym)
+(defmacro emth:gives-error (form &optional error-sym)
    ""
    (let
       ((error-sym (or error-sym 'error)))
@@ -69,16 +69,16 @@ return a form."
 	  ;;errors should escape here.
 	  )))
 
-;;;_ , emt:example-error
-
-(put 'emt:example-error 'error-conditions
-   '(error emt:example-error))
-(put 'emt:example-error 'error-message
+;;;_ , emth:example-error
+;;$$MOVE ME into standard
+(put 'emth:example-error 'error-conditions
+   '(error emth:example-error))
+(put 'emth:example-error 'error-message
    "This is an example error, probably thrown on purpose")
 
-;;;_ , emt:throws-x
+;;;_ , emth:throws-x
 
-(defun emt:throws-x (tags inner-body)
+(defun emth:throws-x (tags inner-body)
    "Make nested catches for TAGS, with INNER-BODY as the inner form"
    
    (reduce
@@ -86,42 +86,42 @@ return a form."
 	   `(catch ',tag ,form))
       (if (listp tags) tags (list tags))
       :initial-value inner-body))
-;;;_ , Test helper `emt:throws'
+;;;_ , Test helper `emth:throws'
 ;;;###autoload
-(defmacro emt:throws (tags &rest body)
+(defmacro emth:throws (tags &rest body)
    ""
    
-   `(catch 'emt:throws:ok
+   `(catch 'emth:throws:ok
        (progn
 	  (eval
-	     (emt:throws-x
+	     (emth:throws-x
 		,tags
 		'(progn
 		   ,@body
 		   ;;If we fall thru to here, tag was not thrown by BODY.
-		   (throw 'emt:throws:ok nil))))
-	  ;;If we reach here, we didn't throw to `emt:throws:ok'.
+		   (throw 'emth:throws:ok nil))))
+	  ;;If we reach here, we didn't throw to `emth:throws:ok'.
 	  t)))
 
 
 
-;;;_ , emt:assert-throws
+;;;_ , emth:assert-throws
 ;;;###autoload
-(defmacro emt:assert-throws (tags &rest body)
+(defmacro emth:assert-throws (tags &rest body)
    ""
    
    `(eval
-       (emt:throws-x
+       (emth:throws-x
 	  ,tags
 	  '(progn
 	      ,@body
 	      ;;If we fall thru to here, tag was not thrown by BODY.
 	      (error "Tag was not thrown")))))
 
-;;;_ , emt:bags=
+;;;_ , emth:bags=
 ;;;###autoload
-(defsubst emt:bags= (set1 set2 &rest flags)
-   "Like `emt:sets=' but consider duplicate elements."
+(defsubst emth:bags= (set1 set2 &rest flags)
+   "Like `emth:sets=' but consider duplicate elements."
    ;;This works because `subsetp' accepts improper subsets.
    (let
       ((flags 
@@ -133,27 +133,36 @@ return a form."
 	 (apply #'subsetp set1 set2 flags)
 	 (apply #'subsetp set2 set1 flags))))
 
-(put 'emt:sets= 'emt:equal-test t)
+(put 'emth:sets= 'emt:equal-test t)
 
-;;;_ , emt:sets=
+;;;_ , emth:sets=
 ;;;###autoload
-(defsubst emt:sets= (set1 set2 &rest flags)
+(defsubst emth:sets= (set1 set2 &rest flags)
    ""
 
    ;;Propagate `:test' etc to `remove-duplicates'
-   (apply #'emt:bags=
+   (apply #'emth:bags=
       (apply #'remove-duplicates set1 flags)
       (apply #'remove-duplicates set2 flags)
       flags))
 
 
 
-(put 'emt:sets= 'emt:equal-test t)
+(put 'emth:sets= 'emt:equal-test t)
 
-;;;_ , emt:somewhere-in-tree
+;;;_ , emth:all-different
+;;;###autoload
+(defun emth:all-different (set &optional test)
+   "Return non-nil just if all members of SET are different."
+   
+   (let
+      ((w/o-dups (remove-duplicates set)))
+      (equal (length set) (length w/o-dups))))
+
+;;;_ , emth:somewhere-in-tree
 
 ;;;###autoload
-(defun emt:somewhere-in-tree (func tree &rest args)
+(defun emth:somewhere-in-tree (func tree &rest args)
    ""
    ;;Trick to detect a thing in a tree: Use subst, but the `:test'
    ;;function if successful throws and does not return.
@@ -169,9 +178,9 @@ return a form."
 	 ;;If we fell thru, we never found it, so give `nil'
 	 nil)))
 
-;;;_ , emt:collect-in-tree
+;;;_ , emth:collect-in-tree
 ;;;###autoload
-(defun emt:collect-in-tree (predicate tree)
+(defun emth:collect-in-tree (predicate tree)
    "Return a list of the items in TREE satisfying PREDICATE.
 Do not return matching items that are within other matching items."
    (if (funcall predicate tree)
@@ -182,14 +191,14 @@ Do not return matching items that are within other matching items."
 	       #'append
 	       (mapcar
 		  #'(lambda (el)
-		       (emt:collect-in-tree predicate el))
+		       (emth:collect-in-tree predicate el))
 		  tree)))
 	 (t ()))))
 
 
-;;;_ , emt:let-noprops
+;;;_ , emth:let-noprops
 ;;;###autoload
-(defmacro emt:let-noprops (syms-form &rest body)
+(defmacro emth:let-noprops (syms-form &rest body)
    "Run BODY with symbols temporarily stripped of its properties.
 When done, restore each symbol's original list of properties.
 SYMS-FORM is a form to make a list of symbols."
@@ -209,9 +218,9 @@ SYMS-FORM is a form to make a list of symbols."
 	     ;;Restore each symbol's old property list (Uses cl)
 	     (map nil #'setplist ,syms old-props)))))
 
-;;;_ , emt:let-unbound
+;;;_ , emth:let-unbound
 ;;;###autoload
-(defmacro emt:let-unbound (syms-form &rest body)
+(defmacro emth:let-unbound (syms-form &rest body)
    ""
    (let
       ((syms (eval syms-form)))
@@ -223,9 +232,9 @@ SYMS-FORM is a form to make a list of symbols."
 
 
 
-;;;_ , emt:flet-unbound
+;;;_ , emth:flet-unbound
 ;;;###autoload
-(defmacro emt:flet-unbound (syms-form &rest body)
+(defmacro emth:flet-unbound (syms-form &rest body)
    ""
    (let
       ((syms (eval syms-form)))
@@ -239,15 +248,6 @@ SYMS-FORM is a form to make a list of symbols."
 		#'fmakunbound
 		',syms)))))
 
-
-;;;_ , emt:util:all-different
-;;;###autoload
-(defun emt:util:all-different (set &optional test)
-   "Return non-nil just if all members of SET are different."
-   
-   (let
-      ((w/o-dups (remove-duplicates set)))
-      (equal (length set) (length w/o-dups))))
 
 ;;;_: Footers
 ;;;_ * Local emacs vars.

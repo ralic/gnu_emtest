@@ -59,20 +59,20 @@
 	       '(foo))))))
 
 
-;;;_ , emt:throws
-(emt:deftest-3 emt:throws
+;;;_ , emth:throws
+(emt:deftest-3 emth:throws
    (nil
       (progn
 	 (emt:doc "Situation: Body does not throw anything")
 	 (emt:doc "Response: Return nil.")
 	 (not
-	    (emt:throws 'example-tag 'just-return-a-value))))
+	    (emth:throws 'example-tag 'just-return-a-value))))
    (nil
       (progn
 	 (emt:doc "Situation: Body does throw the tag in question, non-nil value.")
 	 (emt:doc "Response: Return non-nil.")
 	 (and
-	    (emt:throws 'example-tag
+	    (emth:throws 'example-tag
 	       (throw 'example-tag t))
 	    t)))
    (nil
@@ -80,16 +80,16 @@
 	 (emt:doc "Situation: Body does throw the tag in question, nil value.")
 	 (emt:doc "Response: Return non-nil.")
 	 (and
-	    (emt:throws 'example-tag
+	    (emth:throws 'example-tag
 	       (throw 'example-tag nil))
 	    t)))
    (nil
       (progn
-	 (emt:doc "Situation: Body perversely throws our own tag, `emt:throws:ok'.")
+	 (emt:doc "Situation: Body perversely throws our own tag, `emth:throws:ok'.")
 	 (emt:doc "Response: Return non-nil.")
 	 (and
-	    (emt:throws 'emt:throws:ok
-	       (throw 'emt:throws:ok nil))
+	    (emth:throws 'emth:throws:ok
+	       (throw 'emth:throws:ok nil))
 	    t)))
    (nil
       (progn
@@ -99,7 +99,7 @@ Body does throw the tag in question.")
 	 (let
 	    ((tag-name 'example-tag))
 	    (and
-	       (emt:throws tag-name
+	       (emth:throws tag-name
 		  (throw 'example-tag t))
 	       t))))
    (nil
@@ -108,7 +108,7 @@ Body does throw the tag in question.")
 	 (emt:doc "Situation: Body throws to the first tag.")
 	 (emt:doc "Response: Return non-nil.")
 	 (and
-	    (emt:throws
+	    (emth:throws
 	       '(example-tag-1 example-tag-2)
 	       (throw 'example-tag-1 nil))
 	    t)))
@@ -118,29 +118,29 @@ Body does throw the tag in question.")
 	 (emt:doc "Situation: Body throws to the second tag.")
 	 (emt:doc "Response: Return non-nil.")
 	 (and
-	    (emt:throws
+	    (emth:throws
 	       '(example-tag-1 example-tag-2)
 	       (throw 'example-tag-2 nil))
 	    t))))
 ;;;_  . Tests
-(put 'emt:throws-x 'emt:test-thru
-   'emt:throws)
+(put 'emth:throws-x 'emt:test-thru
+   'emth:throws)
 
-;;;_ , emt:assert-throws
+;;;_ , emth:assert-throws
 
-(emt:deftest-3 emt:assert-throws
+(emt:deftest-3 emth:assert-throws
    (nil
       (progn
 	 (emt:doc "Situation: Body does not throw anything")
 	 (emt:doc "Response: Signals an error.")
 	 (rtest:gives-error
-	    (emt:assert-throws 'example-tag 'just-return-a-value))))
+	    (emth:assert-throws 'example-tag 'just-return-a-value))))
    (nil
       (progn
 	 (emt:doc "Situation: Body does throw the tag in question, non-nil value.")
 	 (emt:doc "Response: Return non-nil.")
 	 (equal
-	    (emt:assert-throws 'example-tag
+	    (emth:assert-throws 'example-tag
 	       (throw 'example-tag 12))
 	    12)))
    (nil
@@ -151,20 +151,20 @@ Body does throw the tag in question.")
 	 (let
 	    ((tag-name 'example-tag))
 	    (equal
-	       (emt:assert-throws tag-name
+	       (emth:assert-throws tag-name
 		  (throw 'example-tag 12))
 	       12)))))
 
 
-;;;_ , emt:sets=
+;;;_ , emth:sets=
 
-(emt:deftest-3 emt:sets=
+(emt:deftest-3 emth:sets=
    (nil
       (progn
 	 (emt:doc "Situation: Lists contain the same elements, permuted.")
 	 (emt:doc "Response: Return non-nil")
 	 (rtest:retvalue->status
-	    (emt:sets=
+	    (emth:sets=
 	       '(1 2 3)
 	       '(3 2 1)))))
    (nil
@@ -173,7 +173,7 @@ Body does throw the tag in question.")
 	 (emt:doc "Response: Return nil")
 	 (rtest:retvalue->status
 	    (null
-	       (emt:sets=
+	       (emth:sets=
 		  '(1 2 3 4)
 		  '(3 2 1))))))
    (nil
@@ -182,7 +182,7 @@ Body does throw the tag in question.")
 	 (emt:doc "Response: Return nil")
 	 (rtest:retvalue->status
 	    (null
-	       (emt:sets=
+	       (emth:sets=
 		  '(3 2 1)
 		  '(1 2 3 4))))))
    (nil
@@ -190,7 +190,7 @@ Body does throw the tag in question.")
 	 (emt:doc "Situation: Members are equal but not eq.")
 	 (emt:doc "Response: Even so, compares true")
 	 (rtest:retvalue->status
-	    (emt:sets=
+	    (emth:sets=
 	       '((1 10))
 	       '((1 10))))))
    (nil
@@ -199,19 +199,19 @@ Body does throw the tag in question.")
 	 (emt:doc "Response: Compares false")
 	 (rtest:retvalue->status
 	    (not
-	       (emt:sets=
+	       (emth:sets=
 		  '((1 10 1 10))
 		  '((1 10))))))))
 
-;;;_ , emt:somewhere-in-tree
-(emt:deftest-3 emt:somewhere-in-tree
+;;;_ , emth:somewhere-in-tree
+(emt:deftest-3 emth:somewhere-in-tree
    (nil
       (progn
 	 (emt:doc "Situation: OBJ is in TREE.")
 	 (emt:doc "Response: Return non-nil.")
 	 (progn
 	    (assert
-	       (emt:somewhere-in-tree #'eq
+	       (emth:somewhere-in-tree #'eq
 		  '(((12)))
 		  12))
 	    t)))
@@ -222,42 +222,42 @@ Body does throw the tag in question.")
 	 (progn
 	    (assert
 	       (not
-		  (emt:somewhere-in-tree #'eq
+		  (emth:somewhere-in-tree #'eq
 		     '(((12)))
 		     13)))
 	    t))))
 
-;;;_ , emt:collect-in-tree
-(emt:deftest-3 emt:collect-in-tree
+;;;_ , emth:collect-in-tree
+(emt:deftest-3 emth:collect-in-tree
    (nil
       (progn
 	 (emt:doc "Situation: The root of the tree matches PREDICATE.")
 	 (emt:doc "Response: Return a list of just it.")
 	 (equal
-	    (emt:collect-in-tree #'integerp 12)
+	    (emth:collect-in-tree #'integerp 12)
 	    '(12))))
    (nil
       (progn
 	 (emt:doc "Situation: Some items in tree match PREDICATE.")
 	 (emt:doc "Response: Return a list of them.")
 	 (equal
-	    (emt:collect-in-tree #'integerp
+	    (emth:collect-in-tree #'integerp
 	       '((a 12 b)
 		   12))
 	    '(12 12)))))
 
 
-;;;_ , emt:let-noprops
-(emt:deftest-3 emt:let-noprops
+;;;_ , emth:let-noprops
+(emt:deftest-3 emth:let-noprops
    (nil
       (progn
-	 (emt:doc "Proves: `emt:let-noprops' temporarily rebinds properties.")
-	 (emt:let-noprops
+	 (emt:doc "Proves: `emth:let-noprops' temporarily rebinds properties.")
+	 (emth:let-noprops
 	    '(foo)
 	    (assert
 	       (null
 		  (symbol-plist 'foo)))
-	    (emt:let-noprops
+	    (emth:let-noprops
 	       '(foo)
 	       (put 'foo 'example-prop 13))
 	    (assert
@@ -266,8 +266,8 @@ Body does throw the tag in question.")
 	    t)))
    (nil
       (progn
-	 (emt:doc "Proves: `emt:let-noprops' temporarily sets properties null.")
-	 (emt:let-noprops
+	 (emt:doc "Proves: `emth:let-noprops' temporarily sets properties null.")
+	 (emth:let-noprops
 	    '(foo)
 	    (assert
 	       (null
@@ -277,7 +277,7 @@ Body does throw the tag in question.")
 	       (equal
 		  (symbol-plist 'foo)
 		  '(example-prop 13)))
-	    (emt:let-noprops
+	    (emth:let-noprops
 	       '(foo)
 	       (assert
 		  (null
@@ -289,18 +289,18 @@ Body does throw the tag in question.")
 	    t))))
 
 
-;;;_ , emt:let-unbound
-(emt:deftest-3 emt:let-unbound
+;;;_ , emth:let-unbound
+(emt:deftest-3 emth:let-unbound
    (nil
       (progn
 	 (emt:doc "Param: literal list of symbol `foo'.")
 	 (emt:doc "Response: `foo' is initially unbound in the body.
-After `emt:let-unbound' runs, foo is bound again.")
+After `emth:let-unbound' runs, foo is bound again.")
 	 (progn
 	    (defconst foo t)
 	    (assert
 	       (boundp 'foo))
-	    (emt:let-unbound
+	    (emth:let-unbound
 	       '(foo)
 	       (assert
 		  (not
@@ -313,14 +313,14 @@ After `emt:let-unbound' runs, foo is bound again.")
       (progn
 	 (emt:doc "Param: symbolic list of symbol `foo'.")
 	 (emt:doc "Response: `foo' is initially unbound in the body.
-After `emt:let-unbound' runs, foo is bound again.")
+After `emth:let-unbound' runs, foo is bound again.")
 	 (let
 	    ((syms
 		'(foo)))
 	    (defconst foo t)
 	    (assert
 	       (boundp 'foo))
-	    (emt:let-unbound syms
+	    (emth:let-unbound syms
 	       (assert
 		  (not
 		     (boundp 'foo))))
@@ -329,18 +329,18 @@ After `emt:let-unbound' runs, foo is bound again.")
 	    (makunbound 'foo)
 	    t))))
 
-;;;_ , emt:flet-unbound
-(emt:deftest-3 emt:flet-unbound
+;;;_ , emth:flet-unbound
+(emt:deftest-3 emth:flet-unbound
    (nil
       (progn
 	 (emt:doc "Param: literal list of symbol `foo'.")
 	 (emt:doc "Response: `foo' is initially unbound in the body.
-After `emt:let-unbound' runs, foo is bound again.")
+After `emth:let-unbound' runs, foo is bound again.")
 	 (progn
 	    (defun foo nil)
 	    (assert
 	       (fboundp 'foo))
-	    (emt:flet-unbound
+	    (emth:flet-unbound
 	       '(foo)
 	       (assert
 		  (not
@@ -353,14 +353,14 @@ After `emt:let-unbound' runs, foo is bound again.")
       (progn
 	 (emt:doc "Param: symbolic list of symbol `foo'.")
 	 (emt:doc "Response: `foo' is initially unbound in the body.
-After `emt:let-unbound' runs, foo is bound again.")
+After `emth:let-unbound' runs, foo is bound again.")
 	 (let
 	    ((syms
 		'(foo)))
 	    (defun foo nil)
 	    (assert
 	       (fboundp 'foo))
-	    (emt:flet-unbound syms
+	    (emth:flet-unbound syms
 	       (assert
 		  (not
 		     (fboundp 'foo))))
@@ -371,19 +371,19 @@ After `emt:let-unbound' runs, foo is bound again.")
 
 
 
-;;;_ , emt:util:all-different
-(emt:deftest-3 emt:util:all-different
+;;;_ , emth:all-different
+(emt:deftest-3 emth:all-different
    (nil
       (progn
-	 (emt:doc "Proves: `emt:util:all-different' returns non-nil just if all
+	 (emt:doc "Proves: `emth:all-different' returns non-nil just if all
 members of SET are different.")
 	 (progn
 	    (assert
-	       (emt:util:all-different
+	       (emth:all-different
 		  '(1 2)))
 	    (assert
 	       (not
-		  (emt:util:all-different
+		  (emth:all-different
 		     '(1 1))))
 	    t))))
 

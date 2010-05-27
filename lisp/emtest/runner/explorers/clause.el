@@ -37,7 +37,7 @@
 
 ;;;_. Body
 ;;;_ , Structures
-;;Maybe define `emt:test-ID:e-n:form' here?
+;;Maybe define `emthow:form' here?
 ;;;_ , Functions
 ;;;_  . emtt:explore-clause
 
@@ -55,12 +55,12 @@ This is the heart of Emtest exploration: A test itself."
 	 ;;These badnesses are only for problems that manifest right
 	 ;;here, not lower down. 
 	 ;;$$RETHINK ME: Instead, be signalled to abort (that's
-	 ;;compatible with `emtt:trap-errors' and if we see
+	 ;;compatible with `emth:trap-errors' and if we see
 	 ;;emtt:*abort-p*, set that badness)
 	 (badnesses '()))
 
       ;;This defines `props' in body.
-      (emtt:destructure-clause-3 clause
+      (emtd:destructure-clause-3 clause
 	 ;;$$WRITE ME RIGHT - Dormancy is punted for now.
 	 ;;If it's quoted, it's dormant
 	 (if (not (eq governor 'quote))
@@ -68,17 +68,17 @@ This is the heart of Emtest exploration: A test itself."
 	       (
 		  (emt:trace:properties props) ;;OBSOLESCENT.
 		  (form-1
-		     (emtt:add-surrounders 
+		     (emts:add-surrounders 
 			form 
 			(emtts:get-surrounders props)
 			props)))
 	       ;;$$USE STANDARD
-	       ;;(emtt:trap-errors (eval form-1))
+	       ;;(emth:trap-errors (eval form-1))
 	       (condition-case err
 		  (eval form-1)
 		  (error
 		     (push
-			(make-emt:testral:error-raised
+			(emt:testral:make-error-raised
 			   :err err
 			   :badnesses '(ungraded))
 			emt:testral:*events-seen*)
@@ -86,16 +86,16 @@ This is the heart of Emtest exploration: A test itself."
 			'ungraded
 			badnesses))))))
       
-      (make-emt:testral:suite
+      (emt:testral:make-suite
 	 :contents
-	 (make-emt:testral:note-list
+	 (emt:testral:make-note-list
 	    :notes
 	    ;;Reverse the note list so it's in the order that it
 	    ;;occured in.
 	    (nreverse emt:testral:*events-seen*))
 	 ;;Need to acquire this.  At least errors that we
 	 ;;handle here - which may be just overall abort.
-	 ;;See the call to `emtt:trap-errors'
+	 ;;See the call to `emth:trap-errors'
 	 :badnesses badnesses
 	 ;;$$WRITEME Use `emt:trace:properties' for this?  But change
 	 ;;its name?  (And watch the scoping)
@@ -107,7 +107,7 @@ This is the heart of Emtest exploration: A test itself."
    (list
       nil
       (emtt:explore-clause
-	 (emt:test-ID:e-n:form-test-form test-id))))
+	 (emthow:form->test-form test-id))))
 ;;;_   , Insinuate
 ;;;_  . emtt:explore-indexed-clause
 (defun emtt:explore-indexed-clause (test-id props)
@@ -115,12 +115,12 @@ This is the heart of Emtest exploration: A test itself."
    (let*
       (
 	 (suite-sym 
-	    (emt:test-ID:e-n:indexed-clause-suite-sym
+	    (emthow:indexed-clause->suite-sym
 	       test-id))
 	 (index
-	    (emt:test-ID:e-n:indexed-clause-clause-index
+	    (emthow:indexed-clause->clause-index
 	       test-id)))
-      (emtt:destructure-suite-3 suite-sym
+      (emtd:destructure-suite-3 suite-sym
 	 (list 
 	    nil
 	    (emtt:explore-clause 

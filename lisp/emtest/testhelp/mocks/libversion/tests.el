@@ -42,22 +42,22 @@
    "Build a form which defines all the items in the current `which' group"
    (cons
       'progn
-      (emt:eg:ignore-tags (role)
-	 (emt:eg:map name nil
-	    (case (emt:eg (type metatype))
+      (emtg:ignore-tags (role)
+	 (emtg:map name nil
+	    (case (emtg (type metatype))
 	       (variable
-		  `(defconst ,(emt:eg (type sym))
-		      ,(emt:eg (type value))
-		      ,(emt:eg (type docstring))))
+		  `(defconst ,(emtg (type sym))
+		      ,(emtg (type value))
+		      ,(emtg (type docstring))))
 	       (function
-		  `(defun ,(emt:eg (type sym)) ()
-		      ,(emt:eg (type docstring))
-		      ,(emt:eg (type value))))
+		  `(defun ,(emtg (type sym)) ()
+		      ,(emtg (type docstring))
+		      ,(emtg (type value))))
 	       (set-prop
 		  `(put 
 		      'foo:var2 
 		      'foo:properties 
-		      ,(emt:eg (type value)))))))))
+		      ,(emtg (type value)))))))))
 
 ;;;_ , Data
 ;;;_  . 
@@ -67,7 +67,7 @@
 
 ;;;_  . emtmv:th:data
 (defconst emtmv:th:data
-   (emt:eg:define+
+   (emtg:define+
       ()
       (group ((which old))
 	 (item ((role filename))
@@ -152,16 +152,16 @@ If SKIP-LOADING-NEW is non-nil, do not load the new file."
    ;;Would like to suppress these messages when not of interest.
    (emt:doc "Load old file.")
    (load-file
-      (emt:eg (role filename) (which old)))
+      (emtg (role filename) (which old)))
    (emt:doc "Start in `old' (which captures contents of old lib)")
    (emtmv:change-state 'old nil
-      (emt:eg (role filename) (which old)))
+      (emtg (role filename) (which old)))
    (emt:doc "Operation: Switch state to `new'")
    (emtmv:change-state 'new nil)
    (unless skip-loading-new
       (emt:doc "Load the new file")
       (load-file
-	 (emt:eg (role filename) (which new)))))
+	 (emtg (role filename) (which new)))))
 
 ;;;_ , emtmv:th:check-all
 (defun emtmv:th:check-all ()
@@ -170,21 +170,21 @@ Call this inside a narrowing to (which WHICH)."
    
    ;;Would loop over items (role items), switching on each one's
    ;;metatype.  
-   (emt:eg:narrow ((role items))
-      (emt:eg:map name name
+   (emtg:narrow ((role items))
+      (emtg:map name name
 	 ;;For variables:
-	 (case (emt:eg (type metatype))
+	 (case (emtg (type metatype))
 	    (variable
 	       (assert
 		  (equal
-		     (eval (emt:eg (type sym)))
-		     (emt:eg (type value)))
+		     (eval (emtg (type sym)))
+		     (emtg (type value)))
 		  t))
 	    (function
 	       (assert
 		  (equal
-		     (funcall (emt:eg (type sym)))
-		     (emt:eg (type value)))
+		     (funcall (emtg (type sym)))
+		     (emtg (type value)))
 		  t))
 	    (set-prop
 	       (assert
@@ -192,7 +192,7 @@ Call this inside a narrowing to (which WHICH)."
 		     (get
 			'foo:var2 
 			'foo:properties)
-		     (emt:eg (type value)))
+		     (emtg (type value)))
 		  t))))))
 ;;;_ , emtmv:th:num-atoms
 (defun emtmv:th:num-atoms (oa)
@@ -209,7 +209,7 @@ Call this inside a narrowing to (which WHICH)."
 ;;;_ , emtmv:th:surrounders
 (defconst emtmv:th:surrounders 
    '(
-       (emt:eg:with emtmv:th:data ())
+       (emtg:with emtmv:th:data ())
        (let
 	  ;;Insulate values
 	  (emtmv:new-obarray emtmv:old-obarray emtmv:state
@@ -227,7 +227,7 @@ Call this inside a narrowing to (which WHICH)."
        (flet
 	  ((foo:fun1)))
        ;;Insulate properties too
-       (emt:let-noprops
+       (emth:let-noprops
 	  '(foo:old:unshared
 	      foo:new:unshared
 	      foo:var1 foo:var2 foo:fun1)))
@@ -254,7 +254,7 @@ Call this inside a narrowing to (which WHICH)."
    (nil
       (let
 	 ((oa (make-vector 255 0)))
-	 (emt:let-noprops '(a)
+	 (emth:let-noprops '(a)
 	    (put 'a 'prop 12)
 	    (emt:doc "Situation: Symbol a has a certain property.")
 	    (emt:doc "Operation: Copy the symbol by name to OA.")
@@ -293,7 +293,7 @@ Call this inside a narrowing to (which WHICH)."
 	 (emtmv:refresh-obarray 
 	    emtmv:old-obarray obarray emtmv:old-obarray)
 	 (emt:doc "Result: Global values are the `old' values.")
-	 (emt:eg:narrow ((which old))
+	 (emtg:narrow ((which old))
 	       (emtmv:th:check-all)))))
 
 ;;;_ , emtmv:set-in-obarray
@@ -328,27 +328,27 @@ Call this inside a narrowing to (which WHICH)."
    ((of 'emtmv:init-obarray-by-filename)
       (:surrounders emtmv:th:surrounders))
    (nil
-      (emt:eg:narrow ((which old))
+      (emtg:narrow ((which old))
 	 (emt:doc "Situation: OA is an obarray set up from filename.")
 	 (load-file
-	    (emt:eg (role filename) (which old)))
+	    (emtg (role filename) (which old)))
 	 ;;A test of `emtmv:get-history-line'
 	 (assert
 	    (equal
 	       (length
 		  (emtmv:get-history-line 
-		     (emt:eg (role filename) (which old))))
+		     (emtg (role filename) (which old))))
 	       5)
 	    t)
 
 	 (emt:doc "Validates: Symbols now have their expected values.")
-	 (emt:eg:narrow ((which old))
+	 (emtg:narrow ((which old))
 	    (emtmv:th:check-all))
 
 	 (let
 	    ((oa
 		(emtmv:init-obarray-by-filename
-		   (emt:eg (role filename)))))
+		   (emtg (role filename)))))
 	    (emt:doc "Validates: We've made as many values as we expected to.")
 	    (assert
 	       (equal
@@ -356,15 +356,15 @@ Call this inside a narrowing to (which WHICH)."
 		  4)
 	       t)
 	    
-	    (emt:eg:narrow ((name var1))
+	    (emtg:narrow ((name var1))
 	       (emt:doc "Response: Symbol has the expected value.")
 	       (assert
 		  (equal
 		     (symbol-value
 			(intern-soft
-			   (symbol-name (emt:eg (type sym)))
+			   (symbol-name (emtg (type sym)))
 			   oa))
-		     (emt:eg (type value)))
+		     (emtg (type value)))
 		  t))))))
 
 
@@ -400,7 +400,7 @@ Call this inside a narrowing to (which WHICH)."
 	 (emt:doc "Situation: Nothing is set up.")
 	 (emt:doc "Operation: `emtmv:with-version' given nil.")
 	 (assert
-	    (emt:gives-error
+	    (emth:gives-error
 	       (emtmv:with-version nil nil
 		  t)))
 	 (emt:doc "Response: Raises error.")))
@@ -410,7 +410,7 @@ Call this inside a narrowing to (which WHICH)."
 	 (emt:doc "Operation: `emtmv:with-version' given non-nil.")
 	 (emt:doc "In particular: `old'")
 	 (assert
-	    (emt:gives-error
+	    (emth:gives-error
 	       (emtmv:with-version 'old nil
 		  t)))
 	 (emt:doc "Response: Raises error.")))
@@ -420,7 +420,7 @@ Call this inside a narrowing to (which WHICH)."
 	 (emt:doc "Param: Invalid `new-state'.")
 	 (emt:doc "Response: Makes an error.")
 	 (assert
-	    (emt:gives-error
+	    (emth:gives-error
 	       (emtmv:change-state 'invalid nil )))))
    (nil
       (progn
@@ -428,7 +428,7 @@ Call this inside a narrowing to (which WHICH)."
 	 (emt:doc "Param: Initted with no filename given.")
 	 (emt:doc "Response: Makes an error.")
 	 (assert
-	    (emt:gives-error
+	    (emth:gives-error
 	       (emtmv:change-state 'old nil)))))
 
    (nil
@@ -438,21 +438,21 @@ Call this inside a narrowing to (which WHICH)."
 	 (emtmv:with-version 'old nil
 	    (emt:doc "Operation: Call with symbol `old'.")
 	    (emt:doc "Response: Has the values of old version.")
-	    (emt:eg:narrow ((which old))
+	    (emtg:narrow ((which old))
 	       (emtmv:th:check-all)))
 	 
 
 	 (emtmv:with-version 'new nil
 	    (emt:doc "Operation: Call with symbol `new'.")
 	    (emt:doc "Response: Has the values of new version.")
-	    (emt:eg:narrow ((which new))
+	    (emtg:narrow ((which new))
 	       (emtmv:th:check-all)))
 
 	 (emtmv:with-version 'new nil
 	    (emtmv:with-version 'old nil
 	       (emt:doc "Operation: Old one nested in new.")
 	       (emt:doc "Response: Has the values of old version.")
-	       (emt:eg:narrow ((which old))
+	       (emtg:narrow ((which old))
 		  (emtmv:th:check-all))))
 
 	 
@@ -460,7 +460,7 @@ Call this inside a narrowing to (which WHICH)."
 	    (emtmv:with-version 'new nil
 	       (emt:doc "Operation: New one nested in old.")
 	       (emt:doc "Response: Has the values of new version.")
-	       (emt:eg:narrow ((which new))
+	       (emtg:narrow ((which new))
 		  (emtmv:th:check-all))))))
 
    (nil
@@ -468,19 +468,19 @@ Call this inside a narrowing to (which WHICH)."
 	 (emtmv:th:load t)
 	 (emt:doc "Eval new stuff (instead of loading)")
 	 (eval
-	    (emt:eg (role form) (which new)))	 
+	    (emtg (role form) (which new)))	 
 
 	 (emtmv:with-version 'old nil
 	    (emt:doc "Operation: Call with symbol `old'.")
 	    (emt:doc "Response: Has the values of old version.")
-	    (emt:eg:narrow ((which old))
+	    (emtg:narrow ((which old))
 	       (emtmv:th:check-all)))
 	 
 
 	 (emtmv:with-version 'new nil
 	    (emt:doc "Operation: Call with symbol `new'.")
 	    (emt:doc "Response: Has the values of new version.")
-	    (emt:eg:narrow ((which new))
+	    (emtg:narrow ((which new))
 	       (emtmv:th:check-all)))))
 
 
@@ -503,7 +503,7 @@ Call this inside a narrowing to (which WHICH)."
 	    (emtmv:with-version 'old nil
 	       (emt:doc "Operation: Eval it in `old'.")
 	       (emt:doc "Response: Its value in old has not changed.")
-	       (emt:eg:narrow ((which old))
+	       (emtg:narrow ((which old))
 		  (emtmv:th:check-all)))
 	 
 	    (emtmv:with-version 'new nil
@@ -517,7 +517,7 @@ Call this inside a narrowing to (which WHICH)."
 
 	    (emt:doc "Re-eval the `new' form")
 	    (eval
-	       (emt:eg (role form) (which new)))
+	       (emtg (role form) (which new)))
 	    (emtmv:with-version 'new nil
 	       (emt:doc "Response: It no longer has that value in `new'.")
 	       (assert
@@ -527,7 +527,7 @@ Call this inside a narrowing to (which WHICH)."
 
 	    (emtmv:with-version 'old nil
 	       (emt:doc "Response: Its value in `old' has not changed.")
-	       (emt:eg:narrow ((which old))
+	       (emtg:narrow ((which old))
 		  (emtmv:th:check-all)))
 	    
 	    (emt:doc "Operation: Change to state `old'.")
@@ -547,7 +547,7 @@ Call this inside a narrowing to (which WHICH)."
 
 	    (emtmv:with-version 'new nil
 	       (emt:doc "Response: Its value in `new' has not changed.")
-	       (emt:eg:narrow ((which new))
+	       (emtg:narrow ((which new))
 		  (emtmv:th:check-all)))
 
 	    ))))
@@ -569,7 +569,7 @@ Call this inside a narrowing to (which WHICH)."
 	 (assert
 	    (equal
 	       (run-stuff)
-	       (emt:eg (which old)(name var1)(type value)))
+	       (emtg (which old)(name var1)(type value)))
 	    t))))
 
 ;;;_. Footers

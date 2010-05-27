@@ -1,4 +1,4 @@
-;;;_ browse.el --- Browser for eg objects
+;;;_ browse.el --- Browser for tagname objects
 
 ;;;_. Headers
 ;;;_ , License
@@ -29,7 +29,7 @@
 
 ;;;_ , Requires
 
-(require 'emtest/testhelp/eg)
+(require 'emtest/testhelp/tagnames)
 (require 'viewers/formatter)  ;;Just for the browse functionality
 
 
@@ -37,19 +37,19 @@
 ;;;_ , Browse  (Never worked)
 
 ;;;_  . Structures
-(defstruct (emt:eg:browse:relative-distinction
-	      (:constructor emt:eg:browse:make-relative-distinction)
-	      (:conc-name emt:eg:browse:relative-distinction->)
+(defstruct (emtg:browse:relative-distinction
+	      (:constructor emtg:browse:make-relative-distinction)
+	      (:conc-name emtg:browse:relative-distinction->)
 	      (:copier nil))
    ""
    item
    extra-kv-list
    missing-kv-list)
 
-;;;_  . emt:eg:browse:make-relative-distinction
-(defun emt:eg:browse:item->relative-distinction (item reference-tagset)
+;;;_  . emtg:browse:make-relative-distinction
+(defun emtg:browse:item->relative-distinction (item reference-tagset)
    ""
-   (emt:eg:browse:make-relative-distinction
+   (emtg:browse:make-relative-distinction
       :item item
       ;;$$Not at all sure these are in right respective positions.
       ;;Feel free to swap them.
@@ -59,9 +59,9 @@
 	 (mapcar
 	    #'(lambda (kv)
 		 (unless
-		    (emt:eg:some-kv-matches kv reference-tagset)
+		    (emtg:some-kv-matches kv reference-tagset)
 		    kv))
-	    (emt:example.-tagset item)))
+	    (emtg:example->tagset item)))
 
       :missing-kv-list
       (remove
@@ -69,26 +69,26 @@
 	 (mapcar
 	    #'(lambda (kv)
 		 (unless
-		    (emt:eg:some-kv-matches kv (emt:example.-tagset item))
+		    (emtg:some-kv-matches kv (emtg:example->tagset item))
 		    kv))
 	    reference-tagset))))
 
-;;;_  . emt:eg:browse:->stage-1
-(defun emt:eg:browse:->stage-1 (obj)
+;;;_  . emtg:browse:->stage-1
+(defun emtg:browse:->stage-1 (obj)
    ""
    
    (typecase obj
-      (emt:eg:browse:relative-distinction
+      (emtg:browse:relative-distinction
 	 `(w/headline
 	     (:weight 2)
 	     "An item"
 	     (sep 3)
 	     (data-persist-used
-		,(emt:eg:browse:relative-distinction->extra-kv-list obj)
+		,(emtg:browse:relative-distinction->extra-kv-list obj)
 		())
 	     (sep 3)
 	     (data-persist-used
-		,(emt:eg:browse:relative-distinction->missing-kv-list obj)
+		,(emtg:browse:relative-distinction->missing-kv-list obj)
 		())))
       
       ;;Here's a place to handle groupings, if ever we have them.
@@ -98,27 +98,27 @@
       ;;a list vs setting up a sequence.
       (cons
 	 `(sequence
-	     ,@(mapcar #'emt:eg:browse:->stage-1 obj)))))
+	     ,@(mapcar #'emtg:browse:->stage-1 obj)))))
 
-;;;_  . emt:eg:browse:top
-
-(defun emt:eg:browse:top (reference-tagset narrowing-tagset)
+;;;_  . emtg:browse:top
+;;$$UPDATE ME:  Needs to take a tagname list.
+(defun emtg:browse:top (reference-tagset narrowing-tagset)
    ""
    
    (interactive)
    (let*
       (
-	 ;;This will restrict them if called within an EG narrowing.
+	 ;;This will restrict them if called within a tagname narrowing.
 	 ;;Surprising but can't be helped.
 	 (all-items
-	    (emt:eg:filter emt:eg:all-examples narrowing-tagset))
+	    (emtg:filter emtg:all-examples narrowing-tagset))
 	 ;;This may be used later, in sorting remaining tags
 	 (all-tags
-	    (emt:eg:all-tags all-items))
+	    (emtg:all-tags all-items))
 	 (all-distinctions
 	    (mapcar
 	       #'(lambda (item)
-		    (emt:eg:browse:item->relative-distinction
+		    (emtg:browse:item->relative-distinction
 		       item
 		       reference-tagset))
 	       all-items))
@@ -132,17 +132,17 @@
 	    ;;Punt for now
 	    grouped)
 	 (stage-1-formatted
-	    (emt:eg:browse:->stage-1 summarized)))
+	    (emtg:browse:->stage-1 summarized)))
       (formatter:display-from-stage1
 	 stage-1-formatted
-	 "*EG browse*")))
+	 "*TAGNAME browse*")))
 
 
 ;;;_ , Browse near-miss
 
-;;;_  . emt:eg:browse
+;;;_  . emtg:browse
 
-(defun emt:eg:browse (tagset &optional tags-too-wide) 
+(defun emtg:browse (tagset &optional tags-too-wide) 
    "Pop up a buffer browsing the existing definitions.
 
 TAGSET must be a tagset"
@@ -150,15 +150,15 @@ TAGSET must be a tagset"
    ;;generating near-matches.
    ;;Could be made interactive by picking from tags.
    (let*
-      ((buf (generate-new-buffer "*EG browse*"))
+      ((buf (generate-new-buffer "*TAGNAME browse*"))
 	 ;;Generate it raw.  Sort it by felicity of fit (0 sorts last)
 	 (near-matches-raw
 	    (mapcar
 	       #'(lambda (kv)
 		    (list 
 		       kv
-		       (emt:eg:filter 
-			  emt:eg:all-examples 
+		       (emtg:filter 
+			  emtg:all-examples 
 			  (remove kv tagset))))
 	       tagset))
 	 (near-matches-lol near-matches-raw)
@@ -184,7 +184,7 @@ TAGSET must be a tagset"
 
 	       (dolist (i near-matches)
 		  (let*
-		     ((i-tagset (emt:example.-tagset i))
+		     ((i-tagset (emtg:example->tagset i))
 			(diff-tagset 
 			   (set-difference 
 			      i-tagset tagset

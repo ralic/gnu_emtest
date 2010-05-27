@@ -144,13 +144,13 @@ earlier error.")
 	 (condition-case err
 	    (emtp:eval
 	       (progn
-		  (signal 'emt:example-error "This error keeps the testpoint from being run")
+		  (signal 'emth:example-error "This error keeps the testpoint from being run")
 		  (emtp:td:1 1 1))
 	       (tp*
 		  (:id id-1 :count 1)
 		  (arg a)))
 	    ('emtp:miscount nil)
-	    ('emt:example-error t))))
+	    ('emth:example-error t))))
    (nil
       (progn
 	 (emt:doc "Shows: Miscount error is not withheld if a throw occurs.")
@@ -215,7 +215,7 @@ Param: `:return' flag is passed non-nil")
 	 (emt:doc "Response: Error.")
 	 (progn
 	    (assert
-	       (emt:gives-error
+	       (emth:gives-error
 		  (emtp:eval nil
 		     (finally nil nil
 			(+ 2 10))
@@ -253,7 +253,7 @@ The testpoint collects one arg.")
 	       (finally nil
 		  (arg-list)
 		  (assert
-		     (emt:sets= arg-list
+		     (emth:sets= arg-list
 			'(x y))
 		     t)))
 	    t)))
@@ -274,11 +274,11 @@ The testpoint collects multiple args - 2.")
 	       (finally nil
 		  (arg-list a-list)
 		  (assert
-		     (emt:sets= arg-list
+		     (emth:sets= arg-list
 			'(x y))
 		     t)
 		  (assert
-		     (emt:sets= a-list
+		     (emth:sets= a-list
 			'(b-1 b-1))
 		     t)))
 	    t)))
@@ -317,7 +317,7 @@ The old version of foo is restored")
 		   (symbol-function 'foo)))
 	       (assert
 		  (not
-		     (emt:gives-error
+		     (emth:gives-error
 			(emtp:eval
 			   (list
 			      (foo)
@@ -340,7 +340,7 @@ The old version of foo is restored")
 	       ((old-foo-func
 		   (symbol-function 'foo)))
 	       (assert
-		  (emt:gives-error
+		  (emth:gives-error
 		     (emtp:eval
 			(list
 			   (foo))
@@ -400,7 +400,7 @@ It is visited twice.")
 		   (,(emtp:counter:binding-form counter))
 		   ,(emtp:counter:incf-form counter)
 		   ,(emtp:counter:incf-form counter)
-		   (emt:gives-error ,(emtp:counter:check-form counter))
+		   (emth:gives-error ,(emtp:counter:check-form counter))
 		   t)))))
    (nil
       (progn

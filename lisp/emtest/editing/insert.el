@@ -115,7 +115,7 @@
 (define-skeleton emt:insert-with-buf
    "Insert skeleton to call a form in a mock-buffer"
    ()
-   "(with-buffer-containing-object
+   "(emtb:with-buf
       (
 	 ;;ARGS
 	 )
@@ -136,7 +136,7 @@ function."
 	 ;;$$REFACTOR ME - code is shared
 	 (let
 	    ((default-suite-name
-		(symbol-name (emt:suite-sym-at-point))))
+		(symbol-name (emtel:suite-sym-at-point))))
 	 (read-string "Name of suite: " default-suite-name nil
 	    default-suite-name))))
    ;;$$REFACTOR ME - code is shared
@@ -175,7 +175,7 @@ function."
       (list 
 	 (let
 	    ((default-suite-name
-		(symbol-name (emt:suite-sym-at-point))))
+		(symbol-name (emtel:suite-sym-at-point))))
 	 (read-string "Name of suite: " default-suite-name nil
 	    default-suite-name))))
    
@@ -206,7 +206,7 @@ function."
       ((id (utiuid:generate "xmp")))
       (pp
 	 `(defconst ,(intern id)
-	     (emt:eg:define+ 
+	     (emtg:define+ 
 		((tag value) list)
 		items-start-here))
 	 

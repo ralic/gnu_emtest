@@ -280,7 +280,7 @@ Response: Match."
    (  "Situation: Two items.  One pattern element matches both, the
 other matches neither.
 Response: Error (Not just mismatch)."
-      (emt:gives-error
+      (emth:gives-error
 	 (emtm:ts:single-gov
 	    #'emtm:govs:set 
 	    '(set 12 144)
@@ -397,7 +397,7 @@ Response: Fail."
    ;;time.
    (  "Param: Arg has a non-constant object.
 Response: Error."
-      (emt:gives-error
+      (emth:gives-error
 	 (let
 	    ((a 0))
 	    (emtm 0
@@ -583,7 +583,7 @@ Response: Gives non-nil."
 
       (and (emtm 12 a)))
 
-   ;;Governed lists.  Data should be from eg examples.
+   ;;Governed lists.  Data should be from tagname examples.
    
    (  "Situation: Pattern is a governed list
 Response: Works."
@@ -1066,7 +1066,7 @@ Response: Pass/fail result is as expected."
 		  my-field-sym
 		  my-field)))
 	 
-	 (emt:accumulator:list->object
+	 (utiacc:list->object
 	    (append
 	       (list 
 		  (emtm:make-formdata

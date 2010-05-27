@@ -35,20 +35,20 @@
 
 ;;;_   , Tests
 
-(rtest:deftest pcomplete/emacs-lisp-mode/emt:eg
-   ;;Uses test-helpers `emt:eg:th:with-example-examples' and
+(rtest:deftest pcomplete/emacs-lisp-mode/emtg
+   ;;Uses test-helpers `emtg:th:with-example-examples' and
    ;;`pcomplete:th:test'.
-   ("Validation. The functor `emt:eg' is recognized as a command
+   ("Validation. The functor `emtg' is recognized as a command
 completion" 
       (and
-	 (member "emt:eg" (pcomplete-elisp-get-command-names))
+	 (member "emtg" (pcomplete-elisp-get-command-names))
 	 t))
    
 
-   ( "Behavior: The functor `emt:eg' is parsed correctly by
+   ( "Behavior: The functor `emtg' is parsed correctly by
 `pcomplete-parse-elisp-arguments'."
-      (with-buffer-containing-object
-	 (:sexp '(emt:eg !)
+      (emtb:with-buf
+	 (:sexp '(emtg !)
 	    :point-replaces "!")
 	 (emacs-lisp-mode) ;;Must be in emacs-lisp-mode
 	 (destructuring-bind
@@ -57,50 +57,50 @@ completion"
 	    (and
 	       (equal
 		  args 
-		  '("emt:eg" ""))))))
+		  '("emtg" ""))))))
 
    (  "Position: complete outer form."
-      (emt:eg:th:with-example-examples
+      (emtg:th:with-example-examples
 	 (pcomplete:th:test
-	    :sexp '(emt:eg !)
+	    :sexp '(emtg !)
 	    :completions '("dummy-tag" "a" "b")
-	    :known-heads ("emt:eg"))))
+	    :known-heads ("emtg"))))
 
 
    (  "Situation: The existing examples are exactly those in
-`emt:eg:th:with-example-examples'. 
+`emtg:th:with-example-examples'. 
 Point is on first arg, on tag.
 Behavior: offer the known tags as completions."
-      (emt:eg:th:with-example-examples
+      (emtg:th:with-example-examples
 	 (pcomplete:th:test
-	    :sexp '(emt:eg (!))
+	    :sexp '(emtg (!))
 	    :completions '("dummy-tag" "a" "b")
-	    :known-heads ("emt:eg"))))
+	    :known-heads ("emtg"))))
 
    (  "Situation: The existing examples are exactly those in
-`emt:eg:th:with-example-examples'.
+`emtg:th:with-example-examples'.
 One tag-value arg has already been given.
 Point is on second arg, on tag.
 `pcomplete-use-paring' is true.
 Behavior: offer only the other tags as completions."
-      (emt:eg:th:with-example-examples
+      (emtg:th:with-example-examples
 	 (let
 	    ((pcomplete-use-paring t))
 	    (pcomplete:th:test
-	       :sexp '(emt:eg (a t)(!))
+	       :sexp '(emtg (a t)(!))
 	       :completions '("dummy-tag" "b")
-	       :known-heads ("emt:eg")))))
+	       :known-heads ("emtg")))))
 
    (  "Situation: The existing examples are exactly those in
-`emt:eg:th:with-example-examples'.
+`emtg:th:with-example-examples'.
 Point is on first arg, on value.
 Tag is already given as dummy-tag.
 Behavior: offer the known values of `dummy-tag' as completions."
-      (emt:eg:th:with-example-examples
+      (emtg:th:with-example-examples
 	 (pcomplete:th:test
-	    :sexp '(emt:eg (dummy-tag !))
+	    :sexp '(emtg (dummy-tag !))
 	    :completions '("1" "2")
-	    :known-heads ("emt:eg"))))
+	    :known-heads ("emtg"))))
 
    )
 

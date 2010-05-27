@@ -367,7 +367,7 @@ integers and non-integers.")
 	 (emt:doc "Built-in types work (integer).")
 	 (progn
 	    (emty:check 12 integer)
-	    (emt:gives-error
+	    (emth:gives-error
 	       (emty:check "String" integer))
 	    t)))
    (nil
@@ -378,7 +378,7 @@ integers and non-integers.")
 	       (or integer string))
 	    (emty:check "String"
 	       (or integer string))
-	    (emt:gives-error
+	    (emth:gives-error
 	       (emty:check
 		  '(a list)
 		  (or integer string)))
@@ -388,7 +388,9 @@ integers and non-integers.")
 	 (emt:doc "Sanity checks for `cl-make-type-test'.")
 	 (let
 	    ((emty:use t))
-	    (emt:let-noprops
+	   ;;$$IMPROVE ME Insulate better, sensitive to struct
+	   ;;definitions.
+	    (emth:let-noprops
 	       '(struct1)
 	       (defstruct struct1 field1)
 	       (assert
@@ -407,7 +409,7 @@ integers and non-integers.")
       (progn
 	 (emt:doc "Situation: A normal struct definition, no slot type spec.")
 	 (emt:doc "Response: Typep passes it no matter what's in the field.")
-	 (emt:let-noprops
+	 (emth:let-noprops
 	    '(struct1)
 	    (defstruct struct1 field1)
 	    (emty:check
@@ -421,7 +423,7 @@ integers and non-integers.")
 `typep' is used and the flag `emty:use' has its global
 value of `nil.'")
 	 (emt:doc "Response: Typep passes it no matter what's in the field.")
-	 (emt:let-noprops
+	 (emth:let-noprops
 	    '(struct1)
 	    (defstruct struct1
 	       (field1 nil :type integer))
@@ -441,7 +443,7 @@ value of `nil.'")
 	 (emt:doc "Response: Typep passes it no matter what's in the field.")
 	 (let
 	    ((emty:use t))
-	    (emt:let-noprops
+	    (emth:let-noprops
 	       '(struct1)
 	       (defstruct struct1
 		  (field1 nil :type integer))
@@ -456,12 +458,12 @@ value of `nil.'")
    (nil
       (progn
 	 (emt:doc "Situation: A struct definition with a simple slot type spec.")
-	 (emt:let-noprops
+	 (emth:let-noprops
 	    '(struct1)
 	    (defstruct struct1
 	       (field1 nil :type integer))
 	    (assert
-	       (emt:gives-error
+	       (emth:gives-error
 		  (emty:check
 		     (make-struct1 :field1
 			'("Some" thing else))
@@ -474,7 +476,7 @@ value of `nil.'")
       (progn
 	 (emt:doc "Situation: A struct definition with a simple slot type spec.
 The name spec is not a bare symbol")
-	 (emt:let-noprops
+	 (emth:let-noprops
 	    '(struct1)
 	    (defstruct
 	       (struct1
@@ -482,7 +484,7 @@ The name spec is not a bare symbol")
 		  :named)
 	       (field1 nil :type integer))
 	    (assert
-	       (emt:gives-error
+	       (emth:gives-error
 		  (emty:check
 		     (make-struct1 :field1
 			'("Some" thing else))
@@ -494,20 +496,20 @@ The name spec is not a bare symbol")
    (nil
       (progn
 	 (emt:doc "Situation: A struct definition with several slot type specs.")
-	 (emt:let-noprops
+	 (emth:let-noprops
 	    '(struct1)
 	    (defstruct struct1
 	       (field1 nil :type integer)
 	       (field2 nil :type string))
 	    (assert
-	       (emt:gives-error
+	       (emth:gives-error
 		  (emty:check
 		     (make-struct1 :field1
 			'(something wrong)
 			:field2 "Correct")
 		     struct1)))
 	    (assert
-	       (emt:gives-error
+	       (emth:gives-error
 		  (emty:check
 		     (make-struct1 :field1 12 :field1
 			'(something wrong))
@@ -519,13 +521,13 @@ The name spec is not a bare symbol")
    (nil
       (progn
 	 (emt:doc "Situation: Slot type spec is to another struct.")
-	 (emt:let-noprops
+	 (emth:let-noprops
 	    '(struct0 struct1)
 	    (defstruct struct0 field0)
 	    (defstruct struct1
 	       (field1 nil :type struct0))
 	    (assert
-	       (emt:gives-error
+	       (emth:gives-error
 		  (emty:check
 		     (make-struct1 :field1
 			'("Some" thing else))
@@ -540,7 +542,7 @@ The name spec is not a bare symbol")
 	 (emt:doc "Situation: Slot type spec is a list of a built-in type
 Object has the right type for that slot.")
 	 (emt:doc "Response: emty:check accepts it.")
-	 (emt:let-noprops
+	 (emth:let-noprops
 	    '(struct1)
 	    (defstruct struct1
 	       (field1 nil :type
@@ -549,7 +551,7 @@ Object has the right type for that slot.")
 	       (make-struct1 :field1 'nil)
 	       struct1)
 	    (assert
-	       (emt:gives-error
+	       (emth:gives-error
 		  (emty:check
 		     (make-struct1 :field1
 			'("Some" thing else))
@@ -562,19 +564,19 @@ Object has the right type for that slot.")
    (nil
       (progn
 	 (emt:doc "Situation: Slot type spec is to a list of another struct.")
-	 (emt:let-noprops
+	 (emth:let-noprops
 	    '(struct0 struct1)
 	    (defstruct struct0 field0)
 	    (defstruct struct1
 	       (field1 nil :type
 		  (repeat struct0)))
 	    (assert
-	       (emt:gives-error
+	       (emth:gives-error
 		  (emty:check
 		     (make-struct1 :field1 13)
 		     struct1)))
 	    (assert
-	       (emt:gives-error
+	       (emth:gives-error
 		  (emty:check
 		     (make-struct1 :field1
 			'(("Some" thing else)))
@@ -590,13 +592,13 @@ Object has the right type for that slot.")
 	 (emt:doc "Situation: Slot type spec is a list of its own type.
 Object has the right type for that slot.")
 	 (emt:doc "Response: emty:check accepts it.")
-	 (emt:let-noprops
+	 (emth:let-noprops
 	    '(struct1)
 	    (defstruct struct1
 	       (field1 nil :type
 		  (repeat struct1)))
 	    (assert
-	       (emt:gives-error
+	       (emth:gives-error
 		  (emty:check
 		     (make-struct1 :field1
 			'("Any" thing "at" all))
@@ -620,7 +622,7 @@ Object has the right type for that slot.")
 `emt:trace:stored-diag'.")
 	 (let
 	    (emt:trace:stored-diag)
-	    (emt:let-noprops
+	    (emth:let-noprops
 	       '(struct1)
 	       (defstruct struct1
 		  (field1 nil :type integer))

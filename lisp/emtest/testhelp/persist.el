@@ -25,22 +25,21 @@
 ;;;_ , Commentary:
 
 ;; 
-
+;;This is testhelp, distinct from emtest/common/persist which is
+;;implementation.
 
 ;;;_ , Requires
 
 (require 'emtest/common/result-types)
-;;Requires the shared persist functionality
+;;$ADD ME Also requires the shared persist functionality
 
 ;;;_. Body
 
 ;;;_ , Persist functions 
 
-;;These must be visible to tests.  Distinct from
-;;emtest/common/emt-persist which is implementation.
 
 ;;;_  . emt:persist
-;;$$MOVE ME and see special variable emt:trace:properties
+;;$$NORMALIZE ME  Don't use emt:trace:properties, use TESTRAL
 ;;;###autoload
 (defun emt:persist (id &optional backend)
    "Return a persisting object or a placeholder"
@@ -48,16 +47,16 @@
       ((backend
 	  (or
 	     backend
-	     ;;Use emtt:get-properties.  But first remove that from
+	     ;;Use utim:get-properties.  But first remove that from
 	     ;;tester.el and give it the right default.
-	     ;(emtt:get-properties 'db-id emt:trace:properties)
+	     ;(utim:get-properties 'db-id emt:trace:properties)
 	     (let
 		((cell (assoc 'db-id emt:trace:properties)))
 		(when cell
 		   (second cell)))
 	     ;;Here add any other ways of learning the backend
 	     (error "No backend was provided"))))
-      (make-emt:db:id-index.
+      (emt:db:make-id-index
 	 :id id
 	 :backend backend)))
 
