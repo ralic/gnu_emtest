@@ -29,8 +29,9 @@
 ;;;_ , Requires
 
 (require 'emtest/runner/tester)
-(require 'emtest/viewer/emviewer)
+(require 'emtest/viewer/emviewer2)
 (require 'emtest/runner/explorers/library) ;;Just for the library launching.
+(require 'emtest/common/result-types)
 
 ;;;_. Body
 

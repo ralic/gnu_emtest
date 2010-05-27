@@ -209,39 +209,41 @@
 	    (make-emt:result:status:was-run
 	       :events ()))))
    
-   (group ((type result-diag))
-      (type-must-be () emt:result:diag:call)
-      (group ((subtype call))
-	 (item
-	    ((name pass))
-	    (make-emt:result:diag:call
-	       :status t
-	       :info-about ()
-	       :call-sexp '(= 2 2)))
-	 (item
-	    ((name fail))
-	    (make-emt:result:diag:call
-	       :status nil
-	       :info-about ()
-	       :call-sexp '(= 2 5)))
-	 (item
-	    ((name ungraded))
-	    (make-emt:result:diag:call
-	       :status 'error
-	       :info-about ()
-	       :call-sexp '(= 2 'penguin)))
-	 (item
-	    ((name long-call))
-	    (make-emt:result:diag:call
-	       :status nil
-	       :info-about ()
-	       :call-sexp '(= 
-			      (a very 
-				 very-very 
-				 very-very-very-very
-				 long call) 
-			      (another very-very-very-very long call))))
-	 ))))
+;;    (group ((type result-diag))
+;;       (type-must-be () emt:result:diag:call)
+;;       (group ((subtype call))
+;; 	 (item
+;; 	    ((name pass))
+;; 	    (make-emt:result:diag:call
+;; 	       :status t
+;; 	       :info-about ()
+;; 	       :call-sexp '(= 2 2)))
+;; 	 (item
+;; 	    ((name fail))
+;; 	    (make-emt:result:diag:call
+;; 	       :status nil
+;; 	       :info-about ()
+;; 	       :call-sexp '(= 2 5)))
+;; 	 (item
+;; 	    ((name ungraded))
+;; 	    (make-emt:result:diag:call
+;; 	       :status 'error
+;; 	       :info-about ()
+;; 	       :call-sexp '(= 2 'penguin)))
+;; 	 (item
+;; 	    ((name long-call))
+;; 	    (make-emt:result:diag:call
+;; 	       :status nil
+;; 	       :info-about ()
+;; 	       :call-sexp '(= 
+;; 			      (a very 
+;; 				 very-very 
+;; 				 very-very-very-very
+;; 				 long call) 
+;; 			      (another very-very-very-very long call))))
+;; 	 ))
+
+      ))
 
 ;;;_. Footers
 ;;;_ , Provides

@@ -30,7 +30,7 @@
 ;;;_ , Requires
 
 (require 'cl)
-(require 'emtest/runner/emt-funcall) ;;Obsolescent
+
 
 ;;;_. Body
 ;;;_ , Control variable
@@ -60,9 +60,13 @@
    (and
       (consp obj)
       (if (eq a '*) t
-	 (emt:funcall #'typep (car obj) a))
+	 ;;(emt:funcall #'typep (car obj) a)
+	 (typep (car obj) a)
+	 )
       (if (eq b '*) t
-	 (emt:funcall #'typep (cdr obj) b))))
+	 ;;(emt:funcall #'typep (cdr obj) b)
+	 (typep (cdr obj) b)
+	 )))
 
 ;;;_  . type list
 
@@ -83,7 +87,9 @@
 	 (if
 	    (eq (car el-type-list) '*)
 	    t
-	    (emt:funcall #'typep (car obj) (car el-type-list)))
+	    ;;(emt:funcall #'typep (car obj) (car el-type-list))
+	    (typep (car obj) (car el-type-list))
+	    )
 	 (emty:list-f (cdr obj) (cdr el-type-list)))))
 
 ;;;_  . type repeat
@@ -104,7 +110,9 @@
       (null obj)
       (and
 	 (consp obj)
-	 (emt:funcall #'typep (car obj) el-type)
+	 ;;(emt:funcall #'typep (car obj) el-type)
+	 (typep (car obj) el-type)
+	 
 	 (typep (cdr obj) `(repeat ,el-type)))))
 
 ;;;_  . type list*
@@ -118,9 +126,11 @@
    ""
    (if (cdr r)
       (and
-	 (emt:funcall #'typep (car obj) (car r))
+	 ;;(emt:funcall #'typep (car obj) (car r))
+	 (typep (car obj) (car r))
 	 (emty:list*-f (cdr obj) (cdr r)))
-      (emt:funcall #'typep obj (car r))))
+      ;;(emt:funcall #'typep obj (car r))
+      (typep obj (car r))))
 
 
 ;;;_ , Entry point emty:check-f
@@ -176,7 +186,8 @@ its slots, recursively."
 				(lambda (slot-name &optional init-form 
 					   &key type &allow-other-keys)
 				   (if type
-				      (emt:funcall #'typep slot-val type)
+				      ;;(emt:funcall #'typep slot-val type)
+				   (typep slot-val type)
 				      ;;A typeless slot accepts anything
 				      t)))
 			     slot-spec)

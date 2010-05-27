@@ -82,7 +82,7 @@
 	  :info-about emt:trace:info-about
 	  :tried-list emt:trace:tried)))
 
-
+'
 (defun emt:funcall:th:3 (&rest args)
    "Call emt:funcall with the given arguments, but returns a
 destructurable list (See code).

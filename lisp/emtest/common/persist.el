@@ -32,7 +32,6 @@
 ;;The only backend supported at this time is persist.el.  
 (require 'tinydb/persist)
 (require 'utility/uuid)
-(require 'emtest/runner/emt-funcall) ;;$$OBSOLESCENT
 (require 'emtest/common/result-types)
 
 ;;;_. Body
@@ -91,9 +90,9 @@
 
 ;;;_ , Interface for using results
 ;;$$MOVE ME to a viewer module.
-;;$$OBSOLESCENT or at least needs heavy adapting.
+;;$$OBSOLETE  Not how we do it any more
 ;;;_  . emt:db:view:extract
-
+'
 (defun emt:db:view:extract (diag-call arg-ix)
    ""
    (check-type diag-call emt:result:diag:call)
@@ -114,6 +113,7 @@
 	       arg-ix)))))
 
 ;;;_  . emtdb:view:view-obj
+'  ;;$$OBSOLETE  Not how we do it any more
 ;;;###autoload
 (defun emtdb:view:view-obj (tried)
    ""
@@ -140,6 +140,7 @@
       (pop-to-buffer buf)))
 
 ;;;_  . emt:db:view:accept-correct
+'  ;;$$OBSOLESCENT  Not how we do it any more
 ;;;###autoload
 (defun emt:db:view:accept-correct (call tried)
    ""

@@ -168,27 +168,27 @@
 	       :use-category 'correct-answer
 	       :reason 'none-found))
       
-	 (item ((type result-diag)(foundp t))
-	    (make-emt:result:diag:call
-	       :status nil
-	       :tried 
-	       (list (emtg (type tried)(foundp t)))
-	       :info-about (list)
-	       :call-sexp
-	       `(equal
-		   ,(emtg (type data)(name got))
-		   ,(emtg (type archive-placeholder)))))
+;; 	 (item ((type result-diag)(foundp t))
+;; 	    (make-emt:result:diag:call
+;; 	       :status nil
+;; 	       :tried 
+;; 	       (list (emtg (type tried)(foundp t)))
+;; 	       :info-about (list)
+;; 	       :call-sexp
+;; 	       `(equal
+;; 		   ,(emtg (type data)(name got))
+;; 		   ,(emtg (type archive-placeholder)))))
 
-	 (item ((type result-diag)(foundp nil))
-	    (make-emt:result:diag:call
-	       :status nil
-	       :tried 
-	       (list (emtg (type tried)(foundp nil)))
-	       :info-about ()
-	       :call-sexp
-	       `(equal
-		   ,(emtg (type data)(name got))
-		   ,(emtg (type archive-placeholder)))))
+;; 	 (item ((type result-diag)(foundp nil))
+;; 	    (make-emt:result:diag:call
+;; 	       :status nil
+;; 	       :tried 
+;; 	       (list (emtg (type tried)(foundp nil)))
+;; 	       :info-about ()
+;; 	       :call-sexp
+;; 	       `(equal
+;; 		   ,(emtg (type data)(name got))
+;; 		   ,(emtg (type archive-placeholder)))))
 
 	 (item ((type formatted-persist-data))
 	    `(data-persist-used 

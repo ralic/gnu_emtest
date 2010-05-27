@@ -126,7 +126,7 @@ Not called by name, it is flet by tester."
 	       (apply func new-args))))))
 
 ;;;_ , emt:funcall
-
+'
 (defun emt:funcall (func &rest args)
    ""
 

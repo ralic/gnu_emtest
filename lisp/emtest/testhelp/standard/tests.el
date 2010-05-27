@@ -37,7 +37,7 @@
 ;;;_. Body
 ;;;_ , emth:wrap-form
 ;;;_  . emth:wrap-form:thd:examples
-
+'
 (defconst emth:wrap-form:thd:examples
    (emtg:define+ ;;xmp:26ef7f1f-ce61-4284-8175-29a7fc7e4ef5
       ((project emtest)(library tester)(section emth:wrap-form))
@@ -50,6 +50,7 @@
 
 
 ;;;_  . emth:wrap-form ;; Obsolete
+'
 (emt:deftest-3 emth:wrap-form
    (nil
       (progn
@@ -163,7 +164,8 @@
       ;;Partly shared with emt:funcall:th:3.
       (group 
 	 ((name fail-comparison))
-	 (item ((type form)) '(emt:funcall #'equal 1 2))
+	 (item ((type form)) ;;'(emt:funcall #'equal 1 2)
+	    '(equal 1 2))
 	 (item ((type grade)) 'fail)
 	 (item ((type diag-trace)) ;;$$CHANGE CALLERS Obsolete
 	    '(list
@@ -174,8 +176,10 @@
       (group 
 	 ((name fail-double-comparison))
 	 (item ((type form)) '(or
-				 (emt:funcall #'equal 1 2)
-				 (emt:funcall #'equal 101 102)))
+				 ;;(emt:funcall #'equal 1 2)
+				 (equal 1 2)
+				 ;;(emt:funcall #'equal 101 102)
+				 (equal 101 102)))
 	 (item ((type grade)) 'fail)
 	 (item ((type diag-trace)) ;;$$CHANGE CALLERS Obsolete
 	    '

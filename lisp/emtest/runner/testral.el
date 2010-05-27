@@ -50,8 +50,8 @@
 
 
       ;;Later, for "call" tags, arglist will be processed wrt objects
-      ;;whose origin is known.  This relates to the
-      ;;`emt:result:diag:call' type, but the design may change.
+      ;;whose origin is known.  This used to relate to the
+      ;;`emt:result:diag:call' type, but the design has changed.
       (push
 	 note
 	 emt:testral:*events-seen*

@@ -32,10 +32,6 @@
 (require 'emtest/common/testral-types)
 (require 'emtest/common/result-types)
 (require 'emtest/runner/testral)
-(require 'emtest/runner/emt-funcall)  ;;$$OBSOLESCENT
-
-;;Defined in `emtest/runner/emt-funcall/testhelp'
-(defvar emt:report-control:thd:report-all)
 
 ;;;_ , Customization
 
@@ -122,6 +118,7 @@
 ;;;_ , "should"
 ;;;_  . emth:wrap-form
 ;; OBSOLESCENT.  Only used in `emth:should-f;
+'
 (defun emth:wrap-form (form)
    ""
 
@@ -129,7 +126,8 @@
       (and
 	 (listp form)
 	 (eq (car form) 'equal))
-      `(emt:funcall (function ,(car form)) ,@(cdr form))
+      ;;`(emt:funcall (function ,(car form)) ,@(cdr form))
+      form
       form))
 
 ;;;_  . emth:should-f
@@ -220,7 +218,8 @@
 (defmacro* emth:should:th 
    ((&key 
        initial-stored 
-       (report-control emt:report-control:thd:report-all))
+       ;;(report-control emt:report-control:thd:report-all)
+       )
       &rest body)
    ""
    
