@@ -112,7 +112,7 @@
 		       :properties ()))
 	       suite-list)))
       (list
-	 nil
+	 list-to-run
 	 (emt:testral:make-suite
 	    :contents
 	    (emt:testral:make-runform-list
