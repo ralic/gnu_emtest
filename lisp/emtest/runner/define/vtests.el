@@ -29,6 +29,10 @@
 
 ;;;_ , Requires
 
+(require 'emtest/testhelp/misc)
+(require 'emtest/testhelp/standard)
+(require 'emtest/testhelp/mocks/libversion)
+(emtmv:require 'emtest/runner/define)
 
 ;;;_. Body
 

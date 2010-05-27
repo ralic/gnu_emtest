@@ -45,7 +45,7 @@ Unused for now." )
    (old-obarray () :type vector)
    (version     () :type (member nil old new))
    ;;May want to capture&swap respective load-history lines too.
-   ;;May want to have two version of this.
+   ;;May want to have two version of filename
    (filename    () :type string))
 
 ;;;_ , Variables
@@ -113,6 +113,13 @@ FUNC will generally be an entry point"
        (emtmv:with-version
 	  ,(or version 'old) ()
 	  ad-do-it)))
+;;;_   , emtmv:require
+(defun emtmv:require (&rest r)
+   "Like `require', but manage versions.  
+Intended for use in vtest.el files."
+   
+   (error "`emtmv:require' is not available yet"))
+
 ;;;_  . Interactivity help
 ;;;_   , emtmv:read-object
 (defun emtmv:read-object (prompt)
