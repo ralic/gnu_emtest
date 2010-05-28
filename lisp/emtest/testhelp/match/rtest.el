@@ -24,12 +24,16 @@
 
 ;;;_ , Commentary:
 
-;; 
+;; $$CONVERT ME
 
 
 ;;;_ , Requires
-
-
+(require 'rtest-define)
+(require 'emtest/testhelp/match)
+(require 'emtest/testhelp/match/testhelp)
+(require 'emtest/testhelp/standard)
+(require 'emtest/testhelp/misc)
+(require 'utility/accumulator)
 
 ;;;_. Body
 
