@@ -1,4 +1,4 @@
-;;;_ browse.el --- Browser for tagname objects
+;;;_ emtest/testhelp/tagnames/browse.el --- Browser for tagname objects
 
 ;;;_. Headers
 ;;;_ , License
@@ -24,7 +24,7 @@
 
 ;;;_ , Commentary:
 
-;; 
+;; A browser for tagnames types.  This is a work in progress.
 
 
 ;;;_ , Requires
@@ -215,7 +215,7 @@ TAGSET must be a tagset"
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'browse)
+(provide 'emtest/testhelp/tagnames/browse)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -223,4 +223,4 @@ TAGSET must be a tagset"
 ;;;_  + End:
 
 ;;;_ , End
-;;; browse.el ends here
+;;; emtest/testhelp/tagnames/browse.el ends here
