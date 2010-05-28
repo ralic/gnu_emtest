@@ -139,28 +139,6 @@ PROPS is the property list of the form."
 
 ;;Can't easily automatically test that it in fact debugs.
 
-;;;_    . emth:trap-errors
-;;$$USE ME
-;;$$MOVE ME To standard testhelp
-(defmacro emth:trap-errors (&rest body)
-   ""
-   `(progn
-       (declare (special emt:testral:*events-seen* emtt:*abort-p*))
-       (condition-case err
-	  (progn ,@body)
-	  ('emt:already-handled
-	     (setq emtt:*abort-p* t))
-	  ;;$$ADD ME an error case for dormancy pseudo-errors.  It
-	  ;;should push a dormancy note (here, not lower down, which
-	  ;;may be somehow wrong?)
-	  (error
-	     (push
-		(emt:testral:make-error-raised
-		   :err err
-		   :badnesses '(ungraded))
-		emt:testral:*events-seen*)
-	     (setq emtt:*abort-p* t)))))
-
 
 ;;;_. Footers
 ;;;_ , Provides

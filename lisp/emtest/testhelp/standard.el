@@ -32,7 +32,6 @@
 (require 'emtest/common/testral-types)
 (require 'emtest/common/result-types)
 (require 'emtest/runner/testral)
-(require 'emtest/runner/surrounders) ;;For emth:wrap-form
 
 ;;;_ , Customization
 
@@ -84,7 +83,30 @@
 	 (prin1-to-string ,name)))))
      ,@body))
 
-;;;_ , emth:try-all
+;;;_ , Error / retry management
+;;;_  . emth:trap-errors
+;;$$USE ME
+(defmacro emth:trap-errors (&rest body)
+   ""
+   `(progn
+       (declare (special emt:testral:*events-seen* emtt:*abort-p*))
+       (condition-case err
+	  (progn ,@body)
+	  ('emt:already-handled
+	     (setq emtt:*abort-p* t))
+	  ;;$$ADD ME an error case for dormancy pseudo-errors.  It
+	  ;;should push a dormancy note (here, not lower down, which
+	  ;;may be somehow wrong?)
+	  (error
+	     (push
+		(emt:testral:make-error-raised
+		   :err err
+		   :badnesses '(ungraded))
+		emt:testral:*events-seen*)
+	     (setq emtt:*abort-p* t)))))
+
+
+;;;_  . emth:try-all
 ;;For now, it only watches for errors.  Doesn't try to logically
 ;;conjoin branches.
 ;;Early, I want it to map over the branches, so we can wrap map forms
@@ -103,6 +125,7 @@
 	  (when emtt:*abort-p*
 	     (signal emt:already-handled ())))))
 
+;;;_  . emth:map&trap
 ;;$$TEST ME
 ;;$$USE ME  In particular, emtg:map should use emth:map&trap
 (defun emth:map&trap (func list)
