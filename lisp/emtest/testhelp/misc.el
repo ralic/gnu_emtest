@@ -31,25 +31,23 @@
 
 
 ;;;_ , emth:gives-error
-;;$$MOVE ME into standard
-;;This does not support knowing the error data, just the error symbol.
-;;If you want to check that, use `condition-case' directly.
-
 (defmacro emth:gives-error (form &optional error-sym)
-   ""
+   "Non-nil just if FORM gives an error.
+If ERROR-SYM is given, the error must be of that type.
+
+This does not support knowing the error data, just the error symbol.
+If you want to check that, use `condition-case' directly."
    (let
       ((error-sym (or error-sym 'error)))
       `(condition-case nil
 	  (progn
 	     ,form
 	     nil)
-	  (',error-sym t)
 	  ;;We don't catchall with (error nil), because unexpected
 	  ;;errors should escape here.
-	  )))
+	  (',error-sym t))))
 
 ;;;_ , emth:example-error
-;;$$MOVE ME into standard
 (put 'emth:example-error 'error-conditions
    '(error emth:example-error))
 (put 'emth:example-error 'error-message
@@ -68,7 +66,8 @@
 ;;;_ , Test helper `emth:throws'
 ;;;###autoload
 (defmacro emth:throws (tags &rest body)
-   ""
+   "Non-nil just if BODY throws one of TAGS.
+TAGS must be a list of symbols."
    
    `(catch 'emth:throws:ok
        (progn
