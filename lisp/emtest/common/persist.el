@@ -88,215 +88,8 @@
    (dirty () :type bool)
    mode)
 
-;;;_ , Interface for using results
-;;$$MOVE ME to a viewer module.
-;;$$OBSOLETE  Not how we do it any more
-;;;_  . emt:db:view:extract
-'
-(defun emt:db:view:extract (diag-call arg-ix)
-   ""
-   (check-type diag-call emt:result:diag:call)
-   (check-type arg-ix integer)
-   (let
-      (
-
-	 (call-sexp
-	    (emt:result:diag:call-call-sexp diag-call)))
-      ;;For now, only handle `equal'
-      (unless
-	 (eq (car call-sexp) 'equal)
-	 (error "Unrecognized functor %s" (car call-sexp)))
-      (case arg-ix
-	 (1 (third call-sexp))
-	 (2 (second call-sexp))
-	 (t (error "Argument %s is not a comparand"
-	       arg-ix)))))
-
-;;;_  . emtdb:view:view-obj
-'  ;;$$OBSOLETE  Not how we do it any more
-;;;###autoload
-(defun emtdb:view:view-obj (tried)
-   ""
-   (interactive
-      (list 
-	 (get-text-property (point) 'emt:diag:tried)))
-
-   (unless
-      (typep tried 'emt:result:diag:tried-persist-version.)
-      (error "There is no object to view"))
-   
-   (let*
-      ((buf
-	  (generate-new-buffer "*Emtest view persist*"))
-	 (placeholder
-	    (emt:result:diag:tried-persist-version.-placeholder
-	       tried))
-	 (value
-	    (emt:db:get-value placeholder)))
-      (unless (stringp value) 
-	 (error "Right now only supported for strings"))
-      (with-current-buffer buf
-	 (insert value))
-      (pop-to-buffer buf)))
-
-;;;_  . emt:db:view:accept-correct
-'  ;;$$OBSOLESCENT  Not how we do it any more
-;;;###autoload
-(defun emt:db:view:accept-correct (call tried)
-   ""
-
-   (interactive
-      (list
-	 (get-text-property (point) 'emt:diag:call)
-	 (get-text-property (point) 'emt:diag:tried)))
-   
-   (check-type call emt:result:diag:call)
-   (check-type tried 
-      (or 
-	 emt:result:diag:tried-persist-version.
-	 emt:result:diag:tried-persist-archive.))
-
-   (let
-      (
-	 ;;`emt:result:diag:tried.' is the base type of either type of
-	 ;;tried
-	 (arg-ix 
-	    (emt:result:diag:tried.-arg-ix tried))
-	 (id 
-	    (etypecase tried
-	       (emt:result:diag:tried-persist-version.
-		  (emt:db:version-index->id-index
-		     (emt:result:diag:tried-persist-version.-placeholder
-			tried)))
-	       
-	       (emt:result:diag:tried-persist-archive.
-		  (emt:result:diag:tried-persist-archive.-placeholder
-		     tried)))))
-      (check-type id emt:db:id-index)
-
-      (emt:db:set id 'correct-answer 
-	 (emt:db:view:extract call arg-ix))))
-
-
-;;;_ , Interface for testing with persists
-
-;;;_  . emt:db:single-value
-
-;;$$OBSOLESCENT
-;;Let's keep `emt:persist' outside of here for the moment.  Also, Any
-;;fancy rewrite-and-retry processing will occur outside of here,
-;;possibly in a condition-case that knows which predicates that is
-;;meaningful for.
-'
-(defun emt:db:single-value (persist-id)
-   ""
-   (let
-      (
-	 (versions
-	    (emt:db:get-versions persist-id 'correct-answer)))
-      ;;Maybe make a note in any case.  Arg position will have already
-      ;;been noted.
-      (case
-	 (length versions)
-	 (0 
-	    ;;For now, just errors.  
-	    (error "No such persist was found: %s" persist-id))
-	 
-	 (1 
-	    ;;Push another note indicating the value that we used
-	    (emt:db:single:get-value (car versions)))
-	 (t 
-	    (error "Too many persist items were found: %s" persist-id)))))
-
-
-;;;_  . emt:funcall-handle-persistence-x
-;;OBSOLESCENT
-'
-(defun emt:funcall-handle-persistence-x (args)
-   ""
-   (catch 'emt:funcall-handle-persistence
-      (let
-	 ((persist-arg
-	     (find nil args 
-		;;This helper function doesn't look at its first argument
-		:test
-		#'(lambda (dummy x)
-		     (emt:db:id-index-p x)))))
-
-	 (unless persist-arg 
-	    (throw 'emt:funcall-handle-persistence
-	       (list 'correct-answer args)))
-	 
-	 (let
-	    (
-	       (placeholder-ix
-		  (1+
-		     (position persist-arg args :test #'eq)))
-	       (versions
-		  (emt:db:get-versions persist-arg 'correct-answer)))
-	    
-	    (case
-	       (length versions)
-	       (0 
-		  (push
-		     (make-emt:result:diag:tried-persist-archive.
-			:arg-ix       placeholder-ix
-			:placeholder  persist-arg
-			:use-category 'correct-answer
-			:reason       'none-found)
-		     emt:trace:tried)
-		  (signal 'emt:already-handled ()))
-	       (1 
-		  (push
-		     (make-emt:result:diag:tried-persist-version.
-			:arg-ix       placeholder-ix
-			:placeholder  (car versions))
-		     emt:trace:tried)
-		  (let
-		     (
-			(new-args
-			   (substitute 
-			      (emt:db:single:get-value (car versions)) 
-			      persist-arg args)))
-		     (throw 'emt:funcall-handle-persistence
-			(list
-			   'correct-answer 
-			   new-args))))
-	       (t 
-		  (push
-		     (make-emt:result:diag:tried-persist-archive.
-			:arg-ix       placeholder-ix
-			:placeholder  persist-arg
-			:use-category 'correct-answer
-			:reason       'too-many-found)
-		     emt:trace:tried)
-		  (signal 'emt:already-handled ())))))))
-
 
 ;;;_ , Interface for tester helpers
-;;;_  . emt:db:get-versions
-(defun emt:db:get-versions (id &optional filter)
-   ""
-   ;;$$REPLACE ME
-   ;;Use `tinydb-alist-update' with this filter as functionality.
-   (let*
-      ((x (emt:db:by-ix:get-record id t)))
-      (remove*
-	 filter
-	 (emt:db:persist-archive->list x)
-	 :test-not
-	 #'(lambda (filter obj)
-	      (emt:db:use:subtype-of
-		 (emt:db:single->use-category obj)
-		 filter)))))
-
-;;;_  . emt:db:get-all-values
-;;Now mostly just a test helper
-(defun emt:db:get-all-values (id &optional filter)
-   ""
-   (mapcar
-      #'emt:db:single:get-value
-      (emt:db:get-versions id filter)))
 
 ;;;_  . emt:db:get-value
 (defun emt:db:get-value (version-placeholder)
@@ -373,6 +166,25 @@ A and B must be use-categories"
 
 ;;;_   , Tests
 ;;It's direct
+
+;;;_ , Access to the database
+;;;_  . emt:db:internal:with-db
+
+;;Mode can be {read, read/write}
+;;$$MOVE ME earlier
+(defmacro* emt:db:internal:with-db ((id backend) mode &rest body)
+   ""
+   (declare (debug ((&define symbolp symbolp) symbolp &rest form)))
+   `
+   (let
+      (  
+	 (,id (emt:db:internal:get-all ,backend)))
+      (prog1
+	 (progn ,@body)
+	 (when
+	    (emt:db:whole->dirty ,id)
+	    (emt:db:internal:set-all ,backend ,id)))))
+
 
 ;;;_ , Persist object types interface
 
@@ -530,24 +342,6 @@ If CREATE-P is non-nil, create it if it doesn't exist."
 	       :key #'car))))
 
    (setf (emt:db:whole->dirty db) t))
-
-;;;_ , Access to the database
-;;;_  . emt:db:internal:with-db
-
-;;Mode can be {read, read/write}
-;;$$MOVE ME earlier
-(defmacro* emt:db:internal:with-db ((id backend) mode &rest body)
-   ""
-   (declare (debug ((&define symbolp symbolp) symbolp &rest form)))
-   `
-   (let
-      (  
-	 (,id (emt:db:internal:get-all ,backend)))
-      (prog1
-	 (progn ,@body)
-	 (when
-	    (emt:db:whole->dirty ,id)
-	    (emt:db:internal:set-all ,backend ,id)))))
 
 ;;;_ , The database itself
 ;;;_  . emt:db:internal:tq-alist

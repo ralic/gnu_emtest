@@ -234,6 +234,29 @@ ID-SYM will be bound to a `emt:db:id-index' as if by `let'"
        (emt:db:internal:ts:mock ,initial-db
 	  ,@body)))
 
+;;;_  . Testhelpers to get raw version list from db
+;;;_   , emt:db:get-versions
+(defun emt:db:get-versions (id &optional filter)
+   ""
+   ;;$$REPLACE ME
+   ;;Use `tinydb-alist-update' with this filter as functionality.
+   (let*
+      ((x (emt:db:by-ix:get-record id t)))
+      (remove*
+	 filter
+	 (emt:db:persist-archive->list x)
+	 :test-not
+	 #'(lambda (filter obj)
+	      (emt:db:use:subtype-of
+		 (emt:db:single->use-category obj)
+		 filter)))))
+
+;;;_   , emt:db:get-all-values
+(defun emt:db:get-all-values (id &optional filter)
+   ""
+   (mapcar
+      #'emt:db:single:get-value
+      (emt:db:get-versions id filter)))
 
 
 ;;;_. Footers
