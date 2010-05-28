@@ -64,17 +64,33 @@
    
    "File context for mockbuf check-file functionality" )
 
-;;;_   , emtb:buf-contents-matches:thd:dir
+;;;_  . emtb:buf-contents-matches:thd:dir
 
 (defconst emtb:buf-contents-matches:thd:dir
    (expand-file-name "matches-file/" emtb:th-examples-dir)
    "Directory of example files for emtb:buf-contents-matches." )
-;;;_   , emtb:buf-contents-matches:thd:yes.txt
+;;;_  . emtb:buf-contents-matches:thd:yes.txt
 (defconst emtb:buf-contents-matches:thd:yes.txt 
    "line A
 line B
 "
    "The contents of the buffers used in the tests." )
+
+;;;_  . emtb:find-file-goto-text
+
+
+(defun emtb:find-file-goto-text (filename &optional loc-string)
+   "Find file FILENAME and go to the first occurence of LOC-STRING"
+   (emtb:check-nice-filename filename)
+   (let
+      ((buf (find-file filename)))
+      (with-current-buffer buf
+	 ;;Almost replaceable.
+	 (if loc-string
+	    (emtb:goto-text loc-string)
+	    (goto-char (point-min))))
+      
+      buf))
 
 
 ;;;_. Footers

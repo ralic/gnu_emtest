@@ -336,26 +336,6 @@ You may want to use this to umount a ramdisk"
       (error "File %s doesn't exist" filename)))
 
 
-;;;_   , emtb:find-file-goto-text
-
-;;This is now only a test helper.
-;;$$MOVE ME but first encap and share those checks.
-
-(defun emtb:find-file-goto-text (filename &optional loc-string)
-   ""
-   ;;$$USE THEM in the other places that absolute is checked.  It's
-   ;;appropriate in all of those.
-   (emtb:check-nice-filename filename)
-   (let
-      ((buf (find-file filename)))
-      (with-current-buffer buf
-	 ;;Almost replaceable.
-	 (if loc-string
-	    (emtb:goto-text loc-string)
-	    (goto-char (point-min))))
-      
-      buf))
-
 
 ;;;_ , Check file is what's expected
 
