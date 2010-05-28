@@ -32,6 +32,7 @@
 (require 'emtest/common/testral-types)
 (require 'emtest/common/result-types)
 (require 'emtest/runner/testral)
+(require 'emtest/runner/surrounders) ;;For emth:wrap-form
 
 ;;;_ , Customization
 
@@ -41,6 +42,13 @@
 
 
 ;;;_. Body
+;;;_ , Error types
+;;;_  . Error type emt:already-handled
+(put 'emt:already-handled 'error-conditions
+   '(error emt:already-handled))
+(put 'emt:already-handled 'error-message
+   "This error has already been recorded in the diagnostic trace")
+
 ;;;_ , Doc
 ;;;_  . emt:doc
 ;;;###autoload
@@ -109,7 +117,7 @@
 	       list)))
       
       (if emtt:*abort-p*
-	 (signal emt:already-handled ())
+	 (signal 'emt:already-handled ())
 	 results)))
 
 ;;Usage: On forms, just (emth:map&trap #'eval form-list)
@@ -163,10 +171,19 @@
       ;;Make&send a `emt:testral:check:pop'.  To know
       ;;badnesses, if any: Each case assigns to the `badnesses'
       ;;variable, which we use in making that. 
+
+      ;;NEW
+      (emth:trap-errors
+	 (let*
+	    (  
+	       (form-x (emth:wrap-form form))
+	       (retval
+		  (eval form-x)))
+	    (unless retval
+	       (push '(failed) badnesses))
+	    retval))
       
-      ;;$$CHANGEME This protect call is obsolete, assumes the old
-      ;;style and special behavior isn't needed with the new design.
-      ;;So build things normally and just use `unwind-protect'
+      '  ;;$$OBSOLETE way of doing this
       (emt:trace:protect
 	 (condition-case err
 	    (let*

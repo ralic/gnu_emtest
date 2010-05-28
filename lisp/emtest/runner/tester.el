@@ -26,8 +26,9 @@
 
 
 ;;;_ , Requires
-(eval-when-compile
-   (require 'emtest/testhelp/testpoint/requirer)
+(progn
+   (eval-when-compile
+      (require 'emtest/testhelp/testpoint/requirer))
    (emtp:require))
 (eval-when-compile
    (require 'cl))

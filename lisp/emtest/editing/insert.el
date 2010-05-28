@@ -92,9 +92,11 @@
       (current-buffer)))
 ;;;_  . defconst emt:insert:clause-form 
 (defconst emt:insert:require-tp
-   '(eval-when-compile
-      (require 'emtest/testhelp/testpoint/requirer)
-      (emtp:require))
+   '(progn
+       (eval-when-compile
+	  (require 'emtest/testhelp/testpoint/requirer))
+       (emtp:require))
+   
    "Requires form for testpoint")
 
 (defun emt:insert-require-tp ()

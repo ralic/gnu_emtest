@@ -29,10 +29,10 @@
 ;;Instead writing a normal `require', use command
 ;;`emt:insert' and select `emt:insert--require-tp'.  It will insert
 ;;this special code:
-'
-(eval-when-compile
-   (require 'emtest/testhelp/testpoint/requirer)
-   (emtp:require))
+
+;; (eval-when-compile
+;;    (require 'emtest/testhelp/testpoint/requirer))
+;; (emtp:require)
 
 ;;That means that if testpoint is not available, there is no error and
 ;;a testpoint will just eval the body forms.

@@ -38,9 +38,6 @@
 
    ;;Should examine compile flags, if we're compiling.
    ;;This is if file was not definitely wanting testpoint
-   '(dont-compile
-       )
-
    ;;$$IMPROVE ME
    '(unless (require 'emtest/testhelp/testpoint nil t)
       ;;And mark the testpoints as being dormant
