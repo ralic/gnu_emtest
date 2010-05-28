@@ -37,7 +37,7 @@
 ;;;_ , Preliminary
 ;;;_  . Pattern ctor for emt:view:suite
 
-;;Obsolescent
+;;$$OBSOLESCENT
 (emtm:define-struct-governor emt:view:suite
    ;;We leave out `display-info' since we can't expect to compare
    ;;against it meaningfully.
@@ -377,54 +377,7 @@
 	 ;;A report with a different tester-id (same testrun-id?)
 	 )
    
-      ;;$$MOVE ME This belongs in view-types/testhelp.el
-      ;;Would be easier with separate stuff.
-      (group
-	 ((type receive-alist-item))
-	 (type-must-be () (emtm:pattern emtvr:suite-newstyle))
-	 (item
-	    ( (role original-add)
-	       (what-test test-1))
-	    (emtm:make-pattern
-	       (emtvr:make-suite-newstyle
-		  :result 
-		  (eval
-		     '(emtg (type suite)(what-test test-1)(role original-add)))
-		  :how-to-run
-		  (eval 
-		     '(emtg (type explorable)(what-test test-1)))
-		  :id
-		  (eval 
-		     '(emtg (type how-to-run)(what-test test-1)))
-		  :presentation-path
-		  (eval 
-		     '(emtg (type presentation-path)(what-test test-1)))
-		  :testrun-id 
-		  (eval 
-		     '(emtg (type testrun-id)(role original-add))))))
 
-	 (item
-	    ( (role replace)
-	       (what-test test-1))
-	    (emtm:make-pattern
-	       (emtvr:make-suite-newstyle
-		  :result 
-		  (eval
-		     '(emtg (type suite)(what-test test-1)(role replace)))
-		  :how-to-run
-		  (eval 
-		     '(emtg (type explorable)(what-test test-1)))
-		  :id
-		  (eval 
-		     '(emtg (type how-to-run)(what-test test-1)))
-		  :presentation-path
-		  (eval 
-		     '(emtg (type presentation-path)(what-test test-1)))
-		  :testrun-id 
-		  (eval 
-		     '(emtg (type testrun-id)(role replace))))))
-
-	 )
 
       ))
 

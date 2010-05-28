@@ -30,6 +30,7 @@
 ;;;_ , Requires
 
 (require 'emtest/viewer/receive)
+(require 'emtest/viewer/view-types/testhelp)
 (require 'emtest/common/testral-types/testhelp)
 (require 'emtest/testhelp/match)
 
