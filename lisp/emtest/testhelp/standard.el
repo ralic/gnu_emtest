@@ -147,10 +147,9 @@
 
 
 ;;;_ , "should"
-;;;_  . emth:wrap-form
+;;;_  . emth:analyze-form
 ;; OBSOLESCENT.  Only used in `emth:should-f;
-'
-(defun emth:wrap-form (form)
+(defun emth:analyze-form (form)
    ""
 
    (if
@@ -199,7 +198,7 @@
       (emth:trap-errors
 	 (let*
 	    (  
-	       (form-x (emth:wrap-form form))
+	       (form-x (emth:analyze-form form))
 	       (retval
 		  (eval form-x)))
 	    (unless retval
@@ -211,7 +210,7 @@
 	 (condition-case err
 	    (let*
 	       (  
-		  (form-x (emth:wrap-form form))
+		  (form-x (emth:analyze-form form))
 		  (retval
 		     (eval form-x)))
 	       (unless retval
