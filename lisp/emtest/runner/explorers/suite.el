@@ -76,6 +76,13 @@
 		  ;;here.
 		  :info '() ;;Punt info for now.
 		  ))))))
+;;;_ , Getting test suites indirectly.
+
+;;$$WRITE ME Also get tests indirectly.  Maybe be replaced by just
+;;allowing symbols as clauses.  This is waiting for a means of keeping
+;;tests from being run twice in one testrun.
+
+'(or (get symbol 'emtt:test-thru) symbol)
 
 ;;;_ , Insinuate
 ;;Autoloads that put this on a list:

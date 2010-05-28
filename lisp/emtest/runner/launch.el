@@ -100,61 +100,6 @@ Does nothing if the buffer is not in a known lisp mode."
 	 (check-type suite-sym symbol)
 	 (emtl:run-suite suite-sym))))
 
-;;;_  . Helpers (Lisp-syntax-reading stuff)
-;;$$MOVE ME Into editing help.
-(defconst emtel:defun-types 
-  '(defun defun* defsubst defsubst* defmacro defmacro* defmethod
-      deftype defadvice defstruct 
-      emt:deftest-2 emt:deftest-3)
-   
-  "List of defun-variant symbols we might see" )
-
-(defun emtel:suite-sym-at-point-x (arg)
-   "Return the symbol that names the definition at point.
-With `nil' ARG, look backwards for it.
-With non-nil ARG, look forwards for it."
-   (condition-case err
-      (save-excursion
-	 (beginning-of-defun (if arg -1 nil))
-	 (down-list 1)
-	 (let*
-	    (  (type
-		  (read
-		     (current-buffer)))
-	       (symbol
-		  (if
-		     (memq type emtel:defun-types)
-		     (read
-			(current-buffer)))))
-
-	    '
-	    symbol
-	    (if
-	       (and 
-		  (eq type 'emt:deftest-3)
-		  (listp symbol))
-	       ;;Not great, see [[id:sizc6df0xxe0][To eval kv values or not?]]
-	       (eval
-		  (second
-		     (assq 'of symbol)))
-	       symbol)))
-      (scan-error nil)))
-
-;;$$WRITE ME
-;;$$MOVE ME This transformation belongs in an explore-method instead
-;;of here.  Maybe be replaced by just allowing symbols as clauses.
-
-'(or (get symbol 'emtt:test-thru) symbol)
-
-(defun emtel:suite-sym-at-point () 
-   "Return the symbol of the test suite relevant to the definition at point"
-   
-   (or
-      ;;First try to find it backwards
-      (emtel:suite-sym-at-point-x nil)
-      ;;If that fails, try to find it forwards
-      (emtel:suite-sym-at-point-x -1)))
-
 ;;;_ , emt:lib-at-point
 
 ;;Command: Run the library of symbol at point, or failing that, file
