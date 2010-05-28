@@ -38,6 +38,16 @@
    :group 'development
    :group 'programming)
 
+;;;_ , Viewer/display configuration
+
+;;;_  . emtl:receiver-f
+;;Cheat for now: Always know to use emviewer2.  Later use a
+;;customizable variable.
+(defconst emtl:receiver-f
+   ;;#'emtve:tester-cb
+   #'emtv2:tester-cb
+   "Which viewer to use to display results" )
+
 ;;;_. Footers
 ;;;_ , Provides
 

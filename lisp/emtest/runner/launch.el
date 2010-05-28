@@ -32,6 +32,8 @@
 (require 'emtest/viewer/emviewer2)
 (require 'emtest/runner/explorers/library) ;;Just for the library launching.
 (require 'emtest/common/result-types)
+(require 'emtest/common/config)  ;;Just for receiver configuration
+(require 'emtest/editing/lisp)
 
 ;;;_. Body
 
@@ -43,14 +45,6 @@
 (defvar emtl:testrun-counter 0 
    "A counter used to make testrun-id.
 With `cl' loaded, use it as (incf emtl:testrun-counter)." )
-;;;_  . emtl:receiver-f
-;;$$MOVE ME belongs in a config library
-;;Cheat for now: Always know to use emviewer2.  Later use a
-;;customizable variable.
-(defconst emtl:receiver-f
-   ;;#'emtve:tester-cb
-   #'emtv2:tester-cb
-   "" )
 
 ;;;_ , emtl:dispatch-normal
 (defun emtl:dispatch-normal (what-to-run &optional prefix receiver)
