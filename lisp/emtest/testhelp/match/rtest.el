@@ -1036,59 +1036,7 @@ Response: Pass/fail result is as expected."
 
    )
 
-;;;_  . Literal version, to validate against
-;;$$MOVE ME MAYBE - This may belong in testhelp
-
-(defun rtest-struct:gov-literal (sym pattern &optional other-deps)
-   ""
-
-   (destructuring-bind (&key (my-field () sv-my-field))
-      (cdr pattern)
-
-      (let* 
-	 (
-	    ;;Object must be of type rtest-struct.
-	    (check-type
-	       (emtm:make-test-form-data
-		  :explanation "Object is the wrong type"
-		  :uses (list sym)
-		  :form `(rtest-struct-p ,sym)))
-
-	    (my-field-sym (gensym))
-	    ;;Get the my-field accessor `rtest-struct->my-field'
-	    ;;Make a binding that accesses field
-	    (bind-field-my-field
-	       (emtm:make-binding-form-data
-		  :uses 
-		  (emtm:parse-dependencies
-		     (list sym) (list check-type))
-		  :bind my-field-sym
-		  :form `(rtest-struct->my-field ,sym)))
-	    ;;Match the given `my-field' pattern to that object.
-	    (child-formdata
-	       (emtm:parse-pattern
-		  my-field-sym
-		  my-field)))
-	 
-	 (utiacc:list->object
-	    (append
-	       (list 
-		  (emtm:make-formdata
-		     :form-LIST 
-		     (list check-type)))
-	       
-	       (if sv-my-field
-		  (list
-		     (emtm:make-formdata
-			:form-LIST 
-			(list bind-field-my-field))
-		     child-formdata)
-		  ()))
-	    'emtm:formdata))))
-(put 'rtest-struct-literal-gov 'emtm:makepattern
-   #'rtest-struct:gov-literal)
-
-;;;_   , Tests (of literal version)
+;;;_ , rtest-struct:gov-literal
 
 (rtest:deftest rtest-struct:gov-literal
    ;;Proves: My-Field fields are matched on, unless not given.
@@ -1180,8 +1128,6 @@ Response: Pass/fail result is as expected."
 		       pat)))
 	 t))
    )
-
-
 
 
 
