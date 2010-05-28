@@ -280,14 +280,7 @@ You may want to use this to umount a ramdisk"
 ;;;_   , emtb:cautious-insert-file
 (defun emtb:cautious-insert-file (filename &optional visit beg end replace)
    ""
-
-   (unless
-      (file-name-absolute-p filename)
-      (error "Filename %s is not absolute" filename))
-
-   (unless
-      (file-exists-p filename)
-      (error "File %s doesn't exist" filename))
+   (emtb:check-nice-filename filename)
 
    ;;We're enforcing never inserting into a full buffer.
    ;;Alternatively, this could be left to `insert-file-contents',
@@ -331,6 +324,18 @@ You may want to use this to umount a ramdisk"
 		   visited-name
 		   (expand-file-name visited-name dir))))
 	    (set-visited-file-name abs-name t nil)))))
+;;;_   , emtb:check-nice-filename
+(defun emtb:check-nice-filename (filename)
+   ""
+   (unless
+      (file-name-absolute-p filename)
+      (error "Filename %s is not absolute" filename))
+
+   (unless
+      (file-exists-p filename)
+      (error "File %s doesn't exist" filename)))
+
+
 ;;;_   , emtb:find-file-goto-text
 
 ;;This is now only a test helper.
@@ -338,17 +343,9 @@ You may want to use this to umount a ramdisk"
 
 (defun emtb:find-file-goto-text (filename &optional loc-string)
    ""
-   ;;$$SHARE THESE checks.  
    ;;$$USE THEM in the other places that absolute is checked.  It's
    ;;appropriate in all of those.
-   (unless
-      (file-name-absolute-p filename)
-      (error "Filename %s is not absolute" filename))
-
-   (unless
-      (file-exists-p filename)
-      (error "File %s doesn't exist" filename))
-
+   (emtb:check-nice-filename filename)
    (let
       ((buf (find-file filename)))
       (with-current-buffer buf
@@ -365,11 +362,10 @@ You may want to use this to umount a ramdisk"
 ;;;_  . emtb:buf-is-file
 ;;;###autoload
 (defun emtb:buf-is-file (buf filename)
-   ""
-   (if
-      (not (file-name-absolute-p filename))
-      (error "emtb:buf-is-file: FILENAME should be absolute")
-      (string= (buffer-file-name buf) filename)))
+   "Return non-nil just if BUF is visiting FILENAME."
+   (emtb:check-nice-filename filename)
+   (string= (buffer-file-name buf) filename))
+
 
 ;;;_  . emtb:buf-is-file-at
 
@@ -427,8 +423,7 @@ if given, must be a function."
 	    (if dir
 	       (expand-file-name file dir)
 	       file)))
-      (unless (file-name-absolute-p filename)
-	 (error "File name should be absolute"))
+      (emtb:check-nice-filename filename)
       (emtb:file-contents filename)))
 
 ;;;_  . emtb:get-contents
