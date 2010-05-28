@@ -29,27 +29,6 @@
 
 ;;;_. Code:
 
-;;;_ , uti:form-by-option
-
-;;$$MOVE ME - into utilities
-;;;###autoload
-(defmacro uti:form-by-option (options key make-form &optional make-form-else)
-   "Return a form that interprets KEY in OPTIONS.
-MAKE-FORM and MAKE-FORM-ELSE should be functions of one variable that
-return a form."
-
-   `(let
-      ((data (assoc ,key ,options)))
-       ;;Only at eval-time do we know whether `key' is found in
-       ;;`options'.
-      (if data
-	 ;;At expansion-time we know whether `make-form' and
-	 ;;`make-form-else' are given.
-	 ,(if make-form `(funcall ,make-form data))
-	 ,(if make-form-else `(funcall ,make-form-else data)))))
-
-
-
 
 ;;;_ , emth:gives-error
 ;;$$MOVE ME into standard

@@ -31,32 +31,6 @@
 
 
 ;;;_. Body
-;;;_  . uti:form-by-option
-
-(emt:deftest-3 uti:form-by-option
-   (nil
-      (progn
-	 (emt:doc "Expands form according to data in options")
-	 (rtest:retvalue->status
-	    (equal
-	       (uti:form-by-option
-		  '((x bar baz))
-		  'x
-		  #'(lambda
-		       (data)
-		       `(foo ,(second data)
-			   ,(third data))))
-	       '(foo bar baz)))))
-   (nil
-      (progn
-	 (emt:doc "With a FORM-ELSE given, expands it when option isn't given.")
-	 (rtest:retvalue->status
-	    (equal
-	       (uti:form-by-option nil 'x nil
-		  #'(lambda
-		       (x)
-		       '(foo)))
-	       '(foo))))))
 
 
 ;;;_ , emth:throws
