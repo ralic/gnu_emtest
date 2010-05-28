@@ -239,7 +239,7 @@ Leaves emtmv in state VERSION."
 	 (setf (emtmv:t->version emtmv:t) new-version))))
 
 ;;;_  . emtmv:set-obarray
-(defun emtmv:set-obarray (version oa)
+(defun emtmv:set-obarray (version obj oa)
    ""
    (case version
 	 (new
@@ -262,7 +262,7 @@ If initialized, it will be from the module loaded from FILENAME."
    (let
       ((oa
 	  (emtmv:get-obarray version obj)))
-      (emtmv:set-obarray version 
+      (emtmv:set-obarray version obj
 	 (emtmv:sync-obarray 
 	    oa (emtmv:t->filename obj) obarray oa))))
 
@@ -275,7 +275,7 @@ If initialized, it will be from the module loaded from FILENAME."
    (let
       ((oa
 	  (emtmv:get-obarray version obj)))
-      (emtmv:set-obarray version 
+      (emtmv:set-obarray version obj
 	 (emtmv:sync-obarray 
 	    oa (emtmv:t->filename obj) oa obarray))))
 

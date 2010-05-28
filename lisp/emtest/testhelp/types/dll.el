@@ -24,11 +24,16 @@
 
 ;;;_ , Commentary:
 
-;; This is no longer in use.
+;;dll is not bundled with emtest.  It's part of elib.  So don't
+;;include autoloads for this file in emtest autoloads and don't
+;;automatically compile this file.
+
+;; dll is no longer used in emtest.  This file contains the type
+;; testhelp for it.  
 
 
 ;;;_ , Requires
-
+(require 'dll)
 
 ;;;_. Body
 
