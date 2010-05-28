@@ -31,12 +31,9 @@
 (require 'emtest/testhelp/tagnames)
 (eval-when-compile
    (require 'cl))
-
-;;`tehom-cl' needed for `constantp'
-;;$$MOVE ME into utilities
-(require 'tehom-cl)
 (require 'emtest/testhelp/standard)
 (require 'utility/accumulator)
+(require 'utility/misc)
 
 ;;;_. Body
 ;;;_ , Structures
@@ -77,16 +74,6 @@
    type)
 
 ;;;_ , Utilities
-;;;_  . emtm:proper-list-p
-;;Borrowed from `format'.
-(defun emtm:proper-list-p (list)
-  "Return t if LIST is a proper list.
-A proper list is a list ending with a nil cdr, not with an atom "
-  (when (listp list)
-    (while (consp list)
-      (setq list (cdr list)))
-    (null list)))
-
 ;;;_  . emtm:parse-dependencies
 (defsubst emtm:parse-dependencies (binds &optional tests)
    "Parse the dependencies, for feeding the `uses' field.
@@ -161,7 +148,7 @@ PATTERN is headed by governor"
 
    ;;Guarantee that `pattern' is a proper list.
    (unless
-      (emtm:proper-list-p pattern)
+      (utim:proper-list-p pattern)
       (error "Argument to `emtm:govs:list' must be a list"))
    
    (let* 
@@ -175,7 +162,7 @@ PATTERN is headed by governor"
 	    (emtm:make-test-form-data
 	       :explanation "Object is not a proper list"
 	       :uses (list* sym other-deps)
-	       :form `(emtm:proper-list-p ,sym)))
+	       :form `(utim:proper-list-p ,sym)))
 	 
 	 ;;Object must be the expected length
 	 (formdata-test-length
@@ -231,7 +218,7 @@ PATTERN is headed by governor"
 
 
 ;;;_   , Test examples
-
+;;$$MOVE ME
 (defconst emtm:govs:thd:examples
    (emtg:define+ ;;xmp:3be9cd9e-25f7-4f9d-9304-8afc1680d17a
       ((project emtest)

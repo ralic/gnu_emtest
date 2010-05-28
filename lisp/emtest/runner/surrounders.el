@@ -30,22 +30,9 @@
 ;;;_ , Requires
 
 (require 'emtest/common/testral-types)
-;;$$CLEAN ME UP - move that call into a list utility. 
-(require 'emtest/testhelp/match) ;;Just for `emtm:proper-list-p'
+(require 'utility/misc)
 
 ;;;_. Body
-;;;_ , Utilities
-;;Belongs in a utility library instead.
-;;$$MOVE ME
-;;;_  . utim:get-properties
-(defun utim:get-properties (prop-sym prop-list)
-   ""
-   
-   (let
-      ((cell (assoc prop-sym prop-list)))
-      (when cell
-	 (second cell))))
-
 ;;;_ , test surrounders
 ;;;_  . emtts:always-surrounders
 
@@ -113,7 +100,7 @@ PROPS is a property list."
       (let
 	 ((surrounder-1
 	     (cond
-		((emtm:proper-list-p surrounder-0) 
+		((utim:proper-list-p surrounder-0) 
 		   surrounder-0)
 		((functionp surrounder-0)
 		   ;;$$MAKE ME SAFE Protect this call.  Use
@@ -122,7 +109,7 @@ PROPS is a property list."
 		   (funcall surrounder-0 props))
 		(t
 		   ;;Otherwise complain and stop.  For now, do it cheap.
-		   (assert (emtm:proper-list-p surrounder-0))))))
+		   (assert (utim:proper-list-p surrounder-0))))))
 	 (setq form
 	    (append surrounder-1 (list form))))))
 
