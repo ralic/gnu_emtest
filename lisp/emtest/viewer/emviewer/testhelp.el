@@ -68,7 +68,7 @@
 	  ,@body)))
 
 ;;;_ , emt:emviewer:th:check-buffer-string
-;;$$MOVE ME
+;;$$MOVE ME later, when we are fixing persist
 ;;Really for helping persist
 (defun emt:emviewer:th:check-buffer-string (id)
    "Check that current buffer's contents matches what ID identifies."
