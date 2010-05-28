@@ -39,39 +39,6 @@
    ;;No fields.
    )
 
-;;;_  . NEW Persistence types
-
-;;;_   , Placeholder types
-;;;_    . Placeholder of a set of versions
-;;$$MOVE ME Only persist functionality needs to see these types.
-(defstruct (emt:db:id-index
-	    (:constructor emt:db:make-id-index)
-	    (:conc-name emt:db:id-index->))
-   "Archive placeholder object"
-   ;;Not neccessarily a simple type.
-   id
-   ;;Backend info - a list, first arg selects db functionality, other
-   ;;args are particular to a backend
-   backend
-   cache  ;;Unused for now.
-   )
-;;;_    . placeholder of a version
-(defstruct (emt:db:version-index
-	    (:constructor emt:db:make-version-index)
-	    (:conc-name emt:db:version-index->))
-   "Version placeholder object"
-   (id-index () :type emt:db:id-index)
-   ;;The version of the object provided, as understood by the backend.
-   ;;Will eventually be used for versioning.
-   version-id
-   cache  ;;Unused for now.
-   )
-;;;_   , use-category type
-(deftype emt:persist:use-category () 
-   '(member correct-answer correct-type wrong-answer nil))
-
-;;;_   , Database types are with the implementation code
-
 ;;;_  . ($$OBSOLESCENT) Group
 ;;$$OBSOLESCENT
 ;;This and deriveds are still in use in the examples.

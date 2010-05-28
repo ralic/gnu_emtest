@@ -38,7 +38,41 @@
 ;;;_ , Structures
 ;;;_  . Placeholder objects
 ;;Moved [[file:~/projects/emtest/lisp/result-types.el::_%20NEW%20diagnostic%20info][here]]
-;;And are obsolete in favor of TESTRAL types.
+;;Moved back, and may yet move into another file for managing persist.
+;;And may be obsolete in favor of TESTRAL types.
+;;;_  . NEW Persistence types
+
+;;;_   , Placeholder types
+;;;_    . Placeholder of a set of versions
+(defstruct (emt:db:id-index
+	    (:constructor emt:db:make-id-index)
+	    (:conc-name emt:db:id-index->))
+   "Archive placeholder object"
+   ;;Not neccessarily a simple type.
+   id
+   ;;Backend info - a list, first arg selects db functionality, other
+   ;;args are particular to a backend
+   backend
+   cache  ;;Unused for now.
+   )
+;;;_    . placeholder of a version
+(defstruct (emt:db:version-index
+	    (:constructor emt:db:make-version-index)
+	    (:conc-name emt:db:version-index->))
+   "Version placeholder object"
+   (id-index () :type emt:db:id-index)
+   ;;The version of the object provided, as understood by the backend.
+   ;;Will eventually be used for versioning.
+   version-id
+   cache  ;;Unused for now.
+   )
+;;;_   , use-category type
+(deftype emt:persist:use-category () 
+   '(member correct-answer correct-type wrong-answer nil))
+
+;;;_   , Database types are with the implementation code
+
+
 ;;;_  . Database objects
 ;;;_   , Db object, as in the database
 (defstruct (emt:db:single
@@ -169,9 +203,7 @@ A and B must be use-categories"
 
 ;;;_ , Access to the database
 ;;;_  . emt:db:internal:with-db
-
 ;;Mode can be {read, read/write}
-;;$$MOVE ME earlier
 (defmacro* emt:db:internal:with-db ((id backend) mode &rest body)
    ""
    (declare (debug ((&define symbolp symbolp) symbolp &rest form)))
