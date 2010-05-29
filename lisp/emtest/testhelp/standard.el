@@ -203,45 +203,7 @@
 		  (eval form-x)))
 	    (unless retval
 	       (push '(failed) badnesses))
-	    retval))
-      
-      '  ;;$$OBSOLETE way of doing this
-      (emt:trace:protect
-	 (condition-case err
-	    (let*
-	       (  
-		  (form-x (emth:analyze-form form))
-		  (retval
-		     (eval form-x)))
-	       (unless retval
-		  (push '(failed) badnesses))
-	       retval)
-
-	    ;;$$ADDME There'd be a clause to intercept a special
-	    ;;"dormant" error too, for contributing checks that were
-	    ;;disabled.
-
-	    ;;And a `many-bads' error that directly held a collected
-	    ;;list of badnesses?  In case `and' both fails and is
-	    ;;dormant.  Maybe that's the special error to use always.
-
-	    ;;Add to badnesses, unless already there.
-	    ('emt:already-handled 
-	       (pushnew '(ungraded) badnesses)
-	       (signal 'emt:already-handled ()))
-	    ;;Add to badnesses, unless already there.
-	    (error
-	       (pushnew '(ungraded) badnesses)
-	       (signal (car err)(cdr err))))
-
-	 ;;This is now the meat of the operation.
-	 (emt:testral:add-note
-	    (emt:testral:make-check:pop
-	       :parent-id parent-id
-	       :id id
-	       ;;Punt
-	       :badnesses badnesses)))))
-
+	    retval))))
 
 ;;;_  . should
 ;;Essentially unused except a bit of exploration in early development.
