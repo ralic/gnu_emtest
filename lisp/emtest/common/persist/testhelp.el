@@ -191,7 +191,7 @@
 ;; 		   ,(emtg (type archive-placeholder)))))
 
 	 (item ((type formatted-persist-data))
-	    `(data-persist-used 
+	    `(object
 		,(emtg (type data)(name got))
 		,(emtg (type archive-placeholder)))))
    

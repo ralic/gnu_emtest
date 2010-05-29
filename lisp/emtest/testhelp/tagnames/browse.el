@@ -83,11 +83,11 @@
 	     (:weight 2)
 	     "An item"
 	     (sep 3)
-	     (data-persist-used
+	     (object
 		,(emtg:browse:relative-distinction->extra-kv-list obj)
 		())
 	     (sep 3)
-	     (data-persist-used
+	     (object
 		,(emtg:browse:relative-distinction->missing-kv-list obj)
 		())))
       
@@ -131,12 +131,15 @@
 	 (summarized
 	    ;;Punt for now
 	    grouped)
+	 ;;$$OBSOLESCENT When formatter is reorganized, this will go
+	 ;;away and we'll use the previous object directly, perhaps
+	 ;;giving particular inserters.
 	 (stage-1-formatted
 	    (emtg:browse:->stage-1 summarized)))
-      (formatter:top-x
+      (formatter:top
 	 "*TAGNAME browse*"
 	 stage-1-formatted
-	 #'loformat:insert)))
+	 ())))
 
 
 
