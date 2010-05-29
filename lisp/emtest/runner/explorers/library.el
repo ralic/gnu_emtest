@@ -63,6 +63,7 @@
 ;;`emthow:library:elisp-load' case
 (defun emtt:lib-sym->suites (lib-sym)
    ""
+   '
    (let*
       (
 	 (lib-path
@@ -79,8 +80,31 @@
 			  (when (get sym 'emt:suite) sym)))
 		  (cdr lib-data)))))
       
-      suites))
+      suites)
+   (emtt:lib-path->suites
+      (locate-library
+	 (symbol-name lib-sym))))
 
+;;;_ , emtt:lib-path->suites
+(defun emtt:lib-path->suites (lib-path)
+   "Return a list of test suites for LIB-PATH.
+
+Specifically, symbols defined in the library at LIB-PATH that
+have associated test suites.
+LIB-PATH must be a path to a library that is already loaded."
+   (let*
+      (
+	 (lib-data (assoc lib-path load-history))
+	 ;;List of symbols.
+	 (suites
+	    (delq nil
+	       (mapcar
+		  #'(lambda (x)
+		       (let
+			  ((sym (emtl:ldhst-el->symbol x)))
+			  (when (get sym 'emt:suite) sym)))
+		  (cdr lib-data)))))
+      suites))
 
 ;;;_ , emtt:explore-library
 (defun emtt:explore-library (test-id props)
@@ -88,13 +112,13 @@
    
    (let* 
       (  
-	 (lib-sym
+	 (lib-path ;;lib-sym
 	    (emthow:library:elisp-load->load-name test-id))
 	 ;;See [[id:li6i8qd0xxe0][Refactoring dispatchers]]
 	 (suite-list
-	    (emtt:lib-sym->suites lib-sym))
-	 (path
-	    (list "library" (symbol-name lib-sym)))
+	    (emtt:lib-path->suites lib-path))
+	 (path  ;;
+	    (list "library" lib-path))
 	 (list-to-run
 	    (mapcar
 	       #'(lambda (suite-sym)

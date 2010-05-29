@@ -125,7 +125,8 @@ PROMPT is a prompt string"
 ;;;_ , emt:library
 ;;;###autoload
 (defun emt:library (library &optional receiver)
-   "Run the test suites of LIBRARY"
+   "Run the test suites of LIBRARY.
+LIBRARY is the absolute file name of the library"
    
    (interactive
       (list
@@ -139,10 +140,7 @@ PROMPT is a prompt string"
       (
 	 (test-id
 	    (emthow:make-library:elisp-load
-	       ;;$$INSPECTME Should this by symbol or string?  Or
-	       ;;allow both?
-	       ;;Or change type to know both lib symbol and true path?
-	       :load-name (intern-soft library))))
+	       :load-name library)))
       (emtl:dispatch-normal test-id nil receiver)))
 
 
