@@ -33,7 +33,10 @@
 
 
 ;;;_ , Requires
-(require 'dll)
+(eval-when-compile
+   (unless
+      (require 'dll nil t)
+      (error "dll is not bundled with emtest")))
 
 ;;;_. Body
 
