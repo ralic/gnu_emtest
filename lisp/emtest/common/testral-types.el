@@ -159,7 +159,6 @@
 	   ;;Maybe this should be a type too.  NB, it's a list because
 	   ;;it is a list in `emtvr:one-newstyle'
 	   (list 
-	    ;;$$CHANGED
 	    emtt:explorable
 	    null ;;let's leave that an empty list for now
 	    (or emt:testral:suite emt:testral:test-runner-info)))))
@@ -173,7 +172,8 @@
   "Info describing a tester."
   (name    ()  :type string)
   (version "0" :type string)
-  ;;$$CHANGE ME - See [[id:b4sjlt20mze0][Test-runner info]]
+  ;;See [[id:b4sjlt20mze0][Test-runner info]]
+   ;;$$CHANGE ME
   ;;Type should become (repeat emtt:method)
   (explore-methods-supported () :type (repeat emt:testral:explore-method-id)))
 

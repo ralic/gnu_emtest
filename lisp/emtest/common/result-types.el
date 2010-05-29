@@ -641,17 +641,6 @@ especially in configuration testing for new installations"
 (defalias 'emt:testral:testrun-id-p 'stringp)
 (defalias 'emt:testral:tester-id-p 'stringp)
 
-;;;_   , Run instruction
-
-;;$$REMOVE ME - This is unclear, and I have changed the approach
-;;This is obsolete, see [[id:4v4h3s20mze0][Representing them]]
-'
-(defalias 'emt:testral:explore-method-id-p 'stringp)
-'
-(deftype emt:testral:explore-id ()
-   "How to run an explorable."
-   '(list* emt:testral:explore-method-id (repeat t)))
-
 
 ;;;_. Footers
 ;;;_ , Provides

@@ -82,7 +82,7 @@
       (item ((name has-info-about))
 	 (make-emt:result:event:group
 	    ;; :name "An event-group with some information about it"
-	    :info-about () ;;$$Add me
+	    :info-about () ;;$$ADD ME
 	    :children ()
 	    :aborted-p nil)
    
