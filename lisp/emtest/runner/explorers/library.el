@@ -63,24 +63,6 @@
 ;;`emthow:library:elisp-load' case
 (defun emtt:lib-sym->suites (lib-sym)
    ""
-   '
-   (let*
-      (
-	 (lib-path
-	    (locate-library
-	       (symbol-name lib-sym)))
-	 (lib-data (assoc lib-path load-history))
-	 ;;List of symbols.
-	 (suites
-	    (delq nil
-	       (mapcar
-		  #'(lambda (x)
-		       (let
-			  ((sym (emtl:ldhst-el->symbol x)))
-			  (when (get sym 'emt:suite) sym)))
-		  (cdr lib-data)))))
-      
-      suites)
    (emtt:lib-path->suites
       (locate-library
 	 (symbol-name lib-sym))))
