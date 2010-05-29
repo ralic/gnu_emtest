@@ -95,6 +95,7 @@ DATA-LIST must be a list of alists."
 		     (emt:view:presentable->sum-badnesses suite)
 		     data-list)
 		  (etypecase object
+		     (null)
 		     (emt:testral:test-runner-info
 			(list*
 			   "Suites tested in " name "\n"
