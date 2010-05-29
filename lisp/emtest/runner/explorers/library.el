@@ -48,9 +48,6 @@
 
 ;;;_ , Helper emtt:lib-sym->suites
 
-;;$$RETHINK ME Should this take symbol or string?  We seemed to
-;;convert it and then convert it back.
-
 ;;$$CHANGE ME Also offer everything in the respective /tests library,
 ;;and try to load it.  Add tests for this behavior.
 

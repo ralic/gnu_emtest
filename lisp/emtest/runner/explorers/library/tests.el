@@ -49,28 +49,32 @@
       (group
 	 ((count 2))
 	 (item ((type name)) "example-2")
+	 (item ((type lib-path))
+	    (concat
+		   emtt:launch:th:examples-dir
+		   (emtg (type name))
+		   ".el"))
 	 (item ((type count)) 2)
 	 (item ((type suite-sym-list)) '(foo bar))
 	 ;;$RENAME ME Maybe rename it feature-sym
 	 (item ((type sym)) (intern (emtg (type name))))
 	 (item ((type file-load-history))
-	    `( ,(concat
-		   emtt:launch:th:examples-dir
-		   (emtg (type name))
-		   ".el")
+	    `( ,(emtg (type lib-path))
 		,@(emtg (type suite-sym-list)) 
 		(provide . ,(emtg (type sym))))))
       (group
 	 ((count 1))
 	 (item ((type name)) "example-1")
 	 (item ((type count)) 1)
+	 (item ((type lib-path))
+	    (concat
+	       emtt:launch:th:examples-dir
+	       (emtg (type name))
+	       ".el"))
 	 (item ((type suite-sym-list)) '(foo))
 	 (item ((type sym)) (intern (emtg (type name))))
 	 (item ((type file-load-history))
-	    `( ,(concat
-		   emtt:launch:th:examples-dir
-		   (emtg (type name))
-		   ".el")
+	    `( ,(emtg (type lib-path))
 		,@(emtg (type suite-sym-list)) 
 		(provide . ,(emtg (type sym))))))
 
@@ -87,8 +91,7 @@
 
 ;;;_   , emt:library:th
 
-(defmacro emt:library:th 
-   (+tagset &rest body)
+(defmacro emt:library:th (+tagset &rest body)
    "Run BODY in an environment with a certain example library defined.
 +TAGSET is a tagset narrowing, as for `eg'."
    
@@ -123,9 +126,8 @@
 	    ((count 2))
 	    (let*
 	       ((syms
-		   (emtt:lib-sym->suites
-		      (emtg
-			 (type sym)))))
+		   (emtt:lib-path->suites
+		      (emtg (type lib-path)))))
 	       (assert
 		  (equal
 		     (length syms)
@@ -135,7 +137,6 @@
 	       t)))))
 
 ;;;_  . Tests
-;;$$FIXME
 (emt:deftest-3 emt:library
    (nil
       (progn
@@ -151,13 +152,12 @@ Full exploration is used (Meaningless for now)")
 	    ((count 2))
 	    (emtp:eval
 	       (emt:library
-		  (emtg
-		     (type sym))
-		  ;;$$FIX ME Library does not return a result object
-		  ;;yet.  Will type-check it.  But for now, we can't
-		  ;;pass any argument.  (emty:check x
-		  ;;emt:result-group)
-		  #'ignore)
+		  (emtg (type lib-path))
+		  ;;Punt for now.
+;; 		  #'(lambda (x)
+;; 		       (emty:check x emt:testral:report))
+		  
+		  )
 	       (tp-reached tp:798212b4-1abe-4779-beb1-baf53ff39a8c
 		  (emtg
 		     (type count)))
