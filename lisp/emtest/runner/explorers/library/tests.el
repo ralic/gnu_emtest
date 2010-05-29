@@ -178,6 +178,7 @@ Full exploration is used (Meaningless for now)")
 		     ;;We don't expect to see any other types of
 		     ;;explores.
 		     (t
+			(assert (not test-id) t)
 			(error "This test shouldn't reach here")))))))))
 
 
