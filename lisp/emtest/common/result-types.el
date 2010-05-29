@@ -422,7 +422,7 @@ especially in configuration testing for new installations"
 
 ;;;_  . emthow:library
 (defstruct (emthow:library
-	    (:constructor emthow:make-library)
+	    (:constructor nil)
 	    (:conc-name emthow:library->)
 	    (:include emthow))
    ""
