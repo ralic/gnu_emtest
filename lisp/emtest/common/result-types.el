@@ -409,7 +409,6 @@ especially in configuration testing for new installations"
    test-form
    )
 ;;;_  . emthow:indexed-clause
-;;Formerly was called `*:unique-clause'
 (defstruct (emthow:indexed-clause
 	    (:constructor emthow:make-indexed-clause)
 	    (:conc-name emthow:indexed-clause->)
@@ -429,20 +428,24 @@ especially in configuration testing for new installations"
    ;;Abstract.
    )
 ;;Not settled yet
+
+
 (defstruct (emthow:library:elisp-load
-	    (:constructor emthow:make-library:elisp-load)
-	    (:conc-name emthow:library:elisp-load->)
-	    (:include emthow:library))
-  ""
-  load-name
-  )
+	      (:constructor emthow:make-library:elisp-load)
+	      (:conc-name emthow:library:elisp-load->)
+	      (:include emthow:library))
+   ""
+   load-name
+   lib-sym
+   )
 (defstruct (emthow:library:elisp-file
-	    (:constructor emthow:make-library:elisp-file)
-	    (:conc-name emthow:library:elisp-file->)
-	    (:include emthow:library))
-  ""
-  file-name
-  )
+	      (:constructor emthow:make-library:elisp-file)
+	      (:conc-name emthow:library:elisp-file->)
+	      (:include emthow:library))
+   ""
+   file-name
+   lib-sym
+   )
 
 ;;;_  . emthow:project
 ;;Not settled yet
