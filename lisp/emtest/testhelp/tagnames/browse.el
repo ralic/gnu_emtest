@@ -133,9 +133,11 @@
 	    grouped)
 	 (stage-1-formatted
 	    (emtg:browse:->stage-1 summarized)))
-      (formatter:display-from-stage1
+      (formatter:top-x
+	 "*TAGNAME browse*"
 	 stage-1-formatted
-	 "*TAGNAME browse*")))
+	 #'loformat:insert)))
+
 
 
 ;;;_ , Browse near-miss

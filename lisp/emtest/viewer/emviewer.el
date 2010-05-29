@@ -172,8 +172,7 @@ It just tells a pathtree to add this node."
 	       (emtvp-root emtve:pathtree)
 	       '()
 	       #'emtvf:top
-	       #'emt:plain-viewer:insert
-	       ;;#'loformat:print
+	       #'loformat:insert
 	       #'emtve:vp-node->dlist))
 	 ;;May be replaced at some point
 	 (outline-mode)))
