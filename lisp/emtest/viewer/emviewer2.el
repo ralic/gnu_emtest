@@ -163,7 +163,6 @@ It just tells a pathtree to add this node."
 ;;;_ , Overall callback
 ;;;_  . emtv2:tester-cb
 
-
 (defun emtv2:tester-cb (report)
    ""
    (check-type report emt:testral:report)
@@ -174,6 +173,16 @@ It just tells a pathtree to add this node."
       (emt:testral:report->run-done-p report)
       (emtv2:print-all (emtvp-root emtv2:pathtree))
       (pop-to-buffer emtv2:report-buffer)))
+
+;;;_ , emtv2:reset
+;;;###autoload
+(defun emtv2:reset ()
+   ""
+   
+   (interactive)
+   (setq emtv2:pathtree nil)
+   (setq emtv2:receiver nil))
+
 
 ;;;_. Footers
 ;;;_ , Provides
