@@ -95,7 +95,7 @@ TESTS, if given, must be a list of emtm:test-form-data."
       ;;Get the function.
       ((func
 	  (cond
-	     ((constantp pattern)
+	     ((utim:constantp pattern)
 		#'emtm:govs:literal)
 	     ((symbolp pattern)
 		#'emtm:govs:symbol)
@@ -317,7 +317,7 @@ PATTERN is headed by governor"
       (  (form (cadr pattern))
 	 (obj 
 	    (if
-	       (constantp form)
+	       (utim:constantp form)
 	       ;;This is not the "real" eval of the form, this just
 	       ;;gets a layer of quoting out of the way so we can
 	       ;;include it in forms as a sub-form.
