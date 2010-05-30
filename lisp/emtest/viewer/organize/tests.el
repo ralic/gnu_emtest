@@ -74,13 +74,17 @@
 	       (emtg (type lib-path))
 	       #'emtvo:tester-cb)
 	    (emt:doc "Response: The results only occur where expected.")
+	    ;;$$FIX ME suspiciously, this gives nil.  It's not clear
+	    ;;that results are being funnelled to the right place.
+	    ;;Validate that this works at all.
+	    (assert (identity emtv2:result-root) t)
 	    (assert
 	       (emtm emtv2:result-root
 		  ;;$$WRITE ME
 		  ;;Which tester ()
 		  ;;Library, directly beneath it.
 		  ;;1 suite, beneath that library.
-		  ()
+
 		  )
 	       t)
 
