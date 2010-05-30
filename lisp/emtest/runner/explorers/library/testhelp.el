@@ -133,7 +133,7 @@
 	  ((suite-sym-list (emtg (type suite-sym-list))))
 	  (emth:let-noprops suite-sym-list
 	     (dolist (sym suite-sym-list)
-		(eval ,'`(emt:deftest-3 ,sym ())))
+		(eval ,'`(emt:deftest-3 ,sym)))
 	     ,@body))))
 
 
