@@ -75,8 +75,6 @@
 ;;;###autoload
 (defmacro emt:deftest-3 (name-or-props &rest clauses)
    "Define a test in Emtest"
-   ;;If `props-or-first-clause' is a list starting with `props', it's
-   ;;keywise properties, otherwise it's a clause.
    (let*
       ((props 
 	  ;;In PROPS, the second element of each item is a form, which
@@ -94,7 +92,6 @@
 	    (second (assq 'of props))))
       (unless of-what
 	 (error "Deftest needs an `of' property"))
-
       `(eval-when-compile
 	  (put ,of-what 'emt:properties
 	     (list
