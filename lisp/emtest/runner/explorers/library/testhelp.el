@@ -79,6 +79,15 @@
 		,@(emtg (type suite-sym-list)) 
 		(provide . ,(emtg (type sym))))))
 
+      ;;$$ADD ME Add a group of count 3 that almost mirrors count 2
+      ;;except that it will have a suite defined for the library
+      ;;symbol as well.  Then suite-sym-list's purpose will diverge:
+      ;;(1) to inform load history line (rename this
+      ;;`loaded-sym-list'), and (2) to say what suites are to be set
+      ;;up and should be found.
+
+      ;;$$ADD ME  Similarly, add a test for when not all symbols in a
+      ;;library have associated suites.
 
       (item ((type load-path-entry)(num 0))
 	 emtt:library:th:examples-dir)
