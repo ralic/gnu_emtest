@@ -45,25 +45,17 @@
 (defmacro emt:library:th (+tagset &rest body)
    "Run BODY in an environment with a certain example library defined.
 +TAGSET is a tagset narrowing, as for `eg'."
-   
-   `(emtg:with emtt:library:thd:examples ,+tagset
-       (let
-	  ((suite-sym-list (emtg (type suite-sym-list)))
-	     (load-path (emtg:value 
-			   :narrow ((type load-path))
-			   :ignore-tags (count num)))
-	     (load-history 
-		(emtg:value 
-		   :narrow ((type load-history)) 
-		   :ignore-tags (count))))
 
-	  ;;Define the suites (protected by a noprops)
+   `(emt:library:th:x ,+tagset
+       ;;Define the suites (protected by a noprops)
+       (let
+	  ((suite-sym-list (emtg (type suite-sym-list))))
 	  (emth:let-noprops suite-sym-list
 	     (dolist (sym suite-sym-list)
 		(eval ,'`(emt:deftest-3 ,sym ())))
-	     ;;Now do the tests
-	     ,@body)
-	  t)))
+	     ,@body))))
+
+
 ;;;_   , emtt:lib-path->lib-sym
 (emt:deftest-3 emtt:lib-path->lib-sym
    (nil

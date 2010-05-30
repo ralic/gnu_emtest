@@ -98,24 +98,16 @@
    
    `(emtg:with emtt:library:thd:examples ,+tagset
        (let
-	  ((suite-sym-list (emtg (type suite-sym-list)))
-	     (load-path (emtg:value 
-			   :narrow ((type load-path))
-			   :ignore-tags (count num)))
+	  (
+	     (load-path 
+		(emtg:value 
+		   :narrow ((type load-path))
+		   :ignore-tags (count num)))
 	     (load-history 
 		(emtg:value 
 		   :narrow ((type load-history)) 
 		   :ignore-tags (count))))
-
-	  ;;Define the suites (protected by a noprops)
-	  (emth:let-noprops suite-sym-list
-	     (dolist (sym suite-sym-list)
-		(eval ,'`(emt:deftest-3 ,sym ())))
-	     ;;Now do the tests
-	     ,@body)
-	  t)))
-
-
+	  ,@body)))
 
 ;;;_. Footers
 ;;;_ , Provides
