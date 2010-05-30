@@ -119,7 +119,26 @@
 		     '(four-form
 			 (+ 2 2)))
 		  t)
-	       t)))))
+	       t))))
+   (nil
+      (progn
+	 (emt:doc "Situation: A test is defined with no clauses")
+	 (emth:let-noprops
+	    '(dummy-sym)
+	    (emt:deftest-3 dummy-sym)
+	    (emtd:destructure-suite-3 'dummy-sym
+	       (assert
+		  (=
+		     (length clause-list)
+		     0)
+		  t)
+	       (emt:doc "Response: Destructuring finds clauses as the empty list.")
+	       (emtd:destructure-clause-3
+		  (car clause-list)
+		  (equal form
+		     '(progn 12)))
+	       t))))
+   )
 
 
 ;;;_. Footers
