@@ -33,14 +33,14 @@
 
 ;;;_. Body
 
-;;;_  . Helpers (Lisp-syntax-reading stuff)
+;;;_ , emtel:defun-types
 (defconst emtel:defun-types 
   '(defun defun* defsubst defsubst* defmacro defmacro* defmethod
       deftype defadvice defstruct 
       emt:deftest-2 emt:deftest-3)
    
   "List of defun-variant symbols we might see" )
-
+;;;_ , emtel:suite-sym-at-point-x
 (defun emtel:suite-sym-at-point-x (arg)
    "Return the symbol that names the definition at point.
 With `nil' ARG, look backwards for it.
@@ -68,7 +68,7 @@ With non-nil ARG, look forwards for it."
 		     (assq 'of symbol)))
 	       symbol)))
       (scan-error nil)))
-
+;;;_ , emtel:suite-sym-at-point
 (defun emtel:suite-sym-at-point () 
    "Return the symbol of the test suite relevant to the definition at point"
    
