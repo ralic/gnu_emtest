@@ -32,13 +32,46 @@
 
 
 ;;;_. Body
-
+;;;_ , Testhelp
+;;;_  . emtvo:tester-cb
+(defun emtvo:tester-cb (report)
+   "A callback for tester.  It only goes as far as the pathtree, no further."
+   (check-type report emt:testral:report)
+   (emtv2:setup-if-needed)
+   (emtvr:newstyle emtv2:receiver report)
+   ;;For our purposes, there's nothing to freshen.
+   '(emtvp:freshen emtv2:pathtree))
+;;;_  . 
+;;May need to define with `emtm:define-struct-governor'
+;;;_ , emtest/viewer/organize
 (emt:deftest-3 emtest/viewer/organize
    (nil
-      (progn
-	 (emt:doc "Situation: A known load-history.")
-	 (emt:doc "Operation: Launch a suite, which will launch its clauses")
-	 (emt:doc "Response: The results only occur where expected."))))
+      ;;$$SHARE ME - factor `emtv2:ts:with-mock-viewer' in
+      ;;emviewer2/testhelp.el to share this insulation.
+      (let
+	 (
+	    emtv2:receiver
+	    emtv2:result-root)
+	 (emt:library:th ((count 1))
+	    (emt:doc "Situation: A known load-history and defined suites.")
+	    (emt:doc "Situation: The receive callback only goes as far as
+   the pathtree, no further.")
+	    (emt:doc "Operation: Launch a library, which will launch its suites")
+	    (emt:library
+	       (emtg (type lib-path))
+	       #'emtvo:tester-cb)
+	    (emt:doc "Response: The results only occur where expected.")
+	    (assert
+	       (emtm emtv2:result-root
+		  ;;$$WRITE ME
+		  ;;Which tester ()
+		  ;;Library, directly beneath it.
+		  ;;1 suite, beneath that library.
+		  ()
+		  )
+	       t)
+
+	    ))))
 
 
 ;;;_. Footers
