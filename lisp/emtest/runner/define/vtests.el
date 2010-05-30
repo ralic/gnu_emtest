@@ -72,7 +72,7 @@
 	 (emth:let-noprops '(dummy-sym)
 	    (emt:doc "Situation: A test is defined.")
 	    (emt:deftest-3 dummy-sym
-	       (test
+	       (nil
 		  (progn 12)))
 	    (emt:doc "Response: Destructuring finds the expected clauses.")
 	    (emtd:destructure-suite-3 'dummy-sym
@@ -97,7 +97,7 @@
 		     (+ 2 2))
 		  (four-form
 		     '(+ 2 2)))
-	       (test
+	       (nil
 		  (progn 12)))
 	    (emt:doc "Response: Destructuring finds the expected properties.")
 	    (emtd:destructure-suite-3 'dummy-sym
@@ -129,8 +129,8 @@
 		     (length clause-list)
 		     0)
 		  t)
-	       t))))
-   )
+	       t)))))
+
 
 
 ;;;_. Footers
