@@ -29,66 +29,17 @@
 
 ;;;_ , Requires
 
-(require 'emtest/testhelp/tagnames)
-(require 'emtest/runner/tester)
-(require 'emtest/testhelp/standard)
+
+(require 'emtest/runner/explorers/library)
+(require 'emtest/runner/explorers/library/testhelp)
+(require 'emtest/runner/launch)
 (require 'emtest/runner/define)
+(require 'emtest/testhelp/standard)
+(require 'emtest/testhelp/testpoint)
+(require 'emtest/testhelp/misc)
 
 ;;;_. Body
 ;;;_  . Constants
-;;;_   , emtt:launch:th:examples-dir
-(defconst emtt:launch:th:examples-dir
-      (emtb:expand-filename-by-load-file "examples/find-libs/") 
-      "Directory where find-libs examples are" )
-
-;;;_   , emtt:launch:thd:examples
-(defconst emtt:launch:thd:examples
-   (emtg:define+
-      ((project emtest)(library tester)(section entry-points))
-      (transparent-tags () (type))
-      (group
-	 ((count 2))
-	 (item ((type name)) "example-2")
-	 (item ((type lib-path))
-	    (concat
-		   emtt:launch:th:examples-dir
-		   (emtg (type name))
-		   ".el"))
-	 (item ((type count)) 2)
-	 (item ((type suite-sym-list)) '(foo bar))
-	 ;;$RENAME ME Maybe rename it feature-sym
-	 (item ((type sym)) (intern (emtg (type name))))
-	 (item ((type file-load-history))
-	    `( ,(emtg (type lib-path))
-		,@(emtg (type suite-sym-list)) 
-		(provide . ,(emtg (type sym))))))
-      (group
-	 ((count 1))
-	 (item ((type name)) "example-1")
-	 (item ((type count)) 1)
-	 (item ((type lib-path))
-	    (concat
-	       emtt:launch:th:examples-dir
-	       (emtg (type name))
-	       ".el"))
-	 (item ((type suite-sym-list)) '(foo))
-	 (item ((type sym)) (intern (emtg (type name))))
-	 (item ((type file-load-history))
-	    `( ,(emtg (type lib-path))
-		,@(emtg (type suite-sym-list)) 
-		(provide . ,(emtg (type sym))))))
-
-
-      (item ((type load-path-entry)(num 0))
-	 emtt:launch:th:examples-dir)
-      (item ((type load-path))
-	 (emtg:map num nil
-	    (emtg (type load-path-entry))))
-      (item ((type load-history))
-	 (emtg:map count nil
-	    (emtg (type file-load-history))))))
-
-
 ;;;_   , emt:library:th
 
 (defmacro emt:library:th (+tagset &rest body)
