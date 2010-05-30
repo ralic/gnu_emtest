@@ -46,7 +46,7 @@
    "Run BODY in an environment with a certain example library defined.
 +TAGSET is a tagset narrowing, as for `eg'."
    
-   `(emtg:with emtt:launch:thd:examples ,+tagset
+   `(emtg:with emtt:library:thd:examples ,+tagset
        (let
 	  ((suite-sym-list (emtg (type suite-sym-list)))
 	     (load-path (emtg:value 

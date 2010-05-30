@@ -37,15 +37,13 @@
 
 ;;;_. Body
 ;;;_ , Constants
-;;;_   , emtt:launch:th:examples-dir
-;;$$RENAME ME
-(defconst emtt:launch:th:examples-dir
+;;;_   , emtt:library:th:examples-dir
+(defconst emtt:library:th:examples-dir
       (emtb:expand-filename-by-load-file "examples/find-libs/") 
       "Directory where find-libs examples are" )
 
-;;;_   , emtt:launch:thd:examples
-;;$$RENAME ME
-(defconst emtt:launch:thd:examples
+;;;_   , emtt:library:thd:examples
+(defconst emtt:library:thd:examples
    (emtg:define+
       ((project emtest)(library tester)(section entry-points))
       (transparent-tags () (type))
@@ -54,7 +52,7 @@
 	 (item ((type name)) "example-2")
 	 (item ((type lib-path))
 	    (concat
-		   emtt:launch:th:examples-dir
+		   emtt:library:th:examples-dir
 		   (emtg (type name))
 		   ".el"))
 	 (item ((type count)) 2)
@@ -71,7 +69,7 @@
 	 (item ((type count)) 1)
 	 (item ((type lib-path))
 	    (concat
-	       emtt:launch:th:examples-dir
+	       emtt:library:th:examples-dir
 	       (emtg (type name))
 	       ".el"))
 	 (item ((type suite-sym-list)) '(foo))
@@ -83,7 +81,7 @@
 
 
       (item ((type load-path-entry)(num 0))
-	 emtt:launch:th:examples-dir)
+	 emtt:library:th:examples-dir)
       (item ((type load-path))
 	 (emtg:map num nil
 	    (emtg (type load-path-entry))))
@@ -98,7 +96,7 @@
 (defmacro emt:library:th:x (+tagset &rest body)
    ""
    
-   `(emtg:with emtt:launch:thd:examples ,+tagset
+   `(emtg:with emtt:library:thd:examples ,+tagset
        (let
 	  ((suite-sym-list (emtg (type suite-sym-list)))
 	     (load-path (emtg:value 
