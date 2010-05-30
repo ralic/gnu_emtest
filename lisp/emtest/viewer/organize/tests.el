@@ -37,8 +37,10 @@
 
 (require 'emtest/runner/define)
 (require 'emtest/testhelp/standard)
-(require 'emtest/runner/launch)
 (require 'emtest/testhelp/tagnames)
+(require 'emtest/testhelp/match)
+(require 'emtest/runner/explorers/library/testhelp)
+(require 'emtest/runner/launch)
 
 
 ;;;_. Body
@@ -49,7 +51,8 @@
    (check-type report emt:testral:report)
    (emtv2:setup-if-needed)
    (emtvr:newstyle emtv2:receiver report)
-   ;;For our purposes, there's nothing to freshen.
+   ;;For our purposes, there's nothing to freshen (yet.  Summarization
+   ;;will change that)
    '(emtvp:freshen emtv2:pathtree))
 ;;;_  . 
 ;;May need to define with `emtm:define-struct-governor'
