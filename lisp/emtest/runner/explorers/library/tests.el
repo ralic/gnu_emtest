@@ -39,24 +39,8 @@
 (require 'emtest/testhelp/misc)
 
 ;;;_. Body
-;;;_  . Constants
-;;;_   , emt:library:th
 
-(defmacro emt:library:th (+tagset &rest body)
-   "Run BODY in an environment with a certain example library defined.
-+TAGSET is a tagset narrowing, as for `eg'."
-
-   `(emt:library:th:x ,+tagset
-       ;;Define the suites (protected by a noprops)
-       (let
-	  ((suite-sym-list (emtg (type suite-sym-list))))
-	  (emth:let-noprops suite-sym-list
-	     (dolist (sym suite-sym-list)
-		(eval ,'`(emt:deftest-3 ,sym ())))
-	     ,@body))))
-
-
-;;;_   , emtt:lib-path->lib-sym
+;;;_ , emtt:lib-path->lib-sym
 (emt:deftest-3 emtt:lib-path->lib-sym
    (nil
       (emt:library:th ((count 2))
@@ -68,7 +52,7 @@
 	    t))))
 
 
-;;;_   , emtt:lib-path-own-suites
+;;;_ , emtt:lib-path-own-suites
 
 (emt:deftest-3 emtt:lib-path-own-suites
    ;;Could loop over more examples
@@ -89,7 +73,7 @@
 		  t)
 	       t)))))
 
-;;;_  . Tests
+;;;_ , emtest/runner/explorers/library
 (emt:deftest-3 emtest/runner/explorers/library
    (nil
       (progn

@@ -103,7 +103,9 @@
 ;;;_ , Helper functions
 ;;;_  . emt:library:th:x
 (defmacro emt:library:th:x (+tagset &rest body)
-   ""
+   "Run BODY in an environment with a certain load-path and
+   load-history defined as per `emtt:library:thd:examples'.
++TAGSET is a tagset narrowing."
    
    `(emtg:with emtt:library:thd:examples ,+tagset
        (let
@@ -117,6 +119,23 @@
 		   :narrow ((type load-history)) 
 		   :ignore-tags (count))))
 	  ,@body)))
+
+;;;_  . emt:library:th
+
+(defmacro emt:library:th (+tagset &rest body)
+   "Run BODY in an environment with a certain example library defined
+   as per `emtt:library:thd:examples'.
++TAGSET is a tagset narrowing."
+
+   `(emt:library:th:x ,+tagset
+       ;;Define the suites (protected by a noprops)
+       (let
+	  ((suite-sym-list (emtg (type suite-sym-list))))
+	  (emth:let-noprops suite-sym-list
+	     (dolist (sym suite-sym-list)
+		(eval ,'`(emt:deftest-3 ,sym ())))
+	     ,@body))))
+
 
 ;;;_. Footers
 ;;;_ , Provides
