@@ -121,6 +121,7 @@ PROMPT is a prompt string"
 		   (get (emtl:ldhst-el->symbol x) 'emt:suite))
 	      (cdr lib-data)))
       t))
+;;$$ADD TESTS There are example loads in emtest/runner/explorers/library/tests
 
 ;;;_ , emt:library
 ;;;###autoload
@@ -133,9 +134,6 @@ LIBRARY is the absolute file name of the library"
 	 (emtel:read-testable-library 
 	    "Run tests of which library: ")))
    
-   ;;Want to use locate-library but can't easily test it.  But with
-   ;;dirtree I could.  In fact, I can just use an example dirtree
-   ;;read-only. 
    (let*
       (
 	 (test-id

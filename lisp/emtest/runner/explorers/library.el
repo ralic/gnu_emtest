@@ -43,29 +43,19 @@
       x
       (if
 	 (memq (car x)
-	    '(autoload defun))
+	    '(autoload defun provide))
 	 (cdr x))))
 
 ;;;_ , Helper emtt:lib-sym->suites
 
-;;$$CHANGE ME Also offer everything in the respective /tests library,
-;;and try to load it.  Add tests for this behavior.
-
-;;$$CHANGE ME Also allow the lib's symbol as a test-suite symbol.
-
-;;$$CHANGE ME Could also offer tests on every library that this
-;;library requires.  Gotta control execution, though.  Don't want to
-;;run them too eagerly.  So this would have to return more than just a
-;;symbol for each.  In fact, it could become the workhorse for the
-;;`emthow:library:elisp-load' case
 (defun emtt:lib-sym->suites (lib-sym)
    ""
-   (emtt:lib-path->suites
+   (emtt:lib-suites
       (locate-library
 	 (symbol-name lib-sym))))
 
-;;;_ , emtt:lib-path->suites
-(defun emtt:lib-path->suites (lib-path)
+;;;_ , emtt:lib-suites
+(defun emtt:lib-suites (lib-path)
    "Return a list of test suites for LIB-PATH.
 
 Specifically, symbols defined in the library at LIB-PATH that
@@ -84,20 +74,64 @@ LIB-PATH must be a path to a library that is already loaded."
 			  (when (get sym 'emt:suite) sym)))
 		  (cdr lib-data)))))
       suites))
+;;;_ , emtt:lib-path->lib-sym
+(defun emtt:lib-path->lib-sym (lib-path)
+   ""
+
+   (let*
+      (
+	 (lib-data (assoc lib-path load-history))
+	 (provide-cell
+	    (assq 'provide lib-data)))
+      (cdr provide-cell)))
+;;;_ , utim:setf-new
+(defmacro utim:setf-new (place value)
+   ""
+   `(unless 
+      ,place
+      (setf ,place ,value)))
+;;;_ , emtt:conform-howto
+(defun emtt:conform-howto (howto)
+   ""
+   ;;If symbol is nil, find it.
+   (utim:setf-new
+      (emthow:library:elisp-load->lib-sym test-id)
+      (emtt:lib-path->lib-sym 
+	 (emthow:library:elisp-load->load-name test-id)))
+   
+
+   ;;If path is nil, find it.
+   (utim:setf-new
+      (emthow:library:elisp-load->load-name test-id)
+      (locate-library
+	 (symbol-name (emthow:library:elisp-load->lib-sym test-id))))
+   
+   ;;Possibly try to load foo/tests.el  (Later, controlled by flags)
+   ;;Punt.  They're probably already loaded.
+   howto)
+
+;;$$ADD TESTS for all 3 behaviors.
 
 ;;;_ , emtt:explore-library
+
 (defun emtt:explore-library (test-id props)
    ""
-   
+
+   (emtt:conform-howto test-id)
    (let* 
       (  
-	 (lib-path ;;lib-sym
+	 (lib-path
 	    (emthow:library:elisp-load->load-name test-id))
 	 ;;See [[id:li6i8qd0xxe0][Refactoring dispatchers]]
+	 (lib-sym
+	    (emtt:lib-path->lib-sym lib-path))
 	 (suite-list
-	    (emtt:lib-path->suites lib-path))
-	 (path  ;;
-	    (list "library" lib-path))
+	    (emtt:lib-suites lib-path))
+	 (path
+	    (list 
+	       "library" 
+	       (symbol-name lib-sym)))
+	 
 	 (list-to-run
 	    (mapcar
 	       #'(lambda (suite-sym)
@@ -112,7 +146,8 @@ LIB-PATH must be a path to a library that is already loaded."
 			  (list (symbol-name suite-sym)))
 		       ;;For now, libraries have no
 		       ;;properties. 
-		       :properties ()))
+		       :properties ()
+		       :aliases ()))
 	       suite-list)))
       (list
 	 list-to-run

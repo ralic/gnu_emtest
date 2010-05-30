@@ -1,4 +1,4 @@
-;;;_ tests.el --- Tests for library
+;;;_ emtest/runner/explorers/library/tests.el --- Tests for library
 
 ;;;_. Headers
 ;;;_ , License
@@ -113,20 +113,30 @@
 	     ;;Now do the tests
 	     ,@body)
 	  t)))
+;;;_   , emtt:lib-path->lib-sym
+(emt:deftest-3 emtt:lib-path->lib-sym
+   (nil
+      (emt:library:th ((count 2))
+	 (emt:doc "Response: We get the lib symbol we expected.")
+	 (assert
+	    (eq
+	       (emtt:lib-path->lib-sym (emtg (type lib-path)))
+	       (emtg (type sym)))
+	    t))))
 
-;;;_   , emtt:lib-sym->suites
 
-(emt:deftest-3 emtt:lib-sym->suites
+;;;_   , emtt:lib-path-own-suites
+
+(emt:deftest-3 emtt:lib-path-own-suites
    ;;Could loop over more examples
    (nil
       (progn
 	 (emt:doc "Situation: There are two suites in the library.")
 	 (emt:doc "Response: Return a list of those suites' symbols.")
-	 (emt:library:th
-	    ((count 2))
+	 (emt:library:th ((count 2))
 	    (let*
 	       ((syms
-		   (emtt:lib-path->suites
+		   (emtt:lib-path-own-suites
 		      (emtg (type lib-path)))))
 	       (assert
 		  (equal
@@ -137,7 +147,7 @@
 	       t)))))
 
 ;;;_  . Tests
-(emt:deftest-3 emt:library
+(emt:deftest-3 emtest/runner/explorers/library
    (nil
       (progn
 	 (emt:doc "Situation: In the known (count 2) context of libraries and
@@ -148,8 +158,7 @@ Full exploration is used (Meaningless for now)")
 \\(Not tested: Exactly those two suites are seen.)
 \\(Not tested: Those suites have distinct IDs.)
 ")
-	 (emt:library:th
-	    ((count 2))
+	 (emt:library:th ((count 2))
 	    (emtp:eval
 	       (emt:library
 		  (emtg (type lib-path))
@@ -188,7 +197,7 @@ Full exploration is used (Meaningless for now)")
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'tests)
+(provide 'emtest/runner/explorers/library/tests)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -196,4 +205,4 @@ Full exploration is used (Meaningless for now)")
 ;;;_  + End:
 
 ;;;_ , End
-;;; tests.el ends here
+;;; emtest/runner/explorers/library/tests.el ends here
