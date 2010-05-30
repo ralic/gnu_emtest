@@ -117,12 +117,7 @@ SUITE must be a symbol naming a test suite.
 
  * clause-list - List of the clauses in SUITE.
  * props - The property list of SUITE (an alist)."
-   ;;$$CHECK ME - declare to byte-compiler that this binds CLAUSE-LIST
-   ;;and PROPS.  This never accomplished that.
-   ;;&define :name clause-list &define :name props
-   (declare 
-      (debug 
-	 (sexp body)))
+   (declare (debug (sexp body)))
    `(let
        (
 	  (clause-list
@@ -141,12 +136,7 @@ of `clause-list' as bound by `emtt:destructure-suite'.
 
  * form - the test form 
  * (Used to be doc - GONE)"
-   ;;$$CHECK ME - never worked, see above.
-   ;;Declare to byte-compiler that this binds GOVERNOR and FORM.
-   ;;&define :name governor &define :name form
-   (declare 
-      (debug 
-	 (sexp body)))
+   (declare (debug (sexp body)))
    `(destructuring-bind (governor &optional form) ,clause
        ,@body))
 
