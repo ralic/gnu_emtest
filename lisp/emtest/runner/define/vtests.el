@@ -65,18 +65,16 @@
 ;;;_  . emt:deftest-3
 
 ;;There's a bootstrap problem in defining a suite to test this, so
-;;this has to be run manually.  For now it's in rtest so no bootstrap
-;;issue.
+;;this has to be run manually or thru libversion
 (emt:deftest-3 emt:deftest-3
    (nil
       (progn
-	 (emt:doc "Situation: A test is defined.")
-	 (emt:doc "Response: Destructuring finds the expected clauses.")
-	 (emth:let-noprops
-	    '(dummy-sym)
+	 (emth:let-noprops '(dummy-sym)
+	    (emt:doc "Situation: A test is defined.")
 	    (emt:deftest-3 dummy-sym
 	       (test
 		  (progn 12)))
+	    (emt:doc "Response: Destructuring finds the expected clauses.")
 	    (emtd:destructure-suite-3 'dummy-sym
 	       (assert
 		  (=
@@ -90,10 +88,8 @@
 	       t))))
    (nil
       (progn
-	 (emt:doc "Situation: A test is defined with properties")
-	 (emt:doc "Response: Destructuring finds the expected properties.")
-	 (emth:let-noprops
-	    '(dummy-sym)
+	 (emth:let-noprops '(dummy-sym)
+	    (emt:doc "Situation: A test is defined with properties")
 	    (emt:deftest-3
 	       ((of 'dummy-sym)
 		  (db-id "my-db")
@@ -103,6 +99,7 @@
 		     '(+ 2 2)))
 	       (test
 		  (progn 12)))
+	    (emt:doc "Response: Destructuring finds the expected properties.")
 	    (emtd:destructure-suite-3 'dummy-sym
 	       (assert
 		  (equal
@@ -122,21 +119,16 @@
 	       t))))
    (nil
       (progn
-	 (emt:doc "Situation: A test is defined with no clauses")
-	 (emth:let-noprops
-	    '(dummy-sym)
+	 (emth:let-noprops '(dummy-sym)
+	    (emt:doc "Situation: A test is defined with no clauses")
 	    (emt:deftest-3 dummy-sym)
+	    (emt:doc "Response: Destructuring finds clauses as the empty list.")
 	    (emtd:destructure-suite-3 'dummy-sym
 	       (assert
 		  (=
 		     (length clause-list)
 		     0)
 		  t)
-	       (emt:doc "Response: Destructuring finds clauses as the empty list.")
-	       (emtd:destructure-clause-3
-		  (car clause-list)
-		  (equal form
-		     '(progn 12)))
 	       t))))
    )
 
