@@ -29,6 +29,16 @@
 
 ;;;_ , Requires
 
+(require 'utility/pathtree)
+(require 'emtest/viewer/receive)
+(require 'emtest/viewer/emviewer2)
+(require 'emtest/viewer/organize)
+(require 'emtest/viewer/emviewer2/testhelp)
+
+(require 'emtest/runner/define)
+(require 'emtest/testhelp/standard)
+(require 'emtest/runner/launch)
+(require 'emtest/testhelp/tagnames)
 
 
 ;;;_. Body
