@@ -302,7 +302,6 @@
        (progn
 	  (emt:doc "Situation: Empty tree.")
 	  (emt:doc "Operation: Add a report w/2 entries.")
-	  (emt:doc "Response: List contains both entries.")
 	  (emtg:with emt:testral:thd:examples nil
 	     (let*
 		((nodes-freshened 'nil)
@@ -313,7 +312,18 @@
 			      (list x y)
 			      nodes-freshened)))
 		   (receiver
-		      (emtvr:make-empty-alist remember-freshened-node #'ignore))))))))
+		      (emtvr:make-empty-alist 
+			 remember-freshened-node 
+			 #'ignore)))
+		;;$$WRITE ME
+		(emt:doc "Response: List contains both entries.")))))
+
+   ;;$$ADD ME Add tests of aliasing:  
+   ;;One with aliases makes multiple entries.
+   ;;Another with aliases replaces those entries it is alias of
+
+   )
+
 
 
 ;;;_. Footers

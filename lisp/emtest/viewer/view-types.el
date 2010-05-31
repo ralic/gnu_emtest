@@ -92,6 +92,8 @@
 	      (:include emt:view:presentable))
    ""
    ;;Just for suite nodes.
+   ;;$$CHANGE ME Move fields of `emtvr:suite-newstyle' into here and
+   ;;use them.
    (cell () :type emtvr:suite-newstyle))
 
 ;;;_  . TESTRAL finished

@@ -54,8 +54,14 @@
    ;;For our purposes, there's nothing to freshen (yet.  Summarization
    ;;will change that)
    '(emtvp:freshen emtv2:pathtree))
-;;;_  . 
-;;May need to define with `emtm:define-struct-governor'
+;;;_  . Struct governors for pattern-match
+(emtm:define-struct-governor emtvp-node
+   name
+   data
+   children)
+(emtm:define-struct-governor emtvp
+   root)
+
 ;;;_ , emtest/viewer/organize
 (emt:deftest-3 emtest/viewer/organize
    (nil
@@ -64,7 +70,7 @@
       (let
 	 (
 	    emtv2:receiver
-	    emtv2:result-root)
+	    emtv2:pathtree)
 	 (emt:library:th ((count 1))
 	    (emt:doc "Situation: A known load-history and defined suites.")
 	    (emt:doc "Situation: The receive callback only goes as far as
@@ -73,18 +79,36 @@
 	    (emt:library
 	       (emtg (type lib-path))
 	       #'emtvo:tester-cb)
-	    (emt:doc "Response: The results only occur where expected.")
-	    ;;$$FIX ME suspiciously, this gives nil.  It's not clear
-	    ;;that results are being funnelled to the right place.
-	    ;;Validate that this works at all.
-	    (assert (identity emtv2:result-root) t)
+	    (emt:doc "Response: The results occur exactly in expected
+   positions in the tree.")
+	    ;;Validate:  We have set up, we have received some result
+	    ;;objects. 
+	    (assert (identity emtv2:receiver) t)
+	    (assert (identity emtv2:pathtree) t)
 	    (assert
-	       (emtm emtv2:result-root
+	       (emtm 
+		  emtv2:pathtree
 		  ;;$$WRITE ME
-		  ;;Which tester ()
-		  ;;Library, directly beneath it.
-		  ;;1 suite, beneath that library.
 
+		  ;;$$RETHINK ME 
+		  (make-emtvp 
+		      :root
+		      (make-emtvp-node 
+			 ;;The tester - what should this data be?
+			 ;;`emt:testral:make-test-runner-info'?  But
+			 ;;that's not put in, is it?
+			 ;;An `emt:view:presentable'?
+			 ;;Shouldn't it be an (or emt:testral:suite
+			 ;;emt:testral:test-runner-info)?
+			 
+ 			 ;;:data
+			 ;;Library, directly beneath it.
+;; 			 :children
+;; 			 ()
+			 ;;1 suite, beneath that library.
+
+			 )
+		      )
 		  )
 	       t)
 
