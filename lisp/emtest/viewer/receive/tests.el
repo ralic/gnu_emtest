@@ -39,10 +39,14 @@
 (put 'emtvr:one-newstyle 'emt:test-thru 'emtvr:newstyle)
 
 ;;;_  . emtvr:suite-newstyle test helpers
-
+;;$$OBSOLESCENT  Possibly in favor of `emt:view:suite-newstyle'
 (emtm:define-struct-governor
-   emtvr:suite-newstyle
-   id how-to-run presentation-path testrun-id suite)
+   (emtvr:suite-newstyle
+      (:constructor emtvr:make-suite-newstyle)
+      (:conc-name emtvr:suite-newstyle->)
+      (:copier nil))
+   id how-to-run presentation-path testrun-id result)
+
 
 ;;;_  . Tests
 
@@ -51,7 +55,7 @@
       (progn
 	 (emt:doc "Situation: Empty report.")
 	 (emt:doc "Response: List still contains nothing.")
-	 (emtg:with emt:testral:thd:examples nil
+	 (emtg:with emtvr:thd nil
 	    (let*
 	       ((nodes-freshened 'nil)
 		  (remember-freshened-node
@@ -84,7 +88,7 @@
       (progn
 	 (emt:doc "Situation: Have added a report w/1 entry")
 	 (emt:doc "Response: List contains that one entry.")
-	 (emtg:with emt:testral:thd:examples nil
+	 (emtg:with emtvr:thd nil
 	    (let*
 	       ((nodes-freshened 'nil)
 		  (remember-freshened-node
@@ -147,7 +151,7 @@
 	 (emt:doc "Situation: Have added a report w/1 entry.")
 	 (emt:doc "Operation:  Another report with a different result for the same test.")
 	 (emt:doc "Response: List contains just that one entry, not duplicated.")
-	 (emtg:with emt:testral:thd:examples nil
+	 (emtg:with emtvr:thd nil
 	    (let*
 	       ((nodes-freshened 'nil)
 		  (remember-freshened-node
@@ -218,7 +222,7 @@
 	 (emt:doc "Situation: Have added a report w/1 entry.")
 	 (emt:doc "Operation: Report removes previous report.")
 	 (emt:doc "Response: List no longer contains that entry; it is empty.")
-	 (emtg:with emt:testral:thd:examples
+	 (emtg:with emtvr:thd
 	    ((project emtest)
 	       (sub-project testral)
 	       (library types))
@@ -253,7 +257,7 @@
 	 (emt:doc "Situation: Have added a report w/1 entry.")
 	 (emt:doc "Operation: Add a second report")
 	 (emt:doc "Response: List contains both entries.")
-	 (emtg:with emt:testral:thd:examples
+	 (emtg:with emtvr:thd
 	    ((project emtest)
 	       (sub-project testral)
 	       (library types))
@@ -302,7 +306,7 @@
        (progn
 	  (emt:doc "Situation: Empty tree.")
 	  (emt:doc "Operation: Add a report w/2 entries.")
-	  (emtg:with emt:testral:thd:examples nil
+	  (emtg:with emtvr:thd nil
 	     (let*
 		((nodes-freshened 'nil)
 		   (remember-freshened-node

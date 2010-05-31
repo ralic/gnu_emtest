@@ -36,6 +36,7 @@
    (append
       emt:testral:thd:examples
       (emtg:define+ ()
+	 (transparent-tags () (type role what-test))
 	 (group
 	    ((type receive-alist-item))
 	    (type-must-be () (emtm:pattern emtvr:suite-newstyle))
