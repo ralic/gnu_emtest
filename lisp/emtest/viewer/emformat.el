@@ -42,7 +42,7 @@
 (defun emtvf:top (view-node data-list)
    ""
 
-   (check-type view-node emtvp-node)
+   (check-type view-node emtvp:node)
    (list*
       "Emtest results" "\n"
       (emtvf:node view-node data-list)))
@@ -67,17 +67,17 @@
 ;;;_  . emtvf:node
 (defun emtvf:node (view-node data-list)
    "
-SUITE must be an emtvp-node-data.
+SUITE must be an emtvp:node->data.
 DATA-LIST must be a list of alists."
 
-   (check-type view-node emtvp-node)
+   (check-type view-node emtvp:node)
 
    (let
-      ((suite (emtvp-node-data view-node))
+      ((suite (emtvp:node->data view-node))
 	 (name
-	    (emtvp-node-name view-node))
+	    (emtvp:node->name view-node))
 	 (children
-	    (emtvp-node-children view-node))
+	    (emtvp:node->children view-node))
 	 (depth
 	    (loal:val 'depth data-list 0)))
 

@@ -612,7 +612,7 @@ especially in configuration testing for new installations"
 
    )
 
-;;;_  . (OBSOLETE) gradedness
+;;;_  . (OBSOLESCENT) gradedness
 '
 (deftype emt:result-gradedness () '(member pass fail ungraded))
 ;;;_  . badnesses
@@ -621,7 +621,7 @@ especially in configuration testing for new installations"
 ;;(bad-before-test not-found) badness
 ;;
 '(deftype emt:result-badness () '(member fail ungraded dormant))
-'
+
 (deftype emt:result-badness () t)
 
 ;;;_   , Summary info

@@ -70,13 +70,14 @@
 
 
 ;;;_ , Presentables
-
+(require 'utility/pathtree)
 ;;;_  . Base 
 
 ;;Emviewer uses this as the content element in pathtree nodes.
 (defstruct (emt:view:presentable
 	    (:constructor emt:view:make-presentable)
-	    (:conc-name emt:view:presentable->))
+	    (:conc-name emt:view:presentable->)
+	      (:include emtvp:node))
    ""
    ;;Summarized badnesses from all subtrees.  They are summarized
    ;;treewise, including any badnesses from this node.
@@ -87,14 +88,36 @@
 
 ;;;_  . Suite in tree (as by emviewer)
 (defstruct (emt:view:suite-newstyle
-	    (:constructor emt:view:make-suite-newstyle)
-	    (:conc-name emt:view:suite-newstyle->)
+	      (:constructor emt:view:make-suite-newstyle)
+	      (:conc-name emt:view:suite-newstyle->)
 	      (:include emt:view:presentable))
    ""
    ;;Just for suite nodes.
-   ;;$$CHANGE ME Move fields of `emtvr:suite-newstyle' into here and
-   ;;use them.
-   (cell () :type emtvr:suite-newstyle))
+   ;;$$REMOVE ME later
+   (cell () :type emtvr:suite-newstyle)
+
+   ;;$$USE ME Use these former fields of `emtvr:suite-newstyle'.
+
+
+   (how-to-run ():type emtt:explorable
+      :doc "How to run this as a test.")
+
+   ;;The full presentation path, including any prefix from report.
+   ;;May go away in favor of 
+   (presentation-path ()   
+      :type emt:testral:suite-id
+      :doc "The path to the corresponding node in the pathtree.")
+
+   ;;This is becoming more of a datestamp/circumstance info.
+   (testrun-id ()
+      :type emt:testral:testrun-id
+      :doc "The ID of the testrun that created this result.")
+   (result ()     
+      :type (or null 
+	       emt:testral:suite 
+	       emt:testral:test-runner-info)
+      :doc "The result data itself"))
+
 
 ;;;_  . TESTRAL finished
 (defstruct (emt:view:TESTRAL

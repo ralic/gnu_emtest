@@ -86,7 +86,7 @@ It just tells a pathtree to add this node."
 	    (undirty-car 'replaced)
 	    (new-dirty 'summary)
 	    (let
-	       ((parent (emtvp-node-parent obj)))
+	       ((parent (emtvp:node->parent obj)))
 	       (when parent
 		  ;;Parent's summary may be dirty now.
 		  (new-dirty-node 'summary parent))))
@@ -98,14 +98,14 @@ It just tells a pathtree to add this node."
 	       (some
 		  #'(lambda (child)
 		       (member 'summary 
-			  (emtvp-node-dirty-flags child)))
-		  (emtvp-node-children obj))
+			  (emtvp:node->dirty-flags child)))
+		  (emtvp:node->children obj))
 	       ;;Do summarization
 	       (emtvr:sum-node-badnesses obj)
 	       (undirty 'summary)
 	       ;;Parent (if any) now needs to be resummarized.
 	       (let
-		  ((parent (emtvp-node-parent obj)))
+		  ((parent (emtvp:node->parent obj)))
 		  (when parent
 		     (new-dirty-node 'summary parent))))))))
 
@@ -171,7 +171,7 @@ It just tells a pathtree to add this node."
    (emtvp:freshen emtv2:pathtree)
    (when
       (emt:testral:report->run-done-p report)
-      (emtv2:print-all (emtvp-root emtv2:pathtree))
+      (emtv2:print-all (emtvp->root emtv2:pathtree))
       (pop-to-buffer emtv2:report-buffer)))
 
 ;;;_ , emtv2:reset

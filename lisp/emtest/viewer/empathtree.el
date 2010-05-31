@@ -43,7 +43,7 @@
    
    ;;As yet we have no good way of making a predicate that takes
    ;;arguments.  Contents should be a `emt:view:presentable'
-   (check-type tree emtvp-node)
+   (check-type tree emtvp:node)
    ;;Traverse the tree recursively:  Recurse on all children, then
    ;;join those sets together, put it in sum-badnesses field, and
    ;;return it.
@@ -83,18 +83,18 @@
 ;;Node data is covariant with this.
 (defun emtvr:sum-node-badnesses (node)
    ""
-   (check-type node emtvp-node)
+   (check-type node emtvp:node)
    
    (let*
       (
 	 (data
-	    (emtvp-node-data node))
+	    (emtvp:node->data node))
 	 (input-badnesses
 	    (mapcar
 	       #'(lambda (child)
 		    (emt:view:presentable->sum-badnesses
-		       (emtvp-node-data child)))
-	       (emtvp-node-children node)))
+		       (emtvp:node->data child)))
+	       (emtvp:node->children node)))
 	 ;;Gives a list of badnesses.
 	 ;;Accessor
 	 (own-badnesses

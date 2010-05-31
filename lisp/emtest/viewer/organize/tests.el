@@ -30,6 +30,7 @@
 ;;;_ , Requires
 
 (require 'utility/pathtree)
+(require 'utility/pathtree/testhelp)
 (require 'emtest/viewer/receive)
 (require 'emtest/viewer/emviewer2)
 (require 'emtest/viewer/organize)
@@ -55,12 +56,7 @@
    ;;will change that)
    '(emtvp:freshen emtv2:pathtree))
 ;;;_  . Struct governors for pattern-match
-(emtm:define-struct-governor emtvp-node
-   name
-   data
-   children)
-(emtm:define-struct-governor emtvp
-   root)
+;;Are in pathtree testhelp
 
 ;;;_ , emtest/viewer/organize
 (emt:deftest-3 emtest/viewer/organize
@@ -91,9 +87,9 @@
 		  ;;$$WRITE ME
 
 		  ;;$$RETHINK ME 
-		  (make-emtvp 
+		  (emtvp:make 
 		      :root
-		      (make-emtvp-node 
+		      (emtvp:make-node 
 			 ;;The tester - what should this data be?
 			 ;;`emt:testral:make-test-runner-info'?  But
 			 ;;that's not put in, is it?

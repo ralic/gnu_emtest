@@ -88,7 +88,7 @@ It just tells a pathtree to add this node."
 (defun emtve:vp-node->dlist (obj)
    ""
    (emt:view:presentable->list
-      (emtvp-node-data obj)))
+      (emtvp:node->data obj)))
 
 ;;;_  . emtest:viewer:pathtree-cb
 (defun emtest:viewer:pathtree-cb (obj)
@@ -106,7 +106,7 @@ It just tells a pathtree to add this node."
 	    ;;Dirty display is implied by dirty summary.
 	    (new-dirty 'summary)
 	    (let
-	       ((parent (emtvp-node-parent obj)))
+	       ((parent (emtvp:node->parent obj)))
 	       (when parent
 		  ;;Parent's summary may be dirty now.  Parent's
 		  ;;display definitely is, but that's implied by
@@ -120,15 +120,15 @@ It just tells a pathtree to add this node."
 	       (some
 		  #'(lambda (child)
 		       (member 'summary 
-			  (emtvp-node-dirty-flags child)))
-		  (emtvp-node-children obj))
+			  (emtvp:node->dirty-flags child)))
+		  (emtvp:node->children obj))
 	       ;;Do summarization
 	       (emtvr:sum-node-badnesses obj)
 	       (undirty 'summary)
 	       (new-dirty 'display) ;;Now we can display it
 	       ;;Parent (if any) now needs to be resummarized.
 	       (let
-		  ((parent (emtvp-node-parent obj)))
+		  ((parent (emtvp:node->parent obj)))
 		  (when parent
 		     (new-dirty-node 'summary parent)))))
 	 
@@ -169,7 +169,7 @@ It just tells a pathtree to add this node."
 	 (erase-buffer)
 	 (setq emtve:chewie
 	    (chewie:make-chewie
-	       (emtvp-root emtve:pathtree)
+	       (emtvp->root emtve:pathtree)
 	       '()
 	       #'emtvf:top
 	       #'loformat:insert
