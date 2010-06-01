@@ -37,7 +37,8 @@
 ;;;_ , Match struct governors
 
 ;;;_  . emtvr:suite-newstyle
-;;$$OBSOLESCENT in favor of `emt:view:suite-newstyle'
+;;$$OBSOLETE
+'
 (emtm:define-struct-governor
    (emtvr:suite-newstyle
       (:constructor emtvr:make-suite-newstyle)
