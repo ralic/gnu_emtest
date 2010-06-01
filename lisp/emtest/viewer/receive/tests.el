@@ -38,15 +38,31 @@
 ;;;_  . emtvr:one-newstyle
 (put 'emtvr:one-newstyle 'emt:test-thru 'emtvr:newstyle)
 
-;;;_  . emtvr:suite-newstyle test helpers
-;;$$OBSOLESCENT  Possibly in favor of `emt:view:suite-newstyle'
-(emtm:define-struct-governor
-   (emtvr:suite-newstyle
-      (:constructor emtvr:make-suite-newstyle)
-      (:conc-name emtvr:suite-newstyle->)
-      (:copier nil))
-   id how-to-run presentation-path testrun-id result)
+;;;_  . Testhelp
 
+(defun emtvr:th:assert-the-1-right-node (nodes-freshened)
+   ""
+   
+   (assert
+      (emtm nodes-freshened
+	 (list
+	    (list
+	       (eval
+		  '(emtg:value 
+		      :narrow 
+		      ((type presentation-path))
+		      :ignore-tags (role)))
+	       (emt:view:make-suite-newstyle ;;emtvr:make-suite-newstyle 
+		  :presentation-path
+		  (eval
+		     '(emtg:value 
+			 :narrow 
+			 ((type presentation-path))
+			 :ignore-tags (role)))
+		  :result
+		  (eval
+		     '(emtg (type suite)))))))
+      t))
 
 ;;;_  . Tests
 
@@ -80,8 +96,7 @@
 		     'nil)
 		  t)
 	       (assert
-		  (emtm nodes-freshened
-		     (list))
+		  (emtm nodes-freshened (list))
 		  t)
 	       t))))
    (nil
@@ -124,27 +139,9 @@
 			(emtvr:data->alist receiver))
 		     1)
 		  t)
-	       (assert
-		  (emtm nodes-freshened
-		     (list
-			(list
-			   (eval
-			      '(emtg
-				  (type presentation-path)
-				  (what-test test-1)))
-			   (emtvr:make-suite-newstyle 
-			      :presentation-path
-			      (eval
-				 '(emtg
-				     (type presentation-path)
-				     (what-test test-1)))
-			      :result
-			      (eval
-				 '(emtg
-				     (type suite)
-				     (what-test test-1)
-				     (role original-add)))))))
-		  t)
+	       (emtg:narrow ((what-test test-1)(role original-add))
+		  (emtvr:th:assert-the-1-right-node 
+		     nodes-freshened))
 	       t))))
    (nil
       (progn
@@ -195,27 +192,9 @@
 			(emtvr:data->alist receiver))
 		     1)
 		  t)
-	       (assert
-		  (emtm nodes-freshened
-		     (list
-			(list
-			   (eval
-			      '(emtg
-				  (type presentation-path)
-				  (what-test test-1)))
-			   (emtvr:make-suite-newstyle 
-			      :presentation-path
-			      (eval
-				 '(emtg
-				     (type presentation-path)
-				     (what-test test-1)))
-			      :result
-			      (eval
-				 '(emtg
-				     (type suite)
-				     (what-test test-1)
-				     (role replace)))))))
-		  t)
+	       (emtg:narrow ((what-test test-1)(role replace))
+		  (emtvr:th:assert-the-1-right-node 
+		     nodes-freshened))
 	       t))))
    (nil
       (progn
@@ -281,26 +260,9 @@
 		  (emtg
 		     (type report)
 		     (what-test test-2)))
-	       (assert
-		  (emtm nodes-freshened
-		     (list
-			(list
-			   (eval
-			      '(emtg
-				  (type presentation-path)
-				  (what-test test-2)))
-			   (emtvr:make-suite-newstyle 
-			      :presentation-path
-			      (eval
-				 '(emtg
-				     (type presentation-path)
-				     (what-test test-2)))
-			      :result
-			      (eval
-				 '(emtg
-				     (type suite)
-				     (what-test test-2)))))))
-		  t)
+	       (emtg:narrow ((what-test test-2))
+		  (emtvr:th:assert-the-1-right-node 
+		     nodes-freshened))
 	       t))))
    '(nil
        (progn

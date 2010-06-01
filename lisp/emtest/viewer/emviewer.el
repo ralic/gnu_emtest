@@ -81,9 +81,11 @@ It just tells a pathtree to add this node."
       ;;The path
       presentation-path
       ;;The data
-      (emt:view:make-suite-newstyle 
-	 :list (wookie:make-dlist)
-	 :cell cell)))
+;;       (emt:view:make-suite-newstyle 
+;; 	 :list (wookie:make-dlist)
+;; 	 :cell cell)
+      cell
+      ))
 ;;;_  . emtve:vp-node->dlist
 (defun emtve:vp-node->dlist (obj)
    ""
@@ -152,7 +154,9 @@ It just tells a pathtree to add this node."
 	    #'(lambda ()
 		 (emt:view:make-presentable
 		    :list (wookie:make-dlist)))
-	    'emt:view:suite-newstyle)))
+	    ;;'emt:view:suite-newstyle
+	    'emt:view:presentable
+	    )))
 
    (unless 
       (and 

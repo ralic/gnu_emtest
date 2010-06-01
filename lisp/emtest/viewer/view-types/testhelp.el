@@ -30,8 +30,33 @@
 ;;;_ , Requires
 
 (require 'emtest/viewer/view-types)
-
+(require 'emtest/testhelp/match)
+(require 'emtest/testhelp/tagnames)
+(require 'emtest/common/testral-types/testhelp)
 ;;;_. Body
+;;;_ , Match struct governors
+
+;;;_  . emtvr:suite-newstyle
+;;$$OBSOLESCENT in favor of `emt:view:suite-newstyle'
+(emtm:define-struct-governor
+   (emtvr:suite-newstyle
+      (:constructor emtvr:make-suite-newstyle)
+      (:conc-name emtvr:suite-newstyle->)
+      (:copier nil))
+   id how-to-run presentation-path testrun-id result)
+;;;_  . emt:view:suite-newstyle
+(emtm:define-struct-governor 
+   (emt:view:suite-newstyle
+      (:constructor emt:view:make-suite-newstyle)
+      (:conc-name emt:view:suite-newstyle->)
+      (:include emt:view:presentable))
+   cell
+   how-to-run 
+   presentation-path
+   testrun-id
+   result)
+
+;;;_ , emtvr:thd
 (defconst emtvr:thd
    (append
       emt:testral:thd:examples
@@ -39,7 +64,8 @@
 	 (transparent-tags () (type role what-test))
 	 (group
 	    ((type receive-alist-item))
-	    (type-must-be () (emtm:pattern emtvr:suite-newstyle))
+	    ;;(type-must-be () (emtm:pattern emtvr:suite-newstyle))
+	    (type-must-be () (emtm:pattern emt:view:suite-newstyle))
 	    (item
 	       ( (role original-add)
 		  (what-test test-1))
@@ -47,16 +73,16 @@
 		  (append emt:testral:thd:examples emtg:all-examples)
 		  ()
 		  (emtm:make-pattern
-		     (emtvr:make-suite-newstyle
+		     (emt:view:make-suite-newstyle ;;emtvr:make-suite-newstyle
 			:result 
 			(eval
 			   '(emtg (type suite)(what-test test-1)(role original-add)))
 			:how-to-run
 			(eval 
 			   '(emtg (type explorable)(what-test test-1)))
-			:id
-			(eval 
-			   '(emtg (type how-to-run)(what-test test-1)))
+;; 			:id
+;; 			(eval 
+;; 			   '(emtg (type how-to-run)(what-test test-1)))
 			:presentation-path
 			(eval 
 			   '(emtg (type presentation-path)(what-test test-1)))
@@ -71,16 +97,16 @@
 		  (append emt:testral:thd:examples emtg:all-examples)
 		  ()
 		  (emtm:make-pattern
-		     (emtvr:make-suite-newstyle
+		     (emt:view:make-suite-newstyle ;;emtvr:make-suite-newstyle
 			:result 
 			(eval
 			   '(emtg (type suite)(what-test test-1)(role replace)))
 			:how-to-run
 			(eval 
 			   '(emtg (type explorable)(what-test test-1)))
-			:id
-			(eval 
-			   '(emtg (type how-to-run)(what-test test-1)))
+;; 			:id
+;; 			(eval 
+;; 			   '(emtg (type how-to-run)(what-test test-1)))
 			:presentation-path
 			(eval 
 			   '(emtg (type presentation-path)(what-test test-1)))

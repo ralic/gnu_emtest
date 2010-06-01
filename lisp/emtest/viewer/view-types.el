@@ -75,8 +75,8 @@
 
 ;;Emviewer uses this as the content element in pathtree nodes.
 (defstruct (emt:view:presentable
-	    (:constructor emt:view:make-presentable)
-	    (:conc-name emt:view:presentable->)
+	      (:constructor emt:view:make-presentable)
+	      (:conc-name emt:view:presentable->)
 	      (:include emtvp:node))
    ""
    ;;Summarized badnesses from all subtrees.  They are summarized
@@ -97,7 +97,10 @@
    (cell () :type emtvr:suite-newstyle)
 
    ;;$$USE ME Use these former fields of `emtvr:suite-newstyle'.
-
+   
+   ;;$$REMOVE ME
+   (id () :type emtvr:suite-newstyle->id
+      :doc "The \"official\" id.")
 
    (how-to-run ():type emtt:explorable
       :doc "How to run this as a test.")

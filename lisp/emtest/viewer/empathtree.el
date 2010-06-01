@@ -104,8 +104,11 @@
 		  (emt:view:suite-newstyle
 		     (let
 			((s
-			    (emtvr:suite-newstyle->result
-			       (emt:view:suite-newstyle->cell data))))
+			    (emt:view:suite-newstyle->result
+			       ;;emtvr:suite-newstyle->result
+			       data
+			       ;;(emt:view:suite-newstyle->cell data)
+			       )))
 			(etypecase s 
 			   (null) 
 			   (emt:testral:suite

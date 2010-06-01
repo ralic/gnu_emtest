@@ -47,7 +47,7 @@
    ;;We leave out `display-info' since we can't expect to compare
    ;;against it meaningfully.
    main end args children child-type)
-
+'  ;;OBSOLESCENT
 (emtm:define-struct-governor emtvr:suite-newstyle
    id
    how-to-run

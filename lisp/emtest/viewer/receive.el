@@ -56,6 +56,7 @@
 
 
 ;;;_  . emtvr:newstyle
+;;$$RENAME ME
 (defun emtvr:newstyle (receiver report)
    ""
    (check-type receiver emtvr:data)
@@ -80,7 +81,7 @@
    (when (emt:testral:suite-p suite)
       (find
 	 '(bad-before-test not-found)
-	 ;;Can also be test-runner
+	 ;;$$ADD ME Type can also be test-runner info.
 	 (emt:testral:suite->badnesses suite)
 	 :test #'equal)))
 
@@ -114,7 +115,10 @@
 		  (emtvr:data->alist receiver)
 		  (delete* key (emtvr:data->alist receiver)
 		     :test #'equal
-		     :key #'emtvr:suite-newstyle->id))
+		     :key 
+		     ;;#'emtvr:suite-newstyle->id
+		     #'emt:view:suite-newstyle->id
+		     ))
 	       (funcall 
 		  (emtvr:data->tree-remove-cb receiver)
 		  presentation-path))
@@ -123,15 +127,21 @@
 	    (let
 	       ((old-cell
 		   (find key (emtvr:data->alist receiver)
-		      :key #'emtvr:suite-newstyle->id)))
+		      :test #'equal
+		      :key 
+		      ;;#'emtvr:suite-newstyle->id
+		      #'emt:view:suite-newstyle->id
+		      )))
 	       (if old-cell
 		  ;;Cell is already present.  Alter it.  Still replace
 		  ;;the node in the pathtree.
 		  (progn
 		     (setf
-			(emtvr:suite-newstyle->testrun-id old-cell)
+			(emt:view:suite-newstyle->testrun-id old-cell)
+			;;(emtvr:suite-newstyle->testrun-id old-cell)
 			testrun-id
-			(emtvr:suite-newstyle->result old-cell)
+			;;(emtvr:suite-newstyle->result old-cell)
+			(emt:view:suite-newstyle->result old-cell)
 			suite)
 		     (funcall 
 			(emtvr:data->tree-insert-cb receiver)
@@ -140,7 +150,10 @@
 		  ;;It's not present in alist.  Insert it.
 		  (let 
 		     ((cell
-			 (emtvr:make-suite-newstyle
+			 (emt:view:make-suite-newstyle ;;emtvr:make-suite-newstyle
+			    ;;$$DONT FIX ME THIS WAY Could just set
+			    ;;its cell, but we're moving in a
+			    ;;different direction, away from that.
 			    :id                key
 			    :how-to-run        how-to-run
 			    :presentation-path presentation-path
