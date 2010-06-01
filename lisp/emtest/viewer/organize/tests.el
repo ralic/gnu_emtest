@@ -64,9 +64,7 @@
       ;;$$SHARE ME - factor `emtv2:ts:with-mock-viewer' in
       ;;emviewer2/testhelp.el to share this insulation.
       (let
-	 (
-	    emtv2:receiver
-	    emtv2:pathtree)
+	 ( emtv2:receiver emtv2:pathtree)
 	 (emt:library:th ((count 1))
 	    (emt:doc "Situation: A known load-history and defined suites.")
 	    (emt:doc "Situation: The receive callback only goes as far as
@@ -84,28 +82,26 @@
 	    (assert
 	       (emtm 
 		  emtv2:pathtree
-		  ;;$$WRITE ME
-
-		  ;;$$RETHINK ME 
 		  (emtvp:make 
 		      :root
-		      (emtvp:make-node 
-			 ;;The tester - what should this data be?
-			 ;;`emt:testral:make-test-runner-info'?  But
-			 ;;that's not put in, is it?
-			 ;;An `emt:view:presentable'?
-			 ;;Shouldn't it be an (or emt:testral:suite
-			 ;;emt:testral:test-runner-info)?
+		      (emt:view:make-presentable
+			 ;;There is no derived type for test-runner
+			 ;;info (yet)
 			 
- 			 ;;:data
-			 ;;Library, directly beneath it.
-;; 			 :children
-;; 			 ()
-			 ;;1 suite, beneath that library.
-
-			 )
-		      )
-		  )
+ 			 :children
+ 			 (list
+			    ;;Library report
+			    (emt:view:make-suite-newstyle
+			       ;; :how-to-run
+			       ;;(satisfies emthow:library-p)
+			       :children
+			       (list
+				  ;;Suite report
+				  (emt:view:make-suite-newstyle
+				     ;; :how-to-run
+				     ;;(satisfies emthow:suite-p)
+				     :children
+				     ())))))))
 	       t)
 
 	    ))))

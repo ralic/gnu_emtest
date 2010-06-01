@@ -65,11 +65,7 @@ It just tells a pathtree to add this node."
       ;;The path
       presentation-path
       ;;The data
-;;       (emt:view:make-suite-newstyle 
-;; 	 :list '()
-;; 	 :cell cell)
-      cell
-      ))
+      cell))
 
 ;;;_  . emtv2:pathtree-cb
 ;;Different from `emtest:viewer:pathtree-cb' in that it does not try
@@ -122,10 +118,8 @@ It just tells a pathtree to add this node."
 	    #'(lambda ()
 		 (emt:view:make-presentable
 		    :list '()))
-	    ;;'emt:view:suite-newstyle
-	    'emt:view:presentable
-	    )))
-
+	    'emt:view:presentable)))
+   
    (unless (buffer-live-p emtv2:report-buffer)
       (setq 
 	 emtv2:report-buffer 

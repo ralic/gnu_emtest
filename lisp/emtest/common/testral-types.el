@@ -45,7 +45,7 @@
   ;;Not clear that parent-id is of general use.
   parent-id ;;`nil' for root events that have no parent.
   info
-
+   ;;prestn-path
   ;;Reflects only the note's's intrinsic problems.  Even push/pops
   ;;need it in case (say) a whole stage is dormantized or aborted.
   (badnesses () :type (repeat emt:result-badness)))
@@ -183,7 +183,6 @@
 	    (:constructor emt:testral:make-suite)
 	    (:conc-name emt:testral:suite->))
   ""
-  ;;Either TESTRAL list or ids of child suites or nil.
   (contents () 
 	    :type 
 	    (or 

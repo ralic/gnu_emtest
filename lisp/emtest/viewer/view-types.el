@@ -29,18 +29,18 @@
 
 ;;;_ , Requires
 (require 'emtest/common/result-types)
+(require 'utility/pathtree)
 (eval-when-compile
    (require 'cl))
 ;;;_. Body
 ;;;_ , emtvr:suite-newstyle->id
-
+;;$$OBSOLESCENT Being rethought
 (deftype emtvr:suite-newstyle->id ()
    "Can be a UUID string or a how-to-run object"
    '(or string emthow))
 
 ;;;_ , emtvr:suite-newstyle
 
-;;This is cted by receive.
 ;;Note that changes will affect basically just `emtvr:one-newstyle'.
 ' ;;$$OBSOLETE
 (defstruct (emtvr:suite-newstyle
@@ -70,7 +70,7 @@
 
 
 ;;;_ , Presentables
-(require 'utility/pathtree)
+;;$$RENAME US Use prefix emtvr:
 ;;;_  . Base 
 
 ;;Emviewer uses this as the content element in pathtree nodes.
@@ -93,10 +93,10 @@
 	      (:include emt:view:presentable))
    ""
    ;;Just for suite nodes.
-   ;;$$REMOVE ME later
-   (cell () :type emtvr:suite-newstyle)
-
    ;;$$REMOVE ME
+   ;;(cell () :type emtvr:suite-newstyle)
+
+   ;;$$REMOVE ME later
    (id () :type emtvr:suite-newstyle->id
       :doc "The \"official\" id.")
 

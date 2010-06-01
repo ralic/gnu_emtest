@@ -45,13 +45,24 @@
       (:conc-name emtvr:suite-newstyle->)
       (:copier nil))
    id how-to-run presentation-path testrun-id result)
+;;;_  . emt:view:make-presentable
+(emtm:define-struct-governor
+   (emt:view:presentable
+      (:constructor emt:view:make-presentable)
+      (:conc-name emt:view:presentable->)
+      (:include emtvp:node))
+   children ;;Included
+   sum-badnesses list)
+
+
 ;;;_  . emt:view:suite-newstyle
 (emtm:define-struct-governor 
    (emt:view:suite-newstyle
       (:constructor emt:view:make-suite-newstyle)
       (:conc-name emt:view:suite-newstyle->)
       (:include emt:view:presentable))
-   cell
+   children ;;Included
+   ;;cell
    how-to-run 
    presentation-path
    testrun-id
