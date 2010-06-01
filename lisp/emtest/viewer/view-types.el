@@ -42,7 +42,7 @@
 
 ;;This is cted by receive.
 ;;Note that changes will affect basically just `emtvr:one-newstyle'.
-
+' ;;$$OBSOLETE
 (defstruct (emtvr:suite-newstyle
 	    (:constructor emtvr:make-suite-newstyle)
 	    (:conc-name emtvr:suite-newstyle->))

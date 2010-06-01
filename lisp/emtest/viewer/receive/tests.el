@@ -30,6 +30,7 @@
 ;;;_ , Requires
 
 (require 'emtest/viewer/receive)
+(require 'emtest/viewer/receive/testhelp)
 (require 'emtest/viewer/view-types/testhelp)
 (require 'emtest/common/testral-types/testhelp)
 (require 'emtest/testhelp/match)
@@ -37,32 +38,6 @@
 ;;;_. Body
 ;;;_  . emtvr:one-newstyle
 (put 'emtvr:one-newstyle 'emt:test-thru 'emtvr:newstyle)
-
-;;;_  . Testhelp
-
-(defun emtvr:th:assert-the-1-right-node (nodes-freshened)
-   ""
-   
-   (assert
-      (emtm nodes-freshened
-	 (list
-	    (list
-	       (eval
-		  '(emtg:value 
-		      :narrow 
-		      ((type presentation-path))
-		      :ignore-tags (role)))
-	       (emt:view:make-suite-newstyle ;;emtvr:make-suite-newstyle 
-		  :presentation-path
-		  (eval
-		     '(emtg:value 
-			 :narrow 
-			 ((type presentation-path))
-			 :ignore-tags (role)))
-		  :result
-		  (eval
-		     '(emtg (type suite)))))))
-      t))
 
 ;;;_  . Tests
 

@@ -65,7 +65,6 @@
 	 (transparent-tags () (type role what-test))
 	 (group
 	    ((type receive-alist-item))
-	    ;;(type-must-be () (emtm:pattern emtvr:suite-newstyle))
 	    (type-must-be () (emtm:pattern emt:view:suite-newstyle))
 	    (item
 	       ( (role original-add)
@@ -74,7 +73,7 @@
 		  (append emt:testral:thd:examples emtg:all-examples)
 		  ()
 		  (emtm:make-pattern
-		     (emt:view:make-suite-newstyle ;;emtvr:make-suite-newstyle
+		     (emt:view:make-suite-newstyle
 			:result 
 			(eval
 			   '(emtg (type suite)(what-test test-1)(role original-add)))
@@ -98,7 +97,7 @@
 		  (append emt:testral:thd:examples emtg:all-examples)
 		  ()
 		  (emtm:make-pattern
-		     (emt:view:make-suite-newstyle ;;emtvr:make-suite-newstyle
+		     (emt:view:make-suite-newstyle
 			:result 
 			(eval
 			   '(emtg (type suite)(what-test test-1)(role replace)))

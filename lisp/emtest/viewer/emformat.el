@@ -83,14 +83,10 @@ DATA-LIST must be a list of alists."
 
       (etypecase suite
 	 (emt:view:suite-newstyle
-	    (let*
+	    (let
 	       (
-		  ;;(cell (emt:view:suite-newstyle->cell suite))
-		  (cell suite)
 		  (object
-		     ;;(emtvr:suite-newstyle->result cell)
-		     (emt:view:suite-newstyle->result suite)
-		     ))
+		     (emt:view:suite-newstyle->result suite)))
 	       (append
 		  (emtvf:headline-w-badnesses 
 		     (1+ depth)

@@ -115,10 +115,7 @@
 		  (emtvr:data->alist receiver)
 		  (delete* key (emtvr:data->alist receiver)
 		     :test #'equal
-		     :key 
-		     ;;#'emtvr:suite-newstyle->id
-		     #'emt:view:suite-newstyle->id
-		     ))
+		     :key #'emt:view:suite-newstyle->id))
 	       (funcall 
 		  (emtvr:data->tree-remove-cb receiver)
 		  presentation-path))
@@ -128,19 +125,14 @@
 	       ((old-cell
 		   (find key (emtvr:data->alist receiver)
 		      :test #'equal
-		      :key 
-		      ;;#'emtvr:suite-newstyle->id
-		      #'emt:view:suite-newstyle->id
-		      )))
+		      :key #'emt:view:suite-newstyle->id)))
 	       (if old-cell
 		  ;;Cell is already present.  Alter it.  Still replace
 		  ;;the node in the pathtree.
 		  (progn
 		     (setf
 			(emt:view:suite-newstyle->testrun-id old-cell)
-			;;(emtvr:suite-newstyle->testrun-id old-cell)
 			testrun-id
-			;;(emtvr:suite-newstyle->result old-cell)
 			(emt:view:suite-newstyle->result old-cell)
 			suite)
 		     (funcall 
@@ -150,10 +142,7 @@
 		  ;;It's not present in alist.  Insert it.
 		  (let 
 		     ((cell
-			 (emt:view:make-suite-newstyle ;;emtvr:make-suite-newstyle
-			    ;;$$DONT FIX ME THIS WAY Could just set
-			    ;;its cell, but we're moving in a
-			    ;;different direction, away from that.
+			 (emt:view:make-suite-newstyle
 			    :id                key
 			    :how-to-run        how-to-run
 			    :presentation-path presentation-path
