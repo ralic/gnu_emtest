@@ -63,8 +63,11 @@
 ;;OBSOLESCENT.  
 (declare (special emt:trace:properties))
 ;;;_  . emt:testral:*events-seen*
-;;This belongs somewhere that both runner and testhelp can see.
+;;$$MOVE ME
+;;These belong somewhere that both runner and testhelp can see.
 (declare (special emt:testral:*events-seen*))
+(declare (special emt:testral:*path-prefix*))
+(declare (special emt:testral:*count*))
 
 ;;;_ , test finder
 
