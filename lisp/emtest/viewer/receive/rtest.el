@@ -30,6 +30,8 @@
 ;;;_ , Requires
 
 (require 'emtest/viewer/receive)
+(require 'emtest/viewer/receive/testhelp)
+(require 'emtest/viewer/view-types/testhelp)
 (require 'emtest/common/testral-types/testhelp)
 (require 'emtest/testhelp/match)
 
@@ -112,23 +114,10 @@ Response: List contains that one entry."
 	    (assert
 	       (= (length (emtvr:data->alist receiver)) 1)
 	       t)
-	    ;;One callback happened
-	    (assert
-	       (emtm
-		  nodes-freshened
-		  (list
-		     (list
-			(eval 
-			   '(emtg (type presentation-path)(what-test test-1)))
-			(emtvr:make-suite-newstyle
-			   :presentation-path
-			   (eval 
-			      '(emtg (type presentation-path)(what-test test-1)))
-			   :result
-			   (eval 
-			      '(emtg (type suite)(what-test test-1)(role original-add)))
-			   ))))
-	       t)
+	    (emtg:narrow ((what-test test-1)(role original-add))
+		  (emtvr:th:assert-the-1-right-node 
+		     nodes-freshened))
+	    ;;
 	    t)))
    
 
@@ -179,22 +168,9 @@ Response: List contains just that one entry, not duplicated."
 	       t)
 
 	    ;;One (new) callback happened
-	    (assert
-	       (emtm
-		  nodes-freshened
-		  (list
-		     (list
-			(eval 
-			   '(emtg (type presentation-path)(what-test test-1)))
-			(emtvr:make-suite-newstyle
-			   :presentation-path 
-			   (eval 
-			      '(emtg (type presentation-path)(what-test test-1)))
-			   :result
-			   (eval 
-			      '(emtg (type suite)(what-test test-1)(role replace)))
-			   ))))
-	       t)
+	    (emtg:narrow ((what-test test-1)(role replace))
+	       (emtvr:th:assert-the-1-right-node 
+		  nodes-freshened))
 	    t)))
 
    ;;Remove a no-longer-existing runnable.
@@ -260,22 +236,9 @@ Response: List contains both entries."
 	    ;;because emtm doesn't have a set matcher yet.
 
 	    ;;One (new) callback happened
-	    (assert
-	       (emtm
-		  nodes-freshened
-		  (list
-		     (list
-			(eval 
-			   '(emtg (type presentation-path)(what-test test-2)))
-			(emtvr:make-suite-newstyle
-			   :presentation-path 
-			   (eval 
-			      '(emtg (type presentation-path)(what-test test-2)))
-			   :result
-			   (eval 
-			      '(emtg (type suite)(what-test test-2)))
-			   ))))
-	       t)
+	    (emtg:narrow ((what-test test-2))
+	       (emtvr:th:assert-the-1-right-node 
+		  nodes-freshened))
 
 	    t)))
 

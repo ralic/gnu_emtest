@@ -114,6 +114,7 @@
 			(emtvr:data->alist receiver))
 		     1)
 		  t)
+	       (emt:doc "Response: One callback happened")
 	       (emtg:narrow ((what-test test-1)(role original-add))
 		  (emtvr:th:assert-the-1-right-node 
 		     nodes-freshened))
@@ -142,6 +143,7 @@
 		     (type report)
 		     (what-test test-1)
 		     (role original-add)))
+	       (emt:doc "Situation: Callback list is emptied")
 	       (setq nodes-freshened 'nil)
 	       (emtvr:newstyle receiver
 		  (emtg
@@ -167,6 +169,7 @@
 			(emtvr:data->alist receiver))
 		     1)
 		  t)
+	       (emt:doc "Response: One NEW callback happened")
 	       (emtg:narrow ((what-test test-1)(role replace))
 		  (emtvr:th:assert-the-1-right-node 
 		     nodes-freshened))
@@ -230,11 +233,13 @@
 		     (type report)
 		     (role original-add)
 		     (what-test test-1)))
+	       (emt:doc "Situation: Callback list is emptied")
 	       (setq nodes-freshened 'nil)
 	       (emtvr:newstyle receiver
 		  (emtg
 		     (type report)
 		     (what-test test-2)))
+	       (emt:doc "Response: One NEW callback happened")
 	       (emtg:narrow ((what-test test-2))
 		  (emtvr:th:assert-the-1-right-node 
 		     nodes-freshened))
