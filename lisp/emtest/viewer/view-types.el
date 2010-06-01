@@ -96,8 +96,6 @@
    ;;$$REMOVE ME later
    (cell () :type emtvr:suite-newstyle)
 
-   ;;$$USE ME Use these former fields of `emtvr:suite-newstyle'.
-   
    ;;$$REMOVE ME
    (id () :type emtvr:suite-newstyle->id
       :doc "The \"official\" id.")
