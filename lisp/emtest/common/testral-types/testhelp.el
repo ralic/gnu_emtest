@@ -35,25 +35,16 @@
 
 ;;;_. Body
 ;;;_ , Preliminary
-;;;_  . Pattern ctor for emt:view:suite
+;;;_  . Pattern ctors
 
 ;;$$OBSOLESCENT
 (emtm:define-struct-governor emt:view:suite
-   ;;We leave out `display-info' since we can't expect to compare
-   ;;against it meaningfully.
    name full-id unique-id suite child-type children sum-badnesses )
 
 (emtm:define-struct-governor emt:view:testral
    ;;We leave out `display-info' since we can't expect to compare
    ;;against it meaningfully.
    main end args children child-type)
-'  ;;OBSOLESCENT
-(emtm:define-struct-governor emtvr:suite-newstyle
-   id
-   how-to-run
-   presentation-path
-   testrun-id
-   suite)
 
 ;;;_ , Examples
 (defconst emt:testral:thd:examples
