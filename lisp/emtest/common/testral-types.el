@@ -38,17 +38,22 @@
 ;;;_   , Base class
 
 (defstruct (emt:testral:base
-	    (:constructor emt:testral:make-base)
-	    (:conc-name emt:testral:base->))
-  "The TESTRAL base type"
-  id	    ;;Shared just between scope co-ordinating notes
-  ;;Not clear that parent-id is of general use.
-  parent-id ;;`nil' for root events that have no parent.
-  info
-   ;;prestn-path
-  ;;Reflects only the note's's intrinsic problems.  Even push/pops
-  ;;need it in case (say) a whole stage is dormantized or aborted.
-  (badnesses () :type (repeat emt:result-badness)))
+	      (:constructor emt:testral:make-base)
+	      (:conc-name emt:testral:base->))
+   "The TESTRAL base type"
+   ;;$$OBSOLESCENT
+   id	    ;;Shared just between scope co-ordinating notes
+   ;;$$OBSOLESCENT
+   ;;Not clear that parent-id is of general use.
+   parent-id ;;`nil' for root events that have no parent.
+
+   info
+   (prestn-path () 
+      :type emt:testral:partial-suite-id
+      :doc "The presentation path of this note")
+   ;;Reflects only the note's's intrinsic problems.  Even push/pops
+   ;;need it in case (say) a whole stage is dormantized or aborted.
+   (badnesses () :type (repeat emt:result-badness)))
 
 ;;;_   , Basic notes 
 ;;(All inherit from the base class, none have data)
