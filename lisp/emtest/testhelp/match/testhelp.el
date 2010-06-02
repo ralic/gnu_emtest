@@ -77,7 +77,7 @@
 ;;;_  . Literal version, to validate against
 ;;$$MOVE ME MAYBE - This may belong in testhelp
 
-(defun rtest-struct:gov-literal (sym pattern &optional other-deps)
+(defun rtest-struct:gov-literal (sym pattern &optional other-deps prestn-prefix)
    ""
 
    (destructuring-bind (&key (my-field () sv-my-field))
@@ -87,10 +87,8 @@
 	 (
 	    ;;Object must be of type rtest-struct.
 	    (check-type
-	       (emtm:make-test-form-data
-		  :explanation "Object is the wrong type"
-		  :uses (list sym)
-		  :form `(rtest-struct-p ,sym)))
+	       (emtm:make-typecheck-form
+		  sym #'rtest-struct-p ()))
 
 	    (my-field-sym (gensym))
 	    ;;Get the my-field accessor `rtest-struct->my-field'

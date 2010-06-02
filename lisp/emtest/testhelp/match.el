@@ -65,7 +65,14 @@
    explanation
    (uses ())
    form
-   prestn-path)
+   (prestn-path () :type (repeat string)
+      :doc 
+      "A partial path which form-builder will append to a
+	      prestn-prefix."
+      ))
+
+
+
 
 ;;;_  . Box
 (defstruct (emtm:box
@@ -131,7 +138,8 @@ TESTS, if given, must be a list of emtm:test-form-data."
       :form-SINGLE 
       (emtm:make-test-form-data
 	 :uses (list* sym other-deps)
-	 :form `(equal ,sym ,pattern))))
+	 :form `(equal ,sym ,pattern)
+	 :prestn-path prestn-prefix)))
 
 ;;;_  . emtm:govs:symbol Pseudo-governor for symbols
 ;;Matches anything, binds something.
@@ -181,55 +189,59 @@ PATTERN is headed by governor"
 	       :prestn-path (append prestn-prefix (list "check-length"))))
 
 	 ;;List of gensyms which will each refer to an element.
-	 (sym-list
-	    '(loop repeat len
-	       collect (gensym)))
+;; 	 (sym-list
+;; 	    '(loop repeat len
+;; 	       collect (gensym)))
 
-	 ;;$$REDO this with the other loop stuff in it.
-	 ;;Bindings: Bind a symbol to each element.
-	 (binding-forms
-	    '
-	    (loop
-	       for el-sym in sym-list
-	       for i upto len
-	       collect
-	       (emtm:make-binding-form-data
-		  :uses 
-		  (emtm:parse-dependencies
-		     (list sym)
-		     (list formdata-test-length))
-		  :bind el-sym
-		  :form `(nth ,i ,sym))))
+;; 	 ;;Bindings: Bind a symbol to each element.
+;; 	 (binding-forms
+;; 	    '
+;; 	    (loop
+;; 	       for el-sym in sym-list
+;; 	       for i upto len
+;; 	       collect
+;; 	       (emtm:make-binding-form-data
+;; 		  :uses 
+;; 		  (emtm:parse-dependencies
+;; 		     (list sym)
+;; 		     (list formdata-test-length))
+;; 		  :bind el-sym
+;; 		  :form `(nth ,i ,sym))))
 
 	 
-	 ;;Do any further pattern operations on each element.
-	 ;;Recurse, informed by the respective symbol and pattern.
-	 ;;This makes full formdata, not element formdata, so be
-	 ;;careful of the distinction.
-	 (child-formdata-list
-	    '(mapcar*
-	       #'emtm:parse-pattern
-	       sym-list
-	       pattern-els)))
+;; 	 ;;Do any further pattern operations on each element.
+;; 	 ;;Recurse, informed by the respective symbol and pattern.
+;; 	 ;;This makes full formdata, not element formdata, so be
+;; 	 ;;careful of the distinction.
+;; 	 (child-formdata-list
+;; 	    '(mapcar*
+;; 	       #'emtm:parse-pattern
+;; 	       sym-list
+;; 	       pattern-els))
+	 )
       
       ;;Result: All the forms we just made.
-      '(utiacc:list->object
-	 (list*
-	    (emtm:make-formdata
-	       :form-LIST 
-	       (list*
-		  formdata-test-listness
-		  formdata-test-length
-		  binding-forms))
-	    child-formdata-list)
-	 'emtm:formdata)
+;;       '(utiacc:list->object
+;; 	 (list*
+;; 	    (emtm:make-formdata
+;; 	       :form-LIST 
+;; 	       (list*
+;; 		  formdata-test-listness
+;; 		  formdata-test-length
+;; 		  binding-forms))
+;; 	    child-formdata-list)
+;; 	 'emtm:formdata)
 
       (loop
+	 ;;**Iterate over pattern and count, with a unique sym each
+	 ;;iteration** 
 	 for pattern-el in pattern-els
 	 for el-sym = (gensym)
 	 for i upto len
 
-	 ;;Collect various things
+	 ;;**Collect various things**
+
+	 ;;Bind a symbol to each element.
 	 collect (emtm:make-binding-form-data
 		    :uses 
 		    (emtm:parse-dependencies
@@ -238,13 +250,20 @@ PATTERN is headed by governor"
 		    :bind el-sym
 		    :form `(nth ,i ,sym))
 	 into binding-forms
-	 ;;$$PASS the prestn-prefix arg (former prefix plus what we have)
-	 collect (emtm:parse-pattern el-sym pattern-el 
+
+	 ;;Do any further pattern operations on each element.  So
+	 ;;recurse, informed by the respective symbol and pattern.
+	 ;;This makes full formdata, not element formdata.  Be careful
+	 ;;of the distinction.
+
+	 collect (emtm:parse-pattern 
+		    el-sym 
+		    pattern-el 
 		    nil 
-		    (append prestn-prefix (list (princ i))))
+		    (append prestn-prefix (list (int-to-string i))))
 	 into child-formdata-list
 	 
-	 ;;Aggregate all the forms we just made.
+	 ;;**Aggregate all the forms we just made.**
 	 finally return
 	 (utiacc:list->object
 	    (list*
@@ -329,8 +348,10 @@ PATTERN is headed by governor"
 		  :uses (list ret-sym)
 		  ;;`identity' is used solely to distinguish this form
 		  ;;from a mere binding, wrt dependencies.
-		  :form `(identity ,ret-sym))))
-
+		  :form `(identity ,ret-sym)
+		  :prestn-path 
+		  (append prestn-prefix (list "return-value")))))
+	 
 	 (utiacc:list->object
 	    (append
 	       (list
@@ -384,12 +405,16 @@ PATTERN is headed by governor"
 	    ;;eval, bound to sym-2, is not re-evalled at match time.
 	    :form
 	    `(emtm-either ,sym '(,backquote-unquote-symbol ,sym-2))
-	    ))))
+	    :prestn-path 
+	    prestn-prefix))))
+
 (put 'eval 'emtm:makepattern
    #'emtm:govs:eval)
 
 ;;;_ , Build form 
 ;;;_  . emtm:build-form-recurse
+;;$$IMPROVE ME  This needs to take prestn-prefix-form and pass it to
+;;`emtm:build-form-recurse' and use it appropriately.
 (defun emtm:build-form-recurse (formdata-list core)
    ""
    (if
@@ -412,6 +437,9 @@ PATTERN is headed by governor"
 			 ;;object, not just equal.
 			 #'eql)
 		      ,rest
+		      ;;$$IMPROVE ME Write a testral note - not clear
+		      ;;what's appropriate for this, and it's not
+		      ;;supported yet.
 		      nil)
 		  `(let ((
 			    ,(emtm:binding-form-data->bind first)
@@ -421,6 +449,7 @@ PATTERN is headed by governor"
 	       `(if
 		   ,(emtm:test-form-data->form first)
 		   ,rest
+		   ;;$$IMPROVE ME Write a testral note.  Encap this calc.
 		   nil))))
       core))
 ;;;_  . emtm:sort-bindings
@@ -508,6 +537,8 @@ that have been checked."
       (nreverse rv-new-forms)))
 
 ;;;_  . emtm:build-form
+;;$$IMPROVE ME  This needs to take prestn-prefix-form and pass it to
+;;`emtm:build-form-recurse' 
 (defun emtm:build-form (sym-list all-formdata core)
    ""
    
@@ -544,21 +575,22 @@ that have been checked."
 ;;;_  . emtm:build-form--1 
 ;;These might be renamed, this to `emtm:build-form' and the
 ;;original to *-x.
-;;$$CHANGE CALLERS to pass prestn-prefix
-(defun emtm:build-form--1 (sym pattern core-form &optional prestn-prefix)
+(defun emtm:build-form--1 (sym pattern core-form &optional prestn-prefix-form)
    "Build a form and return it.
 The factored-out part of emtm and emtm:lambda"
    
    (let*
       (
 	 ;;Decompose the pattern.
-	 (formdata (emtm:parse-pattern sym pattern))
+	 (formdata (emtm:parse-pattern sym pattern nil ()))
 	 ;;Build the inner part of the form
+	 ;;$$PASS prestn-prefix-form
 	 (form (emtm:build-form (list sym) formdata core-form)))
       form))
 
 ;;;_ , Entry points
 ;;;_  . Test-supporter emtm:th:single-gov
+;;$$MOVE ME to testhelp
 (defun emtm:ts:single-gov (func pattern obj)
 
    "Match OBJ vs the pattern PATTERN, forcing FUNC to be the governor
@@ -575,7 +607,14 @@ Intended for testing governor functions in isolation."
 	    '(testhelp-483s) 
 	    (funcall func 'testhelp-483s pattern) 
 	    't))))
-
+;;;_  . emtt:path-prefix-form
+;;$$MOVE ME  to testral.el
+;;This doesn't provide a special declaration.
+(defconst emtt:path-prefix-form
+   '(when 
+       (boundp 'emt:testral:*path-prefix*) 
+       emt:testral:*path-prefix*)
+   "" )
 ;;;_  . emtm
 ;;Does this order of arguments make sense?  Or should it be vv?
 (defmacro emtm (object-form pattern)
@@ -584,8 +623,7 @@ Intended for testing governor functions in isolation."
       ((sym (gensym)))
       `(let
 	 ((,sym ,object-form))
-	  ;;$$IMPROVE ME Pass prestn-prefix
-	  ,(emtm:build-form--1 sym pattern 't))))
+	  ,(emtm:build-form--1 sym pattern 't emtt:path-prefix-form))))
 
 ;;;_  . emtm-f
 (defun emtm-f (obj pattern)
@@ -620,7 +658,6 @@ PATTERN must be a boxed pattern object (Use `emtm:make-pattern')."
        :type t))
 
 ;;;_  . emtm:make-general-lambda
-;;$$IMPROVE ME May take a prestn-prefix arg
 ;;Rewrite the others in terms of this.
 (defmacro emtm:make-general-lambda (pattern bindings &rest body)
    "Make a pattern-match function that can take extra args.
@@ -634,7 +671,7 @@ BODY is a form body."
       (lambda (,sym ,@bindings)
 	 ,(emtm:build-form 
 	     (list* sym bindings)
-	     (emtm:parse-pattern sym pattern) 
+	     (emtm:parse-pattern sym pattern nil) 
 	      `(progn ,@body)))))
 
 ;;;_  . emtm:lambda
@@ -643,8 +680,11 @@ BODY is a form body."
    (let
       ((sym (gensym)))
       `(lambda (,sym)
-	  ;;$$IMPROVE ME Pass prestn-prefix
-	  ,(emtm:build-form--1 sym pattern `(progn ,@body)))))
+	  ,(emtm:build-form--1 
+	      sym 
+	      pattern 
+	      `(progn ,@body)
+	      prestn-prefix-form))))
 
 
 ;;;_  . emtm:lambda-binds
@@ -660,18 +700,22 @@ BODY is a form body."
 	   't)))
 
 ;;;_  . emtm-let
-;;$$IMPROVE ME May take a prestn-prefix arg
 (defmacro emtm-let (object-form pattern &rest body)
    ""
    (let*
       ((sym (gensym))
 	 ;;Decompose the pattern.
-	 (formdata (emtm:parse-pattern sym pattern))
+	 (formdata 
+	    (emtm:parse-pattern 
+	       sym 
+	       pattern nil 
+	       emtt:path-prefix-form))
 	 ;;Build the inner part of the form
-	 (form (emtm:build-form 
-		  (list sym) 
-		  formdata 
-		  `(progn ,@body))))
+	 (form 
+	    (emtm:build-form 
+	       (list sym) 
+	       formdata 
+	       `(progn ,@body))))
       `(let
 	 ((,sym ,object-form))
 	  ,form)))
@@ -686,8 +730,8 @@ BODY is a form body."
 
 ;;;_  . Making structure governors
 ;;;_   , emtm:make-struct-governor-x
-;;$$IMPROVE ME  May take a prestn-prefix arg
-(defun emtm:make-struct-governor-x (sym check-type depth accessor)
+(defun emtm:make-struct-governor-x 
+   (sym check-type depth accessor prestn-prefix)
    "Return value is a list of two forms:
  * First form is a form.
  * Second form is a formdata.
@@ -709,18 +753,21 @@ ACCESSOR is a structure accessor."
 	 (child-formdata
 	    (emtm:parse-pattern
 	       depth-sym
-	       depth)))
+	       depth
+	       nil
+	       prestn-prefix)))
 
       (list bind-field-depth child-formdata)))
 ;;;_   , emtm:make-typecheck-form
-(defun emtm:make-typecheck-form (sym pred)
+(defun emtm:make-typecheck-form (sym pred &optional prestn-prefix)
    "Make a form to check the type of SYM.
 SYM is the symbol to be checked.
 PRED is a function-quoted predicate to apply to it."
    (emtm:make-test-form-data
       :explanation "Object is the wrong type"
       :uses (list sym)
-      :form `(,pred ,sym)))
+      :form `(,pred ,sym)
+      :prestn-path prestn-prefix))
 ;;;_   , Helpers
 
 (defsubst emtm:util:keysym->sv-keysym (keysym)
@@ -781,8 +828,7 @@ KEYS is a list of all field-names."
       
 
       `(lambda (sym pattern &optional other-deps prestn-prefix)
-	  ""
-   
+	  "A pattern-match pseudo-ctor"
 	  (destructuring-bind (&key ,@key-keylist)
 	     (cdr pattern)
 
@@ -791,7 +837,7 @@ KEYS is a list of all field-names."
 		   ;;Make form to check that Object is of the given
 		   ;;type.
 		   (check-type
-		      (emtm:make-typecheck-form sym #',pred))
+		      (emtm:make-typecheck-form sym #',pred prestn-prefix))
 
 		   ;;Each element of this list is the data for one
 		   ;;given field: Its respective pattern and its
@@ -811,7 +857,8 @@ KEYS is a list of all field-names."
 				 sym 
 				 check-type
 				 (first cell)
-				 (second cell)))
+				 (second cell)
+				 prestn-prefix))
 			 data-list)))
 	     
 		(utiacc:list->object
