@@ -121,6 +121,7 @@ This is the heart of Emtest exploration: A test itself."
 	 (index
 	    (emthow:indexed-clause->clause-index
 	       test-id)))
+      (emtd:update-for-sym suite-sym)
       (emtd:destructure-suite-3 suite-sym
 	 (list 
 	    nil
