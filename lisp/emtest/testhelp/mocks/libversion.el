@@ -121,7 +121,8 @@ Intended for use in vtest.el files."
 
     ;;Load that code (This doesn't force a reload.  We might want to
     ;;if it was already loaded and repo was in the wrong state.  Maybe
-    ;;we want repo return value to signal that)
+    ;;we want repo return value to signal that).  This doesn't control
+    ;;for byte-compilation, which might skew versions.
     (require lib-sym)
     (emtmv:start lib-path 'old)
     (emtmv:toggle-state)
