@@ -32,50 +32,62 @@
 
 
 ;;;_. Body
+;;;_ , Declarations
+(declare (special emt:testral:*events-seen*))
+(declare (special emt:testral:*path-prefix*))
+(declare (special emt:testral:*count*))
 
 ;;;_ , TESTRAL functions
+;;;_  . emt:testral:with
+;;Macro: Run code with a TESTRAL receiver
+;;$$WRITE ME
+;;$$USE ME
+;;See `emtt:explore-clause' in clause.el, which should use this
 ;;;_  . emt:testral:create
+;;
 (defsubst emt:testral:create ()
-   ""
+   "Create a TESTRAL receiver - actually an empty list"
    ())
 
 ;;;_  . emt:testral:add-note
 ;;Must "note" be a `emt:testral:base'?
 (defun emt:testral:add-note (note &optional name tags arglist)
-   ""
+   "Add NOTE as a TESTRAL note
+NOTE must be a type derived from `emt:testral:base'
+NAME is a list of strings.
+TAGS is not used yet, it controls what notes to add (For now, any note)."
    (when
       (boundp 'emt:testral:*events-seen*)
       (push
-	 
 	 (if 
-	    (typep note emt:testral:base))
-	 (progn
-	    ;;Later, tags will inform a report-manager, which also checks
-	    ;;whether to add notes.
+	    (typep note 'emt:testral:base)
+	    (progn
+	       ;;Later, tags will inform a report-manager, which also checks
+	       ;;whether to add notes.
 
-	    ;;Set the note's presentation path to w/e plus
-	    ;;`emt:testral:*parent-path*'.  Possibly by a count.
-	    ;;Name could be nil or a list, or be derived from
-	    ;;`emt:testral:*count*'.  It can't be a bare string (yet, for
-	    ;;ease of trying this out)
+	       ;;Set the note's presentation path to w/e plus
+	       ;;`emt:testral:*parent-path*'.  Possibly by a count.
+	       ;;Name could be nil or a list, or be derived from
+	       ;;`emt:testral:*count*'.  It can't be a bare string (yet, for
+	       ;;ease of trying this out)
 	 
-	    (setf (emt:testral:base->prestn-path note)
-	       (append emt:testral:*parent-path* name))
+	       (setf (emt:testral:base->prestn-path note)
+		  (append emt:testral:*path-prefix* name))
 	 
 
-	    ;;Later, for "call" tags, arglist will be processed wrt objects
-	    ;;whose origin is known.  This used to relate to the
-	    ;;`emt:result:diag:call' type, but the design has changed.
-	    note)
+	       ;;Later, for "call" tags, arglist will be processed wrt objects
+	       ;;whose origin is known.  This used to relate to the
+	       ;;`emt:result:diag:call' type, but the design has changed.
+	       note)
 	 
-	 ;;Give an error note instead.
-	 (emt:testral:make-error-raised
-	    :err 
-	    '(error 
-		"A non-TESTRAL object was tried to be used as note")
-	    :badnesses 
-	    '((ungraded 'error 
-		 "A non-TESTRAL object was tried to be used as note")))
+	    ;;Give an error note instead.
+	    (emt:testral:make-error-raised
+	       :err 
+	       '(error 
+		   "A non-TESTRAL object was tried to be used as note")
+	       :badnesses 
+	       '((ungraded 'error 
+		    "A non-TESTRAL object was tried to be used as note"))))
 	 emt:testral:*events-seen*)))
 
 

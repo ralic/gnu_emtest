@@ -202,36 +202,42 @@ DATA-LIST must be a list of alists."
    
    (let*
       ()
-      (etypecase obj
-	 ;;This is the only one that will actually carry over in the
-	 ;;long term, the others just inform structure.
-	 (emt:testral:alone
-	    (typecase obj
-
-	       (emt:testral:error-raised
-		  `((nl-if-none)
-		      "Error raised: "
-		      ,(prin1-to-string
-			 (emt:testral:error-raised->err obj))
-		      "\n"))
-	       (emt:testral:doc
-		  `((nl-if-none)
-		      ,(emt:testral:doc->str obj)
-		      "\n"))
-	       (t '((nl-if-none )
-		      "A TESTRAL note (alone)"
-		      "\n"))))
-	 ;;Temporary (Probably)
-	 (emt:testral:check:push
-	    '("Begin a TESTRAL check"))
+      (append
+	 (apply #'append
+	    (mapcar
+	       #'(lambda (x)
+		    (list x " "))
+	       (emt:testral:base->prestn-path obj)))
+	 (etypecase obj
+	    ;;This is the only one that will actually carry over in the
+	    ;;long term, the others just inform structure.
+	    ;;$$RETHINK:  The others are obsolescent
+	    (emt:testral:alone
+	       (typecase obj
+		  (emt:testral:error-raised
+		     `((nl-if-none)
+			 "Error raised: "
+			 ,(prin1-to-string
+			     (emt:testral:error-raised->err obj))
+			 "\n"))
+		  (emt:testral:doc
+		     `((nl-if-none)
+			 ,(emt:testral:doc->str obj)
+			 "\n"))
+		  (t '((nl-if-none )
+			 "A TESTRAL note (alone)"
+			 "\n"))))
+	    ;;Temporary (Probably)
+	    (emt:testral:check:push
+	       '("Begin a TESTRAL check"))
 	 
-	 (emt:testral:push
-	    '("Begin a TESTRAL span"))
+	    (emt:testral:push
+	       '("Begin a TESTRAL span"))
 	 
-	 (emt:testral:pop
-	    '("End a TESTRAL span"))
-	 (emt:testral:separate
-	    '("Separate args")))))
+	    (emt:testral:pop
+	       '("End a TESTRAL span"))
+	    (emt:testral:separate
+	       '("Separate args"))))))
 
 ;;;_  . emtvf:info (Suite info formatter)
 (defun emtvf:info (obj data &rest d)

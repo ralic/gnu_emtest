@@ -95,16 +95,16 @@ LIB-PATH must be a path to a library that is already loaded."
    ""
    ;;If symbol is nil, find it.
    (utim:setf-new
-      (emthow:library:elisp-load->lib-sym test-id)
+      (emthow:library:elisp-load->lib-sym howto)
       (emtt:lib-path->lib-sym 
-	 (emthow:library:elisp-load->load-name test-id)))
+	 (emthow:library:elisp-load->load-name howto)))
    
 
    ;;If path is nil, find it.
    (utim:setf-new
-      (emthow:library:elisp-load->load-name test-id)
+      (emthow:library:elisp-load->load-name howto)
       (locate-library
-	 (symbol-name (emthow:library:elisp-load->lib-sym test-id))))
+	 (symbol-name (emthow:library:elisp-load->lib-sym howto))))
    
    ;;Possibly try to load foo/tests.el  (Later, controlled by flags)
    ;;Punt.  They're probably already loaded.

@@ -51,6 +51,7 @@ This is the heart of Emtest exploration: A test itself."
 	 ;;they are slower to make.
 	 (emt:testral:*id-counter* 1)
 	 (emt:testral:*events-seen* (emt:testral:create))
+	 (emt:testral:*path-prefix* ())
 	 (emtt:*abort-p* nil)
 	 ;;These badnesses are only for problems that manifest right
 	 ;;here, not lower down. 
