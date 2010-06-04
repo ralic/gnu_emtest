@@ -51,23 +51,7 @@ Unused for now." )
 ;;;_ , Variables
 (defvar emtmv:t nil
    "The current versioned library, or `nil'" )
-;;Keep this in sync with test insulator
-
-'
-(defvar emtmv:new-obarray nil
-   "Objects from the new version of the module" )
-'
-(defvar emtmv:old-obarray nil
-   "Objects from the old version of the module"  )
-'
-(defvar emtmv:state 
-   nil
-   "Which obarray currently corresponds to the real obarray state.
-Should be `nil', `old', or `new'" )
-'
-(defvar emtmv:filename nil 
-   "Full true loadname of file being synced to" )
-
+;;Keep these variables in sync with test insulator
 
 ;;;_ , Entry points
 ;;;_  . For code
@@ -119,6 +103,32 @@ FUNC will generally be an entry point"
 Intended for use in vtest.el files."
    
    (error "`emtmv:require' is not available yet"))
+;;;_   , Quoted example of use
+'(let*
+    (  
+       (lib-sym 'utility/pathtree)
+       ;;We'd look up stable-name and VC function, wrt lib-sym
+       (stable-name "master")  
+       ;;Internal calculations
+       (lib-name (symbol-name lib-sym))
+       (lib-path (locate-library lib-name))
+       ;;Switch to a stable state wrt that code.  Here I use "git",
+       ;;using a function from */vc/git.  We'll customize and
+       ;;autoload, so this won't be known here.
+       (old-state
+	  '
+	  (emtmv:vc:git:start stable-name lib-path)))
+
+    ;;Load that code (This doesn't force a reload.  We might want to
+    ;;if it was already loaded and repo was in the wrong state.  Maybe
+    ;;we want repo return value to signal that)
+    (require lib-sym)
+    (emtmv:start lib-path 'old)
+    (emtmv:toggle-state)
+    ;;Switch back to old state.
+    '
+    (emtmv:vc:git:switch old-state)
+    (emtmv:add-advice emtv2:tester-cb 'old))
 
 ;;;_  . Interactivity help
 ;;;_   , emtmv:read-object
@@ -171,13 +181,14 @@ Leaves emtmv in state VERSION."
 ;;"Load and version which file? "
 
 ;;;_   , emtmv:toggle-state
+;;$$IMPROVE ME take an optional state argument
 (defun emtmv:toggle-state ()
    ""
    (interactive)
    (emtmv:change-state
       (case (emtmv:t->version emtmv:t)
-	 (old new)
-	 (new old)
+	 (old 'new)
+	 (new 'old)
 	 ((nil) (error "libversion hasn't been started")))
       nil))
 ;;;_   , Add a file to what is controlled
