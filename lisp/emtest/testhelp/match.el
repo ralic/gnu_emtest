@@ -975,7 +975,6 @@ CONC-NAME must be the structure's conc-name."
 	 ,conc-name
 	 ,fields)))
 ;;;_   , emtm:define-struct-governor-x
-;;$$FIXME Should take `name' as parameter
 ;;The defaults might be moved out to caller, since all clients should
 ;;have the same defaults. 
 (defun* emtm:define-struct-governor-x 
