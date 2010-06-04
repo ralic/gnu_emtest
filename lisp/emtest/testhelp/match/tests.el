@@ -893,7 +893,7 @@ When successful, returns the expected list of values.")
 
 
 ;;;_  . Test data
-
+;;$$MOVE ME  Move data to new file testhelp/structs, prefix emths:
 ;;For now, no examples are defined, we just repeat all the data for
 ;;every test.
 
@@ -904,29 +904,6 @@ When successful, returns the expected list of values.")
 (defalias 'rtest-struct-make-item 'make-rtest-struct)
 
 ;;;_   , Setup
-
-'  ;;The old way, which was incomplete.
-(setf (symbol-function 'rtest-struct:gov-high-level)
-   (emtm:make-struct-governor 
-      rtest-struct-p 
-      rtest-struct-> 
-      (my-field my-second-field)))
-
-;;Assign it to a governor.
-'  ;;The medium-old way
-(put 'rtest-struct-high-gov 'emt:test-thru
-   (emtm:make-struct-governor rtest-struct-p rtest-struct->
-      (my-field my-second-field)))
-
-
-;;The slightly old way
-'
-(emtm:define-struct-governor-oldstyle
-   rtest-struct-high-gov
-   rtest-struct-p 
-   rtest-struct-> 
-   (my-field my-second-field))
-
 
 (emtm:define-struct-governor
     (rtest-struct
@@ -940,6 +917,7 @@ When successful, returns the expected list of values.")
 ;;;_  . Tests
 
 (put 'emtm:make-struct-governor 'emt:test-thru 'rtest-struct:gov-high-level)
+(put 'emtm:define-struct-governor 'emt:test-thru 'rtest-struct:gov-high-level)
 
 
 (emt:deftest-3 rtest-struct:gov-high-level
@@ -1149,6 +1127,14 @@ emtm-f param: An object of that type.")
 	    t))))
 
 
+;;$$WRITE ME - tests of reporting informative TESTRAL notes.
+;;Strategy:
+;;Intercept `emtm:report-false' and check prefix.
+(emt:deftest-3 emtest/testhelp/match/tests
+   (nil
+      (progn
+	 (emt:doc "Situation: WRITEME.")
+	 (emt:doc "Response: WRITEME."))))
 
 
 ;;;_. Footers

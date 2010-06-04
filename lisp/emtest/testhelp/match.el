@@ -96,7 +96,6 @@ TESTS, if given, must be a list of emtm:test-form-data."
 
 
 ;;;_ , Parse pattern  emtm:parse-pattern
-;;$$CHANGE CALLERS to pass prestn-prefix
 (defun emtm:parse-pattern (sym pattern &optional other-deps prestn-prefix)
    ""
 
@@ -412,9 +411,16 @@ PATTERN is headed by governor"
    #'emtm:govs:eval)
 
 ;;;_ , Build form 
+;;;_  . emtm:report-false
+(defun emtm:report-false (prestn-prefix str)
+   "Report that a compare leaf was false"
+   ;;For now, we just use a `doc' note.
+   (emt:testral:add-note
+      (emt:testral:make-doc :str str)
+      prestn-prefix))
+
+
 ;;;_  . emtm:build-form-recurse
-;;$$IMPROVE ME  This needs to take prestn-prefix-form and pass it to
-;;`emtm:build-form-recurse' and use it appropriately.
 (defun emtm:build-form-recurse (formdata-list core)
    ""
    (if
@@ -437,9 +443,10 @@ PATTERN is headed by governor"
 			 ;;object, not just equal.
 			 #'eql)
 		      ,rest
-		      ;;$$IMPROVE ME Write a testral note - not clear
-		      ;;what's appropriate for this, and it's not
-		      ;;supported yet.
+		      ;;$$IMPROVE ME Write a testral note - but we'd
+		      ;;need to know the path, and
+		      ;;emtm:binding-form-data doesn't provide that
+		      ;;yet.
 		      nil)
 		  `(let ((
 			    ,(emtm:binding-form-data->bind first)
@@ -449,8 +456,11 @@ PATTERN is headed by governor"
 	       `(if
 		   ,(emtm:test-form-data->form first)
 		   ,rest
-		   ;;$$IMPROVE ME Write a testral note.  Encap this calc.
-		   nil))))
+		   (ignore
+		      (emtm:report-false
+			 ',(emtm:test-form-data->prestn-path first)
+			 "Was false"))))))
+      
       core))
 ;;;_  . emtm:sort-bindings
 (defun emtm:sort-bindings (been-bound formdata-list)
@@ -537,8 +547,6 @@ that have been checked."
       (nreverse rv-new-forms)))
 
 ;;;_  . emtm:build-form
-;;$$IMPROVE ME  This needs to take prestn-prefix-form and pass it to
-;;`emtm:build-form-recurse' 
 (defun emtm:build-form (sym-list all-formdata core)
    ""
    
@@ -575,16 +583,15 @@ that have been checked."
 ;;;_  . emtm:build-form--1 
 ;;These might be renamed, this to `emtm:build-form' and the
 ;;original to *-x.
-(defun emtm:build-form--1 (sym pattern core-form &optional prestn-prefix-form)
+(defun emtm:build-form--1 (sym pattern core-form)
    "Build a form and return it.
 The factored-out part of emtm and emtm:lambda"
    
    (let*
       (
 	 ;;Decompose the pattern.
-	 (formdata (emtm:parse-pattern sym pattern nil ()))
+	 (formdata (emtm:parse-pattern sym pattern nil))
 	 ;;Build the inner part of the form
-	 ;;$$PASS prestn-prefix-form
 	 (form (emtm:build-form (list sym) formdata core-form)))
       form))
 
@@ -610,6 +617,7 @@ Intended for testing governor functions in isolation."
 ;;;_  . emtt:path-prefix-form
 ;;$$MOVE ME  to testral.el
 ;;This doesn't provide a special declaration.
+;;$$RETHINK ME:  Instead, this is done when notes are inserted.
 (defconst emtt:path-prefix-form
    '(when 
        (boundp 'emt:testral:*path-prefix*) 
@@ -623,7 +631,7 @@ Intended for testing governor functions in isolation."
       ((sym (gensym)))
       `(let
 	 ((,sym ,object-form))
-	  ,(emtm:build-form--1 sym pattern 't emtt:path-prefix-form))))
+	  ,(emtm:build-form--1 sym pattern 't))))
 
 ;;;_  . emtm-f
 (defun emtm-f (obj pattern)
@@ -683,8 +691,7 @@ BODY is a form body."
 	  ,(emtm:build-form--1 
 	      sym 
 	      pattern 
-	      `(progn ,@body)
-	      prestn-prefix-form))))
+	      `(progn ,@body)))))
 
 
 ;;;_  . emtm:lambda-binds
@@ -706,10 +713,7 @@ BODY is a form body."
       ((sym (gensym))
 	 ;;Decompose the pattern.
 	 (formdata 
-	    (emtm:parse-pattern 
-	       sym 
-	       pattern nil 
-	       emtt:path-prefix-form))
+	    (emtm:parse-pattern sym pattern nil))
 	 ;;Build the inner part of the form
 	 (form 
 	    (emtm:build-form 
@@ -730,7 +734,8 @@ BODY is a form body."
 
 ;;;_  . Making structure governors
 ;;;_   , emtm:make-struct-governor-x
-(defun emtm:make-struct-governor-x 
+' ;;OBSOLETE
+(defun emtm:make-struct-governor-x
    (sym check-type depth accessor prestn-prefix)
    "Return value is a list of two forms:
  * First form is a form.
@@ -768,6 +773,18 @@ PRED is a function-quoted predicate to apply to it."
       :uses (list sym)
       :form `(,pred ,sym)
       :prestn-path prestn-prefix))
+;;;_   , Helper structure
+(defstruct (emtm:struct:field-forms
+	      (:type list)
+	      (:constructor nil)
+	      (:conc-name emtm:struct:field-data->)
+	      (:copier nil))
+   "Forms pertaining to a field in a struct"
+   pattern
+   accessor
+   name)
+
+
 ;;;_   , Helpers
 
 (defsubst emtm:util:keysym->sv-keysym (keysym)
@@ -777,6 +794,60 @@ PRED is a function-quoted predicate to apply to it."
 (defsubst emtm:util:keysym->accessor-sym (conc-name keysym)
    ""
    (intern (concat (symbol-name conc-name) (symbol-name keysym))))
+;;;_   , emtm:time2:make-struct-governor
+(defun emtm:time2:make-struct-governor 
+   (sym key-datalist pred prestn-prefix)
+   "Make a structure governor at time2
+
+Time2 is when a specific pattern is being compiled, as opposed to a
+general treatment of the type."
+   (let
+      ((check-type
+	  ;;Form to check that object is of the given type.
+	  (emtm:make-typecheck-form sym pred 
+	     (append 
+		prestn-prefix
+		(list "type")))))
+      (loop
+	 ;;Iterate over the elements
+	 for cell in (remq nil key-datalist)
+	 for depth-sym = (gensym)
+
+	 ;;**Collect into the variables**
+	 collect
+	 (emtm:make-binding-form-data
+	    :uses 
+	    (emtm:parse-dependencies
+	       (list sym) (list check-type))
+	    :bind depth-sym
+	    :form `(,(emtm:struct:field-data->accessor cell) ,sym))
+	 into form-list
+
+	 collect
+	 (emtm:parse-pattern
+	    depth-sym
+	    (emtm:struct:field-data->pattern cell)
+	    nil
+	    (append 
+	       prestn-prefix 
+	       (list 
+		  (symbol-name 
+		     (emtm:struct:field-data->name cell))))) 
+	 into form-data-list
+
+	 ;;**Aggregate all the forms we just made.**
+	 finally return
+	 (utiacc:list->object
+	    (append
+	       (list 
+		  (emtm:make-formdata
+		     :form-LIST 
+		     (append
+			(list check-type)
+			form-list)))
+	       form-data-list)
+	    'emtm:formdata))))
+
 
 ;;;_   , emtm:make-struct-governor
 
@@ -799,7 +870,7 @@ PRED is a function-quoted predicate to apply to it."
 ;;the largest, and after seeing a nested backquote, parser no longer
 ;;recognizes ,@.  So as a workaround I've moved all the nested
 ;;backquote work out to helper functions.
-(defmacro emtm:make-struct-governor (pred conc-name keys)
+(defmacro emtm:make-struct-governor (name pred conc-name keys)
    "Build a lambda that is a structure governor function.
 PRED is a symbol naming a predicate that tests whether an object is
 this type.
@@ -807,12 +878,19 @@ CONC-NAME is a symbol naming the conc-name defined for the structure.
 KEYS is a list of all field-names."
    (let
       (
+	 ;;Fields as seen by the arglist of the lambda that we make at
+	 ;;time1.
 	 (key-keylist 
 	    (mapcar
 	       #'(lambda (key)
 		    ;;A single keyword arg definition, like (x () sv-x)
 		    `(,key () ,(emtm:util:keysym->sv-keysym key)))
 	       keys))
+	 ;;Fields as seen by the call at time2 to
+	 ;;emtm:time2:make-struct-governor.  The time2 operation makes
+	 ;;a `emtm:struct:field-forms' but does not use
+	 ;;`emtm:struct:make-field-data' because we don't want to
+	 ;;require that heavy machinery at time2.
 	 (key-datalist
  	    (mapcar
  	       #'(lambda (key)
@@ -820,59 +898,70 @@ KEYS is a list of all field-names."
 		    ;;field, like (if sv-x (list x #'foo->x) ())
  		    `(if ,(emtm:util:keysym->sv-keysym key)
  			(list
+			   ;;pattern
  			   ,key
+			   ;;accessor
 			   #',(emtm:util:keysym->accessor-sym
-				 conc-name key))
- 			()))
+				 conc-name key)
+			   ;;name
+			   ',key)
+			;;If the field isn't given, give nil for the
+			;;whole thing.
+ 			nil))
  	       keys)))
       
-
       `(lambda (sym pattern &optional other-deps prestn-prefix)
 	  "A pattern-match pseudo-ctor"
 	  (destructuring-bind (&key ,@key-keylist)
 	     (cdr pattern)
-
 	     (let* 
 		(
-		   ;;Make form to check that Object is of the given
-		   ;;type.
-		   (check-type
-		      (emtm:make-typecheck-form sym #',pred prestn-prefix))
+		   ;;$$IMPROVE ME  Some parts of this are
+		   ;;predeterminable
+		   ;;Form to check that object is of the given type.
+;; 		   (check-type
+;; 		      (emtm:make-typecheck-form sym #',pred 
+;; 			 (append 
+;; 			    prestn-prefix
+;; 			    (list (symbol-name ',name) "type"))))
+		   
 
 		   ;;Each element of this list is the data for one
 		   ;;given field: Its respective pattern and its
 		   ;;accessor.
-		   (data-list
-		      (remq nil
-			 (list ,@key-datalist)))
+;; 		   (data-list
+;; 		      (remq nil
+;; 			 (list ,@key-datalist)))
 		   
 		   ;;data-list, transformed into bindings.  These are
 		   ;;returned in pairs because they share symbols etc
 		   ;;separate from the other fields.  first is a
 		   ;;bind-form, second is formdata
-		   (formpair-list
-		      (mapcar
-			 #'(lambda (cell)
-			      (emtm:make-struct-governor-x 
-				 sym 
-				 check-type
-				 (first cell)
-				 (second cell)
-				 prestn-prefix))
-			 data-list)))
-	     
-		(utiacc:list->object
-		   (append
-		      (list 
-			 (emtm:make-formdata
-			    :form-LIST 
-			    (append
-			       (list check-type)
-			       (mapcar #'first formpair-list))))
-		      (mapcar #'second formpair-list))
-		   'emtm:formdata))))))
+;; 		   (formpair-list
+;; 		      (mapcar
+;; 			 #'(lambda (cell)
+;; 			      (emtm:make-struct-governor-x 
+;; 				 sym 
+;; 				 check-type
+;; 				 (first cell)
+;; 				 (second cell)
+;; 				 (append prestn-prefix (list "in-struct"))))
+;; 			 data-list))
+
+		   )
+
+		(emtm:time2:make-struct-governor
+		   sym
+		   (list ,@key-datalist)
+		   #',pred
+		   (append 
+		      prestn-prefix 
+		      (list (symbol-name ',name)))))))))
+
 
 ;;;_   , emtm:define-struct-governor-oldstyle
+;;$$OBSOLESCENT
+'
 (defmacro emtm:define-struct-governor-oldstyle (gov-name pred-name
 					      conc-name fields)
    "Define a pattern-ctor as match-governor GOV-NAME.
@@ -880,7 +969,8 @@ PRED-NAME must be the name of the predicate that tests it.
 CONC-NAME must be the structure's conc-name."
    ;;No type info yet.
    `(put ',gov-name 'emtm:makepattern
-      (emtm:make-struct-governor 
+      (emtm:make-struct-governor
+	 ,gov-name
 	 ,pred-name
 	 ,conc-name
 	 ,fields)))
@@ -889,7 +979,7 @@ CONC-NAME must be the structure's conc-name."
 ;;The defaults might be moved out to caller, since all clients should
 ;;have the same defaults. 
 (defun* emtm:define-struct-governor-x 
-   (
+   (  name
       (&key
 	 (predicate (intern (concat (symbol-name name) "-p"))) 
 	 (constructor (intern (concat "make-" (symbol-name name))))
@@ -898,7 +988,8 @@ CONC-NAME must be the structure's conc-name."
       fields)
    "Make the form."
    `(put ',constructor 'emtm:makepattern
-       (emtm:make-struct-governor 
+       (emtm:make-struct-governor
+	  ,name
 	  ,predicate
 	  ,conc-name
 	  ,fields)))
@@ -920,8 +1011,7 @@ Takes essentially a defstruct definition, but don't provide a docstring."
 		     (cdr name+args))) 
 	       '())))
 
-      ;;Call a lower worker.
-      (emtm:define-struct-governor-x struct-options fields)))
+      (emtm:define-struct-governor-x name struct-options fields)))
 
 
 
