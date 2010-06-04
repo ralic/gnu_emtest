@@ -29,7 +29,7 @@
 
 ;;;_ , Requires
 
-(require 'emtest/testhelp/mocks/libversion)
+(require 'magit)
 
 
 ;;;_. Body
@@ -38,13 +38,16 @@
    "Switch to branch STABLE-BRANCH in the repo that manages LIB-PATH.
 
 Return the old state (just branch name)."
-    ;;Gotta run magit in directory of that library.
-    ;;Maybe '(magit-status dir) will suffice.  That wants to work
-    ;;Gotta know the name of that version.
-
-   (let
-      ((old-branch-name (magit-get-current-branch)))
-      (magit-checkout (magit-rev-to-git stable-branch))))
+   ;;Set up magit in directory of that library.
+   (magit-status (file-name-directory lib-path))
+   ;;$$IMPROVE ME This assumes that such a buffer is available.  It
+   ;;probably is, since magit-status tries hard, but it's possible it
+   ;;isn't.
+   (with-current-buffer
+      (magit-find-buffer 'status (magit-get-top-dir dir))
+      (let
+	 ((old-branch-name (magit-get-current-branch)))
+	 (magit-checkout (magit-rev-to-git stable-branch)))))
 ;;;_ , emtmv:vc:git:switch
 (defun emtmv:vc:git:switch (new-state)
    "Switch to NEW-STATE in the respective repo.
