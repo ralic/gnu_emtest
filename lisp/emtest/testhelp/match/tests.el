@@ -904,15 +904,18 @@ When successful, returns the expected list of values.")
 (defalias 'rtest-struct-make-item 'make-rtest-struct)
 
 ;;;_   , Setup
-
-(emtm:define-struct-governor
-    (rtest-struct
-       (:constructor rtest-struct-high-gov)
-       (:predicate rtest-struct-p)
-       (:conc-name rtest-struct->))
+(emt:keep-up-to-date 
+   (emtm:define-struct-governor
+      emtm:make-struct-governor 
+      emtm:time2:make-struct-governor)
+   (emtm:define-struct-governor
+      (rtest-struct
+	 (:constructor rtest-struct-high-gov)
+	 (:predicate rtest-struct-p)
+	 (:conc-name rtest-struct->))
     
-    my-field 
-    my-second-field)
+      my-field 
+      my-second-field))
 
 ;;;_  . Tests
 
