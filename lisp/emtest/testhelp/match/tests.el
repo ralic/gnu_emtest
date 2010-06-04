@@ -27,11 +27,11 @@
 
 ;;;_ , Requires
 
+(require 'emtest/runner/define)
 (require 'emtest/testhelp/match)
 (require 'emtest/testhelp/match/testhelp)
 (require 'emtest/testhelp/standard)
 (require 'emtest/testhelp/misc)
-(require 'utility/accumulator)
 
 ;;;_. Body
 
@@ -1131,6 +1131,7 @@ emtm-f param: An object of that type.")
 
 
 ;;$$WRITE ME - tests of reporting informative TESTRAL notes.
+;;Or add those checks where we are already creating failure.
 ;;Strategy:
 ;;Intercept `emtm:report-false' and check prefix.
 (emt:deftest-3 emtest/testhelp/match/tests
