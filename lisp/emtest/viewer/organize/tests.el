@@ -80,6 +80,9 @@
 	    ;;objects. 
 	    (assert (identity emtv2:receiver) t)
 	    (assert (identity emtv2:pathtree) t)
+	    ;;$$USE ME  This isn't right yet, because we've changed
+	    ;;the requirements but not the code.  It would be right of
+	    ;;the `data' field, but that's going away.
 	    (assert
 	       (emtm 
 		  emtv2:pathtree
@@ -88,7 +91,6 @@
 		      (emt:view:make-presentable
 			 ;;There is no derived type for test-runner
 			 ;;info (yet)
-			 
  			 :children
  			 (list
 			    ;;Library report
