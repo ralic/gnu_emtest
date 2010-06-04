@@ -35,6 +35,7 @@
 (require 'emtest/viewer/emviewer2)
 (require 'emtest/viewer/organize)
 (require 'emtest/viewer/emviewer2/testhelp)
+(require 'emtest/viewer/view-types/testhelp)
 
 (require 'emtest/runner/define)
 (require 'emtest/testhelp/standard)
