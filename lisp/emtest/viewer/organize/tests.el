@@ -61,6 +61,7 @@
 
 ;;;_ , emtest/viewer/organize
 (emt:deftest-3 emtest/viewer/organize
+   '  ;;$$DORMANT
    (nil
       ;;$$SHARE ME - factor `emtv2:ts:with-mock-viewer' in
       ;;emviewer2/testhelp.el to share this insulation.
