@@ -1,4 +1,4 @@
-;;;_ tester/define/rtest.el --- Version-controlled tests for Emtest define
+;;;_ tester/define/vtests.el --- Version-controlled tests for Emtest define
 
 ;;;_. Headers
 ;;;_ , License
@@ -131,12 +131,10 @@
 		  t)
 	       t)))))
 
-
-
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'emtest/runner/define/tests)
+(provide 'emtest/runner/define/vtests)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -144,4 +142,4 @@
 ;;;_  + End:
 
 ;;;_ , End
-;;; tester/define/rtest.el ends here
+;;; tester/define/vtests.el ends here
