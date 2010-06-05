@@ -61,12 +61,11 @@
 
 ;;;_ , emtest/viewer/organize
 (emt:deftest-3 emtest/viewer/organize
-   '  ;;$$DORMANT
    (nil
       ;;$$SHARE ME - factor `emtv2:ts:with-mock-viewer' in
       ;;emviewer2/testhelp.el to share this insulation.
       (let
-	 ( emtv2:receiver emtv2:pathtree)
+	 (emtv2:receiver emtv2:pathtree)
 	 (emt:library:th ((count 1))
 	    (emt:doc "Situation: A known load-history and defined suites.")
 	    (emt:doc "Situation: The receive callback only goes as far as
@@ -81,9 +80,6 @@
 	    ;;objects. 
 	    (assert (identity emtv2:receiver) t)
 	    (assert (identity emtv2:pathtree) t)
-	    ;;$$USE ME  This isn't right yet, because we've changed
-	    ;;the requirements but not the code.  It would be right of
-	    ;;the `data' field, but that's going away.
 	    (assert
 	       (emtm 
 		  emtv2:pathtree
