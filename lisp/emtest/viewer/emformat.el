@@ -40,7 +40,7 @@
 ;;;_  . emtvf:top
 
 (defun emtvf:top (view-node data-list)
-   ""
+   "VIEW-NODE must be an `emt:view:presentable'."
 
    (check-type view-node emtvp:node)
    (list*
@@ -67,13 +67,13 @@
 ;;;_  . emtvf:node
 (defun emtvf:node (view-node data-list)
    "
-SUITE must be an emtvp:node->data.
+VIEW-NODE must be an `emt:view:presentable'.
 DATA-LIST must be a list of alists."
 
    (check-type view-node emtvp:node)
 
    (let
-      ((suite (emtvp:node->data view-node))
+      ((suite view-node) ;;(emtvp:node->data view-node)
 	 (name
 	    (emtvp:node->name view-node))
 	 (children
