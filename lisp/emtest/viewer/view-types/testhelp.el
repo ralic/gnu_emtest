@@ -142,9 +142,9 @@
 		     :how-to-run
 		     (eval 
 			'(emtg (type explorable)(what-test test-1)))
-		     ;; 			:id
-		     ;; 			(eval 
-		     ;; 			   '(emtg (type how-to-run)(what-test test-1)))
+		     :id
+		     (eval 
+			'(emtg (type how-to-run)(what-test test-1)))
 		     :presentation-path
 		     (eval 
 			'(emtg (type presentation-path)(what-test test-1)))
@@ -166,9 +166,9 @@
 		     :how-to-run
 		     (eval 
 			'(emtg (type explorable)(what-test test-1)))
-		     ;; 			:id
-		     ;; 			(eval 
-		     ;; 			   '(emtg (type how-to-run)(what-test test-1)))
+		     :id
+		     (eval 
+			'(emtg (type how-to-run)(what-test test-1)))
 		     :presentation-path
 		     (eval 
 			'(emtg (type presentation-path)(what-test test-1)))

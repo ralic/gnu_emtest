@@ -82,7 +82,8 @@
    ;;Summarized badnesses from all subtrees.  They are summarized
    ;;treewise, including any badnesses from this node.
    (sum-badnesses () :type (repeat emt:result-badness))
-   (list () :type chewie:2:list))
+   ;;This relates to a display
+   (list ()))
 
 
 
