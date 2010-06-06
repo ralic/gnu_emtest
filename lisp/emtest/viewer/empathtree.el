@@ -84,51 +84,51 @@
 (defun emtvr:sum-node-badnesses (node)
    ""
    (check-type node emtvp:node)
-   
-   (let*
-      (
-	 (data node) ;; (emtvp:node->data node)
-	 (input-badnesses
-	    (mapcar
-	       #'(lambda (child)
-		    (emt:view:presentable->sum-badnesses
-		       ;;(emtvp:node->data child)
-		       child
-		       ))
-	       (emtvp:node->children node)))
-	 ;;Gives a list of badnesses.
-	 ;;Accessor
-	 (own-badnesses
-	    (let
-	       ()
-	       (etypecase data
-		  (emtvp:node '())
-		  (emt:view:suite-newstyle
-		     (let
-			((s data
-			    ;;(emt:view:suite-newstyle->result data)
+   (when (typep node 'emt:view:presentable)
+      (let*
+	 (
+	    (data node) ;; (emtvp:node->data node)
+	    (input-badnesses
+	       (mapcar
+		  #'(lambda (child)
+		       (emt:view:presentable->sum-badnesses
+			  ;;(emtvp:node->data child)
+			  child
+			  ))
+		  (emtvp:node->children node)))
+	    ;;Gives a list of badnesses.
+	    ;;Accessor
+	    (own-badnesses
+	       (let
+		  ()
+		  (etypecase data
+		     (emtvp:node '())
+		     (emt:view:suite-newstyle
+			(let
+			   ((s data
+			       ;;(emt:view:suite-newstyle->result data)
 
-			    ))
-			(etypecase s 
-			   (null) 
-			   (emt:testral:suite
-			      (emt:testral:suite->badnesses s))
-			   (emt:testral:test-runner-info
-			      '()))))
-		  (emt:view:TESTRAL '())
-		  (emt:view:TESTRAL-unexpanded
-		     (emtvr:sum-testral-note-badnesses data))
-		  (emt:view:presentable '()))))
-	 (sum-badnesses
-	    (emtvr:combine-badnesses
-	       (cons
-		  own-badnesses
-		  input-badnesses))))
-      (when (typep data 'emt:view:presentable)
+			       ))
+			   (etypecase s 
+			      (null) 
+			      (emt:testral:suite
+				 (emt:testral:suite->badnesses s))
+			      (emt:testral:test-runner-info
+				 '()))))
+		     (emt:view:TESTRAL '())
+		     (emt:view:TESTRAL-unexpanded
+			(emtvr:sum-testral-note-badnesses data))
+		     (emt:view:presentable '()))))
+	    (sum-badnesses
+	       (emtvr:combine-badnesses
+		  (cons
+		     own-badnesses
+		     input-badnesses))))
+
 	 (setf
 	    (emt:view:presentable->sum-badnesses data)
-	    sum-badnesses))
-      sum-badnesses))
+	    sum-badnesses)
+	 sum-badnesses)))
 
 
 
