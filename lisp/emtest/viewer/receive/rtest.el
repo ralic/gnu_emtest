@@ -107,7 +107,7 @@ Response: List contains that one entry."
 		  (list
 		     (eval 
 			'(emtg
-			    (type receive-alist-item)
+			    (type emtvr:alist-item-pattern)
 			    (role original-add)
 			    (what-test test-1)))))
 	       t)
@@ -159,7 +159,7 @@ Response: List contains just that one entry, not duplicated."
 		  (list
 		     (eval 
 			'(emtg
-			    (type receive-alist-item)
+			    (type emtvr:alist-item-pattern)
 			    (role replace)
 			    (what-test test-1)))))
 	       t)
