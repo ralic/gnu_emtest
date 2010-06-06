@@ -37,6 +37,7 @@
 ;;;_. Body
 
 ;;;_ , Variables (OBSOLESCENT all)
+;;But still used when defining examples that use examples from elsewhere.
 
 ;;;_  . emtg:all-examples
 (defvar emtg:all-examples
@@ -159,6 +160,7 @@ This variable is `let' in appropriate scopes" )
 			(item  #'emt:see-item)
 			(doc   #'emt:see-doc)
 			(group #'emt:see-group)
+			(macro #'emtg:see-macro)
 			(transparent-tags
 			   #'emt:see-transparent-tags)
 			(type-must-be 
@@ -166,7 +168,19 @@ This variable is `let' in appropriate scopes" )
 		 (apply fun full-tagset d)))
 	 definers
 	 'emtg:helper-rettype)))
-
+;;;_   , emtg:see-macro
+(defun emtg:see-macro (tagset +tagset func &rest calls)
+   ""
+   
+   (utiacc:collect
+      #'(lambda (governor &rest d)
+	   (let
+	      ((form
+		  (apply func d)))
+	      ;;$$CHECK ME
+	      (apply #'emt:see-group full-tagset () d)))
+      calls
+      'emtg:helper-rettype))
 
 ;;;_  . Handle adding definitions
 ;;;_   , emtg:remove-earlier-defs
