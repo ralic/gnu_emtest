@@ -75,7 +75,7 @@
       (emtg:define+ ()
 	 (transparent-tags () (type role what-test))
 	 (group
-	    ((type receive-alist-item))
+	    ((type emtvr:alist-item-pattern))
 	    (type-must-be () (emtm:pattern emt:view:suite-newstyle))
 	    (item
 	       ( (role original-add)
@@ -123,7 +123,60 @@
 			   '(emtg (type presentation-path)(what-test test-1)))
 			:testrun-id 
 			(eval 
-			   '(emtg (type testrun-id)(role replace))))))))))
+			   '(emtg (type testrun-id)(role replace))))))))
+
+	 (group
+	    ((type emtvr:alist-item))
+	    (type-must-be () emt:view:suite-newstyle)
+	    (item
+	       ( (role original-add)
+		  (what-test test-1))
+	       (emtg:with 
+		  (append emt:testral:thd:examples emtg:all-examples)
+		  ()
+
+		  (emt:view:make-suite-newstyle
+		     :result 
+		     (eval
+			'(emtg (type suite)(what-test test-1)(role original-add)))
+		     :how-to-run
+		     (eval 
+			'(emtg (type explorable)(what-test test-1)))
+		     ;; 			:id
+		     ;; 			(eval 
+		     ;; 			   '(emtg (type how-to-run)(what-test test-1)))
+		     :presentation-path
+		     (eval 
+			'(emtg (type presentation-path)(what-test test-1)))
+		     :testrun-id 
+		     (eval 
+			'(emtg (type testrun-id)(role original-add))))))
+
+	    (item
+	       ( (role replace)
+		  (what-test test-1))
+	       (emtg:with 
+		  (append emt:testral:thd:examples emtg:all-examples)
+		  ()
+
+		  (emt:view:make-suite-newstyle
+		     :result 
+		     (eval
+			'(emtg (type suite)(what-test test-1)(role replace)))
+		     :how-to-run
+		     (eval 
+			'(emtg (type explorable)(what-test test-1)))
+		     ;; 			:id
+		     ;; 			(eval 
+		     ;; 			   '(emtg (type how-to-run)(what-test test-1)))
+		     :presentation-path
+		     (eval 
+			'(emtg (type presentation-path)(what-test test-1)))
+		     :testrun-id 
+		     (eval 
+			'(emtg (type testrun-id)(role replace)))))))
+
+	 ))
    "View-types examples plus TESTRAL report examples."
    )
 

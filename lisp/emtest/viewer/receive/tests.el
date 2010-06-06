@@ -104,7 +104,7 @@
 		     (list
 			(eval
 			   '(emtg
-			       (type receive-alist-item)
+			       (type emtvr:alist-item-pattern)
 			       (role original-add)
 			       (what-test test-1)))))
 		  t)
@@ -159,7 +159,7 @@
 		     (list
 			(eval
 			   '(emtg
-			       (type receive-alist-item)
+			       (type emtvr:alist-item-pattern)
 			       (role replace)
 			       (what-test test-1)))))
 		  t)
