@@ -71,6 +71,7 @@ VIEW-NODE must be an `emt:view:presentable'.
 DATA-LIST must be a list of alists."
 
    (check-type view-node emtvp:node)
+   ;;(check-type view-node emt:view:presentable)
 
    (let
       ((suite view-node) ;;(emtvp:node->data view-node)
@@ -159,7 +160,28 @@ DATA-LIST must be a list of alists."
 	 (emt:view:TESTRAL-unexpanded
 	    '("Unexpanded TESTRAL data"))
 
-	 ;;Base type, for blank nodes.
+	 ;;$$FIX WHAT MAKES ME This case shouldn't happen.
+	 (emtvp:node
+	    (let
+	       ((ch-data-list
+		   (loal:acons 'hdln-path '() data-list)))
+	       (append
+		  "[Allowed for now]"
+		  "\n"
+		  (hiformat:map 
+		     ;;Formatting for each child
+		     #'(lambda (obj data &rest d)
+			  (list
+			     `(dynamic ,obj 
+				 ,data
+				 ,#'emtvf:node)))
+		     children
+		     :separator '("\n")
+		     :data-loal data-list)))
+	    )
+	 ;;$$REPLACE MY WHOLE IDEA This could be a type for
+	 ;;tester-info instead.
+	 ;;Base type, for blank nodes.  
 	 (emt:view:presentable
 	    (if
 	       (and

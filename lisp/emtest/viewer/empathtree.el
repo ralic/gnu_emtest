@@ -87,13 +87,14 @@
    
    (let*
       (
-	 (data
-	    (emtvp:node->data node))
+	 (data node) ;; (emtvp:node->data node)
 	 (input-badnesses
 	    (mapcar
 	       #'(lambda (child)
 		    (emt:view:presentable->sum-badnesses
-		       (emtvp:node->data child)))
+		       ;;(emtvp:node->data child)
+		       child
+		       ))
 	       (emtvp:node->children node)))
 	 ;;Gives a list of badnesses.
 	 ;;Accessor
@@ -101,6 +102,7 @@
 	    (let
 	       ()
 	       (etypecase data
+		  (emtvp:node '())
 		  (emt:view:suite-newstyle
 		     (let
 			((s
@@ -120,9 +122,10 @@
 	       (cons
 		  own-badnesses
 		  input-badnesses))))
-      (setf
-	 (emt:view:presentable->sum-badnesses data)
-	 sum-badnesses)
+      (when (typep data 'emt:view:presentable)
+	 (setf
+	    (emt:view:presentable->sum-badnesses data)
+	    sum-badnesses))
       sum-badnesses))
 
 
