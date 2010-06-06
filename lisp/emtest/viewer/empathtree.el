@@ -105,8 +105,10 @@
 		  (emtvp:node '())
 		  (emt:view:suite-newstyle
 		     (let
-			((s
-			    (emt:view:suite-newstyle->result data)))
+			((s data
+			    ;;(emt:view:suite-newstyle->result data)
+
+			    ))
 			(etypecase s 
 			   (null) 
 			   (emt:testral:suite
