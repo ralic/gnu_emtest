@@ -67,8 +67,9 @@
 		  (list
 		     (list 'value nil 13))))))))
 
+;;;_  . Governor functions
 
-;;;_   , Tests
+;;;_   , emt:see-item
 (emt:deftest-3 emt:see-item
    (nil
       (progn
@@ -76,7 +77,7 @@
 	 (emtg:th:validate-helper-retval
 	    (emt:see-item nil nil 'the-value-form)))))
 
-;;;_   , Tests
+;;;_   , emt:see-doc
 (emt:deftest-3 emt:see-doc
    (nil
       (progn
@@ -85,7 +86,7 @@
 	    (emt:see-doc nil nil "A doc string")))))
 
 
-;;;_   , Tests
+;;;_   , emt:see-type-must-be
 (emt:deftest-3 emt:see-type-must-be
    (nil
       (progn
@@ -142,7 +143,7 @@ Item spec is before type spec.")
 
 
 
-;;;_   , Tests
+;;;_   , emt:see-group
 (emt:deftest-3 emt:see-group
    (nil
       (progn
@@ -153,6 +154,53 @@ Item spec is before type spec.")
 
 
 
+;;;_   , emtg:see-macro
+
+;;;_    . Testhelp
+;;;_     , emtg:see-macro:th:trivial
+(defun emtg:see-macro:th:trivial (&rest ignore)
+   "Trivial tagnames macro.  Defines a known item."
+   
+   '(item ((key1 val1)) 12))
+
+;;;_     , emtg:see-macro:th:numbered-items
+;;A stronger variant of this may actually be useful.
+(defun emtg:see-macro:th:numbered-items (&rest values)
+   ""
+   `(group ()
+       ,@(loop
+	    for val in values
+	    for i from 0
+	    collect `(item ((num ,i)) ,val))))
+
+;;;_    . Tests
+(emt:deftest-3 emtg:see-macro
+   (nil
+      (progn
+	 (emt:doc "Behavior: The return value validates OK.")
+	 (emtg:th:validate-helper-retval
+	    (emtg:see-macro nil nil #'identity
+	       '(item nil the-value-form)))))
+   (nil
+      (let
+	 (examples)
+	 (emt:doc "Situation: `emtg:see-macro:th:trivial' defines a
+   known item")
+	 (emt:doc "Operation: Define a tagnames using `emtg:see-macro:th:trivial'.")
+	 (setq examples
+	    (emtg:define+ nil
+	       (macro () emtg:see-macro:th:trivial)))
+	 
+	 (emt:doc "Response: The expected item has been defined.")
+	 ;;$$CLEAN ME Maybe use `emtg+' instead
+	 (assert
+	    (equal
+	       (emtg:with examples () (emtg (key1 val1)))
+	       12)))))
+
+
+
+;;;_  . About defining
 ;;;_   , Tests
 (put 'emtg:remove-earlier-defs 'emt:test-thru 'emtg:define)
 
@@ -296,7 +344,7 @@ Can't use `emtg' in body."
        ,@body))
 
 
-;;;_  . Tests
+;;;_  . emtg:try-valuedef->example-2
 (emt:deftest-3 emtg:try-valuedef->example-2
    (nil
       (progn
@@ -334,15 +382,15 @@ Return a list consisting of that example.")
 	       t)))))
 
 
-;;;_  . Tests
+;;;_  . emtg:valuedef->property
 (put 'emtg:valuedef->property 'emt:test-thru 'emtg:define)
 
 
-;;;_  . Tests
+;;;_  . emtg:tagset-strip
 (put 'emtg:tagset-strip 'emt:test-thru 'emtg:tagset-strip-transparents)
 
 
-;;;_  . Tests
+;;;_  . emtg:tagset-strip-transparents
 (emt:deftest-3 emtg:tagset-strip-transparents
    (nil
       (progn
@@ -379,10 +427,10 @@ Return a list consisting of that example.")
 	       tagset)))))
 
 
-;;;_  . Tests
+;;;_  . emtg:define-f
 (put 'emtg:define-f 'emt:test-thru 'emtg:define)
 
-;;;_  . Tests
+;;;_  . emtg:define
 
 (emt:deftest-3 emtg:define
    (nil
@@ -945,7 +993,7 @@ other example.")
 			"Second of two mutually recursive items"))))))))
 
 
-;;;_  . Tests
+;;;_  . emtg:kv-matches-p
 (emt:deftest-3 emtg:kv-matches-p
    (nil
       (progn

@@ -177,7 +177,7 @@ This variable is `let' in appropriate scopes" )
 	   (let
 	      ((form
 		  (apply func d)))
-	      ;;$$CHECK ME
+	      ;;$$CHECK ME TYPEWISE
 	      (apply #'emt:see-group full-tagset () d)))
       calls
       'emtg:helper-rettype))
