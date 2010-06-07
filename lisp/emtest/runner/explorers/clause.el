@@ -44,63 +44,58 @@
 (defun emtt:explore-clause (clause)
    "Explore one clause in Emtest.
 This is the heart of Emtest exploration: A test itself."
-   (let
-      (
-	 (emt:testral:*parent-id* 0)
-	 ;;Counter to make unique IDs.  Although UUIDs are appealing,
-	 ;;they are slower to make.
-	 (emt:testral:*id-counter* 1)
-	 (emt:testral:*events-seen* (emtt:testral:create))
-	 (emt:testral:*path-prefix* ())
-	 (emtt:*abort-p* nil)
-	 ;;These badnesses are only for problems that manifest right
-	 ;;here, not lower down. 
-	 ;;$$RETHINK ME: Instead, be signalled to abort (that's
-	 ;;compatible with `emth:trap-errors' and if we see
-	 ;;emtt:*abort-p*, set that badness)
-	 (badnesses '()))
+   (emtt:testral:with
+      (let
+	 (
+	    (emtt:*abort-p* nil)
+	    ;;These badnesses are only for problems that manifest right
+	    ;;here, not lower down. 
+	    ;;$$RETHINK ME: Instead, be signalled to abort (that's
+	    ;;compatible with `emth:trap-errors' and if we see
+	    ;;emtt:*abort-p*, set that badness)
+	    (badnesses '()))
 
-      ;;This defines `props' in body.
-      (emtd:destructure-clause-3 clause
-	 ;;$$WRITE ME RIGHT - Dormancy is punted for now.
-	 ;;If it's quoted, it's dormant
-	 (if (not (eq governor 'quote))
-	    (let
-	       (
-		  (emt:trace:properties props) ;;OBSOLESCENT.
-		  (form-1
-		     (emts:add-surrounders 
-			form 
-			(emtts:get-surrounders props)
-			props)))
-	       ;;$$USE STANDARD
-	       ;;(emth:trap-errors (eval form-1))
-	       (condition-case err
-		  (eval form-1)
-		  (error
-		     (push
-			(emt:testral:make-error-raised
-			   :err err
-			   :badnesses '(ungraded))
-			emt:testral:*events-seen*)
-		     (push
-			'ungraded
-			badnesses))))))
+	 ;;This defines `props' in body.
+	 (emtd:destructure-clause-3 clause
+	    ;;$$WRITE ME RIGHT - Dormancy is punted for now.
+	    ;;If it's quoted, it's dormant
+	    (if (not (eq governor 'quote))
+	       (let
+		  (
+		     (emt:trace:properties props) ;;OBSOLESCENT.
+		     (form-1
+			(emts:add-surrounders 
+			   form 
+			   (emtts:get-surrounders props)
+			   props)))
+		  ;;$$USE STANDARD
+		  ;;(emth:trap-errors (eval form-1))
+		  (condition-case err
+		     (eval form-1)
+		     (error
+			(push
+			   (emt:testral:make-error-raised
+			      :err err
+			      :badnesses '(ungraded))
+			   emt:testral:*events-seen*)
+			(push
+			   'ungraded
+			   badnesses))))))
       
-      (emt:testral:make-suite
-	 :contents
-	 (emt:testral:make-note-list
-	    :notes
-	    ;;Reverse the note list so it's in the order that it
-	    ;;occured in.
-	    (nreverse emt:testral:*events-seen*))
-	 ;;Need to acquire this.  At least errors that we
-	 ;;handle here - which may be just overall abort.
-	 ;;See the call to `emth:trap-errors'
-	 :badnesses badnesses
-	 ;;$$WRITEME Use `emt:trace:properties' for this?  But change
-	 ;;its name?  (And watch the scoping)
-	 :info '())))
+	 (emt:testral:make-suite
+	    :contents
+	    (emt:testral:make-note-list
+	       :notes
+	       ;;Reverse the note list so it's in the order that it
+	       ;;occured in.
+	       (nreverse emt:testral:*events-seen*))
+	    ;;Need to acquire this.  At least errors that we
+	    ;;handle here - which may be just overall abort.
+	    ;;See the call to `emth:trap-errors'
+	    :badnesses badnesses
+	    ;;$$WRITEME Use `emt:trace:properties' for this?  But change
+	    ;;its name?  (And watch the scoping)
+	    :info '()))))
 ;;;_  . emtt:explore-literal-clause
 (defun emtt:explore-literal-clause (test-id props)
    ""
