@@ -415,7 +415,7 @@ PATTERN is headed by governor"
 (defun emtm:report-false (prestn-prefix str)
    "Report that a compare leaf was false"
    ;;For now, we just use a `doc' note.
-   (emt:testral:add-note
+   (emtt:testral:add-note
       (emt:testral:make-doc :str str)
       prestn-prefix))
 

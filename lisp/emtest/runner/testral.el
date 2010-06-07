@@ -38,20 +38,34 @@
 (declare (special emt:testral:*count*))
 
 ;;;_ , TESTRAL functions
-;;;_  . emt:testral:with
+;;;_  . emtt:testral:with
+(defmacro emtt:testral:with (&rest body)
+   ""
+   
+   `(let
+      (
+	 ;;$$OBSOLESCENT
+	 (emt:testral:*parent-id* 0)
+	 ;;Counter to make unique IDs.  Although UUIDs are appealing,
+	 ;;they are slower to make.
+	 (emt:testral:*id-counter* 1)
+	 (emt:testral:*events-seen* (emtt:testral:create))
+	 (emt:testral:*path-prefix* ()))
+       ,@body))
+
 ;;Macro: Run code with a TESTRAL receiver
 ;;$$WRITE ME
 ;;$$USE ME
 ;;See `emtt:explore-clause' in clause.el, which should use this
-;;;_  . emt:testral:create
+;;;_  . emtt:testral:create
 ;;
-(defsubst emt:testral:create ()
+(defsubst emtt:testral:create ()
    "Create a TESTRAL receiver - actually an empty list"
    ())
 
-;;;_  . emt:testral:add-note
+;;;_  . emtt:testral:add-note
 ;;Must "note" be a `emt:testral:base'?
-(defun emt:testral:add-note (note &optional name tags arglist)
+(defun emtt:testral:add-note (note &optional name tags arglist)
    "Add NOTE as a TESTRAL note
 NOTE must be a type derived from `emt:testral:base'
 NAME is a list of strings.
@@ -92,8 +106,8 @@ TAGS is not used yet, it controls what notes to add (For now, any note)."
 
 
 
-;;;_  . emt:testral:set-object-origin
-(defun emt:testral:set-object-origin (object origin)
+;;;_  . emtt:testral:set-object-origin
+(defun emtt:testral:set-object-origin (object origin)
    ""
 
    ;;Punt for now.  Later, store its identity on some sort of alist.

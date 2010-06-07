@@ -50,7 +50,7 @@ This is the heart of Emtest exploration: A test itself."
 	 ;;Counter to make unique IDs.  Although UUIDs are appealing,
 	 ;;they are slower to make.
 	 (emt:testral:*id-counter* 1)
-	 (emt:testral:*events-seen* (emt:testral:create))
+	 (emt:testral:*events-seen* (emtt:testral:create))
 	 (emt:testral:*path-prefix* ())
 	 (emtt:*abort-p* nil)
 	 ;;These badnesses are only for problems that manifest right

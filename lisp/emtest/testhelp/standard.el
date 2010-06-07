@@ -53,7 +53,7 @@
 ;;;###autoload
 (defun emt:doc (str &rest r)
    ""
-   (emt:testral:add-note
+   (emtt:testral:add-note
       (emt:testral:make-doc :str str)))
 
 ;;;_  . emt:stage
@@ -74,7 +74,7 @@
    `(emt:stage 
      ("Iteration" ;;Name
       ;;$$CHANGE ME This will become a parameter note
-      (emt:testral:add-note
+      (emtt:testral:add-note
        (emt:testral:make-doc 
 	:str 
 	(concat 
@@ -181,7 +181,7 @@
 	 ;;Create empty badnesses, just because `unwind-protect' must
 	 ;;see it
 	 (badnesses '()))
-      (emt:testral:add-note
+      (emtt:testral:add-note
 	 (emt:testral:make-check:push
 	    :info (list (list 'form form))
 	    :parent-id parent-id
