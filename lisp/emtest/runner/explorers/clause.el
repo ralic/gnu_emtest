@@ -83,11 +83,7 @@ This is the heart of Emtest exploration: A test itself."
       
 	 (emt:testral:make-suite
 	    :contents
-	    (emt:testral:make-note-list
-	       :notes
-	       ;;Reverse the note list so it's in the order that it
-	       ;;occured in.
-	       (nreverse emt:testral:*events-seen*))
+	    (emtt:testral:note-list)
 	    ;;Need to acquire this.  At least errors that we
 	    ;;handle here - which may be just overall abort.
 	    ;;See the call to `emth:trap-errors'

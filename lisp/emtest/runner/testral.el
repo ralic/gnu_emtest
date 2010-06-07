@@ -104,7 +104,14 @@ TAGS is not used yet, it controls what notes to add (For now, any note)."
 		    "A non-TESTRAL object was tried to be used as note"))))
 	 emt:testral:*events-seen*)))
 
-
+;;;_  . emtt:testral:note-list
+(defun emtt:testral:note-list ()
+   ""
+   (emt:testral:make-note-list
+      :notes
+      ;;Reverse the note list so it's in the order that it
+      ;;was received in.
+      (nreverse emt:testral:*events-seen*)))
 
 ;;;_  . emtt:testral:set-object-origin
 (defun emtt:testral:set-object-origin (object origin)
