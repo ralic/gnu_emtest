@@ -73,11 +73,10 @@ This is the heart of Emtest exploration: A test itself."
 		  (condition-case err
 		     (eval form-1)
 		     (error
-			(push
+			(emtt:testral:add-note
 			   (emt:testral:make-error-raised
 			      :err err
-			      :badnesses '(ungraded))
-			   emt:testral:*events-seen*)
+			      :badnesses '(ungraded)))
 			(push
 			   'ungraded
 			   badnesses))))))

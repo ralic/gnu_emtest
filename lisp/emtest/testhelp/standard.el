@@ -98,11 +98,10 @@
 	  ;;should push a dormancy note (here, not lower down, which
 	  ;;may be somehow wrong?)
 	  (error
-	     (push
+	     (emtt:testral:add-note
 		(emt:testral:make-error-raised
 		   :err err
-		   :badnesses '(ungraded))
-		emt:testral:*events-seen*)
+		   :badnesses '(ungraded)))
 	     (setq emtt:*abort-p* t)))))
 
 
