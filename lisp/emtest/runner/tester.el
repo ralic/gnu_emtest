@@ -55,20 +55,6 @@
    ""
    (report-func () :type (satisfies #'functionp)))
 
-
-;;;_ , Special variables
-;;;_  . emt:trace:properties
-;;This belongs somewhere that both runner and testhelp can see.
-;;Right now, it's used for the `emt:persist' testhelp.
-;;OBSOLESCENT.  
-(declare (special emt:trace:properties))
-;;;_  . emt:testral:*events-seen*
-;;$$MOVE ME
-;;These belong somewhere that both runner and testhelp can see.
-(declare (special emt:testral:*events-seen*))
-(declare (special emt:testral:*path-prefix*))
-(declare (special emt:testral:*count*))
-
 ;;;_ , test finder
 
 ;;;_  . Pending list
