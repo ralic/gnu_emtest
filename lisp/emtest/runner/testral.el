@@ -104,6 +104,15 @@ TAGS is not used yet, it controls what notes to add (For now, any note)."
 		    "A non-TESTRAL object was tried to be used as note"))))
 	 emt:testral:*events-seen*)))
 
+;;;_  . emtt:testral:report-false
+(defun emtt:testral:report-false (prestn-prefix str)
+   "Report that a compare leaf was false"
+   ;;For now, we just use a `doc' note.
+   (emtt:testral:add-note
+      (emt:testral:make-doc :str str)
+      prestn-prefix))
+
+
 ;;;_  . emtt:testral:note-list
 (defun emtt:testral:note-list ()
    ""

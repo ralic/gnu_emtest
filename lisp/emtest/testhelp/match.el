@@ -411,14 +411,6 @@ PATTERN is headed by governor"
    #'emtm:govs:eval)
 
 ;;;_ , Build form 
-;;;_  . emtm:report-false
-(defun emtm:report-false (prestn-prefix str)
-   "Report that a compare leaf was false"
-   ;;For now, we just use a `doc' note.
-   (emtt:testral:add-note
-      (emt:testral:make-doc :str str)
-      prestn-prefix))
-
 
 ;;;_  . emtm:build-form-recurse
 (defun emtm:build-form-recurse (formdata-list core)
@@ -457,7 +449,7 @@ PATTERN is headed by governor"
 		   ,(emtm:test-form-data->form first)
 		   ,rest
 		   (ignore
-		      (emtm:report-false
+		      (emtt:testral:report-false
 			 ',(emtm:test-form-data->prestn-path first)
 			 "Was false"))))))
       
