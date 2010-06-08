@@ -129,6 +129,7 @@
 	       (if old-cell
 		  ;;Cell is already present.  Alter it.  Still replace
 		  ;;the node in the pathtree.
+		  ;;$$RETHINK ME  Maybe should just dirty it in pathtree.
 		  (progn
 		     (setf
 			(emt:view:suite-newstyle->testrun-id old-cell)
