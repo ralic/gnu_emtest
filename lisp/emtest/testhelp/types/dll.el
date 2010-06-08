@@ -50,13 +50,12 @@
    ""
    (and
       (dll-p obj)
-      (catch
-	 'dll-repeat:not-type
+      (catch 'dll-repeat:not-type
 	 (progn
 	    (dll-map
 	       (lambda (item)
 		  (unless
-		     (typep item type)
+		     (emty:typep-noted item type "el?")
 		     (throw 'dll-repeat:not-type nil)))
 	       obj)
 	    t))))
