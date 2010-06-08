@@ -136,6 +136,18 @@
       ;;(emt:funcall #'typep obj (car r))
       (typep obj (car r))))
 
+;;;_ , emty:typep-noted
+(defun emty:typep-noted (obj spec name)
+   ""
+   
+   (let
+      ((emty:*path* (append emty:*path* (list name))))
+      (if
+	 (typep obj spec)
+	 t
+	 (ignore
+	    (emtt:testral:report-false emty:*path* "Wrong type")))))
+
 
 ;;;_ , Entry point emty:check-f
 ;;;###autoload
