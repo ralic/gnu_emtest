@@ -146,7 +146,7 @@ LIBRARY is the absolute file name of the library"
    ""
    (emtl:dispatch-normal
       (emthow:make-form
-	 :test-form (list nil form))
+	 :test-form (list nil expression))
       (list "expression")))
 
 ;;;_ , emt:eval-last-sexp
