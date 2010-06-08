@@ -144,11 +144,11 @@ LIBRARY is the absolute file name of the library"
 ;;;_ , emtt:eval
 (defun emtt:eval (expression)
    ""
-   
-   (let*
-      ()
-      
-      ))
+   (emtl:dispatch-normal
+      (emthow:make-form
+	 :test-form (list nil form))
+      (list "expression")))
+
 ;;;_ , emt:eval-last-sexp
 ;;;###autoload
 (defun emt:eval-last-sexp (arg)
