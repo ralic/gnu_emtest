@@ -282,7 +282,7 @@ Response: The initial elements must match them."
 
    (  "Sanity checks for `cl-make-type-test'."
       (let
-	 ((emty:use t))
+	 ((emty:*use* t))
 	 (emth:let-noprops
 	    '(struct1)
 	    (defstruct struct1
@@ -321,14 +321,14 @@ Response: Typep passes it no matter what's in the field."
 	 t))
    
    (  "Situation: A struct definition with a slot type spec.
-`typep' is used and the flag `emty:use' has its global
+`typep' is used and the flag `emty:*use*' has its global
 value of `nil.'
 Response: Typep passes it no matter what's in the field."
       (emth:let-noprops
 	 '(struct1)
 	 (defstruct struct1
 	    (field1 nil :type integer))
-	 (assert (not emty:use))
+	 (assert (not emty:*use*))
 	 (assert
 	    (typep
 	       (make-struct1
@@ -338,10 +338,10 @@ Response: Typep passes it no matter what's in the field."
 	 t))
 
    (  "Situation: A struct definition with a slot type spec.
-`typep' is used, and the flag `emty:use' is let non-nil.
+`typep' is used, and the flag `emty:*use*' is let non-nil.
 Response: Typep passes it no matter what's in the field."
       (let
-	 ((emty:use t))
+	 ((emty:*use* t))
 	 (emth:let-noprops
 	    '(struct1)
 	    (defstruct struct1

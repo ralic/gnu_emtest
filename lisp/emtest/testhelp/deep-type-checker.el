@@ -34,9 +34,9 @@
 
 ;;;_. Body
 ;;;_ , Special variables
-;;;_  . emty:use
+;;;_  . emty:*use*
 
-(defconst emty:use nil 
+(defconst emty:*use* nil 
    "Control variable for deep checking.  Always globally nil." )
 ;;;_  . emty:*path*
 (defvar emty:*path* () 
@@ -154,7 +154,7 @@ Here the args are values, not forms."
 (defmacro emty:check (form type &optional string)
    "Return non-nil if FORM evaluates to a value of type TYPE."
    `(let
-       ((emty:use t))
+       ((emty:*use* t))
        (check-type ,form ,type ,string)))
 ;;;_ , emty:get-type-pred-sym
 ;;Excerpted from cl-macs.  Don't need the other branches.
@@ -175,7 +175,7 @@ its slots, recursively."
       (funcall 
 	 (emty:get-type-pred-sym type-sym)
 	 val)
-      (if emty:use
+      (if emty:*use*
 	 (let
 	    (  (slots (get type-sym 'cl-struct-slots)))
 	    (if slots
