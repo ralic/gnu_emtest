@@ -616,6 +616,8 @@ Object has the right type for that slot.")
 			   (make-struct1 :field1 nil)))))
 	       struct1)
 	    t)))
+   ;;$$WRITE ME A test of creating the right TESTRAL notes.
+   '  ;;OBSOLETE
    (nil
       (progn
 	 (emt:doc "Proves: Adds a result of the appropriate type to

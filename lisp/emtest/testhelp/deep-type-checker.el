@@ -65,11 +65,11 @@
       (consp obj)
       (if (eq a '*) t
 	 ;;(emt:funcall #'typep (car obj) a)
-	 (typep (car obj) a)
+	 (emty:typep-noted (car obj) a "car")
 	 )
       (if (eq b '*) t
 	 ;;(emt:funcall #'typep (cdr obj) b)
-	 (typep (cdr obj) b)
+	 (emty:typep-noted (cdr obj) b "cdr")
 	 )))
 
 ;;;_  . type list
@@ -92,7 +92,8 @@
 	    (eq (car el-type-list) '*)
 	    t
 	    ;;(emt:funcall #'typep (car obj) (car el-type-list))
-	    (typep (car obj) (car el-type-list))
+	    ;;$$IMPROVE ME Would be nice to make this say element number
+	    (emty:typep-noted (car obj) (car el-type-list) "el?")
 	    )
 	 (emty:list-f (cdr obj) (cdr el-type-list)))))
 
@@ -115,9 +116,9 @@
       (and
 	 (consp obj)
 	 ;;(emt:funcall #'typep (car obj) el-type)
-	 (typep (car obj) el-type)
-	 
-	 (typep (cdr obj) `(repeat ,el-type)))))
+	 (emty:typep-noted (car obj) el-type "car")
+	 ;;$$IMPROVE ME Would be nice to make this say element number
+	 (emty:typep-noted (cdr obj) `(repeat ,el-type) "cdr"))))
 
 ;;;_  . type list*
 (deftype list* (&rest r)
@@ -130,11 +131,12 @@
    ""
    (if (cdr r)
       (and
+	 ;;$$IMPROVE ME Would be nice to make this say element number
 	 ;;(emt:funcall #'typep (car obj) (car r))
-	 (typep (car obj) (car r))
+	 (emty:typep-noted (car obj) (car r) "car")
 	 (emty:list*-f (cdr obj) (cdr r)))
       ;;(emt:funcall #'typep obj (car r))
-      (typep obj (car r))))
+      (emty:typep-noted obj (car r) "dotted-tail")))
 
 ;;;_ , emty:typep-noted
 (defun emty:typep-noted (obj spec name)
@@ -166,7 +168,8 @@ Here the args are values, not forms."
 (defmacro emty:check (form type &optional string)
    "Return non-nil if FORM evaluates to a value of type TYPE."
    `(let
-       ((emty:*use* t))
+       ((emty:*use* t)
+	  (emty:*path* '("emty:check")))
        (check-type ,form ,type ,string)))
 ;;;_ , emty:get-type-pred-sym
 ;;Excerpted from cl-macs.  Don't need the other branches.
@@ -203,7 +206,8 @@ its slots, recursively."
 					   &key type &allow-other-keys)
 				   (if type
 				      ;;(emt:funcall #'typep slot-val type)
-				   (typep slot-val type)
+				   (emty:typep-noted slot-val type 
+				      (symbol-name slot-name))
 				      ;;A typeless slot accepts anything
 				      t)))
 			     slot-spec)
