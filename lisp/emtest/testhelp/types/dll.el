@@ -55,7 +55,7 @@
 	    (dll-map
 	       (lambda (item)
 		  (unless
-		     (emty:typep-noted item type "el?")
+		     (emty:typep-annoted item type "el?")
 		     (throw 'dll-repeat:not-type nil)))
 	       obj)
 	    t))))
