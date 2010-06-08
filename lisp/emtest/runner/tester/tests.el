@@ -110,10 +110,7 @@ Behavior: `utim:get-properties' returns the relevant property.")
 	       '(error "An example error")
 	       #'(lambda
 		    (report)
-		    (check-type report emt:testral:report)
-		    (let
-		       ((emty:use t))
-		       (check-type report emt:testral:report))))
+		    (emty:check report emt:testral:report)))
 	    t))))
 
 
