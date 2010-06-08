@@ -141,6 +141,39 @@ LIBRARY is the absolute file name of the library"
 	       :load-name library)))
       (emtl:dispatch-normal test-id nil receiver)))
 
+;;;_ , emtt:eval
+(defun emtt:eval (expression)
+   ""
+   
+   (let*
+      ()
+      
+      ))
+;;;_ , emt:eval-last-sexp
+;;;###autoload
+(defun emt:eval-last-sexp (arg)
+   ""
+   
+   (interactive
+      (list (preceding-sexp)))
+   ;;Unlike eval-last-sexp, this does not try to print value in
+   ;;minibuffer, nor in current buffer, nor optionally trigger the
+   ;;debugger.
+   (emtt:eval arg))
+
+;;;_ , emt:eval-expression
+;;;###autoload
+(defun emt:eval-expression (arg &optional insert-value)
+   ""
+   ;;Interactive form borrowed from "simple.el"
+   (interactive
+      (list (let ((minibuffer-completing-symbol t))
+	       (read-from-minibuffer "Eval: "
+		  nil read-expression-map t
+		  'read-expression-history))
+	 current-prefix-arg))
+   ;;Unlike eval-expression, this does not do the extra stuff
+   (emtt:eval arg))
 
 ;;;_. Footers
 ;;;_ , Provides
