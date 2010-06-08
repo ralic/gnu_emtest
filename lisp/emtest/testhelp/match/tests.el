@@ -28,6 +28,7 @@
 ;;;_ , Requires
 
 (require 'emtest/runner/define)
+(require 'emtest/runner/keepup)
 (require 'emtest/testhelp/match)
 (require 'emtest/testhelp/match/testhelp)
 (require 'emtest/testhelp/standard)

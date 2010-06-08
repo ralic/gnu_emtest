@@ -136,45 +136,6 @@ of `clause-list' as bound by `emtt:destructure-suite'.
    (declare (debug (sexp body)))
    `(destructuring-bind (governor &optional form) ,clause
        ,@body))
-;;;_ , Keep-up-to-date definitions
-
-;;$$MOVE ME maybe Is there a better place for this?  It's not just
-;;testhelp because suite launches use it.  An associated define file?
-;;;_  . emt:keep-up-to-date-x
-(defun emt:keep-up-to-date-x (sym-list form-list)
-   "See emt:keep-up-to-date"
-   (dolist (sym sym-list)
-      (put sym 'emt:keep-up-to-date
-	 (list
-	    (symbol-function sym)
-	    (mapcar
-	       #'(lambda (form)
-		    (list nil form))
-	       form-list)))))
-;;;_  . emt:keep-up-to-date
-(defmacro emt:keep-up-to-date (sym-list &rest form-list)
-   "Set up to keep definitions up to date with the functions of
-   SYM-LIST.
-FORM-LIST should be a list of forms that each define something."
-   
-   `(progn
-       (emt:keep-up-to-date-x ',sym-list ',form-list)
-       ,@form-list))
-
-;;;_  . emtd:update-for-sym
-(defun emtd:update-for-sym (sym)
-   "Update any keep-up-to-date definitions for SYM."
-
-   (let
-      ((data (get sym 'emt:keep-up-to-date)))
-      (when data
-	 (let
-	    ((forms (second data)))
-	    (unless (eq (first data) (symbol-function sym))
-	       (mapcar
-		  #'(lambda (x)
-		       (eval (second x)))
-		  forms))))))
 
 
 ;;;_. Footers
