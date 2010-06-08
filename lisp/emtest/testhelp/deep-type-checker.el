@@ -64,9 +64,9 @@
    (and
       (consp obj)
       (if (eq a '*) t
-	 (emty:typep-noted (car obj) a "car"))
+	 (emty:typep-annoted (car obj) a "car"))
       (if (eq b '*) t
-	 (emty:typep-noted (cdr obj) b "cdr"))))
+	 (emty:typep-annoted (cdr obj) b "cdr"))))
 
 
 ;;;_  . type list
@@ -88,7 +88,7 @@
 	 (if
 	    (eq (car el-type-list) '*)
 	    t
-	    (emty:typep-noted (car obj) (car el-type-list) 
+	    (emty:typep-annoted (car obj) (car el-type-list) 
 	       (int-to-string index)))
 	 (emty:list-f (cdr obj) (cdr el-type-list) (1+ index)))))
 
@@ -110,7 +110,7 @@
       (null obj)
       (and
 	 (consp obj)
-	 (emty:typep-noted (car obj) el-type (int-to-string index))
+	 (emty:typep-annoted (car obj) el-type (int-to-string index))
 	 (emty:repeat-f (cdr obj) el-type (1+ index)))))
 
 ;;;_  . type list*
@@ -124,12 +124,12 @@
    ""
    (if (cdr r)
       (and
-	 (emty:typep-noted (car obj) (car r) (int-to-string index))
+	 (emty:typep-annoted (car obj) (car r) (int-to-string index))
 	 (emty:list*-f (cdr obj) (cdr r)) (1+ index))
-      (emty:typep-noted obj (car r) "dotted-tail")))
+      (emty:typep-annoted obj (car r) "dotted-tail")))
 
-;;;_ , emty:typep-noted
-(defun emty:typep-noted (obj spec name)
+;;;_ , emty:typep-annoted
+(defun emty:typep-annoted (obj spec name)
    ""
    
    (let
@@ -195,7 +195,7 @@ its slots, recursively."
 				(lambda (slot-name &optional init-form 
 					   &key type &allow-other-keys)
 				   (if type
-				      (emty:typep-noted slot-val type 
+				      (emty:typep-annoted slot-val type 
 					 (symbol-name slot-name))
 				      ;;A typeless slot accepts anything
 				      t)))
