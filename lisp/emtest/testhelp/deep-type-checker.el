@@ -64,13 +64,10 @@
    (and
       (consp obj)
       (if (eq a '*) t
-	 ;;(emt:funcall #'typep (car obj) a)
-	 (emty:typep-noted (car obj) a "car")
-	 )
+	 (emty:typep-noted (car obj) a "car"))
       (if (eq b '*) t
-	 ;;(emt:funcall #'typep (cdr obj) b)
-	 (emty:typep-noted (cdr obj) b "cdr")
-	 )))
+	 (emty:typep-noted (cdr obj) b "cdr"))))
+
 
 ;;;_  . type list
 
@@ -78,11 +75,11 @@
 (deftype list (&rest el-type-list) 
    `(satisfies 
        (lambda (obj)
-	  (emty:list-f obj ',el-type-list))))
+	  (emty:list-f obj ',el-type-list 0))))
 
 ;;;_   , Helper emty:list-f
 
-(defun emty:list-f (obj el-type-list)
+(defun emty:list-f (obj el-type-list index)
    ""
    (if
       (null el-type-list)
@@ -91,11 +88,9 @@
 	 (if
 	    (eq (car el-type-list) '*)
 	    t
-	    ;;(emt:funcall #'typep (car obj) (car el-type-list))
-	    ;;$$IMPROVE ME Would be nice to make this say element number
-	    (emty:typep-noted (car obj) (car el-type-list) "el?")
-	    )
-	 (emty:list-f (cdr obj) (cdr el-type-list)))))
+	    (emty:typep-noted (car obj) (car el-type-list) 
+	       (int-to-string index)))
+	 (emty:list-f (cdr obj) (cdr el-type-list) (1+ index)))))
 
 ;;;_  . type repeat
 
@@ -105,37 +100,32 @@
       '(or null cons)
       `(satisfies 
 	  (lambda (obj)
-	     (emty:repeat-f obj ',el-type)))))
+	     (emty:repeat-f obj ',el-type 0)))))
 
 ;;;_   , Helper emty:repeat-f
 
-(defun emty:repeat-f (obj el-type)
+(defun emty:repeat-f (obj el-type index)
    ""
    (or
       (null obj)
       (and
 	 (consp obj)
-	 ;;(emt:funcall #'typep (car obj) el-type)
-	 (emty:typep-noted (car obj) el-type "car")
-	 ;;$$IMPROVE ME Would be nice to make this say element number
-	 (emty:typep-noted (cdr obj) `(repeat ,el-type) "cdr"))))
+	 (emty:typep-noted (car obj) el-type (int-to-string index))
+	 (emty:repeat-f (cdr obj) el-type (1+ index)))))
 
 ;;;_  . type list*
 (deftype list* (&rest r)
    `(satisfies 
        (lambda (obj)
-	  (emty:list*-f obj ',r))))
+	  (emty:list*-f obj ',r 0))))
 
 ;;;_  . Helper emty:list*-f
-(defun emty:list*-f (obj r)
+(defun emty:list*-f (obj r index)
    ""
    (if (cdr r)
       (and
-	 ;;$$IMPROVE ME Would be nice to make this say element number
-	 ;;(emt:funcall #'typep (car obj) (car r))
-	 (emty:typep-noted (car obj) (car r) "car")
-	 (emty:list*-f (cdr obj) (cdr r)))
-      ;;(emt:funcall #'typep obj (car r))
+	 (emty:typep-noted (car obj) (car r) (int-to-string index))
+	 (emty:list*-f (cdr obj) (cdr r)) (1+ index))
       (emty:typep-noted obj (car r) "dotted-tail")))
 
 ;;;_ , emty:typep-noted
@@ -205,9 +195,8 @@ its slots, recursively."
 				(lambda (slot-name &optional init-form 
 					   &key type &allow-other-keys)
 				   (if type
-				      ;;(emt:funcall #'typep slot-val type)
-				   (emty:typep-noted slot-val type 
-				      (symbol-name slot-name))
+				      (emty:typep-noted slot-val type 
+					 (symbol-name slot-name))
 				      ;;A typeless slot accepts anything
 				      t)))
 			     slot-spec)
