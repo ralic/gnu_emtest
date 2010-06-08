@@ -33,10 +33,14 @@
 
 
 ;;;_. Body
-;;;_ , Control variable
+;;;_ , Special variables
+;;;_  . emty:use
 
 (defconst emty:use nil 
    "Control variable for deep checking.  Always globally nil." )
+;;;_  . emty:*path*
+(defvar emty:*path* () 
+   "Special variable giving the prefix" )
 
 ;;;_ , Type specs
 ;;;_  . type bool
