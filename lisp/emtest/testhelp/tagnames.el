@@ -603,7 +603,7 @@ Takes keywords
 		kv-list))
 	  ',kv-list)))
 ;;;_  . emtg:value+
-(defun emtg:value+ (examples kv-list)
+(defun emtg:value+ (kv-list &optional examples)
    "Return the value of the respective example.
 This mode is intended for combining computed tagsets.
 EXAMPLES can be nil or the name of a tagged set.
