@@ -55,7 +55,7 @@
       ;;things later.  Similarly, `what-test' is needed but a PITA.
       ;;It was needed so that we could see suites, which aren't tagged
       ;;for that.
-      (transparent-tags () (type subtype name role what-test))
+      (transparent-tags () (type subtype name role what-test tagged-by))
       (group
 	 ;; Notes alone
 	 ((type note)(subtype alone))
@@ -129,26 +129,51 @@
 	       :notes
 	       (list
 		  (emtg (type note)(subtype alone)(name error-1))))))
+
       (group
-	 ;; Badness lists for suites
-	 ;; These correspond to suites.  
-	 ((type suite-badness-list))
+	 ((type suite-own-badness-list))
 	 (type-must-be () (repeat emt:result-badness))
 	 (item
 	    ((name test-bad))
-	    '(ungraded))
+	    '())
       
 	 (item
 	    ((name test-passes))
 	    '())
       
-	 ;;Suite reporting child suites (here, child is just an indexed
-	 ;;clause)
 	 (item
 	    ((name has-children-1))
+	    '())
+
+	 (item
+	    ((name gone))
+	    ;;$$REVIEWME This representation is tentative.
+	    (list
+	       '(bad-before-test not-found))))
+
+      (group
+	 ;; Badness lists for suites
+	 ;; These correspond to suites.  
+	 ((type suite-badness-list))
+	 (type-must-be () (repeat emt:result-badness))
+
+	 (item
+	    ((name test-bad)(tagged-by name))
 	    '(ungraded))
+      
+	 (item
+	    ((name test-passes)(tagged-by name))
+	    '())
+      
+	 (item
+	    ((name has-children-1)(tagged-by name))
+	    '(ungraded))
+	 (item
+	    ((name gone)(tagged-by name))
+	    (emtg (type suite-own-badness-list)(name gone)))
 
 	 ;;For the sequence-of-reports tests (These alias other suite items)
+	 ;;$$OBSOLESCENT in favor of mapping
 	 (item
 	    ((what-test test-1)(role original-add))
 	    (emtg (type suite-badness-list)(name test-bad)))
@@ -158,9 +183,7 @@
 
 	 (item
 	    ((what-test test-1)(role remove-previous))
-	    ;;$$REVIEWME This representation is tentative.
-	    (list
-	       '(bad-before-test not-found)))
+	    (emtg (type suite-own-badness-list)(name gone)))
       
 	 (item
 	    ((what-test test-2))
@@ -168,7 +191,7 @@
 
       (group
 	 ;; Suites
-	 ((type suite))
+	 ((type suite)(tagged-by name))
 	 (type-must-be () emt:testral:suite)
 	 (item
 	    ((name test-bad))
@@ -205,17 +228,8 @@
 	       :badnesses 
 	       (emtg (type suite-badness-list)(name has-children-1))
 	       :info ()))
-
-	 ;;For the sequence-of-reports tests (These alias other suite items)
 	 (item
-	    ((what-test test-1)(role original-add))
-	    (emtg (type suite)(name test-bad)))
-	 (item
-	    ((what-test test-1)(role replace))
-	    (emtg (type suite)(name test-passes)))
-
-	 (item
-	    ((what-test test-1)(role remove-previous))
+	    ((name gone))
 	    (emt:testral:make-suite
 	       :contents (emtg 
 			    (type testral-note-list)
@@ -225,11 +239,29 @@
 	       (emtg (type suite-badness-list)
 		  (what-test test-1)
 		  (role remove-previous))
-	       :info ()))
+	       :info ())))
+      
+      (group
+	 ;;$$OBSOLESCENT in favor of mapping
+	 ;; Suites aliases
+	 ;;For the sequence-of-reports tests
+	 ((type suite)(tagged-by role&test))
+	 (type-must-be () emt:testral:suite)
+	 (item
+	    ((what-test test-1)(role original-add))
+	    (emtg (type suite)(name test-bad)))
+	 (item
+	    ((what-test test-1)(role replace))
+	    (emtg (type suite)(name test-passes)))
+
+	 (item
+	    ((what-test test-1)(role remove-previous))
+	    (emtg (type suite)(name gone)))
       
 	 (item
 	    ((what-test test-2))
 	    (emtg (type suite)(name test-passes))))
+
       (group
 	 ((type presentation-name))
 	 (item
@@ -316,7 +348,31 @@
 	 (item
 	    ((role remove-previous))
 	    "1"))
-   
+      
+      ;;Mapping between name tagging and role&test tagging.  Tests use
+      ;;this to get appropriate view-types when they iterate over
+      ;;names.
+      (group
+	 ((type map:name->role&test))
+	 ;;$$IMPROVE ME type can become more specific when it is made
+	 ;;more specific in tagnames.el
+	 (type-must-be () (repeat *))
+
+	 (item ((name test-bad))
+	    '((what-test test-1)(role original-add)))
+	 (item ((name test-passes))
+	    '((what-test test-1)(role replace)))
+
+	 (item ((name gone))
+	    '((what-test test-1)(role remove-previous)))
+      
+	 (item ((name test-passes))
+	    '((what-test test-2))))
+      
+      ;;$$IMPROVE ME Add a mapping from role&test to name tag.  Then
+      ;;the mapping `map:name->role&test' would be cted from it.
+      ;;Reports would use this to build themselves from parts.
+
       (group
 	 ;; Report
 	 ((type report))
