@@ -358,15 +358,13 @@
 	 ;;more specific in tagnames.el
 	 (type-must-be () (repeat (repeat *)))
 
-	 (item ((name test-bad))
+	 (item ((result-name test-bad))
 	    '(((what-test test-1)(role original-add))))
-	 (item ((name test-passes))
+	 (item ((result-name test-passes))
 	    '(((what-test test-1)(role replace))))
-
-	 (item ((name gone))
+	 (item ((result-name gone))
 	    '(((what-test test-1)(role remove-previous))))
-      
-	 (item ((name test-passes))
+	 (item ((result-name test-passes))
 	    '(((what-test test-2)))))
       
       ;;$$IMPROVE ME Add a mapping from role&test to name tag.  Then
