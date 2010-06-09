@@ -34,6 +34,7 @@
 (require 'emtest/runner/surrounders)
 (require 'emtest/runner/define)
 (require 'emtest/runner/testral)
+(require 'emtest/runner/keepup)
 
 ;;;_. Body
 ;;;_ , Structures

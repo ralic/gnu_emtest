@@ -31,6 +31,7 @@
 
 (require 'emtest/common/testral-types)
 (require 'emtest/runner/define)
+(require 'emtest/runner/keepup)
 (require 'emtest/common/result-types)
 
 
