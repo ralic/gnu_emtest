@@ -361,15 +361,25 @@
 	 (item ((result-name test-bad))
 	    '(((what-test test-1)(role original-add))))
 	 (item ((result-name test-passes))
-	    '(((what-test test-1)(role replace))))
+	    '(((what-test test-1)(role replace))
+		((what-test test-2))))
 	 (item ((result-name gone))
-	    '(((what-test test-1)(role remove-previous))))
-	 (item ((result-name test-passes))
-	    '(((what-test test-2)))))
+	    '(((what-test test-1)(role remove-previous)))))
       
       ;;$$IMPROVE ME Add a mapping from role&test to name tag.  Then
       ;;the mapping `map:name->role&test' would be cted from it.
       ;;Reports would use this to build themselves from parts.
+
+      ;;Largely exists because "gone" won't have a view-node
+      (group
+	 ((type has-viewnode-p))
+	 (type-must-be () bool)
+	 (item ((result-name test-bad))
+	    t)
+	 (item ((result-name test-passes))
+	    t)
+	 (item ((result-name gone))
+	    nil))
 
       (group
 	 ;; Report

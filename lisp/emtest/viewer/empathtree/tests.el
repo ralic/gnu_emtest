@@ -43,14 +43,15 @@
 	    (let
 	       ((role&test-tags
 		   (car (emtg (type map:name->role&test-list)))))
-	       (when 
-		  role&test-tags
+	       (when (emtg (type has-viewnode-p))
 		  (assert
 		     (equal
 			(emtvr:get-subtree-badnesses
 			   (emtg:value+ nil
 			      `((type emtvr:alist-item) ,@role&test-tags)))
-			(emtg (type suite-own-badness-list)))
+			(emtg:value+ nil 
+			   `((type suite-own-badness-list)
+			       (name ,result-name))))
 		     t)))))))
 
 
@@ -61,23 +62,23 @@
 (emt:deftest-3 emtvr:get-subtree-badnesses
    (nil
       (emtg:with emtvr:thd ()
-	 (emtg:narrow 
-	    ((result-name test-bad))
+	 (emtg:map result-name result-name
 	    (emt:doc "Param: A known view-node.")
 	    (emt:doc "Operation: Get subtree badnesses.")
 	    (emt:doc "Response: The sum of badnesses is as expected.")
 	    (let
 	       ((role&test-tags
 		   (car (emtg (type map:name->role&test-list)))))
-	       (assert
-		  (equal
-		     (emtvr:get-subtree-badnesses
+	       (when (emtg (type has-viewnode-p))
+		  (assert
+		     (equal
+			(emtvr:get-subtree-badnesses
+			   (emtg:value+ nil
+			      `((type emtvr:alist-item) ,@role&test-tags)))
 			(emtg:value+ nil
-			   `((type emtvr:alist-item) ,@role&test-tags)))
-		     (emtg:value+ nil
-			`((type suite-badness-list)
-			    (name ,'test-bad))))
-		  t))))))
+			   `((type suite-badness-list)
+			       (name ,'test-bad))))
+		     t)))))))
 
 
 
