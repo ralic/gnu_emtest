@@ -59,19 +59,25 @@
 (emt:deftest-3 emtvr:get-subtree-badnesses
    (nil
       (emtg:with emtvr:thd ()
-	 ;;$$IMPROVE ME Might split suite examples etc by indexing
-	 ;;mode, so we can iterate over suites.
-	 (emtg:narrow ((role original-add) (what-test test-1))
+	 (emtg:narrow 
+	    ((name test-bad))
+	    ;;((role original-add) (what-test test-1))
 	    (emt:doc "Param: A known view-node.")
 	    (emt:doc "Operation: Get subtree badnesses.")
 	    (emt:doc "Response: The sum of badnesses is as expected.")
-	    (assert
-	       (equal
-		  (emtvr:get-subtree-badnesses
-		     (emtg 
-			(type emtvr:alist-item)))
-		  (emtg (type suite-badness-list)))
-	       t)))))
+	    (let
+	       ((role&test-tags
+		   (car (emtg (type map:name->role&test-list)))))
+	       (assert
+		  (equal
+		     (emtvr:get-subtree-badnesses
+			;;$$SUPPORT ME NICELY
+			(emtg:get-value emtg:all-examples
+			   (append
+			      '((type emtvr:alist-item))
+			      role&test-tags)))
+		     (emtg (type suite-badness-list)))
+		  t))))))
 
 
 
