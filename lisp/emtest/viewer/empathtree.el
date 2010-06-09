@@ -74,8 +74,50 @@
 	    #'emt:testral:base->badnesses
 	    ;;Was `emt:view:suite-newstyle->start'.
 	    (emt:view:TESTRAL-unexpanded->start data)))))
+;;;_  . emtvr:badnesses:get-own
+(defun emtvr:badnesses:get-own (node)
+   "Get a node's own badnesses (as opposed to its' notes' badnesses)"
+   (check-type node emt:view:presentable)
+   (etypecase node
+      (emtvp:node '())
+      (emt:view:suite-newstyle
+	 (let
+	    ((s ;;node
+		(emt:view:suite-newstyle->result node)))
+	    (etypecase s 
+	       (null) 
+	       (emt:testral:suite
+		  (emt:testral:suite->badnesses s))
+	       (emt:testral:test-runner-info
+		  '()))))
+      (emt:view:TESTRAL '())
+      (emt:view:TESTRAL-unexpanded
+	 (emtvr:sum-testral-note-badnesses node))
+      (emt:view:presentable '())))
+
+;;;_  . emtvr:get-subtree-badnesses
+(defun emtvr:get-subtree-badnesses (node)
+   ""
+   (check-type node emt:view:presentable)
+   (let*
+      (
+	 (input-badnesses
+	    (mapcar
+	       #'(lambda (child)
+		    (emt:view:presentable->sum-badnesses
+		       child))
+	       (emtvp:node->children node)))
+
+	 ;;Accessor
+	 (own-badnesses
+	    (emtvr:badnesses:get-own node)))
+      (emtvr:combine-badnesses
+	 (cons
+	    own-badnesses
+	    input-badnesses))))
+
 ;;;_  . emtvr:sum-node-badnesses
-;;$$RENAME `emtvr:sum-viewnode-badnesses'
+;;$$RENAME `emtvr:cache-badnesses'
 ;;Design: Maybe split into accessor and summer.  Accessor should be
 ;;conformer: It will set its own node right after children are all
 ;;made right.
@@ -85,6 +127,7 @@
    ""
    (check-type node emtvp:node)
    (when (typep node 'emt:view:presentable)
+      '
       (let*
 	 (
 	    (data node) ;; (emtvp:node->data node)
@@ -128,7 +171,12 @@
 	 (setf
 	    (emt:view:presentable->sum-badnesses data)
 	    sum-badnesses)
-	 sum-badnesses)))
+	 sum-badnesses)
+
+      (setf
+	 (emt:view:presentable->sum-badnesses node)
+	 (emtvr:get-subtree-badnesses node))))
+
 
 
 
