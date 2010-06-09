@@ -603,14 +603,13 @@ Takes keywords
 		kv-list))
 	  ',kv-list)))
 ;;;_  . emtg:value+
-(defun emtg:value+ (examples &rest kv-lists)
+(defun emtg:value+ (examples kv-list)
    "Return the value of the respective example.
 This mode is intended for combining computed tagsets.
-KV-LISTS can be any number of calculated kv-lists.
-EXAMPLES can be nil or the name of a tagged set."
+EXAMPLES can be nil or the name of a tagged set.
+KV-LIST is a calculated kv-list.  It can use backquote syntax."
    
-   (emtg:get-value (or examples emtg:all-examples)
-      (apply #'append kv-lists)))
+   (emtg:get-value (or examples emtg:all-examples) kv-list))
 
 ;;;_ , Narrowing the tagset
 ;;;_  . emtg:narrow-f

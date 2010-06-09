@@ -34,23 +34,25 @@
 ;;;_. Body
 ;;;_ , emtvr:badnesses:get-own
 (emt:deftest-3 emtvr:badnesses:get-own
-   ;;Irrelevant for the moment because no example suites have
-   ;;intrinsic badnesses yet.
-   ;;$$WRITE MY EXAMPLES
-   '
    (nil
       (emtg:with emtvr:thd ()
-	 (emtg:narrow ((role original-add) (what-test test-1))
+	 (emtg:map result-name result-name
 	    (emt:doc "Param: A known view-node.")
-	    (emt:doc "Operation: Get subtree badnesses.")
-	    (emt:doc "Response: The sum of badnesses is as expected.")
-	    (assert
-	       (equal
-		  (emtvr:badnesses:get-own
-		     (emtg 
-			(type emtvr:alist-item)))
-		  (emtg (type suite-own-badness-list)))
-	       t)))))
+	    (emt:doc "Operation: Get own badnesses.")
+	    (emt:doc "Response: The result matches what's expected.")
+	    (let
+	       ((role&test-tags
+		   (car (emtg (type map:name->role&test-list)))))
+	       (when 
+		  role&test-tags
+		  (assert
+		     (equal
+			(emtvr:get-subtree-badnesses
+			   (emtg:value+ nil
+			      `((type emtvr:alist-item) ,@role&test-tags)))
+			(emtg (type suite-own-badness-list)))
+		     t)))))))
+
 
 ;;;_ , emtvr:combine-badnesses
 ;;$$WRITE MY EXAMPLES
@@ -60,7 +62,7 @@
    (nil
       (emtg:with emtvr:thd ()
 	 (emtg:narrow 
-	    ((name test-bad))
+	    ((result-name test-bad))
 	    (emt:doc "Param: A known view-node.")
 	    (emt:doc "Operation: Get subtree badnesses.")
 	    (emt:doc "Response: The sum of badnesses is as expected.")
@@ -71,10 +73,12 @@
 		  (equal
 		     (emtvr:get-subtree-badnesses
 			(emtg:value+ nil
-			   '((type emtvr:alist-item))
-			   role&test-tags))
-		     (emtg (type suite-badness-list)))
+			   `((type emtvr:alist-item) ,@role&test-tags)))
+		     (emtg:value+ nil
+			`((type suite-badness-list)
+			    (name ,'test-bad))))
 		  t))))))
+
 
 
 
