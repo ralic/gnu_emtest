@@ -75,6 +75,15 @@ followed by a form."
       (or testrun-id "0")
       callback))
 
+;;;_ , emtl:th:hello
+(defun emtl:th:hello (callback &optional prefix testrun-id)
+   ""
+   
+   (emtt:test-finder:top 
+      (emthow:make-hello)
+      (or prefix (list ""))
+      (or testrun-id "0")
+      callback))
 
 ;;;_. Footers
 ;;;_ , Provides
