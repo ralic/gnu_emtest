@@ -602,6 +602,15 @@ Takes keywords
 		     (if (consp kv) (car kv) kv))
 		kv-list))
 	  ',kv-list)))
+;;;_  . emtg:value+
+(defun emtg:value+ (examples &rest kv-lists)
+   "Return the value of the respective example.
+This mode is intended for combining computed tagsets.
+KV-LISTS can be any number of calculated kv-lists.
+EXAMPLES can be nil or the name of a tagged set."
+   
+   (emtg:get-value (or examples emtg:all-examples)
+      (apply #'append kv-lists)))
 
 ;;;_ , Narrowing the tagset
 ;;;_  . emtg:narrow-f
