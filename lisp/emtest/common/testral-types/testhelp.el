@@ -130,6 +130,7 @@
 	       (list
 		  (emtg (type note)(subtype alone)(name error-1))))))
 
+      ;;Suites' intrinsic badnesses
       (group
 	 ((type suite-own-badness-list))
 	 (type-must-be () (repeat emt:result-badness))
@@ -151,35 +152,16 @@
 	    (list
 	       '(bad-before-test not-found))))
 
+      ;;$$TEMPORARY until mapping can be easily used.
       (group
-	 ;; Badness lists for suites
-	 ;; These correspond to suites.  
-	 ((type suite-badness-list))
+	 ((type suite-own-badness-list)(tagged-by role&test))
 	 (type-must-be () (repeat emt:result-badness))
-
-	 (item
-	    ((name test-bad)(tagged-by name))
-	    '(ungraded))
-      
-	 (item
-	    ((name test-passes)(tagged-by name))
-	    '())
-      
-	 (item
-	    ((name has-children-1)(tagged-by name))
-	    '(ungraded))
-	 (item
-	    ((name gone)(tagged-by name))
-	    (emtg (type suite-own-badness-list)(name gone)))
-
-	 ;;For the sequence-of-reports tests (These alias other suite items)
-	 ;;$$OBSOLESCENT in favor of mapping
 	 (item
 	    ((what-test test-1)(role original-add))
-	    (emtg (type suite-badness-list)(name test-bad)))
+	    (emtg (type suite-own-badness-list)(name test-bad)))
 	 (item
 	    ((what-test test-1)(role replace))
-	    (emtg (type suite-badness-list)(name test-passes)))
+	    (emtg (type suite-own-badness-list)(name test-passes)))
 
 	 (item
 	    ((what-test test-1)(role remove-previous))
@@ -187,7 +169,63 @@
       
 	 (item
 	    ((what-test test-2))
-	    (emtg (type suite-badness-list)(name test-passes))))
+	    (emtg (type suite-own-badness-list)(name test-passes))))
+
+      ;;Suites' badnesses, including that of their TESTRAL notes.
+      (group
+	 ((type suite-own+notes-badness-list))
+	 (type-must-be () (repeat emt:result-badness))
+	 (item
+	    ((name test-bad))
+	    '(ungraded))
+      
+	 (item
+	    ((name test-passes))
+	    '())
+      
+	 (item
+	    ((name has-children-1))
+	    '(ungraded))
+
+	 (item
+	    ((name gone))
+	    (emtg (type suite-own-badness-list)(name gone))))
+
+;;       (group
+;; 	 ;;$$RETHINK ME  Suites should only have own badnesses
+;; 	 ((type suite-badness-list))
+;; 	 (type-must-be () (repeat emt:result-badness))
+
+;; 	 (item
+;; 	    ((name test-bad)(tagged-by name))
+;; 	    '(ungraded))
+;; 	 (item
+;; 	    ((name test-passes)(tagged-by name))
+;; 	    '())
+      
+;; 	 (item
+;; 	    ((name has-children-1)(tagged-by name))
+;; 	    '(ungraded))
+;; 	 (item
+;; 	    ((name gone)(tagged-by name))
+;; 	    (emtg (type suite-own-badness-list)(name gone)))
+
+;; 	 ;;For the sequence-of-reports tests (These alias other suite items)
+;; 	 ;;$$OBSOLESCENT in favor of mapping
+;; 	 (item
+;; 	    ((what-test test-1)(role original-add))
+;; 	    (emtg (type suite-badness-list)(name test-bad)))
+;; 	 (item
+;; 	    ((what-test test-1)(role replace))
+;; 	    (emtg (type suite-badness-list)(name test-passes)))
+
+;; 	 (item
+;; 	    ((what-test test-1)(role remove-previous))
+;; 	    (emtg (type suite-own-badness-list)(name gone)))
+      
+;; 	 (item
+;; 	    ((what-test test-2))
+;; 	    (emtg (type suite-badness-list)(name test-passes))))
 
       (group
 	 ;; Suites
@@ -201,7 +239,7 @@
 			    (subtype unconformed)
 			    (name one-node))
 	       :badnesses 
-	       (emtg (type suite-badness-list)(name test-bad))
+	       (emtg (type suite-own-badness-list)(name test-bad))
 	       :info ()))
       
 	 (item
@@ -212,7 +250,7 @@
 			    (subtype unconformed)
 			    (name empty))
 	       :badnesses 
-	       (emtg (type suite-badness-list)(name test-passes))
+	       (emtg (type suite-own-badness-list)(name test-passes))
 	       :info ()))
       
 	 ;;Suite reporting child suites (here, child is just an indexed
@@ -226,7 +264,7 @@
 		  (list 
 		     (emtg (type explorable)(what-test index-1))))
 	       :badnesses 
-	       (emtg (type suite-badness-list)(name has-children-1))
+	       (emtg (type suite-own-badness-list)(name has-children-1))
 	       :info ()))
 	 (item
 	    ((name gone))
@@ -236,7 +274,7 @@
 			    (subtype unconformed)
 			    (name empty))
 	       :badnesses 
-	       (emtg (type suite-badness-list)
+	       (emtg (type suite-own-badness-list)
 		  (what-test test-1)
 		  (role remove-previous))
 	       :info ())))

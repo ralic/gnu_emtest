@@ -54,7 +54,7 @@
 			   (emtg:value+
 			      `((type emtvr:alist-item) ,@role&test-tags)))
 			(emtg:value+
-			   `((type suite-own-badness-list)
+			   `((type suite-own+notes-badness-list)
 			       (name ,result-name))))
 		     t)))))))
 
@@ -79,7 +79,7 @@
 			   (emtg:value+
 			      `((type emtvr:alist-item) ,@role&test-tags)))
 			(emtg:value+
-			   `((type suite-badness-list)
+			   `((type suite-own+notes-badness-list)
 			       (name ,'test-bad))))
 		     t)))))))
 
