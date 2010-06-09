@@ -58,8 +58,6 @@
 			       (name ,result-name))))
 		     t)))))))
 
-;;;_ , emtvr:badnesses:get-latent
-
 ;;;_ , emtvr:combine-badnesses
 ;;$$WRITE MY EXAMPLES
 

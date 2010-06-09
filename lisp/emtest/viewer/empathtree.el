@@ -60,18 +60,19 @@
 (defsubst emtvr:combine-badnesses (bads)
    (reduce #'union bads))
 
-;;;_  . emtvr:sum-testral-note-badnesses
-(defun emtvr:badnesses:sum-of-note-list (note-list)
+;;;_  . emtvr:notelist-raw-badnesses
+(defun emtvr:notelist-raw-badnesses (note-list)
    ""
-
-   (emtvr:combine-badnesses
-      (mapcar
-	 #'emt:testral:base->badnesses
-	 (emt:testral:note-list->notes note-list))))
+   (mapcar
+      #'emt:testral:base->badnesses
+      (emt:testral:note-list->notes note-list)))
 
 ;;;_  . emtvr:badnesses:get-own
 (defun emtvr:badnesses:get-own (node)
-   "Get a node's own badnesses (as opposed to its' childrens' badnesses)"
+   "Get a node's own badnesses.
+
+This includes badnesses that are not expressed in its children but
+could be, such as when a note-list hasn't been expanded."
    (check-type node emt:view:presentable)
    (etypecase node
       (emt:view:suite-newstyle
@@ -81,7 +82,21 @@
 	    (etypecase s 
 	       (null) 
 	       (emt:testral:suite
-		  (emt:testral:suite->badnesses s))
+		  (let
+		     ((own-badnesses (emt:testral:suite->badnesses s)))
+		  (if
+		     (emtvp:node->children node)
+		     own-badnesses
+		     (let
+			((contents
+			    (emt:testral:suite->contents s)))
+			(typecase contents
+			   (emt:testral:note-list
+			      (emtvr:combine-badnesses
+				 (cons
+				    own-badnesses
+				    (emtvr:notelist-raw-badnesses contents))))
+			   (t own-badnesses))))))
 	       (emt:testral:test-runner-info
 		  '()))))
       (emt:view:TESTRAL '())
@@ -91,43 +106,13 @@
       (emt:view:presentable '())))
 
 
-;;;_  . emtvr:badnesses:get-latent
-;;May fold this in.
-(defun emtvr:badnesses:get-latent (node)
-   "Get latent badnesses for node NODE.
-Ie, badnesses that are not expressed in its children but could be."
-   
-   (check-type node emt:view:presentable)
-   (if
-      (emtvp:node->children node)
-      '()
-      (etypecase node
-	 (emt:view:suite-newstyle
-	    (let
-	       ((s
-		   (emt:view:suite-newstyle->result node)))
-	       (etypecase s 
-		  (null) 
-		  (emt:testral:suite
-		     (let
-			((contents
-			    (emt:testral:suite->contents s)))
-			(typecase contents
-			   (emt:testral:note-list
-			      (emtvr:badnesses:sum-of-note-list   
-				 contents))
-			   (t '()))))
-		  (emt:testral:test-runner-info
-		     '()))))
-	 (emt:view:presentable '()))))
-
 ;;;_  . emtvr:get-subtree-badnesses
 (defun emtvr:get-subtree-badnesses (node)
    ""
    (check-type node emt:view:presentable)
    (let*
       (
-	 (input-badnesses
+	 (childrens-badnesses
 	    (mapcar
 	       #'(lambda (child)
 		    (emt:view:presentable->sum-badnesses
@@ -140,7 +125,7 @@ Ie, badnesses that are not expressed in its children but could be."
       (emtvr:combine-badnesses
 	 (cons
 	    own-badnesses
-	    input-badnesses))))
+	    childrens-badnesses))))
 
 ;;;_  . emtvr:sum-node-badnesses
 ;;$$RENAME `emtvr:cache-subtree-badnesses'
