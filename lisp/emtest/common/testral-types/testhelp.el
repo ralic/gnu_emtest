@@ -129,6 +129,42 @@
 	       :notes
 	       (list
 		  (emtg (type note)(subtype alone)(name error-1))))))
+      (group
+	 ;; Badness lists for suites
+	 ;; These correspond to suites.  
+	 ((type suite-badness-list))
+	 (type-must-be () (repeat emt:result-badness))
+	 (item
+	    ((name test-bad))
+	    '(ungraded))
+      
+	 (item
+	    ((name test-passes))
+	    '())
+      
+	 ;;Suite reporting child suites (here, child is just an indexed
+	 ;;clause)
+	 (item
+	    ((name has-children-1))
+	    '(ungraded))
+
+	 ;;For the sequence-of-reports tests (These alias other suite items)
+	 (item
+	    ((what-test test-1)(role original-add))
+	    (emtg (type suite-badness-list)(name test-bad)))
+	 (item
+	    ((what-test test-1)(role replace))
+	    (emtg (type suite-badness-list)(name test-passes)))
+
+	 (item
+	    ((what-test test-1)(role remove-previous))
+	    ;;$$REVIEWME This representation is tentative.
+	    (list
+	       '(bad-before-test not-found)))
+      
+	 (item
+	    ((what-test test-2))
+	    (emtg (type suite-badness-list)(name test-passes))))
 
       (group
 	 ;; Suites
@@ -141,7 +177,8 @@
 			    (type testral-note-list)
 			    (subtype unconformed)
 			    (name one-node))
-	       :badnesses '(ungraded)
+	       :badnesses 
+	       (emtg (type suite-badness-list)(name test-bad))
 	       :info ()))
       
 	 (item
@@ -151,7 +188,8 @@
 			    (type testral-note-list)
 			    (subtype unconformed)
 			    (name empty))
-	       :badnesses '()
+	       :badnesses 
+	       (emtg (type suite-badness-list)(name test-passes))
 	       :info ()))
       
 	 ;;Suite reporting child suites (here, child is just an indexed
@@ -164,7 +202,8 @@
 		  :els
 		  (list 
 		     (emtg (type explorable)(what-test index-1))))
-	       :badnesses '(ungraded)
+	       :badnesses 
+	       (emtg (type suite-badness-list)(name has-children-1))
 	       :info ()))
 
 	 ;;For the sequence-of-reports tests (These alias other suite items)
@@ -182,9 +221,10 @@
 			    (type testral-note-list)
 			    (subtype unconformed)
 			    (name empty))
-	       ;;$$REVIEWME This representation is tentative.
-	       :badnesses (list
-			     '(bad-before-test not-found))
+	       :badnesses 
+	       (emtg (type suite-badness-list)
+		  (what-test test-1)
+		  (role remove-previous))
 	       :info ()))
       
 	 (item
