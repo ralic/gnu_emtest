@@ -32,31 +32,46 @@
 (require 'emtest/viewer/empathtree)
 
 ;;;_. Body
+;;;_ , emtvr:badnesses:get-own
+(emt:deftest-3 emtvr:badnesses:get-own
+   ;;Irrelevant for the moment because no example suites have
+   ;;intrinsic badnesses yet.
+   ;;$$WRITE MY EXAMPLES
+   '
+   (nil
+      (emtg:with emtvr:thd ()
+	 (emtg:narrow ((role original-add) (what-test test-1))
+	    (emt:doc "Param: A known view-node.")
+	    (emt:doc "Operation: Get subtree badnesses.")
+	    (emt:doc "Response: The sum of badnesses is as expected.")
+	    (assert
+	       (equal
+		  (emtvr:badnesses:get-own
+		     (emtg 
+			(type emtvr:alist-item)))
+		  (emtg (type suite-own-badness-list)))
+	       t)))))
 
-;;;_ , emtvr:sum-node-badnesses
-(emt:deftest-3 emtvr:sum-node-badnesses
-   '(nil
-       (progn
-	  (emt:doc "Situation: WRITEME.")
-	  (emt:doc "Response: WRITEME.")
-	  (progn))))
+;;;_ , emtvr:combine-badnesses
+;;$$WRITE MY EXAMPLES
 
-;;;_ , emtvr:conform-stages
-(emt:deftest-3 emtvr:conform-stages
-   '(nil
-       (progn
-	  (emt:doc "Situation: WRITEME.")
-	  (emt:doc "Response: WRITEME.")
-	  (progn))))
-
-;;;_ , emtvr:expand-testral
-(emt:deftest-3 emtvr:expand-testral
-   '(nil
-       (progn
-	  (emt:doc "Situation: WRITEME.")
-	  (emt:doc "Response: WRITEME.")
-	  (progn))))
-
+;;;_ , emtvr:get-subtree-badnesses
+(emt:deftest-3 emtvr:get-subtree-badnesses
+   (nil
+      (emtg:with emtvr:thd ()
+	 ;;$$IMPROVE ME Might split suite examples etc by indexing
+	 ;;mode, so we can iterate over suites.
+	 (emtg:narrow ((role original-add) (what-test test-1))
+	    (emt:doc "Param: A known view-node.")
+	    (emt:doc "Operation: Get subtree badnesses.")
+	    (emt:doc "Response: The sum of badnesses is as expected.")
+	    (assert
+	       (equal
+		  (emtvr:get-subtree-badnesses
+		     (emtg 
+			(type emtvr:alist-item)))
+		  (emtg (type suite-badness-list)))
+	       t)))))
 
 
 
