@@ -30,6 +30,10 @@
 ;;;_ , Requires
 
 (require 'emtest/viewer/empathtree)
+(require 'emtest/testhelp/standard)
+(require 'emtest/testhelp/tagnames)
+(require 'emtest/runner/define)
+(require 'emtest/viewer/view-types/testhelp)
 
 ;;;_. Body
 ;;;_ , emtvr:badnesses:get-own
@@ -54,6 +58,7 @@
 			       (name ,result-name))))
 		     t)))))))
 
+;;;_ , emtvr:badnesses:get-latent
 
 ;;;_ , emtvr:combine-badnesses
 ;;$$WRITE MY EXAMPLES
