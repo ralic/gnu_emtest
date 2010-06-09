@@ -37,7 +37,7 @@
    (unless
       (require 'dll nil t)
       (error "dll is not bundled with emtest")))
-
+(require 'emtest/testhelp/deep-type-checker)
 ;;;_. Body
 
 ;;;_ , dll-repeat
