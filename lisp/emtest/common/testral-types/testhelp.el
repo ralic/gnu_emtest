@@ -353,21 +353,21 @@
       ;;this to get appropriate view-types when they iterate over
       ;;names.
       (group
-	 ((type map:name->role&test))
+	 ((type map:name->role&test-list))
 	 ;;$$IMPROVE ME type can become more specific when it is made
 	 ;;more specific in tagnames.el
-	 (type-must-be () (repeat *))
+	 (type-must-be () (repeat (repeat *)))
 
 	 (item ((name test-bad))
-	    '((what-test test-1)(role original-add)))
+	    '(((what-test test-1)(role original-add))))
 	 (item ((name test-passes))
-	    '((what-test test-1)(role replace)))
+	    '(((what-test test-1)(role replace))))
 
 	 (item ((name gone))
-	    '((what-test test-1)(role remove-previous)))
+	    '(((what-test test-1)(role remove-previous))))
       
 	 (item ((name test-passes))
-	    '((what-test test-2))))
+	    '(((what-test test-2)))))
       
       ;;$$IMPROVE ME Add a mapping from role&test to name tag.  Then
       ;;the mapping `map:name->role&test' would be cted from it.
