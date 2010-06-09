@@ -125,7 +125,7 @@ It just tells a pathtree to add this node."
 			  (emtvp:node->dirty-flags child)))
 		  (emtvp:node->children obj))
 	       ;;Do summarization
-	       (emtvr:sum-node-badnesses obj)
+	       (emtvr:cache-subtree-badnesses obj)
 	       (undirty 'summary)
 	       (new-dirty 'display) ;;Now we can display it
 	       ;;Parent (if any) now needs to be resummarized.

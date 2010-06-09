@@ -35,27 +35,7 @@
 (require 'cl)  ;;For `union'
 
 ;;;_. Body
-;;;_ , emtvr:summarize
-(defun emtvr:summarize (tree)
-   ""
-   ;;For now, just call `emtvr:sum-node-badnesses' just before
-   ;;printing.
-   
-   ;;As yet we have no good way of making a predicate that takes
-   ;;arguments.  Contents should be a `emt:view:presentable'
-   (check-type tree emtvp:node)
-   ;;Traverse the tree recursively:  Recurse on all children, then
-   ;;join those sets together, put it in sum-badnesses field, and
-   ;;return it.
-
-   ;;And `dirtinesses' should propagate upwards.
-
-   ;;No, organizing that is the business of pathtree.  Which will have
-   ;;a field for a list of dirtinesses
-   (let*
-      ()
-      
-      ))
+;;;_ , Handling badnesses
 ;;;_  . emtvr:combine-badnesses
 (defsubst emtvr:combine-badnesses (bads)
    (reduce #'union bads))
@@ -127,23 +107,14 @@ could be, such as when a note-list hasn't been expanded."
 	    own-badnesses
 	    childrens-badnesses))))
 
-;;;_  . emtvr:sum-node-badnesses
-;;$$RENAME `emtvr:cache-subtree-badnesses'
-;;Design: Maybe split into accessor and summer.  Accessor should be
-;;conformer: It will set its own node right after children are all
-;;made right.
-
-;;Node data is covariant with this.
-(defun emtvr:sum-node-badnesses (node)
+;;;_  . emtvr:cache-subtree-badnesses
+(defun emtvr:cache-subtree-badnesses (node)
    ""
    (check-type node emtvp:node)
    (when (typep node 'emt:view:presentable)
       (setf
 	 (emt:view:presentable->sum-badnesses node)
 	 (emtvr:get-subtree-badnesses node))))
-
-
-
 
 ;;;_ , emtvr:conform-stages
 (defun emtvr:conform-stages (note-list)
