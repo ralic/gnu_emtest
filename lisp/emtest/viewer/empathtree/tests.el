@@ -61,7 +61,6 @@
       (emtg:with emtvr:thd ()
 	 (emtg:narrow 
 	    ((name test-bad))
-	    ;;((role original-add) (what-test test-1))
 	    (emt:doc "Param: A known view-node.")
 	    (emt:doc "Operation: Get subtree badnesses.")
 	    (emt:doc "Response: The sum of badnesses is as expected.")
@@ -71,11 +70,9 @@
 	       (assert
 		  (equal
 		     (emtvr:get-subtree-badnesses
-			;;$$SUPPORT ME NICELY
-			(emtg:get-value emtg:all-examples
-			   (append
-			      '((type emtvr:alist-item))
-			      role&test-tags)))
+			(emtg:value+ nil
+			   '((type emtvr:alist-item))
+			   role&test-tags))
 		     (emtg (type suite-badness-list)))
 		  t))))))
 
