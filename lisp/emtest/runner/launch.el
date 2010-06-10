@@ -134,12 +134,20 @@ LIBRARY is the absolute file name of the library"
 	 (emtel:read-testable-library 
 	    "Run tests of which library: ")))
    
-   (let*
+   (let
       (
 	 (test-id
 	    (emthow:make-library:elisp-load
 	       :load-name library)))
-      (emtl:dispatch-normal test-id nil receiver)))
+      
+      (emtt:conform-howto test-id)
+      (let*
+	 ((lib-sym
+	     (emthow:library:elisp-load->lib-sym test-id)))
+	 (emtl:dispatch-normal 
+	    test-id 
+	    (list (concat "library " (symbol-name lib-sym))) 
+	    receiver))))
 
 ;;;_ , emtt:eval
 (defun emtt:eval (expression)
