@@ -105,7 +105,7 @@
       :doc "How to run this as a test.")
 
    ;;The full presentation path, including any prefix from report.
-   ;;May go away in favor of 
+   ;;May go away in favor of base class's path.
    (presentation-path ()   
       :type emt:testral:suite-id
       :doc "The path to the corresponding node in the pathtree.")
