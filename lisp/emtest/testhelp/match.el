@@ -136,6 +136,7 @@ TESTS, if given, must be a list of emtm:test-form-data."
    (emtm:make-formdata
       :form-SINGLE 
       (emtm:make-test-form-data
+	 :explanation `(concat "Not equal: " ,sym " and " ,pattern)
 	 :uses (list* sym other-deps)
 	 :form `(equal ,sym ,pattern)
 	 :prestn-path prestn-prefix)))
@@ -180,7 +181,11 @@ PATTERN is headed by governor"
 	 ;;Object must be the expected length
 	 (formdata-test-length
 	    (emtm:make-test-form-data
-	       :explanation "Object is not the right length"
+	       :explanation 
+	       `(concat "Expected length " 
+		   (int-to-string ,len) 
+		   ", got " 
+		   (int-to-string (length ,sym)))
 	       :uses (emtm:parse-dependencies 
 			(list sym)
 			(list formdata-test-listness))
@@ -341,9 +346,12 @@ PATTERN is headed by governor"
 		  :bind ret-sym
 		  :form `(funcall ,pred ,sym ,@args)))
 	    ;;Test the return value to determine satisfaction.
-	    (testret-formadata
+	    (testret-formdata
 	       (emtm:make-test-form-data
-		  :explanation "Call to predicate failed"
+		  :explanation 
+		  `(concat "Call to predicate " 
+		      (symbol-name ,pred) 
+		      " failed")
 		  :uses (list ret-sym)
 		  ;;`identity' is used solely to distinguish this form
 		  ;;from a mere binding, wrt dependencies.
@@ -358,7 +366,7 @@ PATTERN is headed by governor"
 		     :form-LIST 
 		     (list
 			call-formdata
-			testret-formadata)))
+			testret-formdata)))
 	       
 	       ;;The return value is bound by RET-PATTERNS, if given.
 	       (if ret-patterns
@@ -404,6 +412,9 @@ PATTERN is headed by governor"
 	    ;;eval, bound to sym-2, is not re-evalled at match time.
 	    :form
 	    `(emtm-either ,sym '(,backquote-unquote-symbol ,sym-2))
+	    ;;$$IMPROVE ME  This is very clunky.  Would like to
+	    ;;describe whether pattern or obj match was used.
+	    :explanation "A and B are not equal nor match by pattern"
 	    :prestn-path 
 	    prestn-prefix))))
 
@@ -451,7 +462,7 @@ PATTERN is headed by governor"
 		   (ignore
 		      (emtt:testral:report-false
 			 ',(emtm:test-form-data->prestn-path first)
-			 "Was false"))))))
+			 ,(emtm:test-form-data->explanation first)))))))
       
       core))
 ;;;_  . emtm:sort-bindings
@@ -761,7 +772,10 @@ ACCESSOR is a structure accessor."
 SYM is the symbol to be checked.
 PRED is a function-quoted predicate to apply to it."
    (emtm:make-test-form-data
-      :explanation "Object is the wrong type"
+      :explanation 
+      `(concat "Object is the wrong type: "
+	  (prin1-to-string ,sym) " doesn't satisfy "
+	  (symbol-name ,pred))
       :uses (list sym)
       :form `(,pred ,sym)
       :prestn-path prestn-prefix))
