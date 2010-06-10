@@ -84,10 +84,15 @@
 	       emtv2:pathtree
 	       (emtvp:make 
 		  :root
+		  ;;Pathtree's root
 		  (emt:view:make-presentable
-		     ;;:how-to-run
-		     ;;(satisfies emthow:hello-p)
-		     :children '())))
+		     :children
+		     (list
+			;;Tester info
+			(emt:view:make-suite-newstyle
+			   ;;:how-to-run
+			   ;;(satisfies emthow:hello-p)
+			   :children '())))))
 	    t)
 	 (emt:doc "Response: WRITEME.")))
 
@@ -113,23 +118,30 @@
 	       emtv2:pathtree
 	       (emtvp:make 
 		  :root
+		  ;;Pathtree's root
 		  (emt:view:make-presentable
-		     ;;There is no derived type for test-runner
-		     ;;info (yet)
 		     :children
 		     (list
-			;;Library report
-			(emt:view:make-suite-newstyle
+			;;Tester info
+			(emt:view:make-presentable
+			   ;;$$REFINE ME
+			   ;;emt:view:make-suite-newstyle
 			   ;;:how-to-run
-			   ;;(satisfies emthow:library-p)
+			   ;;(satisfies emthow:hello-p)
 			   :children
 			   (list
-			      ;;Suite report
+			      ;;Library report
 			      (emt:view:make-suite-newstyle
-				 ;; :how-to-run
-				 ;;(satisfies emthow:suite-p)
+				 ;;:how-to-run
+				 ;;(satisfies emthow:library-p)
 				 :children
-				 ())))))))
+				 (list
+				    ;;Suite report
+				    (emt:view:make-suite-newstyle
+				       ;; :how-to-run
+				       ;;(satisfies emthow:suite-p)
+				       :children
+				       ())))))))))
 	    t)))
    
    (nil
@@ -153,17 +165,24 @@
 	       emtv2:pathtree
 	       (emtvp:make 
 		  :root
+		  ;;Pathtree's root
 		  (emt:view:make-presentable
-		     ;;There is no derived type for test-runner
-		     ;;info (yet)
 		     :children
 		     (list
-			;;Library report
-			(emt:view:make-suite-newstyle
+			;;Tester info
+			(emt:view:make-presentable
+			   ;;$$REFINE ME
+			   ;;emt:view:make-suite-newstyle
 			   ;;:how-to-run
-			   ;;(satisfies emthow:library-p)
+			   ;;(satisfies emthow:hello-p)
 			   :children
-			   (list))))))
+			   (list
+			      ;;Library report
+			      (emt:view:make-suite-newstyle
+				 ;;:how-to-run
+				 ;;(satisfies emthow:library-p)
+				 :children
+				 (list))))))))
 	    t)))
    
    )
