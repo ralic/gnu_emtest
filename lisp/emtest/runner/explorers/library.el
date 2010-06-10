@@ -115,7 +115,7 @@ LIB-PATH must be a path to a library that is already loaded."
 
 ;;;_ , emtt:explore-library
 
-(defun emtt:explore-library (test-id props &optional path)
+(defun emtt:explore-library (test-id props path)
    ""
 
    (emtt:conform-howto test-id)

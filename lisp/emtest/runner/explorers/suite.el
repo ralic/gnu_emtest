@@ -38,7 +38,7 @@
 ;;;_. Body
 
 ;;;_ , emtt:explore-suite
-(defun emtt:explore-suite (test-id props-unused path &optional path)
+(defun emtt:explore-suite (test-id props-unused path)
    ""
    (let* 
       (
