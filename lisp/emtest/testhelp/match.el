@@ -350,7 +350,7 @@ PATTERN is headed by governor"
 	       (emtm:make-test-form-data
 		  :explanation 
 		  `(concat "Call to predicate " 
-		      (symbol-name ,pred) 
+		      (symbol-name ',pred) 
 		      " failed")
 		  :uses (list ret-sym)
 		  ;;`identity' is used solely to distinguish this form
@@ -775,7 +775,7 @@ PRED is a function-quoted predicate to apply to it."
       :explanation 
       `(concat "Object is the wrong type: "
 	  (prin1-to-string ,sym) " doesn't satisfy "
-	  (symbol-name ,pred))
+	  (symbol-name ',pred))
       :uses (list sym)
       :form `(,pred ,sym)
       :prestn-path prestn-prefix))
