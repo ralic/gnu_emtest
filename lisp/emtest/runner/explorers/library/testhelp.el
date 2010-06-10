@@ -48,6 +48,22 @@
       ((project emtest)(library tester)(section entry-points))
       (transparent-tags () (type))
       (group
+	 ((count 0))
+	 (item ((type name)) "example-0")
+	 (item ((type count)) 0)
+	 (item ((type lib-path))
+	    (concat
+	       emtt:library:th:examples-dir
+	       (emtg (type name))
+	       ".el"))
+	 (item ((type suite-sym-list)) '())
+	 (item ((type sym)) (intern (emtg (type name))))
+	 (item ((type file-load-history))
+	    `( ,(emtg (type lib-path))
+		,@(emtg (type suite-sym-list)) 
+		(provide . ,(emtg (type sym))))))
+
+      (group
 	 ((count 2))
 	 (item ((type name)) "example-2")
 	 (item ((type lib-path))
