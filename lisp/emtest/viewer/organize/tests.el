@@ -74,13 +74,26 @@
 	 (emtl:th:hello
 	    #'emtvo:tester-cb)
 	 
-	 
+	 	 (emt:doc "Validate:  We have set up.")
+	 (emt:doc "Validate:  We have received some result objects.")
+	 (assert (identity emtv2:receiver) t)
+	 (assert (identity emtv2:pathtree) t)
+	 (emt:doc "Response: The results occur exactly in expected
+   positions in the tree.")
+	 (assert
+	    (emtm 
+	       emtv2:pathtree
+	       (emtvp:make 
+		  :root
+		  (emt:view:make-presentable
+		     ;;:how-to-run
+		     ;;(satisfies emthow:hello-p)
+		     :children '())))
+	    t)
 	 (emt:doc "Response: WRITEME.")))
 
 
    (nil
-
-
       (emt:library:th ((count 1))
 	 (emt:doc "Situation: A known load-history and defined suites.")
 	 (emt:doc "Situation: The receive callback only goes as far as
@@ -89,12 +102,13 @@
 	 (emt:library
 	    (emtg (type lib-path))
 	    #'emtvo:tester-cb)
-	 (emt:doc "Response: The results occur exactly in expected
-   positions in the tree.")
-	 ;;Validate:  We have set up, we have received some result
-	 ;;objects. 
+
+	 (emt:doc "Validate:  We have set up.")
+	 (emt:doc "Validate:  We have received some result objects.")
 	 (assert (identity emtv2:receiver) t)
 	 (assert (identity emtv2:pathtree) t)
+	 (emt:doc "Response: The results occur exactly in expected
+   positions in the tree.")
 	 (assert
 	    (emtm 
 	       emtv2:pathtree
@@ -107,7 +121,7 @@
 		     (list
 			;;Library report
 			(emt:view:make-suite-newstyle
-			   ;; :how-to-run
+			   ;;:how-to-run
 			   ;;(satisfies emthow:library-p)
 			   :children
 			   (list
@@ -117,9 +131,43 @@
 				 ;;(satisfies emthow:suite-p)
 				 :children
 				 ())))))))
-	    t)
+	    t)))
+   
+   (nil
+      (emt:library:th ((count 0))
+	 (emt:doc "Situation: A known load-history and defined suites.")
+	 (emt:doc "Situation: The receive callback only goes as far as
+   the pathtree, no further.")
+	 (emt:doc "Operation: Launch a library, which will launch its suites")
+	 (emt:library
+	    (emtg (type lib-path))
+	    #'emtvo:tester-cb)
 
-	 )))
+	 (emt:doc "Validate:  We have set up.")
+	 (emt:doc "Validate:  We have received some result objects.")
+	 (assert (identity emtv2:receiver) t)
+	 (assert (identity emtv2:pathtree) t)
+	 (emt:doc "Response: The results occur exactly in expected
+   positions in the tree.")
+	 (assert
+	    (emtm 
+	       emtv2:pathtree
+	       (emtvp:make 
+		  :root
+		  (emt:view:make-presentable
+		     ;;There is no derived type for test-runner
+		     ;;info (yet)
+		     :children
+		     (list
+			;;Library report
+			(emt:view:make-suite-newstyle
+			   ;;:how-to-run
+			   ;;(satisfies emthow:library-p)
+			   :children
+			   (list))))))
+	    t)))
+   
+   )
 
 
 ;;;_. Footers
