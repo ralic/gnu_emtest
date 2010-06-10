@@ -38,14 +38,13 @@
 ;;;_. Body
 
 ;;;_ , emtt:explore-suite
-(defun emtt:explore-suite (test-id props-unused)
+(defun emtt:explore-suite (test-id props-unused path &optional path)
    ""
    (let* 
       (
 	 (suite-sym
-	    (emthow:suite->suite-ID test-id))
-	 (path
-	    (list (symbol-name suite-sym))))
+	    (emthow:suite->suite-ID test-id)))
+      
       (emtd:update-for-sym suite-sym)
       (emtd:destructure-suite-3 suite-sym
 	 (let

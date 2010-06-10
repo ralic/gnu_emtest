@@ -93,7 +93,7 @@ This is the heart of Emtest exploration: A test itself."
 	    ;;its name?  (And watch the scoping)
 	    :info '()))))
 ;;;_  . emtt:explore-literal-clause
-(defun emtt:explore-literal-clause (test-id props)
+(defun emtt:explore-literal-clause (test-id props &optional path)
    ""
    
    (list
@@ -102,7 +102,7 @@ This is the heart of Emtest exploration: A test itself."
 	 (emthow:form->test-form test-id))))
 ;;;_   , Insinuate
 ;;;_  . emtt:explore-indexed-clause
-(defun emtt:explore-indexed-clause (test-id props)
+(defun emtt:explore-indexed-clause (test-id props &optional path)
    ""
    (let*
       (

@@ -70,27 +70,29 @@ Each one must be a `emtt:explorable'" )
    ;;(check-type test-id emthow)
    (let*
       (
-	 (test-id ;;Type `emthow'
+	 (test-id
 	    (emtt:explorable->how-to-run next))
 	 (props
 	    (emtt:explorable->properties next))
+	 (path
+	    (emtt:explorable->prestn-path next))
 	 (one-report
 	    (emtp tp:a084136e-8f02-49a5-ac0d-9f65509cedf2
 	       (test-id)
 	       (typecase test-id
 		  (emthow:form
 		     (emtt:explore-literal-clause
-			test-id props))
+			test-id props path))
 
 		  (emthow:indexed-clause
 		     (emtt:explore-indexed-clause
-			test-id props))
+			test-id props path))
 		  
 		  (emthow:suite
-		     (emtt:explore-suite test-id props))
+		     (emtt:explore-suite test-id props path))
 		  
 		  (emthow:library:elisp-load
-		     (emtt:explore-library test-id props))
+		     (emtt:explore-library test-id props path))
 		  
 		  ;;Tell receiver about this tester
 		  (emthow:hello

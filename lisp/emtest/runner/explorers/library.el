@@ -91,6 +91,7 @@ LIB-PATH must be a path to a library that is already loaded."
       ,place
       (setf ,place ,value)))
 ;;;_ , emtt:conform-howto
+;;$$RENAME ME This actually just pertains to the library howto.
 (defun emtt:conform-howto (howto)
    ""
    ;;If symbol is nil, find it.
@@ -114,7 +115,7 @@ LIB-PATH must be a path to a library that is already loaded."
 
 ;;;_ , emtt:explore-library
 
-(defun emtt:explore-library (test-id props)
+(defun emtt:explore-library (test-id props &optional path)
    ""
 
    (emtt:conform-howto test-id)
@@ -127,11 +128,6 @@ LIB-PATH must be a path to a library that is already loaded."
 	    (emtt:lib-path->lib-sym lib-path))
 	 (suite-list
 	    (emtt:lib-suites lib-path))
-	 (path
-	    (list 
-	       "library" 
-	       (symbol-name lib-sym)))
-	 
 	 (list-to-run
 	    (mapcar
 	       #'(lambda (suite-sym)
@@ -139,7 +135,6 @@ LIB-PATH must be a path to a library that is already loaded."
 		       :how-to-run
 		       (emthow:make-suite
 			  :suite-ID suite-sym)
-		       ;;CHANGED to append lib name.
 		       :prestn-path 
 		       (append 
 			  path
