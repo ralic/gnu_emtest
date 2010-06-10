@@ -45,6 +45,9 @@
 
 ;;;_. Body
 
+;;;_ , Constants
+(defconst emtt:version "4.4" 
+   "Current version of Emtest" )
 
 ;;;_ , Info available to tests (Not used yet)
 ;;;_  . Type `emtt:top-data'
@@ -61,7 +64,13 @@
 (defvar emt:test-finder:pending-list () 
    "List of pending tests (etc) to explore.
 Each one must be a `emtt:explorable'" )
-
+;;;_  . List of explorers
+(defvar emt:test-finder:method-list 
+   '()
+   "List of explorer methods.
+This is to be appended to by files that define explorers
+Each one must be (NAME FUNCTION ARG-NAMES), where FUNCTION is a
+   function to convert it" )
 
 ;;;_ , Run tests
 ;;;_  . emtt:explore-one
@@ -100,12 +109,9 @@ Each one must be a `emtt:explorable'" )
 			nil
 			(emt:testral:make-test-runner-info
 			   :name "Emtest"
-			   ;;:version "4.2"
-			   ;;$$COLLECT ME from the explorers.  This
-			   ;;will be from a config list, written to by
-			   ;;autoload files.
+			   :version emtt:version
 			   :explore-methods-supported
-			   (mapcar #'car emt:test-finder:conversions))))
+			   (mapcar #'car emt:test-finder:method-list))))
 
 		  ;;Fallback case
 		  (t

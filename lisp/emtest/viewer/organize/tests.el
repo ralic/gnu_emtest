@@ -67,7 +67,6 @@
 	 ;;emviewer2/testhelp.el to share this insulation.
 	 '((let
 	      (emtv2:receiver emtv2:pathtree)))))
-   ' ;;$$DORMANT because hello is not functional yet.
    (nil
       (progn
 	 (emt:doc "Operation: Send just a hello.")
