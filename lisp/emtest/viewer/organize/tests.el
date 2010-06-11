@@ -31,10 +31,10 @@
 
 (require 'utility/pathtree)
 (require 'utility/pathtree/testhelp)
-(require 'emtest/viewer/receive)
-(require 'emtest/viewer/emviewer2)
+;;(require 'emtest/viewer/receive)
 (require 'emtest/viewer/organize)
-(require 'emtest/viewer/emviewer2/testhelp)
+;;(require 'emtest/viewer/emviewer2)
+;;(require 'emtest/viewer/emviewer2/testhelp)
 (require 'emtest/viewer/view-types/testhelp)
 
 (require 'emtest/runner/define)
@@ -51,11 +51,9 @@
 (defun emtvo:tester-cb (report)
    "A callback for tester.  It only goes as far as the pathtree, no further."
    (check-type report emt:testral:report)
-   (emtv2:setup-if-needed)
-   (emtvr:newstyle emtv2:receiver report)
-   ;;For our purposes, there's nothing to freshen (yet.  Summarization
-   ;;will change that)
-   '(emtvp:freshen emtv2:pathtree))
+   (emtvo:setup-if-needed #'ignore #'ignore)
+   (emtvo:receive report))
+
 ;;;_  . Struct governors for pattern-match
 ;;Are in pathtree testhelp
 
@@ -66,7 +64,7 @@
 	 ;;$$SHARE ME - factor `emtv2:ts:with-mock-viewer' in
 	 ;;emviewer2/testhelp.el to share this insulation.
 	 '((let
-	      (emtv2:receiver emtv2:pathtree)))))
+	      (emtvo:receiver emtvo:pathtree)))))
    (nil
       (progn
 	 (emt:doc "Operation: Send just a hello.")
@@ -74,16 +72,16 @@
 	    #'emtvo:tester-cb)
 	 (emt:doc "Validate:  We have set up.")
 	 (emt:doc "Validate:  We have received some result objects.")
-	 (assert (identity emtv2:receiver) t)
-	 (assert (identity emtv2:pathtree) t)
+	 (assert (identity emtvo:receiver) t)
+	 (assert (identity emtvo:pathtree) t)
 	 (emt:doc "Validate: Tree is the right type all thru it")
 	 (assert
-	    (emtvp:th:type-correct-p emtv2:pathtree))
+	    (emtvp:th:type-correct-p emtvo:pathtree))
 	 (emt:doc "Response: The results occur exactly in expected
    positions in the tree.")
 	 (assert
 	    (emtm 
-	       emtv2:pathtree
+	       emtvo:pathtree
 	       (emtvp:make 
 		  :root
 		  ;;Pathtree's root
@@ -111,16 +109,16 @@
 
 	 (emt:doc "Validate:  We have set up.")
 	 (emt:doc "Validate:  We have received some result objects.")
-	 (assert (identity emtv2:receiver) t)
-	 (assert (identity emtv2:pathtree) t)
+	 (assert (identity emtvo:receiver) t)
+	 (assert (identity emtvo:pathtree) t)
 	 (emt:doc "Validate: Tree is the right type all thru it")
 	 (assert
-	    (emtvp:th:type-correct-p emtv2:pathtree))
+	    (emtvp:th:type-correct-p emtvo:pathtree))
 	 (emt:doc "Response: The results occur exactly in expected
    positions in the tree.")
 	 (assert
 	    (emtm 
-	       emtv2:pathtree
+	       emtvo:pathtree
 	       (emtvp:make 
 		  :root
 		  ;;Pathtree's root
@@ -161,16 +159,16 @@
 
 	 (emt:doc "Validate:  We have set up.")
 	 (emt:doc "Validate:  We have received some result objects.")
-	 (assert (identity emtv2:receiver) t)
-	 (assert (identity emtv2:pathtree) t)
+	 (assert (identity emtvo:receiver) t)
+	 (assert (identity emtvo:pathtree) t)
 	 (emt:doc "Validate: Tree is the right type all thru it")
 	 (assert
-	    (emtvp:th:type-correct-p emtv2:pathtree))
+	    (emtvp:th:type-correct-p emtvo:pathtree))
 	 (emt:doc "Response: The results occur exactly in expected
    positions in the tree.")
 	 (assert
 	    (emtm 
-	       emtv2:pathtree
+	       emtvo:pathtree
 	       (emtvp:make 
 		  :root
 		  ;;Pathtree's root

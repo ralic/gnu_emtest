@@ -29,9 +29,76 @@
 
 ;;;_ , Requires
 
-
+(require 'utility/pathtree)
+(require 'emtest/viewer/receive)
 
 ;;;_. Body
+
+;;;_ , Variables
+(defvar emtvo:pathtree nil 
+   "Pathtree object of type emtvp" )
+(defvar emtvo:receiver 
+   nil
+   "Receiver object, of type `emtvr:data'" )
+;;;_ , Callbacks
+;;;_  . emtvo:receive-cb
+
+(defun emtvo:receive-cb (presentation-path cell)
+   "Emviewer callback that `receive' gets.
+It just tells a pathtree to add this node."
+   (emtvp:add/replace-node
+      ;;The pathtree root
+      emtvo:pathtree 
+      ;;The path
+      presentation-path
+      ;;The data
+      cell))
+
+;;;_ , Setup
+;;;_  . emtvo:setup-if-needed
+(defun emtvo:setup-if-needed (pathtree-cb make-display-data)
+   ""
+   (unless emtvo:pathtree
+      (setq emtvo:pathtree
+	 (emtvp:make-empty-tree-newstyle
+	    pathtree-cb
+	    ;;$$IMPROVE ME make-display-data risks capture.
+	    `(lambda ()
+		 (emt:view:make-presentable
+		    :list (,make-display-data)))
+	    'emt:view:presentable)))
+
+   (unless 
+      emtvo:receiver
+      (setq emtvo:receiver
+	 (emtvr:make-data
+	    :alist ()
+	    :tree-insert-cb #'emtvo:receive-cb
+	    ;;:tree-remove-cb Not yet
+	    ;;:node-replace-cb Not yet
+	    ))))
+
+;;;_ , Function entry points
+;;;_  . emtvo:get-root
+(defun emtvo:get-root ()
+   "Return the root of the pathtree"
+   (emtvp->root emtvo:pathtree))
+
+;;;_  . emtvo:receive
+(defun emtvo:receive (report)
+   "Receive REPORT"
+   (emtvr:newstyle emtvo:receiver report)
+   (emtvp:freshen emtvo:pathtree))
+
+;;;_ , Command entry points
+;;;_  . emtvo:reset
+;;;###autoload
+(defun emtvo:reset ()
+   ""
+   
+   (interactive)
+   (setq emtvo:pathtree nil)
+   (setq emtvo:receiver nil))
 
 ;;;_. Footers
 ;;;_ , Provides

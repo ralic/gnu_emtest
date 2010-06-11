@@ -63,29 +63,9 @@
 An `emtve' or `nil'." )
 (defvar emtve:report-buffer nil 
    "" )
-(defvar emtve:pathtree nil 
-   "Result object from receive." )
 (defvar emtve:chewie nil 
    "" )
-(defvar emtve:receiver 
-   nil ;;Should be made by setup.  Of type `emtvr:data'
-   "" )
 ;;;_ , Pathtree callback functions 
-;;;_  . emtve:receive-cb
-(defun emtve:receive-cb (presentation-path cell)
-   "Emviewer callback that `receive' gets.
-It just tells a pathtree to add this node."
-   (emtvp:add/replace-node
-      ;;The pathtree root
-      emtve:pathtree 
-      ;;The path
-      presentation-path
-      ;;The data
-;;       (emt:view:make-suite-newstyle 
-;; 	 :list (wookie:make-dlist)
-;; 	 :cell cell)
-      cell
-      ))
 ;;;_  . emtve:vp-node->dlist
 (defun emtve:vp-node->dlist (obj)
    ""
@@ -146,18 +126,6 @@ It just tells a pathtree to add this node."
 ;;;_ , Setup emtest:viewer:setup-if-needed
 (defun emtest:viewer:setup-if-needed ()
    ""
-   (unless emtve:pathtree
-      (setq emtve:pathtree
-	 (emtvp:make-empty-tree-newstyle
-	    #'emtest:viewer:pathtree-cb
-	    ;;Default makes the base type.
-	    #'(lambda ()
-		 (emt:view:make-presentable
-		    :list (wookie:make-dlist)))
-	    ;;'emt:view:suite-newstyle
-	    'emt:view:presentable
-	    )))
-
    (unless 
       (and 
 	 emtve:chewie
@@ -173,21 +141,18 @@ It just tells a pathtree to add this node."
 	 (erase-buffer)
 	 (setq emtve:chewie
 	    (chewie:make-chewie
-	       (emtvp->root emtve:pathtree)
+	       (emtvo:get-root)
 	       '()
 	       #'emtvf:top
 	       #'loformat:insert
 	       #'emtve:vp-node->dlist))
 	 ;;May be replaced at some point
 	 (outline-mode)))
-   (unless 
-      emtve:receiver
-      (setq emtve:receiver
-	 (emtvr:make-data
-	    :alist ()
-	    :tree-insert-cb #'emtve:receive-cb
-	    ;;:tree-remove-cb Not yet
-	    ))))
+
+   (emtvo:setup-if-needed
+      #'emtest:viewer:pathtree-cb
+      #'wookie:make-dlist))
+
 
 
 ;;;_ , emtve:tester-cb
@@ -195,8 +160,7 @@ It just tells a pathtree to add this node."
    "The Emviewer callback for emtest to use"
    (check-type report emt:testral:report)
    (emtest:viewer:setup-if-needed)
-   (emtvr:newstyle emtve:receiver report)
-   (emtvp:freshen emtve:pathtree)
+   (emtvo:receive report)
    (pop-to-buffer emtve:report-buffer))
 
 ;;;_ , emt:relaunch-all
