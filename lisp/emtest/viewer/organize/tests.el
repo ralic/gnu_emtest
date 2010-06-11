@@ -72,11 +72,13 @@
 	 (emt:doc "Operation: Send just a hello.")
 	 (emtl:th:hello
 	    #'emtvo:tester-cb)
-	 
-	 	 (emt:doc "Validate:  We have set up.")
+	 (emt:doc "Validate:  We have set up.")
 	 (emt:doc "Validate:  We have received some result objects.")
 	 (assert (identity emtv2:receiver) t)
 	 (assert (identity emtv2:pathtree) t)
+	 (emt:doc "Validate: Tree is the right type all thru it")
+	 (assert
+	    (emtvp:th:type-correct-p emtv2:pathtree))
 	 (emt:doc "Response: The results occur exactly in expected
    positions in the tree.")
 	 (assert
@@ -111,6 +113,9 @@
 	 (emt:doc "Validate:  We have received some result objects.")
 	 (assert (identity emtv2:receiver) t)
 	 (assert (identity emtv2:pathtree) t)
+	 (emt:doc "Validate: Tree is the right type all thru it")
+	 (assert
+	    (emtvp:th:type-correct-p emtv2:pathtree))
 	 (emt:doc "Response: The results occur exactly in expected
    positions in the tree.")
 	 (assert
@@ -158,6 +163,9 @@
 	 (emt:doc "Validate:  We have received some result objects.")
 	 (assert (identity emtv2:receiver) t)
 	 (assert (identity emtv2:pathtree) t)
+	 (emt:doc "Validate: Tree is the right type all thru it")
+	 (assert
+	    (emtvp:th:type-correct-p emtv2:pathtree))
 	 (emt:doc "Response: The results occur exactly in expected
    positions in the tree.")
 	 (assert
