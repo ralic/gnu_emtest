@@ -96,8 +96,7 @@
 ;;are.  If other children are recorded, they no longer exist so remove
 ;;them.  Perhaps suite reports flag whether they have exhaustively
 ;;listed their children.
-(defun emtvr:one-newstyle 
-   (receiver entry testrun-id prefix)
+(defun emtvr:one-newstyle (receiver entry testrun-id prefix)
    "Receive and store a single test report."
    (check-type receiver emtvr:data)
    (destructuring-bind (how-to-run dummy suite) entry
@@ -126,17 +125,20 @@
 		   (find key (emtvr:data->alist receiver)
 		      :test #'equal
 		      :key #'emt:view:suite-newstyle->id)))
+
+	       
 	       (if old-cell
-		  ;;Cell is already present.  Alter it.  Still replace
-		  ;;the node in the pathtree.
-		  ;;$$RETHINK ME  Maybe should just dirty it in pathtree.
+		  ;;Update old cell.
 		  (progn
 		     (setf
 			(emt:view:suite-newstyle->testrun-id old-cell)
 			testrun-id
 			(emt:view:suite-newstyle->result old-cell)
 			suite)
-		     (funcall 
+		     ;;$$RETHINK ME Maybe should just dirty it in
+		     ;;pathtree.  This in fact just puts it where it
+		     ;;was.
+		     '(funcall 
 			(emtvr:data->tree-insert-cb receiver)
 			presentation-path old-cell))
 	    
