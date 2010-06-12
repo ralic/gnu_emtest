@@ -40,6 +40,8 @@
 (defvar emtvo:receiver 
    nil
    "Receiver object, of type `emtvr:data'" )
+(defvar emtvo:make-display-data #'ignore
+   "Callback to make a display object" )
 ;;;_ , Callbacks
 ;;;_  . emtvo:receive-cb
 
@@ -53,19 +55,24 @@ It just tells a pathtree to add this node."
       presentation-path
       ;;The data
       cell))
+;;;_  . emtvo:pathtree-cb
+(defun emtvo:pathtree-cb (old-node data)
+   "Callback to make a pathtree node."
+   (if data 
+      data
+      (emt:view:make-presentable
+	 :list (funcall emtvo:make-display-data))))
 
 ;;;_ , Setup
 ;;;_  . emtvo:setup-if-needed
-(defun emtvo:setup-if-needed (pathtree-cb make-display-data)
+(defun emtvo:setup-if-needed (node-dirtied-cb make-display-data)
    ""
+   (setq emtvo:make-display-data make-display-data)
    (unless emtvo:pathtree
       (setq emtvo:pathtree
-	 (emtvp:make-empty-tree-newstyle
-	    pathtree-cb
-	    ;;$$IMPROVE ME make-display-data risks capture.
-	    `(lambda ()
-		 (emt:view:make-presentable
-		    :list (,make-display-data)))
+	 (emtvp:make-pathtree
+	    node-dirtied-cb
+	    #'emtvo:pathtree-cb
 	    'emt:view:presentable)))
 
    (unless 
@@ -73,9 +80,9 @@ It just tells a pathtree to add this node."
       (setq emtvo:receiver
 	 (emtvr:make-data
 	    :alist ()
-	    :tree-insert-cb #'emtvo:receive-cb
-	    ;;:tree-remove-cb Not yet
-	    ;;:node-replace-cb Not yet
+	    :insert-cb #'emtvo:receive-cb
+	    ;;:remove-cb Not yet
+	    ;;:update-cb Not yet.  
 	    ))))
 
 ;;;_ , Function entry points
@@ -87,7 +94,7 @@ It just tells a pathtree to add this node."
 ;;;_  . emtvo:receive
 (defun emtvo:receive (report)
    "Receive REPORT"
-   (emtvr:newstyle emtvo:receiver report)
+   (emtvr:receive-report emtvo:receiver report)
    (emtvp:freshen emtvo:pathtree))
 
 ;;;_ , Command entry points

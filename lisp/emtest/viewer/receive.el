@@ -33,31 +33,21 @@
 (require 'emtest/viewer/view-types)
 
 ;;;_. Body
-;;;_ , Receive reports alist
-;;;_  . Structure holding parameters for alist receive
+;;;_ , Structures
+;;;_  . emtvr:data
 (defstruct (emtvr:data
 	    (:constructor emtvr:make-data)
 	    (:conc-name emtvr:data->)
 	    (:copier nil))
-   ""
+   "Structure holding parameters for receive alist"
    alist
-   tree-insert-cb
-   tree-remove-cb)
+   insert-cb
+   remove-cb
+   update-cb)
 
-;;;_  . emtvr:make-empty-alist
-;;Maybe the only ctor
-(defun emtvr:make-empty-alist (insert remove)
-   ""
-   
-   (emtvr:make-data
-      :alist '()
-      :tree-insert-cb insert
-      :tree-remove-cb remove))
-
-
-;;;_  . emtvr:newstyle
-;;$$RENAME ME
-(defun emtvr:newstyle (receiver report)
+;;;_ , Interface functions
+;;;_  . emtvr:receive-report
+(defun emtvr:receive-report (receiver report)
    ""
    (check-type receiver emtvr:data)
    (check-type report emt:testral:report)
@@ -72,6 +62,7 @@
       ;;For each suite in the report, 
       (dolist (entry (emt:testral:report->suites report))
 	 (emtvr:one-newstyle receiver entry testrun-id prefix))))
+;;;_ , Internal functions
 
 ;;;_  . emtvr:test-gone-p
 (defun emtvr:test-gone-p (suite)
@@ -116,7 +107,7 @@
 		     :test #'equal
 		     :key #'emt:view:suite-newstyle->id))
 	       (funcall 
-		  (emtvr:data->tree-remove-cb receiver)
+		  (emtvr:data->remove-cb receiver)
 		  presentation-path))
 	    
 	    ;;The normal case:
@@ -138,8 +129,8 @@
 		     ;;$$RETHINK ME Maybe should just dirty it in
 		     ;;pathtree.  This in fact just puts it where it
 		     ;;was.
-		     '(funcall 
-			(emtvr:data->tree-insert-cb receiver)
+		     (funcall 
+			(emtvr:data->insert-cb receiver)
 			presentation-path old-cell))
 	    
 		  ;;It's not present in alist.  Insert it.
@@ -153,7 +144,7 @@
 			    :result            suite)))
 		     (push cell (emtvr:data->alist receiver))
 		     (funcall 
-			(emtvr:data->tree-insert-cb receiver)
+			(emtvr:data->insert-cb receiver)
 			presentation-path cell))))))))
 
 ;;;_. Footers
