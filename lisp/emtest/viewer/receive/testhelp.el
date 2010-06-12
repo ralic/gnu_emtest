@@ -62,6 +62,26 @@
 		     '(emtg (type suite)))))))
       t))
 
+;;;_ , emtvr:th:with-usual-receiver
+(defmacro emtvr:th:with-usual-receiver (receiver nodes-freshened &rest body)
+   ""
+   
+   `(let*
+       ((,nodes-freshened 'nil)
+	  (remember-freshened-node
+	     #'(lambda
+		  (x y)
+		  (push
+		     (list x y)
+		     ,nodes-freshened)))
+	  (,receiver
+	     (emtvr:make-data
+		:alist '()
+		:insert-cb remember-freshened-node
+		:remove-cb #'ignore
+		:update-cb #'ignore)))
+       ,@body))
+
 
 ;;;_. Footers
 ;;;_ , Provides
