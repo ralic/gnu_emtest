@@ -44,8 +44,6 @@
 (emt:deftest-3 emtvr:newstyle
    (nil
       (progn
-	 (emt:doc "Situation: Empty report.")
-	 (emt:doc "Response: List still contains nothing.")
 	 (emtg:with emtvr:thd nil
 	    (emtvr:th:with-usual-receiver receiver nodes-freshened
 	       (let*
@@ -57,7 +55,9 @@
 			   (library types)
 			   (type report)
 			   (name empty))))
+		  (emt:doc "Param: Empty report.")
 		  (emtvr:newstyle receiver report)
+		  (emt:doc "Response: List still contains nothing.")
 		  (assert
 		     (equal
 			(emtvr:data->alist receiver)
@@ -69,12 +69,11 @@
 		  t)))))
    (nil
       (progn
-	 (emt:doc "Situation: Have added a report w/1 entry")
-	 (emt:doc "Response: List contains that one entry.")
 	 (emtg:with emtvr:thd nil
 	    (emtvr:th:with-usual-receiver receiver nodes-freshened
 	       (let*
 		  ()
+		  (emt:doc "Param: A report w/1 entry")
 		  (emtvr:newstyle 
 		     receiver 
 		     (emtg
@@ -84,6 +83,7 @@
 			(type report)
 			(role original-add)
 			(what-test test-1)))
+		  (emt:doc "Response: List contains that one entry.")
 		  (assert
 		     (emtm
 			(emtvr:data->alist receiver)
@@ -105,12 +105,8 @@
 		     (emtvr:th:assert-the-1-right-node 
 			nodes-freshened))
 		  t)))))
-   ;;$$RETHINK ME - not clear this is still wanted.
    (nil
       (progn
-	 (emt:doc "Situation: Have added a report w/1 entry.")
-	 (emt:doc "Operation:  Another report with a different result for the same test.")
-	 (emt:doc "Response: List contains just that one entry, not duplicated.")
 	 (emtg:with emtvr:thd nil
 	    (emtvr:th:with-usual-receiver receiver nodes-freshened
 	       (let*
@@ -123,8 +119,10 @@
 			(type report)
 			(what-test test-1)
 			(role original-add)))
+		  (emt:doc "Situation: Have added a report w/1 entry.")
 		  (emt:doc "Situation: Callback list is emptied")
 		  (setq nodes-freshened 'nil)
+		  (emt:doc "Param:  Another report with a different result for the same test.")
 		  (emtvr:newstyle receiver
 		     (emtg
 			(project emtest)
@@ -133,6 +131,8 @@
 			(type report)
 			(what-test test-1)
 			(role replace)))
+		  (emt:doc "Response: List contains just that one
+   entry, not duplicated.") 
 		  (assert
 		     (emtm
 			(emtvr:data->alist receiver)
@@ -150,15 +150,14 @@
 			1)
 		     t)
 		  (emt:doc "Response: One NEW callback happened")
+		  ;;$$RETHINK ME - not clear this particular check is
+		  ;;still correct. 
 		  (emtg:narrow ((what-test test-1)(role replace))
 		     (emtvr:th:assert-the-1-right-node 
 			nodes-freshened))
 		  t)))))
    (nil
       (progn
-	 (emt:doc "Situation: Have added a report w/1 entry.")
-	 (emt:doc "Operation: Report removes previous report.")
-	 (emt:doc "Response: List no longer contains that entry; it is empty.")
 	 (emtg:with emtvr:thd ()
 	    (emtvr:th:with-usual-receiver receiver nodes-freshened
 	       (let*
@@ -168,11 +167,15 @@
 			(type report)
 			(role original-add)
 			(what-test test-1)))
+		  (emt:doc "Situation: Have added a report w/1 entry.")
+		  (emt:doc "Param: Report removes previous report.")
 		  (emtvr:newstyle receiver
 		     (emtg
 			(type report)
 			(role remove-previous)
 			(what-test test-1)))
+		  (emt:doc "Response: List no longer contains that
+   entry; it is empty.") 
 		  (assert
 		     (equal
 			(emtvr:data->alist receiver)
@@ -181,9 +184,6 @@
 		  t)))))
    (nil
       (progn
-	 (emt:doc "Situation: Have added a report w/1 entry.")
-	 (emt:doc "Operation: Add a second report")
-	 (emt:doc "Response: List contains both entries.")
 	 (emtg:with emtvr:thd ()
 	    (emtvr:th:with-usual-receiver receiver nodes-freshened
 	       (let*
@@ -193,13 +193,16 @@
 			(type report)
 			(role original-add)
 			(what-test test-1)))
+		  (emt:doc "Situation: Have added a report w/1 entry.")
 		  (emt:doc "Situation: Callback list is emptied")
 		  (setq nodes-freshened 'nil)
+		  (emt:doc "Param: A second report of a different test")
 		  (emtvr:newstyle receiver
 		     (emtg
 			(type report)
 			(what-test test-2)))
 		  (emt:doc "Response: One NEW callback happened")
+		  (emt:doc "Response: List contains both entries.")
 		  (emtg:narrow ((what-test test-2))
 		     (emtvr:th:assert-the-1-right-node 
 			nodes-freshened))
