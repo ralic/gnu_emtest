@@ -29,21 +29,18 @@
 
 ;;;_ , Requires
 
-(require 'utility/pathtree)
-(require 'utility/pathtree/testhelp)
-;;(require 'emtest/viewer/receive)
 (require 'emtest/viewer/organize)
-;;(require 'emtest/viewer/emviewer2)
-;;(require 'emtest/viewer/emviewer2/testhelp)
-(require 'emtest/viewer/view-types/testhelp)
-
 (require 'emtest/runner/define)
+
+(require 'emtest/viewer/view-types/testhelp)
 (require 'emtest/testhelp/standard)
 (require 'emtest/testhelp/tagnames)
 (require 'emtest/testhelp/match)
 (require 'emtest/runner/explorers/library/testhelp)
 (require 'emtest/runner/launch)
-
+(require 'emtest/runner/launch/testhelp)
+(require 'utility/pathtree)
+(require 'utility/pathtree/testhelp)
 
 ;;;_. Body
 ;;;_ , Testhelp
