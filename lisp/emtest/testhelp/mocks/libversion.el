@@ -198,6 +198,7 @@ Leaves emtmv in state VERSION."
 
 ;;;_ , Functions
 ;;;_  . emtmv:get-history-line
+;;Similar to file-loadhist-lookup but uses file-truename
 (defun emtmv:get-history-line (fullpath)
    ""
    (cdr
