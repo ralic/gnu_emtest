@@ -131,6 +131,36 @@ Intended for use in vtest.el files."
     (emtmv:vc:git:switch old-state)
     (emtmv:add-advice emtv2:tester-cb 'old))
 
+;;;_   , Example of use, new interface
+'(let*
+    (  
+       (lib-sym 'utility/pathtree)
+       ;;We'd look up stable-name and VC function, wrt lib-sym
+       (stable-name "master")  
+       ;;Internal calculations
+       (lib-name (symbol-name lib-sym))
+       (lib-path (locate-library lib-name))
+       (old-state
+	  '
+	  (emtmv:vc:git:start stable-name lib-path)))
+
+    ;;(Re)load that code.  Here I use "git", using a function from
+    ;;*/vc/git.  We'll customize and autoload
+    ;;`emtmv:vc:git:insert-file', so this won't be known here.
+    (with-temp-buffer
+       (erase-buffer)
+       (emtmv:vc:git:insert-file
+	  (current-buffer)
+	  stable-name
+	  lib-path)
+       ;;Could byte-compile. but YAGNI
+       (eval-buffer))
+    ;;(And similarly for other affected libraries)
+    
+    (emtmv:start lib-path 'old)
+    (emtmv:toggle-state)
+    (emtmv:add-advice emtv2:tester-cb 'old))
+
 ;;;_  . Interactivity help
 ;;;_   , emtmv:read-object
 (defun emtmv:read-object (prompt)
