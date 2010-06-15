@@ -37,16 +37,24 @@
    "Alist from library symbol to list of extra affected symbols.
 Unused for now." )
 ;;;_ , Structures
+(deftype emtmv:hl-el ()
+   "The type of a spec-list element.  
+Same as a history-list element"
+   t)
+
 (defstruct (emtmv:t
 	      (:constructor emtmv:make-t)
 	      (:conc-name emtmv:t->))
    "State of a versioned library"
-   (new-obarray () :type vector)
-   (old-obarray () :type vector)
+   (name       "Unnamed" :type string)
+   (new-values () :type (repeat (list emtmv:hl-el * *)))
+   (old-values () :type (repeat (list emtmv:hl-el * *)))
    (version     () :type (member nil old new))
    ;;May want to capture&swap respective load-history lines too.
    ;;May want to have two version of filename
-   (filename    () :type string))
+   (filename    () :type string)
+   (specs       () :type (repeat emtmv:hl-el)))
+
 
 ;;;_ , Variables
 (defvar emtmv:t nil
@@ -241,16 +249,20 @@ Leaves emtmv in state VERSION."
    (let
       ((obj
 	  (emtmv:make-t
-	     :new-obarray nil
-	     :old-obarray nil
+	     :new-values nil
+	     :old-values nil
 	     :version nil
 	     :filename   
 	     (progn
 		(unless lib-filename (error "No filename passed"))
-		lib-filename))))
+		lib-filename)
+	     :specs
+	     (emtmv:get-history-line lib-filename))))
+      
       (when initial-version
 	 (emtmv:change-state initial-version obj))
       obj))
+
 ;;$$USE ME  This factors out part of emtmv:change-state.  Use it in
 ;;tests and in emtmv:start
 ;;But will error until `emtmv:change-state' allows dummy
@@ -260,16 +272,19 @@ Leaves emtmv in state VERSION."
    "Change the current state"
    ;;Temporary
    (when dummy (error "Passing a value for DUMMY is reserved"))
+   ;;$$OBSOLESCENT - may just insist on it being initialized
    (unless emtmv:t
       (setq emtmv:t
 	 (emtmv:make-t
-	    :new-obarray nil
-	    :old-obarray nil
+	    :new-values nil
+	    :old-values nil
 	    :version nil
 	    :filename   
 	    (progn
 	       (unless lib-filename (error "No filename passed"))
-	       lib-filename))))
+	       lib-filename)
+	    :specs
+	    (emtmv:get-history-line lib-filename))))
    (unless (memq new-version '(old new))
       (error "Invalid state %s" new-version))
 
@@ -281,48 +296,61 @@ Leaves emtmv in state VERSION."
 	 (emtmv:activate-version new-version emtmv:t)
 	 (setf (emtmv:t->version emtmv:t) new-version))))
 
-;;;_  . emtmv:set-obarray
-(defun emtmv:set-obarray (version obj oa)
+;;;_  . emtmv:set-values
+(defun emtmv:set-values (version obj values)
    ""
    (case version
 	 (new
-	    (setf (emtmv:t->new-obarray obj) oa))
+	    (setf (emtmv:t->new-values obj) values))
 	 (old
-	    (setf (emtmv:t->old-obarray obj) oa))))
-;;;_  . emtmv:get-obarray
-(defun emtmv:get-obarray (version obj)
+	    (setf (emtmv:t->old-values obj) values))))
+;;;_  . emtmv:get-values
+(defun emtmv:get-values (version obj)
    ""
    (case version
       (new
-	 (emtmv:t->new-obarray obj))
+	 (emtmv:t->new-values obj))
       (old
-	 (emtmv:t->old-obarray obj))))
+	 (emtmv:t->old-values obj))))
 ;;;_  . emtmv:save-version
 (defun emtmv:save-version (version obj)
    "Save current values into obarray OA and return OA.
 OA can be nil in which case a new obarray is created and returned.
 If initialized, it will be from the module loaded from FILENAME."
+   '
    (let
       ((oa
 	  (emtmv:get-obarray version obj)))
       (emtmv:set-obarray version obj
 	 (emtmv:sync-obarray 
-	    oa (emtmv:t->filename obj) obarray oa))))
+	    oa (emtmv:t->filename obj) obarray oa)))
 
+   (emtmv:set-values version obj
+      (delq nil
+	 (mapcar
+	    #'emtmv:zip-w/value
+	    (emtmv:t->specs obj)))))
 
 ;;;_  . emtmv:activate-version
 (defun emtmv:activate-version (version obj)
    "Restore current values from obarray OA and return OA.
 OA can be nil in which case a new obarray is created and returned.
 If initialized, it will be from the module loaded from FILENAME."
+   '
    (let
       ((oa
 	  (emtmv:get-obarray version obj)))
       (emtmv:set-obarray version obj
 	 (emtmv:sync-obarray 
-	    oa (emtmv:t->filename obj) oa obarray))))
+	    oa (emtmv:t->filename obj) oa obarray)))
+   (mapcar
+      #'emtmv:restore-value
+      (emtmv:get-values version obj)))
+
 
 ;;;_  . emtmv:sync-obarray
+;;$$OBSOLESCENT
+'
 (defun emtmv:sync-obarray (oa filename from to)
    "For the syms in obarray OA, place respective syms from obarray
 FROM into obarray TO.  
@@ -340,13 +368,16 @@ Workhorse for `emtmv:activate-obarray' and
 	 oa)
       (emtmv:init-obarray-by-filename filename)))
 ;;;_  . Set up from file history
+;;$$OBSOLESCENT
 ;;;_   , emtmv:setup-plist
+'
 (defun emtmv:setup-plist (to from)
    ""
    (unless (symbol-plist to)
       (setplist to (copy-list (symbol-plist from)))))
 
 ;;;_   , emtmv:set-in-obarray
+'
 (defun emtmv:set-in-obarray (oa entry)
    "In obarray OA, set symbol corresponding to ENTRY"
    
@@ -370,8 +401,10 @@ Workhorse for `emtmv:activate-obarray' and
 		     oa)))
 	    (fset sym (symbol-function real-sym))
 	    (emtmv:setup-plist sym real-sym)))))
+
+;;;_  . Manage value lists
+
 ;;;_   , emtmv:zip-w/value
-;;Untested
 (defun emtmv:zip-w/value (entry)
    "Given ENTRY, create the cell (ENTRY VALUE PLIST) accordingly."
    
@@ -412,6 +445,8 @@ Workhorse for `emtmv:activate-obarray' and
    (apply #'emtmv:restore-value-x cell))
 
 ;;;_   , emtmv:init-obarray-by-filename
+;;$$OBSOLESCENT
+'
 (defun emtmv:init-obarray-by-filename (filename)
    "Return an obarray initted with the current values of all the
    symbols that FILENAME loaded. 
@@ -426,12 +461,16 @@ FILENAME must be the name of a file that has already been loaded."
 	 (error "No load history found for %s" filename))
       ;;$$UPDATE ME Map `emtmv:zip-w/value' over histline and return
       ;;that list.  Update callers to know that.
+      '
       (dolist (entry hist-line)
 	 (emtmv:set-in-obarray oa entry))
-      oa))
+      'oa
+      (mapcar #'emtmv:zip-w/value hist-line)))
+
 ;;;_  . Copy one to another
 ;;;_   , emtmv:copy-sym-by-name
 ;;$$OBSOLESCENT
+'
 (defun emtmv:copy-sym-by-name (from to name)
    ""
    (let*
@@ -451,6 +490,8 @@ FILENAME must be the name of a file that has already been loaded."
 
 
 ;;;_   , emtmv:refresh-obarray
+;;$$OBSOLESCENT
+'
 (defun emtmv:refresh-obarray (from to syms-of)
    "Refresh obarray TO with values from obarray FROM.
 Obarray SYMS-OF gives the set of values to be refreshed.  It can be
@@ -462,11 +503,15 @@ the same obarray as FROM or TO."
 	   (emtmv:copy-sym-by-name from to (symbol-name sym)))
       syms-of))
 
-;;;_  . Add another to both
+;;;_  . emtmv:add-spec 
+(defun emtmv:add-spec (obj spec)
+   "Add another spec to OBJ"
 
-;;;_  . Add symbol to both obarrays
-;;No tests yet
-;;Current one gets value, other one just gets interned
+   (let*
+      ()
+      
+      ))
+
 
 ;;;_  . Add all symbols from a particular list to both obarrays
 ;;No tests yet

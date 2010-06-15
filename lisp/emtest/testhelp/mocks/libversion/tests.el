@@ -233,7 +233,8 @@ Call this inside a narrowing to (which WHICH)."
 	      foo:var1 foo:var2 foo:fun1)))
    "Common surrounders for emtmv tests" )
 ;;;_ , emtmv:copy-sym-by-name
-;;$$CHANGE ME may be obsolete
+;;$$OBSOLETE
+'
 (emt:deftest-3 
    ((of 'emtmv:copy-sym-by-name)
       (:surrounders emtmv:th:surrounders))
@@ -282,10 +283,12 @@ Call this inside a narrowing to (which WHICH)."
 	       t)))))
 
 ;;;_ , emtmv:refresh-obarray
+;;$$OBSOLETE
+'
 (emt:deftest-3 
    ((of 'emtmv:refresh-obarray)
       (:surrounders emtmv:th:surrounders))
-
+   '
    (nil
       (progn
 	 (emtmv:th:load)
@@ -298,7 +301,8 @@ Call this inside a narrowing to (which WHICH)."
 	       (emtmv:th:check-all)))))
 
 ;;;_ , emtmv:set-in-obarray
-;;$$CHANGE ME may be obsolete
+;;$$OBSOLETE
+'
 (emt:deftest-3 
    ((of 'emtmv:set-in-obarray)
       (:surrounders emtmv:th:surrounders))
@@ -326,6 +330,8 @@ Call this inside a narrowing to (which WHICH)."
 
 
 ;;;_ , emtmv:init-obarray-by-filename
+;;$$OBSOLETE
+'
 (emt:deftest-3 
    ((of 'emtmv:init-obarray-by-filename)
       (:surrounders emtmv:th:surrounders))
