@@ -52,6 +52,8 @@ Same as a history-list element"
    (version     () :type (member nil old new))
    ;;May want to capture&swap respective load-history lines too.
    ;;May want to have two version of filename
+   ;;$$OBSOLESCENT  This has become a list of filenames, and really
+   ;;just reflects how we historically have made the spec.
    (filename    () :type string)
    (specs       () :type (repeat emtmv:hl-el)))
 
@@ -111,61 +113,32 @@ FUNC will generally be an entry point"
 Intended for use in vtest.el files."
    
    (error "`emtmv:require' is not available yet"))
-;;;_   , Quoted example of use
-'(let*
-    (  
-       (lib-sym 'utility/pathtree)
-       ;;We'd look up stable-name and VC function, wrt lib-sym
-       (stable-name "master")  
-       ;;Internal calculations
-       (lib-name (symbol-name lib-sym))
-       (lib-path (locate-library lib-name))
-       ;;Switch to a stable state wrt that code.  Here I use "git",
-       ;;using a function from */vc/git.  We'll customize and
-       ;;autoload, so this won't be known here.
-       (old-state
-	  '
-	  (emtmv:vc:git:start stable-name lib-path)))
-
-    ;;Load that code (This doesn't force a reload.  We might want to
-    ;;if it was already loaded and repo was in the wrong state.  Maybe
-    ;;we want repo return value to signal that).  This doesn't control
-    ;;for byte-compilation, which might skew versions.
-    (require lib-sym)
-    (emtmv:start lib-path 'old)
-    (emtmv:toggle-state)
-    ;;Switch back to old state.
-    '
-    (emtmv:vc:git:switch old-state)
-    (emtmv:add-advice emtv2:tester-cb 'old))
-
 ;;;_   , Example of use, new interface
 '(let*
     (  
-       (lib-sym 'utility/pathtree)
-       ;;We'd look up stable-name and VC function, wrt lib-sym
+       (lib-sym-list '(utility/pathtree))
+       ;;We'd look up stable-name and VC function, wrt lib-sym-list
        (stable-name "master")  
        ;;Internal calculations
-       (lib-name (symbol-name lib-sym))
-       (lib-path (locate-library lib-name))
-       (old-state
-	  '
-	  (emtmv:vc:git:start stable-name lib-path)))
+       (lib-name-list (mapcar #'symbol-name lib-sym-list))
+       (lib-path-list (mapcar #'locate-library lib-name-list)))
+    
 
+    ;;(For all affected libraries)
     ;;(Re)load that code.  Here I use "git", using a function from
     ;;*/vc/git.  We'll customize and autoload
     ;;`emtmv:vc:git:insert-file', so this won't be known here.
-    (with-temp-buffer
-       (erase-buffer)
-       (emtmv:vc:git:insert-file
-	  (current-buffer)
-	  stable-name
-	  lib-path)
-       ;;Could byte-compile. but YAGNI
-       (eval-buffer))
-    ;;(And similarly for other affected libraries)
+    (dolist (path lib-path-list)
+       (with-temp-buffer
+	  (erase-buffer)
+	  (emtmv:vc:git:insert-file
+	     (current-buffer)
+	     stable-name
+	     path)
+	  ;;Could byte-compile. but YAGNI
+	  (eval-buffer)))
     
-    (emtmv:start lib-path 'old)
+    (emtmv:start lib-path-list 'old)
     (emtmv:toggle-state)
     (emtmv:add-advice emtv2:tester-cb 'old))
 
@@ -203,8 +176,8 @@ Leaves emtmv in state VERSION."
    
    (interactive
       (list
-	 (completing-read
-	    "Which module is being versioned? "
+	 (completing-read-multiple
+	    "Which modules are being versioned? "
 	    load-history nil t)
 	 (emtmv:read-version "Current version is: ")))
    '  ;;$$USE this, but will error until `emtmv:change-state' allows dummy
@@ -244,7 +217,7 @@ Leaves emtmv in state VERSION."
 	 (file-truename fullpath) 
 	 load-history)))
 ;;;_  . emtmv:create-obj
-(defun emtmv:create-obj (lib-filename &optional initial-version)
+(defun emtmv:create-obj (lib-filename-list &optional initial-version)
    ""
    (let
       ((obj
@@ -252,12 +225,15 @@ Leaves emtmv in state VERSION."
 	     :new-values nil
 	     :old-values nil
 	     :version nil
+	     ;;$$OBSOLESCENT
 	     :filename   
 	     (progn
-		(unless lib-filename (error "No filename passed"))
-		lib-filename)
+		(unless lib-filename-list (error "No filename passed"))
+		lib-filename-list)
 	     :specs
-	     (emtmv:get-history-line lib-filename))))
+	     (mapcar
+		#'emtmv:get-history-line
+		lib-filename-list))))
       
       (when initial-version
 	 (emtmv:change-state initial-version obj))
@@ -268,23 +244,13 @@ Leaves emtmv in state VERSION."
 ;;But will error until `emtmv:change-state' allows dummy
 
 ;;;_  . emtmv:change-state 
-(defun emtmv:change-state (new-version dummy &optional lib-filename)
+(defun emtmv:change-state (new-version dummy &optional lib-filename-list)
    "Change the current state"
    ;;Temporary
    (when dummy (error "Passing a value for DUMMY is reserved"))
-   ;;$$OBSOLESCENT - may just insist on it being initialized
    (unless emtmv:t
       (setq emtmv:t
-	 (emtmv:make-t
-	    :new-values nil
-	    :old-values nil
-	    :version nil
-	    :filename   
-	    (progn
-	       (unless lib-filename (error "No filename passed"))
-	       lib-filename)
-	    :specs
-	    (emtmv:get-history-line lib-filename))))
+	 (emtmv:create-obj lib-filename-list)))
    (unless (memq new-version '(old new))
       (error "Invalid state %s" new-version))
 

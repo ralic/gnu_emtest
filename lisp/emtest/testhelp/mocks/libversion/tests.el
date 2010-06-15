@@ -155,7 +155,8 @@ If SKIP-LOADING-NEW is non-nil, do not load the new file."
       (emtg (role filename) (which old)))
    (emt:doc "Start in `old' (which captures contents of old lib)")
    (emtmv:change-state 'old nil
-      (emtg (role filename) (which old)))
+      (list
+	 (emtg (role filename) (which old))))
    (emt:doc "Operation: Switch state to `new'")
    (emtmv:change-state 'new nil)
    (unless skip-loading-new
