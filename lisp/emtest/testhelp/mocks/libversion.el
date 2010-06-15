@@ -424,11 +424,14 @@ FILENAME must be the name of a file that has already been loaded."
 	 (oa (make-vector 255 0)))
       (unless hist-line
 	 (error "No load history found for %s" filename))
+      ;;$$UPDATE ME Map `emtmv:zip-w/value' over histline and return
+      ;;that list.  Update callers to know that.
       (dolist (entry hist-line)
 	 (emtmv:set-in-obarray oa entry))
       oa))
 ;;;_  . Copy one to another
 ;;;_   , emtmv:copy-sym-by-name
+;;$$OBSOLESCENT
 (defun emtmv:copy-sym-by-name (from to name)
    ""
    (let*
