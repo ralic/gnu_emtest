@@ -54,8 +54,10 @@ BRANCH-NAME in the repo at TOP-DIR"
 ;;;_ , emtmv:vc:git:insert-file
 (defun emtmv:vc:git:insert-file (buf branch-name lib-path)
    "Get file LIB-PATH from branch BRANCH-NAME in a git repo.
+Sets the buffer's file-name to a pseudo-filename reflecting its repo.
+Sets the buffer's default-directory to the directory in the repo.
 LIB-PATH should be absolute."
-
+   ;;Could try to absolutize lib-path but YAGNI
    (let*
       ((dir (file-name-directory lib-path))
 	 (top-dir 
