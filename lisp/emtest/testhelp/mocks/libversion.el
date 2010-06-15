@@ -54,7 +54,7 @@ Same as a history-list element"
    ;;May want to have two version of filename
    ;;$$OBSOLESCENT  This has become a list of filenames, and really
    ;;just reflects how we historically have made the spec.
-   (filename    () :type string)
+   (filename    () :type (repeat string))
    (specs       () :type (repeat emtmv:hl-el)))
 
 
@@ -231,9 +231,10 @@ Leaves emtmv in state VERSION."
 		(unless lib-filename-list (error "No filename passed"))
 		lib-filename-list)
 	     :specs
-	     (mapcar
-		#'emtmv:get-history-line
-		lib-filename-list))))
+	     (apply #'append
+		(mapcar
+		   #'emtmv:get-history-line
+		   lib-filename-list)))))
       
       (when initial-version
 	 (emtmv:change-state initial-version obj))
