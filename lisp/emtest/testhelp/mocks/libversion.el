@@ -370,6 +370,46 @@ Workhorse for `emtmv:activate-obarray' and
 		     oa)))
 	    (fset sym (symbol-function real-sym))
 	    (emtmv:setup-plist sym real-sym)))))
+;;;_   , emtmv:zip-w/value
+;;Untested
+(defun emtmv:zip-w/value (entry)
+   "Given ENTRY, create the cell (ENTRY VALUE PLIST) accordingly."
+   
+   (cond
+      ((symbolp entry)
+	 (list
+	       entry
+	       (symbol-value entry)
+	       (copy-list (symbol-plist entry))))
+      ((and
+	  (consp entry)
+	  (memq (car entry) '(defun autoload)))
+	 (let
+	    (  (real-sym (cdr entry)))
+	    (list
+	       entry
+	       (symbol-function real-sym)
+	       (copy-list (symbol-plist real-sym)))))))
+;;;_   , emtmv:restore-value-x
+(defun emtmv:restore-value-x (entry value plist)
+   ""
+   (cond
+      ((symbolp entry)
+	 (set entry value)
+	 (setplist entry plist))
+      ((and
+	  (consp entry)
+	  (memq (car entry) '(defun autoload)))
+	 (let
+	    (  (real-sym (cdr entry)))
+	    (fset real-sym value)
+	    (setplist real-sym plist)))))
+
+
+;;;_   , emtmv:restore-value
+(defun emtmv:restore-value (cell)
+   "Given (ENTRY VALUE PLIST), set symbol ENTRY accordingly"
+   (apply #'emtmv:restore-value-x cell))
 
 ;;;_   , emtmv:init-obarray-by-filename
 (defun emtmv:init-obarray-by-filename (filename)
