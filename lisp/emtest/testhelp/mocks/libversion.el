@@ -315,60 +315,6 @@ If initialized, it will be from the module loaded from FILENAME."
       (emtmv:get-values version obj)))
 
 
-;;;_  . emtmv:sync-obarray
-;;$$OBSOLESCENT
-'
-(defun emtmv:sync-obarray (oa filename from to)
-   "For the syms in obarray OA, place respective syms from obarray
-FROM into obarray TO.  
-Return OA.
-
-OA can be nil in which case a new obarray is created and returned.
-If initialized, it will be from the module loaded from FILENAME.
-
-Workhorse for `emtmv:activate-obarray' and
-`emtmv:save-version'."
-   (if
-      oa
-      (progn
-	 (emtmv:refresh-obarray from to oa)
-	 oa)
-      (emtmv:init-obarray-by-filename filename)))
-;;;_  . Set up from file history
-;;$$OBSOLESCENT
-;;;_   , emtmv:setup-plist
-'
-(defun emtmv:setup-plist (to from)
-   ""
-   (unless (symbol-plist to)
-      (setplist to (copy-list (symbol-plist from)))))
-
-;;;_   , emtmv:set-in-obarray
-'
-(defun emtmv:set-in-obarray (oa entry)
-   "In obarray OA, set symbol corresponding to ENTRY"
-   
-   (cond
-      ((symbolp entry)
-	 (let
-	    ((sym
-		(intern 
-		   (symbol-name entry)
-		   oa)))
-	    (set sym (symbol-value entry))
-	    (emtmv:setup-plist sym entry)))
-      ((and
-	  (consp entry)
-	  (memq (car entry) '(defun autoload)))
-	 (let*
-	    (  (real-sym (cdr entry))
-	       (sym
-		  (intern 
-		     (symbol-name real-sym)
-		     oa)))
-	    (fset sym (symbol-function real-sym))
-	    (emtmv:setup-plist sym real-sym)))))
-
 ;;;_  . Manage value lists
 
 ;;;_   , emtmv:zip-w/value
@@ -411,66 +357,10 @@ Workhorse for `emtmv:activate-obarray' and
    "Given (ENTRY VALUE PLIST), set symbol ENTRY accordingly"
    (apply #'emtmv:restore-value-x cell))
 
-;;;_   , emtmv:init-obarray-by-filename
-;;$$OBSOLESCENT
-'
-(defun emtmv:init-obarray-by-filename (filename)
-   "Return an obarray initted with the current values of all the
-   symbols that FILENAME loaded. 
-FILENAME must be the name of a file that has already been loaded."
-   (unless filename
-      (error "No filename passed"))
-   (let
-      ((hist-line
-	  (emtmv:get-history-line filename))
-	 (oa (make-vector 255 0)))
-      (unless hist-line
-	 (error "No load history found for %s" filename))
-      ;;$$UPDATE ME Map `emtmv:zip-w/value' over histline and return
-      ;;that list.  Update callers to know that.
-      '
-      (dolist (entry hist-line)
-	 (emtmv:set-in-obarray oa entry))
-      'oa
-      (mapcar #'emtmv:zip-w/value hist-line)))
+;;;_  . Adding specs
 
-;;;_  . Copy one to another
-;;;_   , emtmv:copy-sym-by-name
-;;$$OBSOLESCENT
-'
-(defun emtmv:copy-sym-by-name (from to name)
-   ""
-   (let*
-      (
-	 ;;FROM-SYM need not exist but TO-SYM must.
-	 (from-sym (intern-soft name from))
-	 (to-sym   (intern      name to)))
-      (when
-	 (boundp from-sym)
-	 (set to-sym (symbol-value from-sym)))
-      (when
-	 (fboundp from-sym)
-	 (fset to-sym (symbol-function from-sym)))
-      ;;This is needed even after the first copy - not sure why but
-      ;;tests insist it is.
-      (setplist to-sym (copy-list (symbol-plist from-sym)))))
-
-
-;;;_   , emtmv:refresh-obarray
-;;$$OBSOLESCENT
-'
-(defun emtmv:refresh-obarray (from to syms-of)
-   "Refresh obarray TO with values from obarray FROM.
-Obarray SYMS-OF gives the set of values to be refreshed.  It can be
-the same obarray as FROM or TO."
-   (unless (and from to syms-of)
-      (error "At least one obarray was not set up"))
-   (mapatoms
-      #'(lambda (sym)
-	   (emtmv:copy-sym-by-name from to (symbol-name sym)))
-      syms-of))
-
-;;;_  . emtmv:add-spec 
+;;;_   , emtmv:add-spec
+;;$$WRITE ME
 (defun emtmv:add-spec (obj spec)
    "Add another spec to OBJ"
 
@@ -480,7 +370,7 @@ the same obarray as FROM or TO."
       ))
 
 
-;;;_  . Add all symbols from a particular list to both obarrays
+;;;_   , Add all symbols from a particular list to both obarrays
 ;;No tests yet
 '(when emtmv:extra-affected-syms
     (dolist (sym (cdr (car emtmv:extra-affected-syms)))
