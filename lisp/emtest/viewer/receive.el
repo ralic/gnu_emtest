@@ -135,10 +135,11 @@
 			testrun-id
 			(emt:view:suite-newstyle->result old-cell)
 			suite)
+
 		     ;;$$RETHINK ME Maybe should just dirty it in
-		     ;;pathtree.  This in fact just puts it where it
-		     ;;was.
-		     '(funcall 
+		     ;;pathtree.  This puts it where it was, but also
+		     ;;dirties it
+		     (funcall 
 			(emtvr:data->tree-insert-cb receiver)
 			presentation-path old-cell))
 	    
