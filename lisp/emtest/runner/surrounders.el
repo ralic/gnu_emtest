@@ -44,8 +44,7 @@
        (with-temp-buffer)
        ;;$$WRITE ME as a function, responding to properties.
        ;;(with-timeout 1.0)
-       ;;$$WRITE ME as a function, figure out whether to debug
-       ;;(emtts:with-debugging)
+       emtts:with-debugging
 
        ;;Add other *standard* ones here.  
        )
@@ -90,7 +89,8 @@ Not implemented yet."
    "Add SURROUNDERS around FORM.
 SURROUNDERS is a list whose elements must each be either:
  * A list.
- * A function taking 1 argument (props) and returning a list
+ * A function taking 1 argument (props) and returning a list.  It is
+   safe to return the empty list.
 
 In either case, FORM is added as the last element of the list.
 
@@ -124,16 +124,22 @@ PROPS is the property list of the form."
       (utim:get-properties :surrounders props)))
 
 
-;;;_   , Some surrounders
+;;;_   , Some surrounders and surrounder-makers
 
 ;;;_    . emtts:with-debugging
-;;Exists just to make `emtts:get-surrounders' neater.
-(defmacro emtts:with-debugging (&rest form)
-   ""
-   
-   `(progn
-       (debug) 
-       ,@form))
+(defun emtts:with-debugging (props)
+   "Surrounder-maker, enable debug in the form if appropriate."
+   ;;Will probably use (utim:get-properties :debug props) instead
+   ;;eventually. 
+   (let
+      ((debug-p emti:debug-p))
+      (if debug-p
+	 '(let
+	     (  (debug-on-signal t)
+		(debug-on-error  t)))
+	 ;;Otherwise, empty list.
+	 '())))
+
 
 ;;;_     , Tests
 

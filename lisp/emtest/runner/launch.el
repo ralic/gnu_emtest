@@ -34,6 +34,7 @@
 (require 'emtest/common/result-types)
 (require 'emtest/common/config)  ;;Just for receiver configuration
 (require 'emtest/editing/lisp)
+(require 'emtest/runner/individual)
 
 ;;;_. Body
 
@@ -182,6 +183,26 @@ LIBRARY is the absolute file name of the library"
 	 current-prefix-arg))
    ;;Unlike eval-expression, this does not do the extra stuff
    (emtt:eval arg))
+
+;;;_ , emt:debug-on-entry
+;;$$IMPROVE ME  Make the interface much more specific.
+;;;###autoload
+(defun emt:debug-on-entry (&rest r)
+   "Debug all test clauses on entry."
+   
+   (interactive)
+   (setq emti:debug-p t))
+
+;;;_ , emt:cancel-debug-on-entry
+;;$$IMPROVE ME  Make the interface volunteer only currently debugged
+;;runnables.
+;;;###autoload
+(defun emt:cancel-debug-on-entry (&rest r)
+   ""
+   
+   (interactive)
+   (setq emti:debug-p nil))
+
 
 ;;;_. Footers
 ;;;_ , Provides
