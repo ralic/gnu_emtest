@@ -32,16 +32,33 @@
    (require 'cl))
 ;;;_. Body
 ;;;_ , Customization
+;;$$OBSOLESCENT
 (defconst emtmv:extra-affected-syms
    ()
    "Alist from library symbol to list of extra affected symbols.
 Unused for now." )
+(defvar emtmv:stable-config 
+   
+   (list
+       (list
+	  'utility/pathtree
+	  "master"
+	  #'emtmv:vc:git:insert-file
+	  '()))
+   
+   "List of info about stable versions of libs
+Unused.  Format:
+ * Lib symbol
+ * Stable branch name
+ * VC function to insert the respective file in a buffer.
+ * Extra args (ignored for now)" )
 ;;;_ , Structures
+;;;_  . emtmv:hl-el
 (deftype emtmv:hl-el ()
    "The type of a spec-list element.  
 Same as a history-list element"
    t)
-
+;;;_  . emtmv:t
 (defstruct (emtmv:t
 	      (:constructor emtmv:make-t)
 	      (:conc-name emtmv:t->))
@@ -57,10 +74,22 @@ Same as a history-list element"
    (filename    () :type (repeat string))
    (specs       () :type (repeat emtmv:hl-el)))
 
+;;;_  . emtmv:lib-as-spec
+(defstruct (emtmv:lib-as-spec
+	      (:constructor emtmv:make-lib-as-spec)
+	      (:conc-name emtmv:lib-as-spec->))
+   "A library to be transformed to a spec"
+   sym 
+   str 
+   path
+   extra-syms
+   stable-name
+   vc-func)
 
 ;;;_ , Variables
 (defvar emtmv:t nil
    "The current versioned library, or `nil'" )
+
 ;;Keep these variables in sync with test insulator
 
 ;;;_ , Entry points
@@ -113,6 +142,65 @@ FUNC will generally be an entry point"
 Intended for use in vtest.el files."
    
    (error "`emtmv:require' is not available yet"))
+;;;_   , emtmv:require-x
+;;Usage:
+;; (emtmv:require-x '(utility/pathtree) '(emtv2:tester-cb))
+(defun emtmv:require-x (lib-sym-list advised-list)
+   "Load stable versions of LIB-SYM-LIST and advise ADVISED-LIST to
+use them.
+LIB-SYM-LIST is a list of symbols of the required libraries.
+ADVISED-LIST is a list of symbols of the advised functions."
+
+   (let*
+      ((las-list
+	  (mapcar #'emtmv:sym->lib-as-spec lib-sym-list))
+	 (spec
+	    (apply #'append
+	       (mapcar
+		  #'emtmv:lib-as-spec->spec
+		  las-list))))
+      (dolist (las las-list)
+	 (emtmv:load-stable las))
+      (emtmv:create-obj-2 spec)
+      (emtmv:change-state 'old nil)
+      (emtmv:change-state 'new nil)
+
+      ;;$$CHECK ME Should func (a symbol) be evalled?  Do we need
+      ;;another entry point for `emtmv:add-advice'?
+      (dolist (func advised-list)
+	 (emtmv:add-advice func 'old))))
+;;;_   , emtmv:load-stable
+(defun emtmv:load-stable (las)
+   ""
+   (with-temp-buffer
+      (erase-buffer)
+      (emtmv:vc:git:insert-file
+	 (current-buffer)
+	 (emtmv:lib-as-spec->stable-name las)
+	 (emtmv:lib-as-spec->path        las))
+      ;;Could byte-compile. but YAGNI
+      (eval-buffer)))
+;;;_   , emtmv:lib-as-spec->spec
+(defun emtmv:lib-as-spec->spec (las)
+   ""
+   (emtmv:get-history-line
+      (emtmv:lib-as-spec->path las)))
+
+;;;_   , emtmv:sym->lib-as-spec
+(defun emtmv:sym->lib-as-spec (sym)
+   ""
+   (let
+      ((str (symbol-name sym))
+	 (cell (assoc sym emtmv:stable-config))
+	 )
+      (emtmv:make-lib-as-spec
+	 :sym sym
+	 :str str
+	 :path (locate-library str)
+	 :extra-syms  (fourth cell)
+	 :stable-name (second cell)
+	 :vc-func     (third  cell))))
+
 ;;;_   , Example of use, new interface
 '(let*
     (  
@@ -137,7 +225,8 @@ Intended for use in vtest.el files."
 	     path)
 	  ;;Could byte-compile. but YAGNI
 	  (eval-buffer)))
-    
+
+    ; '(emtmv:create-obj-2 `(lib-filenames lib-path-list))
     (emtmv:start lib-path-list 'old)
     (emtmv:toggle-state)
     (emtmv:add-advice emtv2:tester-cb 'old))
@@ -171,6 +260,7 @@ Intended for use in vtest.el files."
 ;;;_   , emtmv:start
 (defun emtmv:start (lib-filename version)
    "Start emtmv.
+Assumes that spec is completely based on filenames
 Assumes that LIB-FILENAME has already been loaded.
 Leaves emtmv in state VERSION."
    
@@ -216,9 +306,37 @@ Leaves emtmv in state VERSION."
       (assoc 
 	 (file-truename fullpath) 
 	 load-history)))
+
+;;;_  . emtmv:create-obj-2
+(defun emtmv:create-obj-2 (specs &optional initial-version)
+   "Create a libversion object from SPEC-SPEC.
+Set it to INITIAL-VERSION if non-nil.
+
+SPEC-SPEC can be:
+ (spec SPEC), meaning to use SPEC just as it is
+ (lib-filenames FILENAME-LIST) meaning to build the spec from
+ FILENAME-LIST."
+   (let
+      ((obj
+	  (emtmv:make-t
+	     :new-values nil
+	     :old-values nil
+	     :version nil
+	     :filename nil
+	     :specs specs)))
+      
+      (when initial-version
+	 (emtmv:change-state initial-version obj))
+      obj))
+
 ;;;_  . emtmv:create-obj
 (defun emtmv:create-obj (lib-filename-list &optional initial-version)
-   ""
+   "Create an object *by list of filenames*"
+   '(emtmv:create-obj-2 
+       (apply #'append
+	  (mapcar
+	     #'emtmv:get-history-line
+	     lib-filename-list)))
    (let
       ((obj
 	  (emtmv:make-t
@@ -245,6 +363,8 @@ Leaves emtmv in state VERSION."
 ;;But will error until `emtmv:change-state' allows dummy
 
 ;;;_  . emtmv:change-state 
+;;$$UPDATE ME  Allow dummy to be passed, and not lib-filename-list,
+;;and don't use this to init any more.
 (defun emtmv:change-state (new-version dummy &optional lib-filename-list)
    "Change the current state"
    ;;Temporary

@@ -215,8 +215,9 @@ Call this inside a narrowing to (which WHICH)."
 	  ;;Insulate values
 	  (emtmv:new-obarray emtmv:old-obarray emtmv:state
 	     emtmv:filename
-	     emtmv:t
-
+	     emtmv:t 
+	     emtmv:stable-config
+	     ;;$$OBSOLESCENT
 	     emtmv:extra-affected-syms
 	     ;;Altered in loading
 	     load-history features
