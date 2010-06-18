@@ -439,7 +439,53 @@ Call this inside a narrowing to (which WHICH)."
 	       (run-stuff)
 	       (emtg (which old)(name var1)(type value)))
 	    t))))
+;;;_ , emtmv:require-x:th:vc:insert-file
+(defun emtmv:require-x:th:vc:insert-file (buf branch-name lib-path)
+   "Mock vc function.  Just insert the contents of the respective file."
+   (with-current-buffer buf
+      ;;For now, assumes that (which old) is meant.
+      (insert-file-contents
+	 (emtg (role filename)(which old)))))
+
+;;;_ , emtmv:require-x:th:stable-config
+(defconst emtmv:require-x:th:stable-config 
+   (list
+      (list
+	 'foo
+	 "old"
+	 #'emtmv:require-x:th:vc:insert-file
+	 '()))
+   "Testhelp mock list of info about stable versions of libs" )
+
 ;;;_ , emtmv:require-x
+(emt:deftest-3 
+   ((of 'emtmv:require-x)
+      (:surrounders emtmv:th:surrounders))
+   (nil
+      (let
+	 ((emtmv:stable-config emtmv:require-x:th:stable-config))
+	 (flet
+	    ((run-stuff () foo:var1))
+	    (emt:doc "Situation: Function run-stuff returns its value of
+   `foo:var1'.")
+	    (emt:doc "Operation: require-x on `foo'")
+	    (emtmv:require-x '(foo) '(run-stuff))
+	    (emt:doc "Response: run-stuff returns the `old' value of
+   `foo:var1'.") 
+	    (assert
+	       (equal
+		  (run-stuff)
+		  (emtg (which old)(name var1)(type value)))
+	       t)
+	    
+	    (emt:doc "Response: Just inspecting `foo:var1' gives the
+	    new value.")
+	    (assert
+	       (equal
+		  foo:var1
+		  (emtg (which new)(name var1)(type value)))
+	       t)
+	    ))))
 
 ;;;_. Footers
 ;;;_ , Provides
