@@ -84,7 +84,9 @@ Same as a history-list element"
    path
    extra-syms
    stable-name
-   vc-func)
+   vc-func
+   hist-key)
+
 
 ;;;_ , Variables
 (defvar emtmv:t nil
@@ -153,15 +155,19 @@ ADVISED-LIST is a list of symbols of the advised functions."
 
    (let*
       ((las-list
-	  (mapcar #'emtmv:sym->lib-as-spec lib-sym-list))
-	 (spec
+	  (mapcar #'emtmv:sym->lib-as-spec lib-sym-list)))
+      (dolist (las las-list)
+	 (emtmv:load-stable las))
+
+      ;;Now we're confident we can build the spec, since we've loaded
+      ;;all the files.
+      ;;For now, we set the global object here too.
+      (setq emtmv:t 
+	 (emtmv:create-obj-2 
 	    (apply #'append
 	       (mapcar
 		  #'emtmv:lib-as-spec->spec
 		  las-list))))
-      (dolist (las las-list)
-	 (emtmv:load-stable las))
-      (emtmv:create-obj-2 spec)
       (emtmv:change-state 'old nil)
       (emtmv:change-state 'new nil)
 
@@ -174,25 +180,30 @@ ADVISED-LIST is a list of symbols of the advised functions."
    ""
    (with-temp-buffer
       (erase-buffer)
-      (emtmv:vc:git:insert-file
+      (funcall (emtmv:lib-as-spec->vc-func las)
 	 (current-buffer)
 	 (emtmv:lib-as-spec->stable-name las)
 	 (emtmv:lib-as-spec->path        las))
+      
+      (unless buffer-file-name
+	 (error "Buffer file name was not defined"))
+      (setf (emtmv:lib-as-spec->hist-key las) 
+	 buffer-file-name)
+
       ;;Could byte-compile. but YAGNI
       (eval-buffer)))
 ;;;_   , emtmv:lib-as-spec->spec
 (defun emtmv:lib-as-spec->spec (las)
-   ""
+   "Get real spec from LAS"
    (emtmv:get-history-line
-      (emtmv:lib-as-spec->path las)))
+      (emtmv:lib-as-spec->hist-key las)))
 
 ;;;_   , emtmv:sym->lib-as-spec
 (defun emtmv:sym->lib-as-spec (sym)
    ""
    (let
       ((str (symbol-name sym))
-	 (cell (assoc sym emtmv:stable-config))
-	 )
+	 (cell (assoc sym emtmv:stable-config)))
       (emtmv:make-lib-as-spec
 	 :sym sym
 	 :str str
