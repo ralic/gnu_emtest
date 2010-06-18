@@ -89,8 +89,7 @@ Not implemented yet."
    "Add SURROUNDERS around FORM.
 SURROUNDERS is a list whose elements must each be either:
  * A list.
- * A function taking 1 argument (props) and returning a list.  It is
-   safe to return the empty list.
+ * A function taking 1 argument (props) and returning a list or `nil'.
 
 In either case, FORM is added as the last element of the list.
 
@@ -110,8 +109,9 @@ PROPS is a property list."
 		(t
 		   ;;Otherwise complain and stop.  For now, do it cheap.
 		   (assert (utim:proper-list-p surrounder-0))))))
-	 (setq form
-	    (append surrounder-1 (list form))))))
+	 (when surrounder-1
+	    (setq form
+	       (append surrounder-1 (list form)))))))
 
 
 ;;;_   , emtts:get-surrounders
