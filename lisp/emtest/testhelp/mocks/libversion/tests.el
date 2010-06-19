@@ -439,6 +439,9 @@ Call this inside a narrowing to (which WHICH)."
 	       (run-stuff)
 	       (emtg (which old)(name var1)(type value)))
 	    t))))
+;;;_ , emtmv:load-stable
+(put 'emtmv:load-stable 'emt:test-thru
+   'emtmv:require-x)
 ;;;_ , emtmv:require-x:th:vc:insert-file
 (defun emtmv:require-x:th:vc:insert-file (buf branch-name lib-path)
    "Mock vc function.  Just insert the contents of the respective file."
@@ -488,6 +491,10 @@ Call this inside a narrowing to (which WHICH)."
    `foo:var1'.")
 	    (emt:doc "Operation: require-x on `foo'")
 	    (emtmv:require-x '(foo) '(run-stuff))
+	    (emt:doc "Operation: load the new `foo'")
+	    (load-file
+	       (emtg (role filename) (which new)))
+
 	    (emt:doc "Response: run-stuff returns the `old' value of
    `foo:var1'.") 
 	    (assert
@@ -496,8 +503,8 @@ Call this inside a narrowing to (which WHICH)."
 		  (emtg (which old)(name var1)(type value)))
 	       t)
 	    
-	    (emt:doc "Response: Just inspecting `foo:var1' gives the
-	    new value.")
+	    (emt:doc "Response: Inspecting `foo:var1' in the
+	    larger context gives the new value.")
 	    (assert
 	       (equal
 		  foo:var1

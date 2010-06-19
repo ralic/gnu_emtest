@@ -145,8 +145,6 @@ Intended for use in vtest.el files."
    
    (error "`emtmv:require' is not available yet"))
 ;;;_   , emtmv:require-x
-;;Usage:
-;; (emtmv:require-x '(utility/pathtree) '(emtv2:tester-cb))
 (defun emtmv:require-x (lib-sym-list advised-list)
    "Load stable versions of LIB-SYM-LIST and advise ADVISED-LIST to
 use them.
@@ -171,10 +169,9 @@ ADVISED-LIST is a list of symbols of the advised functions."
       (emtmv:change-state 'old nil)
       (emtmv:change-state 'new nil)
 
-      ;;$$CHECK ME Should func (a symbol) be evalled?  Do we need
-      ;;another entry point for `emtmv:add-advice'?
       (dolist (func advised-list)
-	 (emtmv:add-advice func 'old))))
+	 (eval
+	    `(emtmv:add-advice ,func 'old)))))
 ;;;_   , emtmv:load-stable
 (defun emtmv:load-stable (las)
    ""
@@ -191,7 +188,9 @@ ADVISED-LIST is a list of symbols of the advised functions."
 	 buffer-file-name)
 
       ;;Could byte-compile. but YAGNI
-      (eval-buffer)))
+      (eval-buffer)
+      (set-buffer-modified-p nil)))
+
 ;;;_   , emtmv:lib-as-spec->spec
 (defun emtmv:lib-as-spec->spec (las)
    "Get real spec from LAS"
