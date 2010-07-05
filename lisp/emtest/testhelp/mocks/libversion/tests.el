@@ -31,6 +31,7 @@
 
 (require 'emtest/runner/define)
 (require 'emtest/testhelp/standard)
+(require 'emtest/testhelp/misc)
 (require 'emtest/testhelp/mocks/libversion)
 
 ;;;_. Body
@@ -217,6 +218,7 @@ Call this inside a narrowing to (which WHICH)."
 	     emtmv:filename
 	     emtmv:t 
 	     emtmv:stable-config
+	     (emtmv:vc-list emtmv:th:vc-list)
 	     ;;$$OBSOLESCENT
 	     emtmv:extra-affected-syms
 	     ;;Altered in loading
@@ -465,7 +467,7 @@ Call this inside a narrowing to (which WHICH)."
       (list
 	 'foo
 	 "old"
-	 #'emtmv:require-x:th:vc:insert-file
+	 'insert ;;#'emtmv:require-x:th:vc:insert-file
 	 '()))
    "Testhelp mock list of info about stable versions of libs" )
 ;;;_ , emtmv:require-x:th:stable-config-buggy
@@ -474,14 +476,49 @@ Call this inside a narrowing to (which WHICH)."
       (list
 	 'foo
 	 "old"
-	 #'emtmv:require-x:th:vc:insert-file-buggy
+	 'insert-buggy ;;#'emtmv:require-x:th:vc:insert-file-buggy
 	 '()))
    "Testhelp mock list of info about stable versions of libs" )
+;;;_ , Values for emtmv:vc-list
+;;;_  . emtmv:th:vc-lib-sym
+(defconst emtmv:th:vc-lib-sym
+   'emtest/testhelp/mocks/libversion/testhelp/vc
+   ;;NB, the functions live here and not in the loaded pseudo-library.
+   "Symbol of the pseudo-library for testhelp VC functions" )
+;;;_  . emtmv:th:vc-list
+(defconst emtmv:th:vc-list 
+   '(  (insert
+	  emtest/testhelp/mocks/libversion/testhelp/vc
+	  emtmv:require-x:th:vc:insert-file)
+       (insert-buggy
+	  emtest/testhelp/mocks/libversion/testhelp/vc
+	  emtmv:require-x:th:vc:insert-file-buggy))
+   "Testhelp mock list of VC software (all mocks for special purposes)" )
 
 ;;;_ , emtmv:require-x
 (emt:deftest-3 
    ((of 'emtmv:require-x)
       (:surrounders emtmv:th:surrounders))
+
+   (nil
+      (let
+	 ((emtmv:stable-config emtmv:require-x:th:stable-config))
+	 (when (featurep emtmv:th:vc-lib-sym)
+	    (unload-feature emtmv:th:vc-lib-sym t))
+	 (emt:doc "Situation: The VC lib is not loaded.")
+	 (assert
+	    (not (featurep emtmv:th:vc-lib-sym)))
+
+	 (emt:doc "Operation: require-x on `foo'")
+	 (emtmv:require-x '(foo) '())
+	 (emt:doc "Response: The VC lib is now loaded")
+
+	 (emt:doc "Operation: load the new `foo'")
+	 (load-file
+	    (emtg (role filename) (which new)))
+	 (assert (featurep emtmv:th:vc-lib-sym)))
+      )
+
    (nil
       (let
 	 ((emtmv:stable-config emtmv:require-x:th:stable-config))
@@ -489,7 +526,8 @@ Call this inside a narrowing to (which WHICH)."
 	    ((run-stuff () foo:var1))
 	    (emt:doc "Situation: Function run-stuff returns its value of
    `foo:var1'.")
-	    (emt:doc "Operation: require-x on `foo'")
+	    (emt:doc "Operation: require-x on `foo' and intercepting
+      `run-stuff'") 
 	    (emtmv:require-x '(foo) '(run-stuff))
 	    (emt:doc "Operation: load the new `foo'")
 	    (load-file
@@ -526,7 +564,7 @@ Call this inside a narrowing to (which WHICH)."
 	    (emt:doc "Operation: require-x on `foo'")
 	    (emt:doc "Response: Error.")
 	    (assert
-	       (emt:gives-error
+	       (emth:gives-error
 		  (emtmv:require-x '(foo) '(run-stuff))))
 
 	    )))

@@ -37,20 +37,30 @@
    ()
    "Alist from library symbol to list of extra affected symbols.
 Unused for now." )
+(defconst emtmv:vc-list 
+   '((git 
+	emtest/testhelp/mocks/libversion/vc/git 
+	emtmv:vc:git:insert-file)) 
+   "List of available version controls.
+Format :: 
+   * sym
+   * require-sym
+   * entry-point (quoted function)" )
+;;$$MAKE ME CUSTOMIZABLE
 (defvar emtmv:stable-config 
    
    (list
        (list
 	  'utility/pathtree
 	  "master"
-	  #'emtmv:vc:git:insert-file
+	  'git
 	  '()))
    
    "List of info about stable versions of libs
-Unused.  Format:
+Format:
  * Lib symbol
  * Stable branch name
- * VC function to insert the respective file in a buffer.
+ * VC symbol
  * Extra args (ignored for now)" )
 ;;;_ , Structures
 ;;;_  . emtmv:hl-el
