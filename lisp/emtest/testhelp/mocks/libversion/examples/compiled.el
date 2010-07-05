@@ -4,4 +4,5 @@
    load-file-name 
    "The load-file name" )
 
-(provide 'emtest/testhelp/mocks/libversion/examples/compiled)
+;;Only to be loaded with load-path set to this directory.
+(provide 'compiled)

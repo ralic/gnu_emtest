@@ -24,8 +24,7 @@
 
 ;;;_ , Commentary:
 
-;; 
-
+;;Only to be loaded with load-path set to this directory.
 
 ;;;_ , Requires
 ;;Nothing
@@ -35,8 +34,8 @@
 
 ;;;_. Footers
 ;;;_ , Provides
-
-(provide 'emtest/testhelp/mocks/libversion/testhelp/vc)
+;;Only to be loaded with load-path set to this directory.
+(provide 'vc)  
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:

@@ -15,6 +15,6 @@
 
 (put 'foo:var2 'foo:properties "New foo")
 
-;;Deliberately, both foo-old and foo-new provide this feature.
-(provide 'emtest/testhelp/mocks/libversion:th/foo)
+;;Deliberately, both old foo and new foo provide this feature.
+(provide 'foo)
 

@@ -61,7 +61,7 @@
 		      ,(emtg (type value)))))))))
 
 ;;;_ , Data
-;;;_  . 
+;;;_  . emtmv:th:examples-dir
 (defconst emtmv:th:examples-dir
       (emtb:expand-filename-by-load-file "examples") 
       "Directory where examples are" )
@@ -72,7 +72,7 @@
       ()
       (group ((which old))
 	 (item ((role filename))
-	    (expand-file-name "foo-old.el" emtmv:th:examples-dir))
+	    (expand-file-name "stable/foo.el" emtmv:th:examples-dir))
 	 (group ((role items))
 	    (group
 	       ((name var1))
@@ -109,7 +109,7 @@
 
       (group ((which new))
 	 (item ((role filename))
-	    (expand-file-name "foo-new.el" emtmv:th:examples-dir))
+	    (expand-file-name "foo.el" emtmv:th:examples-dir))
 	 (group ((role items))
 	    (group
 	       ((name var1))
@@ -150,7 +150,6 @@ If SKIP-LOADING-NEW is non-nil, do not load the new file."
    (if skip-loading-new
       (emt:doc "Setup, but don't load new version.")
       (emt:doc "Setup as usual."))
-   ;;Would like to suppress these messages when not of interest.
    (emt:doc "Load old file.")
    (load-file
       (emtg (role filename) (which old)))
@@ -214,16 +213,23 @@ Call this inside a narrowing to (which WHICH)."
        (emtg:with emtmv:th:data ())
        (let
 	  ;;Insulate values
-	  (emtmv:new-obarray emtmv:old-obarray emtmv:state
+	  (
+	     ;;$$OBSOLETE
+	     emtmv:new-obarray emtmv:old-obarray emtmv:state
 	     emtmv:filename
+	     ;;State
 	     emtmv:t 
+	     ;;Configuration
 	     emtmv:stable-config
 	     (emtmv:vc-list emtmv:th:vc-list)
+
+	     ;;Global config affecting this
+	     (load-path (list emtmv:th:examples-dir))
 	     ;;$$OBSOLESCENT
 	     emtmv:extra-affected-syms
-	     ;;Altered in loading
+	     ;;Global state altered in loading
 	     load-history features
-	     ;;Defined in foo-old or foo-new
+	     ;;Symbols defined in stable/foo and/or foo
 	     foo:old:unshared
 	     foo:new:unshared
 	     foo:var1 foo:var2 foo:fun1))
@@ -475,7 +481,7 @@ it's source (el), not compiled.  Otherwise do nothing and return nil."
       (string=
 	 (file-name-extension lib-path)
 	 "el")
-      (emtmv:require-x:th:vc:insert-file lib-path)))
+      (emtmv:require-x:th:vc:insert-file buf lib-path)))
 
 ;;;_ , Mock configuration
 ;;;_ , emtmv:require-x:th:stable-config
@@ -502,23 +508,29 @@ it's source (el), not compiled.  Otherwise do nothing and return nil."
 ;;;_  . emtmv:th:vc-lib-sym
 ;;NB, the VC (mock) functions live in "tests.el" and not in this
 ;;pseudo-library, which is just tested for getting loaded.
+;;Only to be loaded with load-path set to the examples directory.
 (defconst emtmv:th:vc-lib-sym
-   'emtest/testhelp/mocks/libversion/testhelp/vc
+   'vc
    "Symbol of the pseudo-library for testhelp VC functions" )
 
 ;;;_  . emtmv:th:vc-list
 (defconst emtmv:th:vc-list 
    '(  (insert-by-tag
-	  emtest/testhelp/mocks/libversion/testhelp/vc
+	  vc
 	  emtmv:require-x:th:vc:insert-file-by-tag)
        (insert-no-name
-	  emtest/testhelp/mocks/libversion/testhelp/vc
+	  vc
 	  emtmv:require-x:th:vc:insert-no-name)
        (insert-if-source
-	  emtest/testhelp/mocks/libversion/testhelp/vc
+	  vc
 	  emtmv:require-x:th:vc:insert-file-if-source))
    "Testhelp mock list of VC software (all mocks for special purposes)" )
-
+;;;_ , emtmv:insert-version
+(put 'emtmv:insert-version 'emt:test-thru
+   'emtmv:require-x)
+;;;_ , emtmv:load-stable
+(put 'emtmv:load-stable 'emt:test-thru
+   'emtmv:require-x)
 ;;;_ , emtmv:require-x
 (emt:deftest-3 
    ((of 'emtmv:require-x)
@@ -545,7 +557,7 @@ it's source (el), not compiled.  Otherwise do nothing and return nil."
    (nil
       (let*
 	 (  (lib-sym
-	       'emtest/testhelp/mocks/libversion/examples/compiled)
+	       'compiled)
 	    (emtmv:stable-config 
 	       (list
 		  (list
@@ -573,8 +585,9 @@ give us an .elc")
 	 (emtmv:require-x (list lib-sym) '())
 	 (emt:doc "Response: The library is now loaded")
 	 (assert (featurep lib-sym))
-	 (let* 
-	    ((lfn (libversion:th:examples/compiled/load-file-name)))
+	 ;;$$Can't because we don't define load-name (yet)
+	 '(let* 
+	    ((lfn libversion:th:examples/compiled/load-file-name))
 	    (emt:doc "Response: library is the .el version")
 	    (assert
 	       (string=
