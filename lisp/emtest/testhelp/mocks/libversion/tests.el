@@ -214,9 +214,6 @@ Call this inside a narrowing to (which WHICH)."
        (let
 	  ;;Insulate values
 	  (
-	     ;;$$OBSOLETE
-	     emtmv:new-obarray emtmv:old-obarray emtmv:state
-	     emtmv:filename
 	     ;;State
 	     emtmv:t 
 	     ;;Configuration
@@ -225,20 +222,22 @@ Call this inside a narrowing to (which WHICH)."
 
 	     ;;Global config affecting this
 	     (load-path (list emtmv:th:examples-dir))
-	     ;;$$OBSOLESCENT
-	     emtmv:extra-affected-syms
 	     ;;Global state altered in loading
 	     load-history features
-	     ;;Symbols defined in files we might load
-	     libversion:th:examples/compiled/load-file-name
+
+	     ;;Symbols defined in test files that we load
+	     compiled:load-file-name
 	     foo:load-file-name
+
 	     foo:old:unshared
 	     foo:new:unshared
 	     foo:var1 foo:var2 foo:fun1))
-       ;;Insulate functions too
+
+       ;;Insulate functions
        (flet
 	  ((foo:fun1)))
-       ;;Insulate properties too
+
+       ;;Insulate properties
        (emth:let-noprops
 	  '(foo:old:unshared
 	      foo:new:unshared
@@ -503,17 +502,6 @@ it's source (el), not compiled.  Otherwise do nothing and return nil."
 	 'insert-by-tag
 	 '()))
    "Testhelp mock list of info about stable versions of libs" )
-;;;_ , emtmv:require-x:th:stable-config-buggy
-;;$$OBSOLETE - folded into the test clause that uses it.
-'
-(defconst emtmv:require-x:th:stable-config-buggy
-   (list
-      (list
-	 'foo
-	 "old"
-	 'insert-no-name
-	 '()))
-   "Testhelp mock list of info about stable versions of libs" )
 ;;;_ , Values for emtmv:vc-list
 ;;;_  . emtmv:th:vc-lib-sym
 ;;NB, the VC (mock) functions live in "tests.el" and not in this
@@ -628,7 +616,7 @@ give us an .elc")
 	 (emt:doc "Response: The library is now loaded")
 	 (assert (featurep lib-sym))
 	 (let* 
-	    ((lfn libversion:th:examples/compiled/load-file-name))
+	    ((lfn compiled:load-file-name))
 	    (emt:doc "Response: library is the .el version")
 	    (assert
 	       (string=

@@ -32,11 +32,6 @@
    (require 'cl))
 ;;;_. Body
 ;;;_ , Customization
-;;$$OBSOLESCENT
-(defconst emtmv:extra-affected-syms
-   ()
-   "Alist from library symbol to list of extra affected symbols.
-Unused for now." )
 (defconst emtmv:vc-list 
    '((git 
 	emtest/testhelp/mocks/libversion/vc/git 
@@ -253,37 +248,6 @@ LAS must be a `emtmv:lib-as-spec'"
 	 :stable-name (second cell)
 	 :vc-func     (third vc-cell))))
 
-;;;_   , Example of use, new interface
-;;$$OBSOLETE in favor of emtmv:load-stable
-'(let*
-    (  
-       (lib-sym-list '(utility/pathtree))
-       ;;We'd look up stable-name and VC function, wrt lib-sym-list
-       (stable-name "master")  
-       ;;Internal calculations
-       (lib-name-list (mapcar #'symbol-name lib-sym-list))
-       (lib-path-list (mapcar #'locate-library lib-name-list)))
-    
-
-    ;;(For all affected libraries)
-    ;;(Re)load that code.  Here I use "git", using a function from
-    ;;*/vc/git.  We'll customize and autoload
-    ;;`emtmv:vc:git:insert-file', so this won't be known here.
-    (dolist (path lib-path-list)
-       (with-temp-buffer
-	  (erase-buffer)
-	  (emtmv:vc:git:insert-file
-	     (current-buffer)
-	     stable-name
-	     path)
-	  ;;Could byte-compile. but YAGNI
-	  (eval-buffer)))
-
-    ; '(emtmv:create-obj-2 `(lib-filenames lib-path-list))
-    (emtmv:start lib-path-list 'old)
-    (emtmv:toggle-state)
-    (emtmv:add-advice emtv2:tester-cb 'old))
-
 ;;;_  . Interactivity help
 ;;;_   , emtmv:read-object
 (defun emtmv:read-object (prompt)
@@ -385,6 +349,7 @@ SPEC-SPEC can be:
 ;;;_  . emtmv:create-obj
 (defun emtmv:create-obj (lib-filename-list &optional initial-version)
    "Create an object *by list of filenames*"
+   ;;$$USE ME
    '(emtmv:create-obj-2 
        (apply #'append
 	  (mapcar
@@ -543,12 +508,8 @@ If initialized, it will be from the module loaded from FILENAME."
       ))
 
 
-;;;_   , Add all symbols from a particular list to both obarrays
-;;No tests yet
-'(when emtmv:extra-affected-syms
-    (dolist (sym (cdr (car emtmv:extra-affected-syms)))
-       ;;Add that symbol to both obarrays
-       ))
+;;;_   , Add all symbols from a particular list
+
 
 ;;;_. Footers
 ;;;_ , Provides

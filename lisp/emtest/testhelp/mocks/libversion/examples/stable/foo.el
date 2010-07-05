@@ -21,3 +21,8 @@
 
 ;;Deliberately, both old foo and new foo provide this feature.
 (provide 'foo)
+
+;;To guarantee that these files are always found in .el form
+;;;_  + Local variables:
+;;;_  + no-byte-compile: t
+;;;_  + End:
