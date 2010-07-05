@@ -461,7 +461,7 @@ Call this inside a narrowing to (which WHICH)."
 
 ;;;_  . emtmv:require-x:th:vc:insert-file-by-tag
 (defun emtmv:require-x:th:vc:insert-file-by-tag (buf branch-name lib-path)
-   "Mock vc function.  ignore lib-path and insert the contents of the
+   "Mock vc function.  Ignore lib-path and insert the contents of the
 file named by current (emtg (role filename)(which old))"
    ;;For now, assumes that (which old) is meant.
    (emtmv:require-x:th:vc:insert-file-x 
@@ -470,12 +470,15 @@ file named by current (emtg (role filename)(which old))"
 
 ;;;_  . emtmv:require-x:th:vc:insert-file
 (defun emtmv:require-x:th:vc:insert-file (buf branch-name lib-path)
-   "Mock vc function.  Just insert the contents of the respective file."
-   (emtmv:require-x:th:vc:insert-file-x buf lib-path))
+   "Mock vc function.  Just insert the contents of the respective file
+if it exists."
+   (when
+      (file-exists-p lib-path)
+      (emtmv:require-x:th:vc:insert-file-x buf lib-path)))
 
 ;;;_  . emtmv:require-x:th:vc:insert-no-name
 (defun emtmv:require-x:th:vc:insert-no-name (buf branch-name lib-path)
-   "Mock vc function.  Deliberately leaves the filename `nil."
+   "Mock vc function.  Deliberately buggily leaves the filename `nil."
    (with-current-buffer buf
       (setq buffer-file-name nil)
       t))
@@ -563,8 +566,8 @@ it's source (el), not compiled.  Otherwise do nothing and return nil."
 	 (assert (featurep vc-lib-sym))))
    
    (nil
-      (let*
-	 (  (lib-sym 'compiled)
+      (let* 
+	 (  (lib-sym 'foo)
 	    (emtmv:stable-config 
 	       (list
 		  (list
@@ -583,18 +586,16 @@ it's source (el), not compiled.  Otherwise do nothing and return nil."
 	 (emtmv:require-x (list lib-sym) '())
 	 (emt:doc "Response: The library is now loaded")
 	 (assert (featurep lib-sym))
-	 (emt:doc "Response: load-file-name is non-nil")
-	 (assert (not (null libversion:th:examples/compiled/load-file-name)))
-	 ;;It points at the right location
-	 '
 	 (let* 
 	    ((lfn libversion:th:examples/compiled/load-file-name))
-	    (emt:doc "Response: library is the .el version")
+	    (emt:doc "Response: load-file-name is non-nil")
+	    (assert (not (null lfn)))
+	    (emt:doc "Response: It points at the right location")
 	    (assert
 	       (string=
-		  (file-name-extension lfn)
-		  "el")))))
-
+		  lfn
+		  (emtg (which new)(role filename)))))))
+   
    (nil
       (let*
 	 (  (lib-sym 'compiled)
