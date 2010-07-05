@@ -182,23 +182,48 @@ ADVISED-LIST is a list of symbols of the advised functions."
       (dolist (func advised-list)
 	 (eval
 	    `(emtmv:add-advice ,func 'old)))))
+;;;_   , emtmv:insert-version
+(defun emtmv:insert-version (buf las)
+   "Insert a stable version of a library into buffer BUF.
+LAS must be a `emtmv:lib-as-spec'"
+
+   (let
+      ((base-path 
+	  (file-name-sans-extension
+	     (locate-library (emtmv:lib-as-spec->str las))))
+	 (vc-func 
+	    (emtmv:lib-as-spec->vc-func las))
+	 (stable-version
+	    (emtmv:lib-as-spec->stable-name las)))
+      (catch 'emtmv:inserted
+	 (progn
+	    (dolist (suffix (get-load-suffixes))
+	       (when
+		  (funcall 
+		     vc-func
+		     buf
+		     stable-version
+		     ;;NB, suffix has a leading dot
+		     (concat base-path suffix))
+		  (throw 'emtmv:inserted t)))
+	    (error "Could not find the %s version of %s"
+	       stable-version
+	       base-path)))))
+
 ;;;_   , emtmv:load-stable
 (defun emtmv:load-stable (las)
-   ""
+   "Load a stable version of a library as specified by LAS.
+LAS must be a `emtmv:lib-as-spec'"
    (with-temp-buffer
       (erase-buffer)
-      ;;$$IMPROVE ME - try multiple suffixes or locations.
-      (funcall (emtmv:lib-as-spec->vc-func las)
-	 (current-buffer)
-	 (emtmv:lib-as-spec->stable-name las)
-	 (emtmv:lib-as-spec->path        las))
+      (emtmv:insert-version (current-buffer) las)
       
       (unless buffer-file-name
 	 (error "Buffer file name was not defined"))
       (setf (emtmv:lib-as-spec->hist-key las) 
 	 buffer-file-name)
 
-      ;;Could byte-compile. but YAGNI
+      ;;Could optionally byte-compile but YAGNI.
       (eval-buffer)
       (set-buffer-modified-p nil)))
 
