@@ -210,16 +210,19 @@ ADVISED-LIST is a list of symbols of the advised functions."
 ;;;_   , emtmv:sym->lib-as-spec
 (defun emtmv:sym->lib-as-spec (sym)
    ""
-   (let
+   (let*
       ((str (symbol-name sym))
-	 (cell (assoc sym emtmv:stable-config)))
+	 (cell (assoc sym emtmv:stable-config))
+	 (vc-sym (third cell))
+	 (vc-cell (assoc vc-sym emtmv:vc-list)))
+      (require (second vc-cell))
       (emtmv:make-lib-as-spec
 	 :sym sym
 	 :str str
 	 :path (locate-library str)
 	 :extra-syms  (fourth cell)
 	 :stable-name (second cell)
-	 :vc-func     (third  cell))))
+	 :vc-func     (third vc-cell))))
 
 ;;;_   , Example of use, new interface
 '(let*
