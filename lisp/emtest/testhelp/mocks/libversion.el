@@ -203,9 +203,9 @@ LAS must be a `emtmv:lib-as-spec'"
 		     vc-func
 		     buf
 		     stable-version
-		     ;;NB, suffix has a leading dot
+		     ;;Suffix has a leading dot
 		     (concat base-path suffix))
-		  (throw 'emtmv:inserted t)))
+		  (throw 'emtmv:inserted (concat base-path suffix))))
 	    (error "Could not find the %s version of %s"
 	       stable-version
 	       base-path)))))
@@ -216,16 +216,18 @@ LAS must be a `emtmv:lib-as-spec'"
 LAS must be a `emtmv:lib-as-spec'"
    (with-temp-buffer
       (erase-buffer)
-      (emtmv:insert-version (current-buffer) las)
+      (let
+	 ((load-file-name
+	     (emtmv:insert-version (current-buffer) las)))
       
-      (unless buffer-file-name
-	 (error "Buffer file name was not defined"))
-      (setf (emtmv:lib-as-spec->hist-key las) 
-	 buffer-file-name)
+	 (unless buffer-file-name
+	    (error "Buffer file name was not defined"))
+	 (setf (emtmv:lib-as-spec->hist-key las) 
+	    buffer-file-name)
 
-      ;;Could optionally byte-compile but YAGNI.
-      (eval-buffer)
-      (set-buffer-modified-p nil)))
+	 ;;Could optionally byte-compile but YAGNI.
+	 (eval-buffer)
+	 (set-buffer-modified-p nil))))
 
 ;;;_   , emtmv:lib-as-spec->spec
 (defun emtmv:lib-as-spec->spec (las)
