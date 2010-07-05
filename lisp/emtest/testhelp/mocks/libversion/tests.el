@@ -542,17 +542,17 @@ it's source (el), not compiled.  Otherwise do nothing and return nil."
    
 
    (nil
-      (let
-	 ((emtmv:stable-config 
-	     ;;'((foo "old" insert-if-source ()))
-	     (list
-		(list
-		   'foo
-		   "old"
-		   'insert-if-source
-		   '())))
-	    (lib-sym
-	       'emtest/testhelp/mocks/libversion/examples/compiled))
+      (let*
+	 (  (lib-sym
+	       'emtest/testhelp/mocks/libversion/examples/compiled)
+	    (emtmv:stable-config 
+	       (list
+		  (list
+		     lib-sym
+		     "master"
+		     'insert-if-source
+		     '()))))
+	 
 	 (emt:doc "Shows: When only an .el version of the file exists
 in the master, we can retrieve it even when `locate-library' wants to
 give us an .elc")
