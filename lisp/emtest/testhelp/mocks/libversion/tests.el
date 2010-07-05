@@ -444,55 +444,78 @@ Call this inside a narrowing to (which WHICH)."
 ;;;_ , emtmv:load-stable
 (put 'emtmv:load-stable 'emt:test-thru
    'emtmv:require-x)
-;;;_ , emtmv:require-x:th:vc:insert-file
-(defun emtmv:require-x:th:vc:insert-file (buf branch-name lib-path)
-   "Mock vc function.  Just insert the contents of the respective file."
+;;;_ , Mock VC functions
+;;;_  . emtmv:require-x:th:vc:insert-file
+(defun emtmv:require-x:th:vc:insert-file (buf filename)
+   "Mock insert function.  Just insert the contents of FILENAME."
    (with-current-buffer buf
-      ;;For now, assumes that (which old) is meant.
-      (insert-file-contents
-	 (emtg (role filename)(which old)))
+      (insert-file-contents filename)
+      (setq buffer-file-name filename)))
 
-      (setq buffer-file-name
-	 (emtg (role filename)(which old)))))
+;;;_  . emtmv:require-x:th:vc:insert-file-by-tag
+(defun emtmv:require-x:th:vc:insert-file-by-tag (buf branch-name lib-path)
+   "Mock vc function.  Just insert the contents of the respective file."
+   ;;For now, assumes that (which old) is meant.
+   (emtmv:require-x:th:vc:insert-file 
+      buf
+      (emtg (role filename)(which old))))
 
-;;;_ , emtmv:require-x:th:vc:insert-file-buggy
-(defun emtmv:require-x:th:vc:insert-file-buggy (buf branch-name lib-path)
+
+;;;_  . emtmv:require-x:th:vc:insert-no-name
+(defun emtmv:require-x:th:vc:insert-no-name (buf branch-name lib-path)
    "Mock vc function.  Deliberately leaves the filename `nil."
    (with-current-buffer buf
       (setq buffer-file-name nil)))
 
+(defun emtmv:require-x:th:vc:insert-file-if-source (buf branch-name lib-path)
+   "Mock insert function.  Insert the contents of LIB-PATH only if
+it's source (el), not compiled.  Otherwise do nothing and return nil."
+   (when
+      (string=
+	 (file-name-extension lib-path)
+	 "el")
+      (emtmv:require-x:th:vc:insert-file lib-path)))
+
+;;;_ , Mock configuration
 ;;;_ , emtmv:require-x:th:stable-config
 (defconst emtmv:require-x:th:stable-config 
    (list
       (list
 	 'foo
 	 "old"
-	 'insert ;;#'emtmv:require-x:th:vc:insert-file
+	 'insert-by-tag
 	 '()))
    "Testhelp mock list of info about stable versions of libs" )
 ;;;_ , emtmv:require-x:th:stable-config-buggy
+;;$$OBSOLETE - folded into the test clause that uses it.
+'
 (defconst emtmv:require-x:th:stable-config-buggy
    (list
       (list
 	 'foo
 	 "old"
-	 'insert-buggy ;;#'emtmv:require-x:th:vc:insert-file-buggy
+	 'insert-no-name
 	 '()))
    "Testhelp mock list of info about stable versions of libs" )
 ;;;_ , Values for emtmv:vc-list
 ;;;_  . emtmv:th:vc-lib-sym
+;;NB, the VC (mock) functions live in "tests.el" and not in this
+;;pseudo-library, which is just tested for getting loaded.
 (defconst emtmv:th:vc-lib-sym
    'emtest/testhelp/mocks/libversion/testhelp/vc
-   ;;NB, the functions live here and not in the loaded pseudo-library.
    "Symbol of the pseudo-library for testhelp VC functions" )
+
 ;;;_  . emtmv:th:vc-list
 (defconst emtmv:th:vc-list 
-   '(  (insert
+   '(  (insert-by-tag
 	  emtest/testhelp/mocks/libversion/testhelp/vc
-	  emtmv:require-x:th:vc:insert-file)
-       (insert-buggy
+	  emtmv:require-x:th:vc:insert-file-by-tag)
+       (insert-no-name
 	  emtest/testhelp/mocks/libversion/testhelp/vc
-	  emtmv:require-x:th:vc:insert-file-buggy))
+	  emtmv:require-x:th:vc:insert-no-name)
+       (insert-if-source
+	  emtest/testhelp/mocks/libversion/testhelp/vc
+	  emtmv:require-x:th:vc:insert-file-if-source))
    "Testhelp mock list of VC software (all mocks for special purposes)" )
 
 ;;;_ , emtmv:require-x
@@ -502,22 +525,61 @@ Call this inside a narrowing to (which WHICH)."
 
    (nil
       (let
-	 ((emtmv:stable-config emtmv:require-x:th:stable-config))
-	 (when (featurep emtmv:th:vc-lib-sym)
-	    (unload-feature emtmv:th:vc-lib-sym t))
+	 ((emtmv:stable-config 
+	     emtmv:require-x:th:stable-config)
+	    (vc-lib-sym emtmv:th:vc-lib-sym))
+	 (emt:doc "Shows: Loads the appropriate VC library if neccessary.")
+	 (when (featurep vc-lib-sym)
+	    (unload-feature vc-lib-sym t))
 	 (emt:doc "Situation: The VC lib is not loaded.")
 	 (assert
-	    (not (featurep emtmv:th:vc-lib-sym)))
+	    (not (featurep vc-lib-sym)))
 
 	 (emt:doc "Operation: require-x on `foo'")
 	 (emtmv:require-x '(foo) '())
 	 (emt:doc "Response: The VC lib is now loaded")
+	 (assert (featurep vc-lib-sym))))
+   
 
-	 (emt:doc "Operation: load the new `foo'")
-	 (load-file
-	    (emtg (role filename) (which new)))
-	 (assert (featurep emtmv:th:vc-lib-sym)))
-      )
+   (nil
+      (let
+	 ((emtmv:stable-config 
+	     ;;'((foo "old" insert-if-source ()))
+	     (list
+		(list
+		   'foo
+		   "old"
+		   'insert-if-source
+		   '())))
+	    (lib-sym
+	       'emtest/testhelp/mocks/libversion/examples/compiled))
+	 (emt:doc "Shows: When only an .el version of the file exists
+in the master, we can retrieve it even when `locate-library' wants to
+give us an .elc")
+	 (emt:doc "Situation: For this test, the VC will only load source.")
+	 (when (featurep lib-sym)
+	    (unload-feature lib-sym t))
+	 (emt:doc "Situation: The library is not loaded.")
+	 (assert
+	    (not (featurep lib-sym)))
+	 (emt:doc "Situation: locate-library finds it with an .elc extension")
+	 (assert
+	    (string=
+	       (file-name-extension
+		  (locate-library (symbol-name lib-sym)))
+	       "elc"))
+	 (emt:doc "Operation: require-x on lib-sym.")
+	 (emtmv:require-x (list lib-sym) '())
+	 (emt:doc "Response: The library is now loaded")
+	 (assert (featurep lib-sym))
+	 (let* 
+	    ((lfn (libversion:th:examples/compiled/load-file-name)))
+	    (emt:doc "Response: library is the .el version")
+	    (assert
+	       (string=
+		  (file-name-extension lfn)
+		  "el")))))
+   
 
    (nil
       (let
@@ -547,15 +609,14 @@ Call this inside a narrowing to (which WHICH)."
 	       (equal
 		  foo:var1
 		  (emtg (which new)(name var1)(type value)))
-	       t)
-	    )))
-
+	       t))))
+   
    (nil
       (let
 	 ((emtmv:stable-config
-	     emtmv:require-x:th:stable-config-buggy))
+	     '((foo "old" insert-no-name ()))))
 	 (emt:doc
-	    "Buggy config where the vc function does not set the filename")
+	    "Situation: Buggy VC function which does not set the filename")
 	 
 	 (flet
 	    ((run-stuff () foo:var1))
@@ -565,11 +626,8 @@ Call this inside a narrowing to (which WHICH)."
 	    (emt:doc "Response: Error.")
 	    (assert
 	       (emth:gives-error
-		  (emtmv:require-x '(foo) '(run-stuff))))
+		  (emtmv:require-x '(foo) '(run-stuff))))))))
 
-	    )))
-
-   )
 
 ;;;_. Footers
 ;;;_ , Provides
