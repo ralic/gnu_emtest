@@ -627,8 +627,7 @@ give us an .elc")
 	 (emtmv:require-x (list lib-sym) '())
 	 (emt:doc "Response: The library is now loaded")
 	 (assert (featurep lib-sym))
-	 ;;$$Can't because we don't define load-name (yet)
-	 '(let* 
+	 (let* 
 	    ((lfn libversion:th:examples/compiled/load-file-name))
 	    (emt:doc "Response: library is the .el version")
 	    (assert
