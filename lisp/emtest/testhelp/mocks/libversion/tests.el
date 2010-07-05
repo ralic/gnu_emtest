@@ -465,7 +465,8 @@ Call this inside a narrowing to (which WHICH)."
 (defun emtmv:require-x:th:vc:insert-no-name (buf branch-name lib-path)
    "Mock vc function.  Deliberately leaves the filename `nil."
    (with-current-buffer buf
-      (setq buffer-file-name nil)))
+      (setq buffer-file-name nil)
+      t))
 
 (defun emtmv:require-x:th:vc:insert-file-if-source (buf branch-name lib-path)
    "Mock insert function.  Insert the contents of LIB-PATH only if
