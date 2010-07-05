@@ -91,9 +91,9 @@ Same as a history-list element"
    "A library to be transformed to a spec"
    sym 
    str 
-   path
+   path         ;;$$OBSOLESCENT
    extra-syms
-   stable-name
+   stable-name  ;;$$RENAME ME stable-version
    vc-func
    hist-key)
 
@@ -187,6 +187,7 @@ ADVISED-LIST is a list of symbols of the advised functions."
    ""
    (with-temp-buffer
       (erase-buffer)
+      ;;$$IMPROVE ME - try multiple suffixes or locations.
       (funcall (emtmv:lib-as-spec->vc-func las)
 	 (current-buffer)
 	 (emtmv:lib-as-spec->stable-name las)
@@ -219,7 +220,8 @@ ADVISED-LIST is a list of symbols of the advised functions."
       (emtmv:make-lib-as-spec
 	 :sym sym
 	 :str str
-	 :path (locate-library str)
+	 ;;$$OBSOLESCENT, `locate-library' moves and uses nosuffix
+	 :path (locate-library str)  
 	 :extra-syms  (fourth cell)
 	 :stable-name (second cell)
 	 :vc-func     (third vc-cell))))
