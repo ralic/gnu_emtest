@@ -1,5 +1,9 @@
 ;;An example file to help test libversion
 
+(defconst foo:load-file-name 
+   load-file-name 
+   "The load-file name" )
+
 (defconst foo:var1 "Old foo var 1" 
    "Old foo:var1's docstring" )
 

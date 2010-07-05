@@ -231,6 +231,7 @@ Call this inside a narrowing to (which WHICH)."
 	     load-history features
 	     ;;Symbols defined in files we might load
 	     libversion:th:examples/compiled/load-file-name
+	     foo:load-file-name
 	     foo:old:unshared
 	     foo:new:unshared
 	     foo:var1 foo:var2 foo:fun1))
@@ -587,7 +588,7 @@ it's source (el), not compiled.  Otherwise do nothing and return nil."
 	 (emt:doc "Response: The library is now loaded")
 	 (assert (featurep lib-sym))
 	 (let* 
-	    ((lfn libversion:th:examples/compiled/load-file-name))
+	    ((lfn foo:load-file-name))
 	    (emt:doc "Response: load-file-name is non-nil")
 	    (assert (not (null lfn)))
 	    (emt:doc "Response: It points at the right location")
