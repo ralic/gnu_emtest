@@ -225,6 +225,7 @@ ADVISED-LIST is a list of symbols of the advised functions."
 	 :vc-func     (third vc-cell))))
 
 ;;;_   , Example of use, new interface
+;;$$OBSOLETE in favor of emtmv:load-stable
 '(let*
     (  
        (lib-sym-list '(utility/pathtree))
