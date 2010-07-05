@@ -238,7 +238,7 @@ FILENAME is the filename of an existing rtest file"
 
 ;;;_ , emtvers:make-defstruct-explicit
 ;;Usage:
-;;Place point on already-paranthesized struct name.  It can have
+;;Place point on already-paranthesized struct name (but not on the first character).  It can have
 ;;properties already such as :include.
 ;;Command `emtvers:make-defstruct-explicit'
 ;;In dired with all potentially affected files marked, query-replace
