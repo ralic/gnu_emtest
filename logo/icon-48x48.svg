@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="48px"
+   height="48px"
+   id="svg2913"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   sodipodi:docname="icon-48x48.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <defs
+     id="defs2915">
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2656">
+      <rect
+         style="opacity:0.5;fill:#00ff00"
+         id="rect2658"
+         width="63.253914"
+         height="68.910767"
+         x="0.51425946"
+         y="-69.193207" />
+    </clipPath>
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 24 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="48 : 24 : 1"
+       inkscape:persp3d-origin="24 : 16 : 1"
+       id="perspective2921" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="7"
+     inkscape:cx="22.621083"
+     inkscape:cy="24"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:grid-bbox="true"
+     inkscape:document-units="px"
+     inkscape:window-width="666"
+     inkscape:window-height="672"
+     inkscape:window-x="9"
+     inkscape:window-y="21" />
+  <metadata
+     id="metadata2918">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer">
+    <image
+       style="display:inline"
+       y="-70.752075"
+       x="-2.3376021"
+       id="image2646"
+       height="71"
+       width="481.90799"
+       sodipodi:absref="/home/tehom/projects/elisp/emtest/logo/Emtest-font-zipper.png"
+       xlink:href="Emtest-font-zipper.png"
+       clip-path="url(#clipPath2656)"
+       transform="matrix(0.75,0,0,0.6996269,-0.1059123,48.589229)" />
+    <path
+       style="opacity:0.5;fill:#00ff00;display:inline"
+       d="M 12.961027,19.291805 C 16.175128,22.104806 15.915571,27.049976 19.40184,29.660969 C 22.617277,29.9483 20.115061,35.92475 18.344988,32.641714 C 18.147322,30.265981 20.575994,28.785593 21.604022,26.845046 C 26.93593,18.467058 31.604413,9.4602541 39.150283,2.6411151 C 39.109189,-0.12613506 43.909075,2.9928841 40.806358,3.8920881 C 34.999022,9.7394931 31.483888,17.189591 26.880013,23.863922 C 24.845296,27.043343 23.036443,30.374731 20.823519,33.437711 C 18.831808,35.391359 15.659447,34.181402 14.460052,32.025355 C 12.441264,29.43633 11.304957,26.343425 9.7332673,23.514017 C 9.1514523,21.506575 11.174176,19.844494 12.961027,19.291805 z"
+       id="path2765" />
+  </g>
+</svg>
