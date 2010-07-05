@@ -229,7 +229,8 @@ Call this inside a narrowing to (which WHICH)."
 	     emtmv:extra-affected-syms
 	     ;;Global state altered in loading
 	     load-history features
-	     ;;Symbols defined in stable/foo and/or foo
+	     ;;Symbols defined in files we might load
+	     libversion:th:examples/compiled/load-file-name
 	     foo:old:unshared
 	     foo:new:unshared
 	     foo:var1 foo:var2 foo:fun1))
@@ -451,8 +452,8 @@ Call this inside a narrowing to (which WHICH)."
 (put 'emtmv:load-stable 'emt:test-thru
    'emtmv:require-x)
 ;;;_ , Mock VC functions
-;;;_  . emtmv:require-x:th:vc:insert-file
-(defun emtmv:require-x:th:vc:insert-file (buf filename)
+;;;_  . emtmv:require-x:th:vc:insert-file-x
+(defun emtmv:require-x:th:vc:insert-file-x (buf filename)
    "Mock insert function.  Just insert the contents of FILENAME."
    (with-current-buffer buf
       (insert-file-contents filename)
@@ -460,12 +461,17 @@ Call this inside a narrowing to (which WHICH)."
 
 ;;;_  . emtmv:require-x:th:vc:insert-file-by-tag
 (defun emtmv:require-x:th:vc:insert-file-by-tag (buf branch-name lib-path)
-   "Mock vc function.  Just insert the contents of the respective file."
+   "Mock vc function.  ignore lib-path and insert the contents of the
+file named by current (emtg (role filename)(which old))"
    ;;For now, assumes that (which old) is meant.
-   (emtmv:require-x:th:vc:insert-file 
+   (emtmv:require-x:th:vc:insert-file-x 
       buf
       (emtg (role filename)(which old))))
 
+;;;_  . emtmv:require-x:th:vc:insert-file
+(defun emtmv:require-x:th:vc:insert-file (buf branch-name lib-path)
+   "Mock vc function.  Just insert the contents of the respective file."
+   (emtmv:require-x:th:vc:insert-file-x buf lib-path))
 
 ;;;_  . emtmv:require-x:th:vc:insert-no-name
 (defun emtmv:require-x:th:vc:insert-no-name (buf branch-name lib-path)
@@ -481,7 +487,7 @@ it's source (el), not compiled.  Otherwise do nothing and return nil."
       (string=
 	 (file-name-extension lib-path)
 	 "el")
-      (emtmv:require-x:th:vc:insert-file buf lib-path)))
+      (emtmv:require-x:th:vc:insert-file-x buf lib-path)))
 
 ;;;_ , Mock configuration
 ;;;_ , emtmv:require-x:th:stable-config
@@ -523,7 +529,10 @@ it's source (el), not compiled.  Otherwise do nothing and return nil."
 	  emtmv:require-x:th:vc:insert-no-name)
        (insert-if-source
 	  vc
-	  emtmv:require-x:th:vc:insert-file-if-source))
+	  emtmv:require-x:th:vc:insert-file-if-source)
+       (insert
+	  vc
+	  emtmv:require-x:th:vc:insert-file))
    "Testhelp mock list of VC software (all mocks for special purposes)" )
 ;;;_ , emtmv:insert-version
 (put 'emtmv:insert-version 'emt:test-thru
@@ -553,11 +562,42 @@ it's source (el), not compiled.  Otherwise do nothing and return nil."
 	 (emt:doc "Response: The VC lib is now loaded")
 	 (assert (featurep vc-lib-sym))))
    
+   (nil
+      (let*
+	 (  (lib-sym 'compiled)
+	    (emtmv:stable-config 
+	       (list
+		  (list
+		     lib-sym
+		     "master"
+		     'insert
+		     '()))))
+	 
+	 (emt:doc "Shows: load-file-name is set up correctly when loading.")
+	 (when (featurep lib-sym)
+	    (unload-feature lib-sym t))
+	 (emt:doc "Situation: The library is not loaded.")
+	 (assert
+	    (not (featurep lib-sym)))
+	 (emt:doc "Operation: require-x on lib-sym.")
+	 (emtmv:require-x (list lib-sym) '())
+	 (emt:doc "Response: The library is now loaded")
+	 (assert (featurep lib-sym))
+	 (emt:doc "Response: load-file-name is non-nil")
+	 (assert (not (null libversion:th:examples/compiled/load-file-name)))
+	 ;;It points at the right location
+	 '
+	 (let* 
+	    ((lfn libversion:th:examples/compiled/load-file-name))
+	    (emt:doc "Response: library is the .el version")
+	    (assert
+	       (string=
+		  (file-name-extension lfn)
+		  "el")))))
 
    (nil
       (let*
-	 (  (lib-sym
-	       'compiled)
+	 (  (lib-sym 'compiled)
 	    (emtmv:stable-config 
 	       (list
 		  (list
