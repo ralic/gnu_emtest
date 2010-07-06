@@ -90,12 +90,10 @@ Same as a history-list element"
    (name       "Unnamed" :type string)
    (new-values () :type (repeat (list emtmv:hl-el * *)))
    (old-values () :type (repeat (list emtmv:hl-el * *)))
-   (version     () :type (member nil old new))
+   (version    () :type (member nil old new))
    ;;May want to capture&swap respective load-history lines too.
    ;;May want to have two version of filename
-   ;;$$OBSOLESCENT  This has become a list of filenames, and really
-   ;;just reflects how we historically have made the spec.
-   (filename    () :type (repeat string))
+
    (specs       () :type (repeat emtmv:hl-el)))
 
 ;;;_  . emtmv:lib-as-spec
@@ -358,7 +356,6 @@ SPEC-SPEC can be:
 	     :new-values nil
 	     :old-values nil
 	     :version nil
-	     :filename nil
 	     :specs specs)))
       
       (when initial-version
@@ -380,11 +377,6 @@ SPEC-SPEC can be:
 	     :new-values nil
 	     :old-values nil
 	     :version nil
-	     ;;$$OBSOLESCENT
-	     :filename   
-	     (progn
-		(unless lib-filename-list (error "No filename passed"))
-		lib-filename-list)
 	     :specs
 	     (apply #'append
 		(mapcar
@@ -441,13 +433,6 @@ SPEC-SPEC can be:
    "Save current values into obarray OA and return OA.
 OA can be nil in which case a new obarray is created and returned.
 If initialized, it will be from the module loaded from FILENAME."
-   '
-   (let
-      ((oa
-	  (emtmv:get-obarray version obj)))
-      (emtmv:set-obarray version obj
-	 (emtmv:sync-obarray 
-	    oa (emtmv:t->filename obj) obarray oa)))
 
    (emtmv:set-values version obj
       (delq nil
@@ -460,13 +445,6 @@ If initialized, it will be from the module loaded from FILENAME."
    "Restore current values from obarray OA and return OA.
 OA can be nil in which case a new obarray is created and returned.
 If initialized, it will be from the module loaded from FILENAME."
-   '
-   (let
-      ((oa
-	  (emtmv:get-obarray version obj)))
-      (emtmv:set-obarray version obj
-	 (emtmv:sync-obarray 
-	    oa (emtmv:t->filename obj) oa obarray)))
    (mapcar
       #'emtmv:restore-value
       (emtmv:get-values version obj)))

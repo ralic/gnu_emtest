@@ -299,6 +299,8 @@ Call this inside a narrowing to (which WHICH)."
 	 (assert
 	    (emth:gives-error
 	       (emtmv:change-state 'invalid nil )))))
+
+   '  ;;$$DORMANT - now it should complain when nothing has been set up.
    (nil
       (progn
 	 (emt:doc "Operation: `emtmv:change-state'")
