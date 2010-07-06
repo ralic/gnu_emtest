@@ -106,38 +106,34 @@ Same as a history-list element"
    hist-key)
 
 
-;;;_ , Variables
-(defvar emtmv:t nil
-   "The current versioned library, or `nil'" )
-
-;;Keep these variables in sync with test insulator
-
 ;;;_ , Entry points
 ;;;_  . For code
 ;;;_   , emtmv:with-version
-(defmacro emtmv:with-version (version dummy &rest body)
+(defmacro emtmv:with-version (version obj &rest body)
    "Evaluate BODY with bindings for VERSION.
 VERSION should be `old' or `new'.
-Arg DUMMY is reserved in case we ever support multiple invocations."
-   (when dummy (error "Passing a value for DUMMY is reserved"))
+Arg OBJ should be an `emtmv:t'."
    (let
       ((ov-sym (make-symbol "old-version")))
       `(progn
-	  (when (not emtmv:t)
-	     (error "Need to set up first"))
+	  (when (not ,obj)
+	     (error "libversion object was not passed"))
 	  (let
-	     ((,ov-sym (emtmv:t->version emtmv:t)))
+	     ((,ov-sym (emtmv:t->version ,obj)))
 	     (unwind-protect
 		(progn
 		   ;;OK even if new state is the same as old.
-		   (emtmv:change-state ,version ,dummy)
+		   (emtmv:change-state ,version ,obj)
 		   ,@body)
-       
-		(emtmv:change-state ,ov-sym ,dummy))))))
+
+		;;Back to old state when done
+		(emtmv:change-state ,ov-sym ,obj))))))
 ;;;_   , emtmv:add-advice
-(defmacro emtmv:add-advice (func &optional version)
+(defmacro emtmv:add-advice (func &optional version obj-form)
    "Advise FUNC to always use a particular version.
-FUNC will generally be an entry point"
+FUNC will generally be an entry point.
+VERSION is `old' or `new'.
+OBJ-FORM is a form that evals to an `emtmv:t'"
    
    `(defadvice ,func 
        (around 
@@ -154,7 +150,7 @@ FUNC will generally be an entry point"
 	      (new "new")
 	      (otherwise "UNKNOWN")))
        (emtmv:with-version
-	  ,(or version 'old) ()
+	  ,(or version 'old) ,obj-form
 	  ad-do-it)))
 ;;;_   , emtmv:require
 (defun emtmv:require (&rest r)
@@ -177,6 +173,8 @@ ADVISED-LIST is a list of symbols of the advised functions."
 
       ;;Now we're confident we can build the spec, since we've loaded
       ;;all the files.
+
+      ;;$$IMPROVE ME - manage the object better, put it somewhere.
       ;;For now, we set the global object here too.
       (setq emtmv:t 
 	 (emtmv:create-obj-2 
@@ -184,12 +182,12 @@ ADVISED-LIST is a list of symbols of the advised functions."
 	       (mapcar
 		  #'emtmv:lib-as-spec->spec
 		  las-list))))
-      (emtmv:change-state 'old nil)
-      (emtmv:change-state 'new nil)
+      (emtmv:change-state 'old emtmv:t)
+      (emtmv:change-state 'new emtmv:t)
 
       (dolist (func advised-list)
 	 (eval
-	    `(emtmv:add-advice ,func 'old)))))
+	    `(emtmv:add-advice ,func 'old emtmv:t)))))
 ;;;_   , emtmv:insert-version
 (defun emtmv:insert-version (buf las)
    "Insert a stable version of a library into buffer BUF.
@@ -273,6 +271,11 @@ LAS must be a `emtmv:lib-as-spec'"
 	 '("old" "new") nil t nil nil "old")))
 
 ;;;_  . For user
+;;;_   , Variables
+;;;_    . The default libversion object
+(defvar emtmv:t nil
+   "The current versioned library, or `nil'" )
+
 ;;;_   , emtmv:advise-function
 (defun emtmv:advise-function (func version)
    "Advise FUNC to use VERSION instead of the global version."
@@ -283,13 +286,13 @@ LAS must be a `emtmv:lib-as-spec'"
 	    (completing-read "Advise which function: "
 	       obarray #'functionp t))
 	 (emtmv:read-version "Should use which version: ")))
-   (emtmv:add-advice func version))
+   (emtmv:add-advice func version emtmv:t))
 ;;;_   , Removing advice: just use `ad-unadvise'
 ;;;_   , emtmv:start
-(defun emtmv:start (lib-filename version)
+(defun emtmv:start (file-list version)
    "Start emtmv.
 Assumes that spec is completely based on filenames
-Assumes that LIB-FILENAME has already been loaded.
+Assumes that each file in FILE-LIST has already been loaded.
 Leaves emtmv in state VERSION."
    
    (interactive
@@ -298,11 +301,9 @@ Leaves emtmv in state VERSION."
 	    "Which modules are being versioned? "
 	    load-history nil t)
 	 (emtmv:read-version "Current version is: ")))
-   '  ;;$$USE this, but will error until `emtmv:change-state' allows dummy
    (setq
       emtmv:t
-      (emtmv:create-obj lib-filename version))
-   (emtmv:change-state version nil lib-filename))
+      (emtmv:create-obj file-list version)))
 
 ;;;_   , Start it, giving module symbol-name
 ;;Another entry point to the same functionality
@@ -312,7 +313,9 @@ Leaves emtmv in state VERSION."
 
 ;;;_   , emtmv:toggle-state
 (defun emtmv:toggle-state (&optional new-state)
-   ""
+   "Toggle the state"
+   ;;$$IMPROVE ME - Use `emtmv:read-version' to get NEW-STATE, but
+   ;;only do that if prefix-argument is given.
    (interactive)
    (emtmv:change-state
       (or
@@ -321,7 +324,7 @@ Leaves emtmv in state VERSION."
 	    (old 'new)
 	    (new 'old)
 	    ((nil) (error "libversion hasn't been started"))))
-      nil))
+      emtmv:t))
 ;;;_   , Add a file to what is controlled
 ;;Entry point for `emtmv:add-spec'
 ;;;_   , Add symbol at point to obarrays
@@ -342,10 +345,7 @@ Leaves emtmv in state VERSION."
    "Create a libversion object from SPEC-SPEC.
 Set it to INITIAL-VERSION if non-nil.
 
-SPEC-SPEC can be:
- (spec SPEC), meaning to use SPEC just as it is
- (lib-filenames FILENAME-LIST) meaning to build the spec from
- FILENAME-LIST."
+SPECS is a list of specs,"
    (let
       ((obj
 	  (emtmv:make-t
@@ -359,54 +359,42 @@ SPEC-SPEC can be:
       obj))
 
 ;;;_  . emtmv:create-obj
+;;$$RENAME ME emtmv:create-obj-from-file-list
 (defun emtmv:create-obj (lib-filename-list &optional initial-version)
    "Create an object *by list of filenames*"
-   ;;$$USE ME
-   '(emtmv:create-obj-2 
-       (apply #'append
-	  (mapcar
-	     #'emtmv:get-history-line
-	     lib-filename-list)))
-   (let
-      ((obj
-	  (emtmv:make-t
-	     :new-values nil
-	     :old-values nil
-	     :version nil
-	     :specs
-	     (apply #'append
-		(mapcar
-		   #'emtmv:get-history-line
-		   lib-filename-list)))))
-      
-      (when initial-version
-	 (emtmv:change-state initial-version obj))
-      obj))
 
-;;$$USE ME  This factors out part of emtmv:change-state.  Use it in
-;;tests and in emtmv:start
-;;But will error until `emtmv:change-state' allows dummy
+   (emtmv:create-obj-2 
+      (apply #'append
+	 (mapcar
+	    #'emtmv:get-history-line
+	    lib-filename-list))
+      initial-version))
 
 ;;;_  . emtmv:change-state 
-;;$$UPDATE ME  Allow dummy to be passed, and not lib-filename-list,
-;;and don't use this to init any more.
-(defun emtmv:change-state (new-version dummy &optional lib-filename-list)
+;;$$UPDATE ME  Don't use this to init any more.
+(defun emtmv:change-state (new-version obj)
    "Change the current state"
-   ;;Temporary
-   (when dummy (error "Passing a value for DUMMY is reserved"))
-   (unless emtmv:t
+
+   (setq obj (or obj emtmv:t))
+   ;;$$OBSOLESCENT
+   (unless obj
       (setq emtmv:t
-	 (emtmv:create-obj lib-filename-list)))
+	 (emtmv:create-obj lib-filename-list))
+      (setq obj emtmv:t))
+   ;;If nothing passed nor found.
+   (unless obj
+      (error "Not libversion state was passed nor set up globally"))
+   (check-type obj emtmv:t)
    (unless (memq new-version '(old new))
       (error "Invalid state %s" new-version))
 
    (let
-      ((old-version (emtmv:t->version emtmv:t)))
+      ((old-version (emtmv:t->version obj)))
       (unless (eq new-version old-version)
 	 (when old-version
-	    (emtmv:save-version old-version emtmv:t))
-	 (emtmv:activate-version new-version emtmv:t)
-	 (setf (emtmv:t->version emtmv:t) new-version))))
+	    (emtmv:save-version old-version obj))
+	 (emtmv:activate-version new-version obj)
+	 (setf (emtmv:t->version obj) new-version))))
 
 ;;;_  . emtmv:set-values
 (defun emtmv:set-values (version obj values)

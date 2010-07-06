@@ -153,16 +153,20 @@ If SKIP-LOADING-NEW is non-nil, do not load the new file."
    (emt:doc "Load old file.")
    (load-file
       (emtg (role filename) (which old)))
+   (emt:doc "Operation: Create libversion object.")
    (emt:doc "Start in `old' (which captures contents of old lib)")
-   (emtmv:change-state 'old nil
-      (list
-	 (emtg (role filename) (which old))))
+   (setq emtmv:t
+      (emtmv:create-obj 
+	 (list
+	    (emtg (role filename) (which old)))
+	 'old))
    (emt:doc "Operation: Switch state to `new'")
-   (emtmv:change-state 'new nil)
+   (emtmv:change-state 'new emtmv:t)
    (unless skip-loading-new
       (emt:doc "Load the new file")
       (load-file
-	 (emtg (role filename) (which new)))))
+	 (emtg (role filename) (which new))))
+   emtmv:t)
 
 ;;;_ , emtmv:th:check-all
 (defun emtmv:th:check-all ()
@@ -291,8 +295,18 @@ Call this inside a narrowing to (which WHICH)."
 	       (emtmv:with-version 'old nil
 		  t)))
 	 (emt:doc "Response: Raises error.")))
+
    (nil
       (progn
+	 (emt:doc "Operation: `emtmv:change-state'")
+	 (emt:doc "Param: No libversion object given.")
+	 (emt:doc "Response: Makes an error.")
+	 (assert
+	    (emth:gives-error
+	       (emtmv:change-state 'old nil)))))
+   (nil
+      (progn
+	 (emtmv:th:load t)
 	 (emt:doc "Operation: `emtmv:change-state'")
 	 (emt:doc "Param: Invalid `new-state'.")
 	 (emt:doc "Response: Makes an error.")
@@ -300,63 +314,55 @@ Call this inside a narrowing to (which WHICH)."
 	    (emth:gives-error
 	       (emtmv:change-state 'invalid nil )))))
 
-   '  ;;$$DORMANT - now it should complain when nothing has been set up.
    (nil
-      (progn
-	 (emt:doc "Operation: `emtmv:change-state'")
-	 (emt:doc "Param: Initted with no filename given.")
-	 (emt:doc "Response: Makes an error.")
-	 (assert
-	    (emth:gives-error
-	       (emtmv:change-state 'old nil)))))
-
-   (nil
-      (progn
-	 (emtmv:th:load)
-
-	 (emtmv:with-version 'old nil
+      (let
+	 ((lv-obj (emtmv:th:load)))
+	 
+	 (emtmv:with-version 'old lv-obj
 	    (emt:doc "Operation: Call with symbol `old'.")
 	    (emt:doc "Response: Has the values of old version.")
 	    (emtg:narrow ((which old))
 	       (emtmv:th:check-all)))
 	 
 
-	 (emtmv:with-version 'new nil
+	 (emtmv:with-version 'new lv-obj
 	    (emt:doc "Operation: Call with symbol `new'.")
 	    (emt:doc "Response: Has the values of new version.")
 	    (emtg:narrow ((which new))
 	       (emtmv:th:check-all)))
 
-	 (emtmv:with-version 'new nil
-	    (emtmv:with-version 'old nil
+	 (emtmv:with-version 'new lv-obj
+	    (emtmv:with-version 'old lv-obj
 	       (emt:doc "Operation: Old one nested in new.")
 	       (emt:doc "Response: Has the values of old version.")
 	       (emtg:narrow ((which old))
 		  (emtmv:th:check-all))))
 
 	 
-	 (emtmv:with-version 'old nil
-	    (emtmv:with-version 'new nil
+	 (emtmv:with-version 'old lv-obj
+	    (emtmv:with-version 'new lv-obj
 	       (emt:doc "Operation: New one nested in old.")
 	       (emt:doc "Response: Has the values of new version.")
 	       (emtg:narrow ((which new))
 		  (emtmv:th:check-all))))))
 
    (nil
-      (progn
-	 (emtmv:th:load t)
-	 (emt:doc "Eval new stuff (instead of loading)")
+      (let
+	 ((lv-obj (emtmv:th:load t)))
+	 (emt:doc "Operation: Switch state to `new'")
+	 (emtmv:change-state 'new lv-obj)
+	 (emt:doc "Operation: Eval new stuff (instead of loading)")
 	 (eval
 	    (emtg (role form) (which new)))	 
 
-	 (emtmv:with-version 'old nil
+	 (emtmv:with-version 'old lv-obj
 	    (emt:doc "Operation: Call with symbol `old'.")
 	    (emt:doc "Response: Has the values of old version.")
 	    (emtg:narrow ((which old))
 	       (emtmv:th:check-all)))
 	 
 
-	 (emtmv:with-version 'new nil
+	 (emtmv:with-version 'new lv-obj
 	    (emt:doc "Operation: Call with symbol `new'.")
 	    (emt:doc "Response: Has the values of new version.")
 	    (emtg:narrow ((which new))
@@ -369,9 +375,10 @@ Call this inside a narrowing to (which WHICH)."
 	 (emt:doc "Proves: Manually settings variables affects only
       the active version.") 
 	 (emt:doc "Proves: Evalling affects only the active version.") 
-	 (emtmv:th:load)
+	 
 	 (let
-	    ((value "Another value"))
+	    (  (lv-obj (emtmv:th:load))
+	       (value "Another value"))
 	    (emt:doc "Situation: In state `new'")
 	    (assert (eq (emtmv:t->version emtmv:t) 'new))
 
@@ -379,13 +386,13 @@ Call this inside a narrowing to (which WHICH)."
 	    (setq foo:var1 value)
 	    ;;And a function, and a property.
 
-	    (emtmv:with-version 'old nil
+	    (emtmv:with-version 'old lv-obj
 	       (emt:doc "Operation: Eval it in `old'.")
 	       (emt:doc "Response: Its value in old has not changed.")
 	       (emtg:narrow ((which old))
 		  (emtmv:th:check-all)))
 	 
-	    (emtmv:with-version 'new nil
+	    (emtmv:with-version 'new lv-obj
 	       (emt:doc "Operation: Eval it in `new'.")
 	       (emt:doc "Response: In `new' it has the new value.")
 	       (assert
@@ -397,20 +404,20 @@ Call this inside a narrowing to (which WHICH)."
 	    (emt:doc "Re-eval the `new' form")
 	    (eval
 	       (emtg (role form) (which new)))
-	    (emtmv:with-version 'new nil
+	    (emtmv:with-version 'new lv-obj
 	       (emt:doc "Response: It no longer has that value in `new'.")
 	       (assert
 		  (not 
 		     (equal foo:var1 value))
 		  t))
 
-	    (emtmv:with-version 'old nil
+	    (emtmv:with-version 'old lv-obj
 	       (emt:doc "Response: Its value in `old' has not changed.")
 	       (emtg:narrow ((which old))
 		  (emtmv:th:check-all)))
 	    
 	    (emt:doc "Operation: Change to state `old'.")
-	    (emtmv:change-state 'old nil)
+	    (emtmv:change-state 'old lv-obj)
 
 	    (emt:doc "Assign to a variable")
 	    (setq foo:var1 value)
@@ -418,13 +425,13 @@ Call this inside a narrowing to (which WHICH)."
 
 	 
 	    (emt:doc "Operation: Eval it in `old'.")
-	    (emtmv:with-version 'old nil
+	    (emtmv:with-version 'old lv-obj
 	       (emt:doc "Response: In `old' it has the new value.")
 	       (assert
 		  (equal foo:var1 value)
 		  t))	    
 
-	    (emtmv:with-version 'new nil
+	    (emtmv:with-version 'new lv-obj
 	       (emt:doc "Response: Its value in `new' has not changed.")
 	       (emtg:narrow ((which new))
 		  (emtmv:th:check-all)))
@@ -432,24 +439,26 @@ Call this inside a narrowing to (which WHICH)."
 	    ))))
 ;;;_ , emtmv:add-advice
 (emt:deftest-3 
-   ((of 'emtmv:advise-run-old)
+   ((of 'emtmv:add-advice)
       (:surrounders emtmv:th:surrounders))
    (nil
       (flet
 	 ((run-stuff () foo:var1))
 	 (emt:doc "Situation: Function run-stuff returns its value of
    `foo:var1'.")
-	 (emtmv:th:load)
-	 (emt:doc "Situation: In the `new' bindings")
-	 (emt:doc "Operation: Advise run-stuff.")
-	 (emtmv:add-advice run-stuff 'old)
-	 (emt:doc "Operation: Run run-stuff.")
-	 (emt:doc "Response: It returns the `old' value of `foo:var1'.")
-	 (assert
-	    (equal
-	       (run-stuff)
-	       (emtg (which old)(name var1)(type value)))
-	    t))))
+	 (let
+	    ((lv-obj
+		(emtmv:th:load)))
+	    (emt:doc "Situation: In the `new' bindings")
+	    (emt:doc "Operation: Advise run-stuff.")
+	    (emtmv:add-advice run-stuff 'old lv-obj)
+	    (emt:doc "Operation: Run run-stuff.")
+	    (emt:doc "Response: It returns the `old' value of `foo:var1'.")
+	    (assert
+	       (equal
+		  (run-stuff)
+		  (emtg (which old)(name var1)(type value)))
+	       t)))))
 ;;;_ , emtmv:load-stable
 (put 'emtmv:load-stable 'emt:test-thru
    'emtmv:require-x)
