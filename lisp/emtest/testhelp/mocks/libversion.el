@@ -102,9 +102,8 @@ Same as a history-list element"
    "A library to be transformed to a spec"
    sym 
    str 
-   path         ;;$$OBSOLESCENT
    extra-syms
-   stable-version  ;;$$RENAME ME stable-version
+   stable-version
    vc-func
    hist-key)
 
@@ -258,8 +257,6 @@ LAS must be a `emtmv:lib-as-spec'"
       (emtmv:make-lib-as-spec
 	 :sym sym
 	 :str str
-	 ;;$$OBSOLESCENT, `locate-library' moves and uses nosuffix
-	 :path (locate-library str)  
 	 :extra-syms     (fourth cell)
 	 :stable-version (second cell)
 	 :vc-func (third vc-cell))))
