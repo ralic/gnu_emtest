@@ -156,7 +156,7 @@ If SKIP-LOADING-NEW is non-nil, do not load the new file."
    (emt:doc "Operation: Create libversion object.")
    (emt:doc "Start in `old' (which captures contents of old lib)")
    (setq emtmv:t
-      (emtmv:create-obj 
+      (emtmv:create-obj-from-file-list 
 	 (list
 	    (emtg (role filename) (which old)))
 	 'old))

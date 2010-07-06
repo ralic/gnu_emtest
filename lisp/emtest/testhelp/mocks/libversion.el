@@ -182,7 +182,7 @@ ADVISED-LIST is a list of symbols of the advised functions."
       ;;all the files.
       (let
 	 ((obj 
-	     (emtmv:create-obj-2 
+	     (emtmv:create-obj 
 		(apply #'append
 		   (mapcar
 		      #'emtmv:lib-as-spec->spec
@@ -308,7 +308,7 @@ Leaves emtmv in state VERSION."
 	 (emtmv:read-version "Current version is: ")))
    (setq
       emtmv:t
-      (emtmv:create-obj file-list version)))
+      (emtmv:create-obj-from-file-list file-list version)))
 
 ;;;_   , Start it, giving module symbol-name
 ;;Another entry point to the same functionality
@@ -318,10 +318,14 @@ Leaves emtmv in state VERSION."
 
 ;;;_   , emtmv:toggle-state
 (defun emtmv:toggle-state (&optional new-state)
-   "Toggle the state"
-   ;;$$IMPROVE ME - Use `emtmv:read-version' to get NEW-STATE, but
-   ;;only do that if prefix-argument is given.
-   (interactive)
+   "Toggle the state.
+
+If prefix-argument is given, get NEW-STATE interactively."
+   (interactive
+      (list
+	 (when current-prefix-arg
+	    (emtmv:read-version "New state: "))))
+   
    (emtmv:change-state
       (or
 	 new-state
@@ -345,8 +349,8 @@ Leaves emtmv in state VERSION."
 	 (file-truename fullpath) 
 	 load-history)))
 
-;;;_  . emtmv:create-obj-2
-(defun emtmv:create-obj-2 (specs &optional initial-version)
+;;;_  . emtmv:create-obj
+(defun emtmv:create-obj (specs &optional initial-version)
    "Create a libversion object from SPEC-SPEC.
 Set it to INITIAL-VERSION if non-nil.
 
@@ -363,12 +367,11 @@ SPECS is a list of specs,"
 	 (emtmv:change-state initial-version obj))
       obj))
 
-;;;_  . emtmv:create-obj
-;;$$RENAME ME emtmv:create-obj-from-file-list
-(defun emtmv:create-obj (lib-filename-list &optional initial-version)
+;;;_  . emtmv:create-obj-from-file-list
+(defun emtmv:create-obj-from-file-list (lib-filename-list &optional initial-version)
    "Create an object *by list of filenames*"
 
-   (emtmv:create-obj-2 
+   (emtmv:create-obj 
       (apply #'append
 	 (mapcar
 	    #'emtmv:get-history-line
