@@ -31,32 +31,51 @@
 (eval-when-compile
    (require 'cl))
 ;;;_. Body
-;;;_ , Customization
-(defconst emtmv:vc-list 
+;;;_ , Customizations
+(defgroup emtest/testhelp/mocks/libversion ()
+   "Customization for Emtest libversion, part of testhelp"
+   :group 'emtest/testhelp)
+
+(defcustom emtmv:vc-list 
    '((git 
 	emtest/testhelp/mocks/libversion/vc/git 
 	emtmv:vc:git:insert-file)) 
-   "List of available version controls.
-Format :: 
-   * sym
-   * require-sym
-   * entry-point (quoted function)" )
-;;$$MAKE ME CUSTOMIZABLE
-(defvar emtmv:stable-config 
-   
-   (list
-       (list
-	  'utility/pathtree
-	  "master"
-	  'git
-	  '()))
-   
-   "List of info about stable versions of libs
+   "List of available version control systems."
+   :type '(repeat
+	     (list
+		:tag "Data for this version control system"
+		(symbol 
+		   :tag "Its symbol" 
+		   :doc "Need not be bound")
+		(symbol 
+		   :tag "Symbol of the support library to load")
+		(symbol 
+		   :tag "Entry point"
+		   :doc "Symbol of a function taking 3 args:
+ * buffer to be inserted into.
+ * branch-name of the stable branch.
+ * full path to the library, as it exists currently."
+		   )))
+   :group 'emtest/testhelp/mocks/libversion)
+
+
+(defcustom emtmv:stable-config () 
+   "List of info about stable versions of libraries
 Format:
  * Lib symbol
  * Stable branch name
  * VC symbol
- * Extra args (ignored for now)" )
+ * Extra args (ignored for now)"
+   :type '(repeat 
+	    (list 
+	       (symbol :tag "Library symbol")
+	       (string :tag "Stable branch name")
+	       (symbol :tag "Version control symbol")
+	       (repeat :tag "Extra arguments"
+		  (sexp))))
+   :group 'emtest/testhelp/mocks/libversion)
+
+
 ;;;_ , Structures
 ;;;_  . emtmv:hl-el
 (deftype emtmv:hl-el ()
