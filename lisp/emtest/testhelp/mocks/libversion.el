@@ -92,7 +92,6 @@ Same as a history-list element"
    (old-values () :type (repeat (list emtmv:hl-el * *)))
    (version    () :type (member nil old new))
    ;;May want to capture&swap respective load-history lines too.
-   ;;May want to have two version of filename
 
    (specs       () :type (repeat emtmv:hl-el)))
 
@@ -105,7 +104,7 @@ Same as a history-list element"
    str 
    path         ;;$$OBSOLESCENT
    extra-syms
-   stable-name  ;;$$RENAME ME stable-version
+   stable-version  ;;$$RENAME ME stable-version
    vc-func
    hist-key)
 
@@ -206,7 +205,7 @@ LAS must be a `emtmv:lib-as-spec'"
 	 (vc-func 
 	    (emtmv:lib-as-spec->vc-func las))
 	 (stable-version
-	    (emtmv:lib-as-spec->stable-name las)))
+	    (emtmv:lib-as-spec->stable-version las)))
       (catch 'emtmv:inserted
 	 (progn
 	    (dolist (suffix (get-load-suffixes))
@@ -261,9 +260,9 @@ LAS must be a `emtmv:lib-as-spec'"
 	 :str str
 	 ;;$$OBSOLESCENT, `locate-library' moves and uses nosuffix
 	 :path (locate-library str)  
-	 :extra-syms  (fourth cell)
-	 :stable-name (second cell)
-	 :vc-func     (third vc-cell))))
+	 :extra-syms     (fourth cell)
+	 :stable-version (second cell)
+	 :vc-func (third vc-cell))))
 
 ;;;_  . Interactivity help
 ;;;_   , emtmv:read-object
