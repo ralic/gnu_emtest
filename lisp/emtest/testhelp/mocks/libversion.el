@@ -323,8 +323,9 @@ Leaves emtmv in state VERSION."
 	    ((nil) (error "libversion hasn't been started"))))
       nil))
 ;;;_   , Add a file to what is controlled
+;;Entry point for `emtmv:add-spec'
 ;;;_   , Add symbol at point to obarrays
-;;Mostly just calls add symbol to obarrays
+;;Entry point for `emtmv:add-spec'
 
 ;;;_ , Functions
 ;;;_  . emtmv:get-history-line
