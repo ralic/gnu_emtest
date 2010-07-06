@@ -180,20 +180,18 @@ ADVISED-LIST is a list of symbols of the advised functions."
 
       ;;Now we're confident we can build the spec, since we've loaded
       ;;all the files.
+      (let
+	 ((obj 
+	     (emtmv:create-obj-2 
+		(apply #'append
+		   (mapcar
+		      #'emtmv:lib-as-spec->spec
+		      las-list)))))
+	 (emtmv:change-state 'old obj)
+	 (emtmv:change-state 'new obj)
 
-      ;;$$IMPROVE ME - manage the object better, put it somewhere.
-      ;;For now, we set the global object here too.
-      (setq emtmv:t 
-	 (emtmv:create-obj-2 
-	    (apply #'append
-	       (mapcar
-		  #'emtmv:lib-as-spec->spec
-		  las-list))))
-      (emtmv:change-state 'old emtmv:t)
-      (emtmv:change-state 'new emtmv:t)
-
-      (dolist (func advised-list)
-	 (emtmv:add-advice func 'old emtmv:t))))
+	 (dolist (func advised-list)
+	    (emtmv:add-advice func 'old obj)))))
 
 ;;;_   , emtmv:insert-version
 (defun emtmv:insert-version (buf las)
