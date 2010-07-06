@@ -418,10 +418,7 @@ OA can be nil in which case a new obarray is created and returned.
 If initialized, it will be from the module loaded from FILENAME."
 
    (emtmv:set-values version obj
-      (delq nil
-	 (mapcar
-	    #'emtmv:zip-w/value
-	    (emtmv:t->specs obj)))))
+      (emtmv:spec-list->entries (emtmv:t->specs obj))))
 
 ;;;_  . emtmv:activate-version
 (defun emtmv:activate-version (version obj)
@@ -454,6 +451,14 @@ If initialized, it will be from the module loaded from FILENAME."
 	       entry
 	       (symbol-function real-sym)
 	       (copy-list (symbol-plist real-sym)))))))
+;;;_   , emtmv:spec-list->entries
+(defun emtmv:spec-list->entries (spec-list)
+   ""
+   (delq nil
+      (mapcar
+	 #'emtmv:zip-w/value
+	 spec-list)))
+
 ;;;_   , emtmv:restore-value-x
 (defun emtmv:restore-value-x (entry value plist)
    ""
@@ -477,19 +482,26 @@ If initialized, it will be from the module loaded from FILENAME."
 
 ;;;_  . Adding specs
 
-;;;_   , emtmv:add-spec
-;;$$WRITE ME
-(defun emtmv:add-spec (obj spec)
-   "Add another spec to OBJ"
+;;;_   , Add all specs from a particular list
+(defun emtmv:add-spec-list (obj spec-list)
+   "Add SPEC-LIST to OBJ.
+Makes OBJ store current values corresponding to the new specs.
+OBJ must be an emtmv:t
+SPEC-LIST must be a (repeat emtmv:hl-el)."
 
-   (let*
-      ()
-      
-      ))
+   ;;Add the specs themselves.
+   (callf2 append
+      spec-list
+      (emtmv:t->specs obj))
 
-
-;;;_   , Add all symbols from a particular list
-
+   ;;Set current state's values appropriately.  There's no sensible
+   ;;way for us to set the other state's values, user must do it.
+   (let
+      ((version (emtmv:t->version obj)))
+      (emtmv:set-values version obj
+	 (append
+	    (emtmv:spec-list->entries spec-list)
+	    (emtmv:get-values version obj)))))
 
 ;;;_. Footers
 ;;;_ , Provides
