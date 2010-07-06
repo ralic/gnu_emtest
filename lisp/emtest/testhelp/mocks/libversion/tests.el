@@ -247,12 +247,11 @@ Call this inside a narrowing to (which WHICH)."
 	      foo:new:unshared
 	      foo:var1 foo:var2 foo:fun1)))
    "Common surrounders for emtmv tests" )
+;;;_ , emtmv:with-version
+(put 'emtmv:with-version 'emt:test-thru
+   'emtmv:change-state)
 
-
-;;;_ , emtest/testhelp/mocks/libversion
-;;Of `emtmv:with-version' and `emtmv:change-state'
-;;$$ADD ME:  For `emtmv:with-version', test that it restores even when
-;;there is an error (`ignore-errors')
+;;;_ , emtmv:change-state
 (emt:deftest-3 
    ((of 'emtmv:change-state)
       (:surrounders emtmv:th:surrounders))

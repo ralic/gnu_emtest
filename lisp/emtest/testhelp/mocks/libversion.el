@@ -132,9 +132,9 @@ Arg OBJ should evaluate to an `emtmv:t'."
 ;;;_   , emtmv:add-advice
 (defmacro emtmv:add-advice (func &optional version obj-form)
    "Advise FUNC to always use a particular version.
-FUNC will generally be an entry point.
-VERSION is `old' or `new'.
-OBJ-FORM is a form that evals to an `emtmv:t'"
+FUNC should be the symbol of a function, generally an entry point.
+VERSION should evaluate to `old' or `new'.
+OBJ-FORM should evaluate to an `emtmv:t'"
    
    `(defadvice ,func 
        (around 
