@@ -130,29 +130,31 @@ Arg OBJ should evaluate to an `emtmv:t'."
 		;;Back to old state when done
 		(emtmv:change-state ,ov-sym ,obj-sym))))))
 ;;;_   , emtmv:add-advice
-(defmacro emtmv:add-advice (func &optional version obj-form)
+(defun emtmv:add-advice (func &optional version obj)
    "Advise FUNC to always use a particular version.
 FUNC should be the symbol of a function, generally an entry point.
-VERSION should evaluate to `old' or `new'.
-OBJ-FORM should evaluate to an `emtmv:t'"
-   
-   `(defadvice ,func 
-       (around 
-	  ,(intern 
-	      (concat 
-		 (symbol-name func)
-		 "advised-by-libversion"))
-	  activate)
-       ;;Advise handles docstrings and interactive forms smartly, so
-       ;;we don't need to do much.
-       ,(concat "Using the %s library version"
-	   (case version 
-	      (old "old")
-	      (new "new")
-	      (otherwise "UNKNOWN")))
-       (emtmv:with-version
-	  ,(or version 'old) ,obj-form
-	  ad-do-it)))
+VERSION should be `old' or `new'.
+OBJ should be an `emtmv:t'"
+   ;;Not ideal, but this is the right place for it and it allows us to
+   ;;capture OBJ instead of needing `lexical-let' or similar.
+   (eval
+      `(defadvice ,func 
+	  (around 
+	     ,(intern 
+		 (concat 
+		    (symbol-name func)
+		    "advised-by-libversion"))
+	     activate)
+	  ;;Advise handles docstrings and interactive forms smartly, so
+	  ;;we don't need to do much.
+	  ,(concat "Using the %s library version"
+	      (case version 
+		 (old "old")
+		 (new "new")
+		 (otherwise "UNKNOWN")))
+	  (emtmv:with-version
+	     ',(or version 'old) ',obj
+	     ad-do-it))))
 ;;;_   , emtmv:features
 (defvar emtmv:features () 
    "Specs that have already been version-required by `emtmv:require-x'" )
@@ -191,8 +193,8 @@ ADVISED-LIST is a list of symbols of the advised functions."
       (emtmv:change-state 'new emtmv:t)
 
       (dolist (func advised-list)
-	 (eval
-	    `(emtmv:add-advice ,func 'old emtmv:t)))))
+	 (emtmv:add-advice func 'old emtmv:t))))
+
 ;;;_   , emtmv:insert-version
 (defun emtmv:insert-version (buf las)
    "Insert a stable version of a library into buffer BUF.

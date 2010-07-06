@@ -450,7 +450,7 @@ Call this inside a narrowing to (which WHICH)."
 		(emtmv:th:load)))
 	    (emt:doc "Situation: In the `new' bindings")
 	    (emt:doc "Operation: Advise run-stuff.")
-	    (emtmv:add-advice run-stuff 'old lv-obj)
+	    (emtmv:add-advice 'run-stuff 'old lv-obj)
 	    (emt:doc "Operation: Run run-stuff.")
 	    (emt:doc "Response: It returns the `old' value of `foo:var1'.")
 	    (assert
