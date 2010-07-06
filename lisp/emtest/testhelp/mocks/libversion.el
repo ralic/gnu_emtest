@@ -311,15 +311,16 @@ Leaves emtmv in state VERSION."
 ;;"Load and version which file? "
 
 ;;;_   , emtmv:toggle-state
-;;$$IMPROVE ME take an optional state argument
-(defun emtmv:toggle-state ()
+(defun emtmv:toggle-state (&optional new-state)
    ""
    (interactive)
    (emtmv:change-state
-      (case (emtmv:t->version emtmv:t)
-	 (old 'new)
-	 (new 'old)
-	 ((nil) (error "libversion hasn't been started")))
+      (or
+	 new-state
+	 (case (emtmv:t->version emtmv:t)
+	    (old 'new)
+	    (new 'old)
+	    ((nil) (error "libversion hasn't been started"))))
       nil))
 ;;;_   , Add a file to what is controlled
 ;;;_   , Add symbol at point to obarrays
