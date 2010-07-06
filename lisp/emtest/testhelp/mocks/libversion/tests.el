@@ -219,7 +219,7 @@ Call this inside a narrowing to (which WHICH)."
 	  ;;Insulate values
 	  (
 	     ;;State
-	     emtmv:t 
+	     emtmv:t emtmv:features
 	     ;;Configuration
 	     emtmv:stable-config
 	     (emtmv:vc-list emtmv:th:vc-list)
@@ -380,7 +380,7 @@ Call this inside a narrowing to (which WHICH)."
 	    (  (lv-obj (emtmv:th:load))
 	       (value "Another value"))
 	    (emt:doc "Situation: In state `new'")
-	    (assert (eq (emtmv:t->version emtmv:t) 'new))
+	    (assert (eq (emtmv:t->version lv-obj) 'new))
 
 	    (emt:doc "Assign to a variable")
 	    (setq foo:var1 value)
@@ -399,7 +399,7 @@ Call this inside a narrowing to (which WHICH)."
 		  (equal foo:var1 value)))
 
 	    (emt:doc "Situation: Still in state `new'")
-	    (assert (eq (emtmv:t->version emtmv:t) 'new))
+	    (assert (eq (emtmv:t->version lv-obj) 'new))
 
 	    (emt:doc "Re-eval the `new' form")
 	    (eval

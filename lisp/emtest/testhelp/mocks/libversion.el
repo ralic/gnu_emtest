@@ -118,6 +118,7 @@ Arg OBJ should be an `emtmv:t'."
       `(progn
 	  (when (not ,obj)
 	     (error "libversion object was not passed"))
+	  (check-type ,obj emtmv:t)
 	  (let
 	     ((,ov-sym (emtmv:t->version ,obj)))
 	     (unwind-protect
@@ -152,7 +153,11 @@ OBJ-FORM is a form that evals to an `emtmv:t'"
        (emtmv:with-version
 	  ,(or version 'old) ,obj-form
 	  ad-do-it)))
+;;;_   , emtmv:features
+(defvar emtmv:features () 
+   "Specs that have already been version-required by `emtmv:require-x'" )
 ;;;_   , emtmv:require
+;;This name is reserved for when the interface is fully mature.
 (defun emtmv:require (&rest r)
    "Like `require', but manage versions.  
 Intended for use in vtest.el files."
@@ -261,7 +266,7 @@ LAS must be a `emtmv:lib-as-spec'"
 ;;;_   , emtmv:read-object
 (defun emtmv:read-object (prompt)
    "Interactively read a libversion object."
-   ;;For now, just return the only one that ever exists.
+   ;;For now, just return the default
    emtmv:t)
 ;;;_   , emtmv:read-version
 (defun emtmv:read-version (prompt)
@@ -371,17 +376,8 @@ SPECS is a list of specs,"
       initial-version))
 
 ;;;_  . emtmv:change-state 
-;;$$UPDATE ME  Don't use this to init any more.
 (defun emtmv:change-state (new-version obj)
    "Change the current state"
-
-   (setq obj (or obj emtmv:t))
-   ;;$$OBSOLESCENT
-   (unless obj
-      (setq emtmv:t
-	 (emtmv:create-obj lib-filename-list))
-      (setq obj emtmv:t))
-   ;;If nothing passed nor found.
    (unless obj
       (error "Not libversion state was passed nor set up globally"))
    (check-type obj emtmv:t)
