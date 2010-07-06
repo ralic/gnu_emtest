@@ -34,7 +34,7 @@
 
 (defgroup emtest ()
    "Customization for Emtest testhelp"
-   :package-version '(emtest . "4.0")
+   :package-version '(emtest . "4.5")
    :group 'development
    :group 'programming)
 
