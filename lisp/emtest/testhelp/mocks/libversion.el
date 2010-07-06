@@ -110,25 +110,25 @@ Same as a history-list element"
 ;;;_  . For code
 ;;;_   , emtmv:with-version
 (defmacro emtmv:with-version (version obj &rest body)
-   "Evaluate BODY with bindings for VERSION.
-VERSION should be `old' or `new'.
-Arg OBJ should be an `emtmv:t'."
+   "Evaluate BODY with bindings for VERSION in version-object OBJ.
+VERSION should evaluate to `old' or `new'.
+Arg OBJ should evaluate to an `emtmv:t'."
    (let
-      ((ov-sym (make-symbol "old-version")))
-      `(progn
-	  (when (not ,obj)
-	     (error "libversion object was not passed"))
-	  (check-type ,obj emtmv:t)
+      ((ov-sym (make-symbol "old-version"))
+	 (obj-sym (make-symbol "lv-object")))
+      `(let
+	  ((,obj-sym ,obj))
+	  (check-type ,obj-sym emtmv:t)
 	  (let
-	     ((,ov-sym (emtmv:t->version ,obj)))
+	     ((,ov-sym (emtmv:t->version ,obj-sym)))
 	     (unwind-protect
 		(progn
 		   ;;OK even if new state is the same as old.
-		   (emtmv:change-state ,version ,obj)
+		   (emtmv:change-state ,version ,obj-sym)
 		   ,@body)
 
 		;;Back to old state when done
-		(emtmv:change-state ,ov-sym ,obj))))))
+		(emtmv:change-state ,ov-sym ,obj-sym))))))
 ;;;_   , emtmv:add-advice
 (defmacro emtmv:add-advice (func &optional version obj-form)
    "Advise FUNC to always use a particular version.
