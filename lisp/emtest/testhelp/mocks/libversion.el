@@ -76,7 +76,7 @@ Format:
    :group 'emtest/testhelp/mocks/libversion)
 
 
-;;;_ , Structures
+;;;_ , Types
 ;;;_  . emtmv:hl-el
 (deftype emtmv:hl-el ()
    "The type of a spec-list element.  
@@ -91,9 +91,7 @@ Same as a history-list element"
    (new-values () :type (repeat (list emtmv:hl-el * *)))
    (old-values () :type (repeat (list emtmv:hl-el * *)))
    (version    () :type (member nil old new))
-   ;;May want to capture&swap respective load-history lines too.
-
-   (specs       () :type (repeat emtmv:hl-el)))
+   (specs      () :type (repeat emtmv:hl-el)))
 
 ;;;_  . emtmv:lib-as-spec
 (defstruct (emtmv:lib-as-spec
@@ -462,7 +460,7 @@ If initialized, it will be from the module loaded from FILENAME."
 	  (consp entry)
 	  (memq (car entry) '(defun autoload)))
 	 (let
-	    (  (real-sym (cdr entry)))
+	    ((real-sym (cdr entry)))
 	    (list
 	       entry
 	       (symbol-function real-sym)
@@ -478,7 +476,7 @@ If initialized, it will be from the module loaded from FILENAME."
 	  (consp entry)
 	  (memq (car entry) '(defun autoload)))
 	 (let
-	    (  (real-sym (cdr entry)))
+	    ((real-sym (cdr entry)))
 	    (fset real-sym value)
 	    (setplist real-sym plist)))))
 
