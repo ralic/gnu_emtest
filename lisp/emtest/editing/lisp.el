@@ -37,7 +37,8 @@
 (defconst emtel:defun-types 
   '(defun defun* defsubst defsubst* defmacro defmacro* defmethod
       deftype defadvice defstruct 
-      emt:deftest-2 emt:deftest-3)
+      emt:deftest-2 emt:deftest-3
+      defmath)
    
   "List of defun-variant symbols we might see" )
 ;;;_ , emtel:suite-sym-at-point-x
