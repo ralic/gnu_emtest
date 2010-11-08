@@ -329,7 +329,7 @@ The old version of foo is restored")
 		     (symbol-function 'foo))))
 	    t)))
    ;;Fails.  Foo does not get mocked.
-   '(nil
+   (nil
       (flet
 	 ((foo
 	     (&rest r)(error "Wrongly called")))
@@ -338,7 +338,6 @@ The old version of foo is restored")
    should insulate it.")
 	 (emtp:eval
 	    (list
-	       (foo)
 	       (foo))
 	    (mock*
 	       (:symbol foo)))
@@ -398,7 +397,31 @@ The old version of foo is restored")
 	    (emt:doc "Operation: call foo.")
 	    (foo))
 	 
-	 (emt:doc "Result: No problem."))))
+	 (emt:doc "Result: No problem.")))
+      (nil
+	 (flet
+	    ((foo (&rest) (error "Wrongly called")))
+	    (emt:doc "Situation: Foo must not be called.")
+	    (emt:doc "Operation: rebind foo inside a `let' value.")
+	    (let
+	       ((stored
+		   (emtp:bind-funcs
+		      '((foo
+			   (lambda
+			      (&rest rest)
+			      'ok))))))
+	       (emt:doc "Operation: call foo inside an unwind-protect,
+approximating how it's done internally in `tp'.")
+	       (emt:doc "Result: No problem.")
+	       (unwind-protect
+		  (foo)
+		  (emtp:bind-funcs stored))
+	       (emt:doc "Operation: call foo after unwind-protect has
+      rebound it to the original.")
+	       (emt:doc "Result: Gives expected error.")
+	       (assert
+		  (emth:gives-error foo))))))
+
 
 
 
@@ -482,8 +505,6 @@ The check form is evalled under conditions of certain error.")
 	 (emtp:insulate (dummy)
 	    (dummy))
 	 (emt:doc "Response: Nothing bad happens.")))
-   ;;Fails.  It does not mock `bad', it lets it thru.
-   '
    (nil
       (flet
 	 ((bad (&rest r)(assert nil nil "Wrongly called")))
