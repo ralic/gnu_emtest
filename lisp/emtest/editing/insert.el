@@ -146,7 +146,7 @@ function."
    (let
       ((pp-escape-newlines nil))
       (pp
-	 `(emt:deftest-3 ,(intern suite-name)
+	 `(emt:deftest-3 ((of ',(intern suite-name)))
 	     ,emt:insert:clause-form)
 	 (current-buffer))))
 
