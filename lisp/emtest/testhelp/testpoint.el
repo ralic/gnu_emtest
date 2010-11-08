@@ -360,6 +360,22 @@ Return a list of the old bindings in that form."
 (defun emt:tp:collect (&rest args)
    "Only meaningful inside `emtp:eval'"
    (callf append emtp:*collected* (list (mapcar #'list args))))
+;;;_ , emtp:insulate
+(defmacro emtp:insulate (funcs &rest body)
+   "Arrange that calling FUNCS during BODY has no effect or a
+   controlled effect.
+FUNCS is a list whose elements are each:
+ * a symbol, and the func just returns `nil'
+ * a list, which is interpreted as if governed by `mock*'."
+   
+   `(emtp:eval
+       (progn ,@body)
+       ,@(mapcar
+	    #'(lambda (f)
+		 (if (symbolp f)
+		    `(mock* (:symbol ,f))
+		    `(mock* ,@f)))
+	    funcs)))
 
 ;;;_. Footers
 ;;;_ , Provides

@@ -328,6 +328,21 @@ The old version of foo is restored")
 		  (eq old-foo-func
 		     (symbol-function 'foo))))
 	    t)))
+   ;;Fails.  Foo does not get mocked.
+   '(nil
+      (flet
+	 ((foo
+	     (&rest r)(error "Wrongly called")))
+	 (emt:doc "Situation: Foo must not be called.")
+	 (emt:doc "Operation: foo is called within a mock* that
+   should insulate it.")
+	 (emtp:eval
+	    (list
+	       (foo)
+	       (foo))
+	    (mock*
+	       (:symbol foo)))
+	 t))
    (nil
       (progn
 	 (emt:doc "Situation: Foo is called the wrong number of times.")
@@ -420,6 +435,27 @@ The check form is evalled under conditions of certain error.")
 
 ;;;_  . emtp:eval
 (put 'emtp:eval 'emt:test-thru 'emtp)
+
+;;;_  . emtp:insulate
+(emt:deftest-3
+   ((of 'emtp:insulate))
+   (nil
+      (flet
+	 ((dummy (&rest r)))
+	 (emt:doc "Situation: Function DUMMY exists.")
+	 (emt:doc "Operation: emtp:insulate mocks function DUMMY.")
+	 (emtp:insulate (dummy)
+	    (dummy))
+	 (emt:doc "Response: Nothing bad happens.")))
+   ;;Fails.  It does not mock `bad', it lets it thru.
+   (nil
+      (flet
+	 ((bad (&rest r)(assert nil nil "Wrongly called")))
+	 (emt:doc "Situation: Function BAD must not be called.")
+	 (emt:doc "Operation: Form inside emtp:insulate vs BAD calls BAD.")
+	 (emtp:insulate (bad)
+	    (bad))
+	 (emt:doc "Response: Nothing bad happens."))))
 
 
 ;;;_. Footers
