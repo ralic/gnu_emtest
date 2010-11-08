@@ -54,6 +54,7 @@
 	  emt:insert-persister
 	  emt:insert-example-def
 	  emt:insert-testpoint
+	  emt:insert-testpoint-control
 	  ))
 
    "Skeletons related to emtest" )
@@ -227,7 +228,15 @@ function."
 	     (arg1))
 	 (current-buffer))))
 
-
+(defun emt:insert-testpoint-control ()
+   ""
+   
+   (interactive)
+   (let
+      ()
+      (insert "\n;;Clauses are tp, tp*, tp-reached, mock*, and finally\n")
+      (pp '(emtp:eval t )
+	 (current-buffer))))
 ;;;_. Footers
 ;;;_ , Provides
 
