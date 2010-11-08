@@ -366,6 +366,41 @@ The old version of foo is restored")
 		     (symbol-function 'foo))))
 	    t))))
 
+;;;_  . emtp:bind-funcs
+(emt:deftest-3
+   ((of 'emtp:bind-funcs))
+   (nil
+      (flet
+	 ((foo (&rest) (error "Wrongly called")))
+	 (emt:doc "Situation: Foo must not be called.")
+	 (emt:doc "Operation: rebind foo.")
+	 (emtp:bind-funcs
+	    '((foo
+		 (lambda
+		    (&rest rest)
+		    'ok))))
+	 (foo)
+	 (emt:doc "Operation: call foo.")
+	 (emt:doc "Result: No problem.")))
+   
+   (nil
+      (flet
+	 ((foo (&rest) (error "Wrongly called")))
+	 (emt:doc "Situation: Foo must not be called.")
+	 (emt:doc "Operation: rebind foo inside a `let' value.")
+	 (let
+	    ((stored
+		(emtp:bind-funcs
+		   '((foo
+			(lambda
+			   (&rest rest)
+			   'ok))))))
+	    (emt:doc "Operation: call foo.")
+	    (foo))
+	 
+	 (emt:doc "Result: No problem."))))
+
+
 
 ;;;_  . emtp:handle-call
 
@@ -448,6 +483,7 @@ The check form is evalled under conditions of certain error.")
 	    (dummy))
 	 (emt:doc "Response: Nothing bad happens.")))
    ;;Fails.  It does not mock `bad', it lets it thru.
+   '
    (nil
       (flet
 	 ((bad (&rest r)(assert nil nil "Wrongly called")))
