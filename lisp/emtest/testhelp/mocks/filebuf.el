@@ -196,21 +196,20 @@ You may want to use this to umount a ramdisk"
 (defmacro emtb:with-file-f (args var &rest body)
    ""
    (let
-      ((temp-file-sym (make-symbol "temp-file")))
+      ((temp-file-sym (make-symbol "temp-file"))
+	 (absent (if (memq ':absent args) t nil))
+	 (args-1 (remq ':absent args)))
       `(let*
 	  (  
-	     (--absent
-		(apply #'emtb:absent-flag ',args))
 	     (,temp-file-sym 
-		(if --absent
-		   (make-temp-name ,emtb:slave-root)
-		   (make-temp-file ,emtb:slave-root)))
+		,(if absent
+		    `(make-temp-name ,emtb:slave-root)
+		    `(make-temp-file ,emtb:slave-root)))
 	     (,var ,temp-file-sym))
 	  
-	  
 	  (unless
-	     --absent
-	     (emtb:with-buf ,args 
+	     ,absent
+	     (emtb:with-buf ,args-1
 		(write-file ,temp-file-sym)))
 	  
 	  (unwind-protect
