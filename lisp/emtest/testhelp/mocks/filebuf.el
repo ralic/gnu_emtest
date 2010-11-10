@@ -139,8 +139,9 @@ You may want to use this to umount a ramdisk"
 	     (emtb:build-insertform dir 'file file))
 	  (sequence
 	     (emtb:build-insertform dir 'sequence sequence))
-	  (t 
-	     (emtb:build-insertform dir 'string string)))
+	  (string 
+	     (emtb:build-insertform dir 'string string))
+	  (t nil))
 
       ;;Set up file, if reasonable.
       ,(when (or visited-name file)
