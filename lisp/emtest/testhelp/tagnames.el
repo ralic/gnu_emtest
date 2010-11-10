@@ -91,7 +91,14 @@ This variable is `let' in appropriate scopes" )
 ;;;_  . emtg:combine-tagsets
 (defsubst emtg:combine-tagsets (tagset +tagset)
    ""
-   (append +tagset tagset))
+   (let* 
+      ;;Remove any occurence of nil or t in the added tagset.  They're
+      ;;easy to get in accidentally and generaly unwanted.
+      ((clean-tagset+ 
+	  (delq t
+	     (remq nil +tagset))))
+      (append clean-tagset+ tagset)))
+
 ;;;_   , Tests
 ;;It's direct
 ;;;_  . Handle individual markings
