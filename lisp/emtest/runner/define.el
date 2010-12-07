@@ -80,7 +80,7 @@
 	  ;;In PROPS, the second element of each item is a form, which
 	  ;;later will be evaluated.
 	  (cond
-	     ;;Bare symbol is treated as the name.
+	     ;;If PROPS is a bare symbol, it's treated as the name.
 	     ((symbolp name-or-props)
 		`((of ',name-or-props)))
 	     ((atom name-or-props)
