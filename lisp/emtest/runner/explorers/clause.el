@@ -35,6 +35,7 @@
 (require 'emtest/runner/define)
 (require 'emtest/runner/testral)
 (require 'emtest/runner/keepup)
+(require 'emtest/runner/runners/external)
 
 ;;;_. Body
 ;;;_ , Structures
@@ -95,7 +96,6 @@
 	       ;;$$WRITEME Use `emt:trace:properties' for this?  But change
 	       ;;its name?  (And watch the scoping)
 	       :info '())))))
-
 ;;;_ , Functions
 ;;;_  . emtt:explore-clause
 
@@ -105,9 +105,14 @@ This is the heart of Emtest exploration: A test itself."
    (emtd:destructure-clause-3 clause
       (case governor
 	 (quote (emtr:quoted props form report-f))
-	 (nil (emtr:vanilla props form report-f))
-	 
-	 )))
+	 ((nil) (emtr:vanilla props form report-f))
+	 (external (emtr:external props form report-f))
+	 (t
+	    (funcall report-f
+	       (emt:testral:make-suite
+		  :contents '()
+		  :badnesses '(ungraded)
+		  :info '()))))))
 
 
 ;;;_  . emtt:explore-literal-clause
