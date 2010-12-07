@@ -90,6 +90,9 @@ Each one must be a `emtt:explorable'" )
 
       ;;$$IMPROVE ME condition-case this and report bad test if we
       ;;miss.
+      ;;$$IMPROVE ME Find it in `emtt:test-finder:method-list' - try
+      ;;each predicate.  Only fallback will remain here.  Use
+      ;;`emtt:get-explore-func' in all.el, which is yet to be written.
       (emtp tp:a084136e-8f02-49a5-ac0d-9f65509cedf2
 	 (test-id)
 	 (typecase test-id
@@ -118,7 +121,7 @@ Each one must be a `emtt:explorable'" )
 		     :explore-methods-supported
 		     (mapcar #'car emtt:test-finder:method-list))))
 
-	    ;;Fallback case
+	    ;;Fallback case - encap me.
 	    (t
 	       ;;Not clear that this answers at a sufficiently
 	       ;;high level.  It must indicate that there's no
@@ -151,7 +154,7 @@ Each one must be a `emtt:explorable'" )
 (defun emtt:test-finder:top (what-to-run path-prefix testrun-id report-cb)
    ""
    
-   (let*
+   (let*  ;;$$IMPROVE ME Take this as an object.
       (  (emtt:test-finder:pending-list ())
 	 ;; Poor-man's closures.
 	 (report-f

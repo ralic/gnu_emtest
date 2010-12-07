@@ -41,7 +41,7 @@ Files that define explorers should call `emtt:add-explorer' to add
 their methods.
 
 Format: Each entry is (PREDICATE FUNCTION NAME), where 
- * PREDICATE
+ * PREDICATE is a predicate to tell whether 
  * FUNCTION explores the test or suite" )
 
 ;;;_  . Add an explorer
@@ -53,6 +53,8 @@ Format: Each entry is (PREDICATE FUNCTION NAME), where
       (push 
 	 (list pred func name)
 	 emtt:test-finder:method-list)))
+;;;_  . emtt:get-explore-func Get relevant function for emthow object
+;;$$WRITE ME
 
 ;;;_  . emtt:explore-hello
 ;;This doesn't require an autoload but all others do.
