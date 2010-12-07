@@ -115,7 +115,7 @@ LIB-PATH must be a path to a library that is already loaded."
 
 ;;;_ , emtt:explore-library
 
-(defun emtt:explore-library (test-id props path)
+(defun emtt:explore-library (test-id props path report-f)
    ""
 
    (emtt:conform-howto test-id)
@@ -144,16 +144,18 @@ LIB-PATH must be a path to a library that is already loaded."
 		       :properties ()
 		       :aliases ()))
 	       suite-list)))
-      (list
-	 list-to-run
+
+      (funcall report-f 
 	 (emt:testral:make-suite
 	    :contents
 	    (emt:testral:make-runform-list
 	       :els list-to-run)
 	    :badnesses '() ;;Punt - only if it crapped
 	    ;;out right here.
-	    :info '() ;;Punt info for now.
-	    ))))
+	    ;;Punt info for now.
+	    :info '())
+	 list-to-run)))
+
 ;;;_. Footers
 ;;;_ , Provides
 

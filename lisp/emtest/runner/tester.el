@@ -51,7 +51,7 @@
 
 ;;;_ , Info available to tests (Not used yet)
 ;;;_  . Type `emtt:top-data'
-;;$$USE ME
+;;$$RETHINK ME
 (defstruct (emtt:top-data
 	    (:constructor emtt:make-top-data)
 	    (:conc-name emtt:top-data->))
@@ -74,91 +74,79 @@ Each one must be (NAME FUNCTION ARG-NAMES), where FUNCTION is a
 
 ;;;_ , Run tests
 ;;;_  . emtt:explore-one
-(defun emtt:explore-one (next func)
+(defun emtt:explore-one (explorable func report-f)
    ""
    ;;(check-type test-id emthow)
    (let*
       (
 	 (test-id
-	    (emtt:explorable->how-to-run next))
+	    (emtt:explorable->how-to-run explorable))
 	 (props
-	    (emtt:explorable->properties next))
+	    (emtt:explorable->properties explorable))
 	 (path
-	    (emtt:explorable->prestn-path next))
-	 (one-report
-	    (emtp tp:a084136e-8f02-49a5-ac0d-9f65509cedf2
-	       (test-id)
-	       (typecase test-id
-		  (emthow:form
-		     (emtt:explore-literal-clause
-			test-id props path))
+	    (emtt:explorable->prestn-path explorable))
+	 (local-report-f
+	    `(lambda (report &optional tests prefix)
+		(funcall 
+		   ,report-f
+		   (list 
+		      (list ,explorable nil report))
+		   tests
+		   prefix))))
 
-		  (emthow:indexed-clause
-		     (emtt:explore-indexed-clause
-			test-id props path))
+      (emtp tp:a084136e-8f02-49a5-ac0d-9f65509cedf2
+	 (test-id)
+	 (typecase test-id
+	    (emthow:form
+	       (emtt:explore-literal-clause
+		  test-id props path local-report-f))
+
+	    (emthow:indexed-clause
+	       (emtt:explore-indexed-clause
+		  test-id props path local-report-f))
 		  
-		  (emthow:suite
-		     (emtt:explore-suite test-id props path))
+	    (emthow:suite
+	       (emtt:explore-suite 
+		  test-id props path local-report-f))
 		  
-		  (emthow:library:elisp-load
-		     (emtt:explore-library test-id props path))
+	    (emthow:library:elisp-load
+	       (emtt:explore-library 
+		  test-id props path local-report-f))
 		  
-		  ;;Tell receiver about this tester
-		  (emthow:hello
-		     (list
-			nil
-			(emt:testral:make-test-runner-info
-			   :name "Emtest"
-			   :version emtt:version
-			   :explore-methods-supported
-			   (mapcar #'car emt:test-finder:method-list))))
+	    ;;Tell receiver about this tester
+	    (emthow:hello
+	       (funcall local-report-f
+		  (emt:testral:make-test-runner-info
+		     :name "Emtest"
+		     :version emtt:version
+		     :explore-methods-supported
+		     (mapcar #'car emt:test-finder:method-list))))
 
-		  ;;Fallback case
-		  (t
-		     ;;Not clear that this answers at a sufficiently
-		     ;;high level.  It must indicate that there's no
-		     ;;such method.
-		     (list
-			nil
-			(emt:testral:make-suite
-			   :contents 
-			   (emt:testral:make-note-list
-			      :notes 
-			      (list
-				 (emt:testral:make-error-raised
-				    :err 
-				    '(error 
-					"Unrecognized internal explore type")
-				    :badnesses 
-				    '((ungraded 'error 
-					 "Unrecognized internal explore type"))
-				    )))
-			   ;;Actual form is TBD.
-			   :badnesses 
-			   '((ungraded 'error 
-				"Unrecognized internal explore type"))
-			   :info '() ;;Punt info for now.
-			   ))
-		     )))))
-
-      ;;Maybe schedule more.
-      (when (first one-report)
-	 (callf2 append 
-	    (first one-report)
-	    emt:test-finder:pending-list))
-
-      (funcall func
-	 (emt:testral:make-report
-	    :testrun-id "0" ;;Punt
-	    :tester-id "0"  ;;Punt
-	    :test-id-prefix '()	    ;;Not used by this tester
-	    :suites 
-	    (list 
-	       (list
-		  next
-		  nil
-		  (second one-report)))))))
-
+	    ;;Fallback case
+	    (t
+	       ;;Not clear that this answers at a sufficiently
+	       ;;high level.  It must indicate that there's no
+	       ;;such method.
+	       (funcall local-report-f
+		  (emt:testral:make-suite
+		     :contents 
+		     (emt:testral:make-note-list
+			:notes 
+			(list
+			   (emt:testral:make-error-raised
+			      :err 
+			      '(error 
+				  "Unrecognized internal explore type")
+			      :badnesses 
+			      '((ungraded 'error 
+				   "Unrecognized internal explore type"))
+			      )))
+		     ;;Actual form is TBD.
+		     :badnesses 
+		     '((ungraded 'error 
+			  "Unrecognized internal explore type"))
+		     ;;Punt info for now.
+		     :info '())))))))
 
 ;;;_  . emtt:test-finder:top
 
@@ -167,29 +155,48 @@ Each one must be (NAME FUNCTION ARG-NAMES), where FUNCTION is a
 (defun emtt:test-finder:top (what-to-run path-prefix testrun-id report-cb)
    ""
    
-   (let
-      (  (emt:test-finder:pending-list ()))
-      (push
-	 (emtt:make-explorable
-	    :how-to-run  what-to-run
-	    :prestn-path path-prefix
-	    :properties ())
-	 emt:test-finder:pending-list)
+   (let*
+      (  (emt:test-finder:pending-list ())
+	 ;; Poor-man's closures.
+	 (report-f
+	    `(lambda (suites tests &optional prefix)
+		(when tests
+		   (callf2 append 
+		      tests
+		      emt:test-finder:pending-list))
+		(funcall #',report-cb
+		   (emt:testral:make-report
+		      :run-done-p nil ;;$$OBSOLESCENT
+		      :testrun-id ,testrun-id
+		      :tester-id "" ;;$$OBSOLESCENT
+		      :test-id-prefix prefix
+		      :suites suites)))))
 
+      ;;Enqueue the root test. 
+      (funcall report-f
+	 '()
+	 (list
+	    (emtt:make-explorable
+	       :how-to-run  what-to-run
+	       :prestn-path path-prefix
+	       :properties ())))
+      
+      ;;Loop thru the pending list.
       (while emt:test-finder:pending-list
 	 ;;Careful: `pop' seems to have a problem if called in
 	 ;;something that sets the value of the list, as
 	 ;;`emtt:explore-one' sometimes did.
 	 (let
 	    ((next (pop emt:test-finder:pending-list)))
-	    ;;$$PASS parms so it can ct what it returns.  testrun-id.
-	    (emtt:explore-one next report-cb)))
+	    (emtt:explore-one next report-cb report-f)))
 
+      ;;$$OBSOLESCENT This will be replaced by reports of how many are
+      ;;enqueued. 
       (funcall report-cb
 	 (emt:testral:make-report
 	    :run-done-p t
-	    :testrun-id "0" ;;Punt
-	    :tester-id "0"  ;;Punt
+	    :testrun-id testrun-id
+	    :tester-id "Emtest"
 	    :test-id-prefix '()	    
 	    :suites '()))))
 

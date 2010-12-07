@@ -38,7 +38,7 @@
 ;;;_. Body
 
 ;;;_ , emtt:explore-suite
-(defun emtt:explore-suite (test-id props-unused path)
+(defun emtt:explore-suite (test-id props-unused path report-f)
    ""
    (let* 
       (
@@ -66,8 +66,8 @@
 		     ;;`emtd:destructure-suite-3', not from arglist.
 		     :properties props)
 		  rv-list-to-run))
-	    (list
-	       (reverse rv-list-to-run)
+
+	    (funcall report-f
 	       (emt:testral:make-suite
 		  :contents 
 		  (emt:testral:make-runform-list
@@ -75,8 +75,9 @@
 		  :badnesses '() ;;Punt - anyways, only
 		  ;;meaningful if it crapped out right
 		  ;;here.
-		  :info '() ;;Punt info for now.
-		  ))))))
+		  ;;Punt info for now.
+		  :info '())
+	       (reverse rv-list-to-run))))))
 ;;;_ , Getting test suites indirectly.
 
 ;;$$WRITE ME Also get tests indirectly.  Maybe be replaced by just

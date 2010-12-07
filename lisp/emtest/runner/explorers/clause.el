@@ -93,16 +93,15 @@ This is the heart of Emtest exploration: A test itself."
 	    ;;its name?  (And watch the scoping)
 	    :info '()))))
 ;;;_  . emtt:explore-literal-clause
-(defun emtt:explore-literal-clause (test-id props path)
+(defun emtt:explore-literal-clause (test-id props path report-f)
    ""
-   
-   (list
-      nil
+   (funcall report-f 
       (emtt:explore-clause
 	 (emthow:form->test-form test-id))))
+
 ;;;_   , Insinuate
 ;;;_  . emtt:explore-indexed-clause
-(defun emtt:explore-indexed-clause (test-id props path)
+(defun emtt:explore-indexed-clause (test-id props path report-f)
    ""
    (let*
       (
@@ -114,10 +113,10 @@ This is the heart of Emtest exploration: A test itself."
 	       test-id)))
       (emtd:update-for-sym suite-sym)
       (emtd:destructure-suite-3 suite-sym
-	 (list 
-	    nil
+	 (funcall report-f
 	    (emtt:explore-clause 
 	       (nth index clause-list))))))
+
 
 ;;;_   , Insinuate
 
