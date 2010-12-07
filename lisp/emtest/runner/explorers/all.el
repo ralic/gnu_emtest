@@ -29,7 +29,9 @@
 
 ;;;_ , Requires
 
-
+;;$$IMPROVE ME later  When we have truly separated autoloads, require
+;;the file these explorers' autoloads are defined in, and change their
+;;autoload forms to no longer require this (else we'll be circular)
 
 ;;;_. Body
 ;;;_ , Registering explorers
@@ -42,9 +44,11 @@ their methods.
 
 Format: Each entry is (PREDICATE FUNCTION NAME), where 
  * PREDICATE is a predicate to tell whether 
- * FUNCTION explores the test or suite" )
+ * FUNCTION explores the test or suite.
 
-;;;_  . Add an explorer
+THIS FORMAT MAY CHANGE." )
+
+;;;_  . emtt:add-explorer
 
 (defun emtt:add-explorer (pred func &optional name &rest dummy)
    ""
@@ -53,10 +57,12 @@ Format: Each entry is (PREDICATE FUNCTION NAME), where
       (push 
 	 (list pred func name)
 	 emtt:test-finder:method-list)))
+
 ;;;_  . emtt:match-explorer
 (defsubst emtt:match-explorer (how method)
    "Return non-nil if METHOD is right for HOW"
    (funcall (car method) how))
+
 ;;;_  . emtt:get-explore-func 
 (defun emtt:get-explore-func (how)
    "Get a relevant function for HOW.
@@ -69,8 +75,6 @@ HOW must be of a subtype of emthow"
 	    (when (emtt:match-explorer how method)
 	       (throw 'emtt:explore-func (second method))))
 	 #'emtt:explore-fallback)))
-
-
 
 ;;;_  . Special explorers
 ;;;_   , emtt:explore-hello
