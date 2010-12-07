@@ -38,67 +38,86 @@
 
 ;;;_. Body
 ;;;_ , Structures
-;;Maybe define `emthow:form' here?
-;;;_ , Functions
-;;;_  . emtt:explore-clause
+;;Maybe define `emthow:form' here, since it need not be
+;;exposed. 
+;;;_ , Runners (emtr prefix)
+;;;_  . nil runner emtr:quoted
+(defun emtr:quoted (props form report-f)
+   "Report a dormant result.  For quoted test-cases."
 
-(defun emtt:explore-clause (clause)
-   "Explore one clause in Emtest.
-This is the heart of Emtest exploration: A test itself."
+   (funcall report-f
+      (emt:testral:make-suite
+	 :contents '()
+	 :badnesses '(dormant)
+	 :info '())))
+
+
+;;;_  . emtr:vanilla
+(defun emtr:vanilla (props form report-f)
+   "Run a vanilla test-case and report the result."
    (emtt:testral:with
       (let
-	 (
+	 ( 
 	    (emtt:*abort-p* nil)
 	    ;;These badnesses are only for problems that manifest right
 	    ;;here, not lower down. 
 	    ;;$$RETHINK ME: Instead, be signalled to abort (that's
 	    ;;compatible with `emth:trap-errors' and if we see
 	    ;;emtt:*abort-p*, set that badness)
-	    (badnesses '()))
+	    (badnesses '())	 
+	    (emt:trace:properties props) ;;OBSOLESCENT.
+	    (form-1
+	       (emts:add-surrounders 
+		  form 
+		  (emtts:get-surrounders props)
+		  props)))
+	 ;;$$USE STANDARD
+	 ;;(emth:trap-errors (eval form-1))
+	 (condition-case err
+	    (eval form-1)
+	    (error
+	       (emtt:testral:add-note
+		  (emt:testral:make-error-raised
+		     :err err
+		     :badnesses '(ungraded)))
+	       (push
+		  'ungraded
+		  badnesses)))
 
-	 ;;This defines `props' in body.
-	 (emtd:destructure-clause-3 clause
-	    ;;$$WRITE ME RIGHT - Dormancy is punted for now.
-	    ;;If it's quoted, it's dormant
-	    (if (not (eq governor 'quote))
-	       (let
-		  (
-		     (emt:trace:properties props) ;;OBSOLESCENT.
-		     (form-1
-			(emts:add-surrounders 
-			   form 
-			   (emtts:get-surrounders props)
-			   props)))
-		  ;;$$USE STANDARD
-		  ;;(emth:trap-errors (eval form-1))
-		  (condition-case err
-		     (eval form-1)
-		     (error
-			(emtt:testral:add-note
-			   (emt:testral:make-error-raised
-			      :err err
-			      :badnesses '(ungraded)))
-			(push
-			   'ungraded
-			   badnesses))))))
-      
-	 (emt:testral:make-suite
-	    :contents
-	    (emtt:testral:note-list)
-	    ;;Need to acquire this.  At least errors that we
-	    ;;handle here - which may be just overall abort.
-	    ;;See the call to `emth:trap-errors'
-	    :badnesses badnesses
-	    ;;$$WRITEME Use `emt:trace:properties' for this?  But change
-	    ;;its name?  (And watch the scoping)
-	    :info '()))))
+	 (funcall report-f
+	    (emt:testral:make-suite
+	       :contents
+	       (emtt:testral:note-list)
+	       ;;Need to acquire this.  At least errors that we
+	       ;;handle here - which may be just overall abort.
+	       ;;See the call to `emth:trap-errors'
+	       :badnesses badnesses
+	       ;;$$WRITEME Use `emt:trace:properties' for this?  But change
+	       ;;its name?  (And watch the scoping)
+	       :info '())))))
+
+;;;_ , Functions
+;;;_  . emtt:explore-clause
+
+(defun emtt:explore-clause (clause props report-f)
+   "Explore one clause in Emtest.
+This is the heart of Emtest exploration: A test itself."
+   (emtd:destructure-clause-3 clause
+      (case governor
+	 (quote (emtr:quoted props form report-f))
+	 (nil (emtr:vanilla props form report-f))
+	 
+	 )))
+
+
 ;;;_  . emtt:explore-literal-clause
 ;;;###autoload
 (defun emtt:explore-literal-clause (test-id props path report-f)
-   ""
-   (funcall report-f 
-      (emtt:explore-clause
-	 (emthow:form->test-form test-id))))
+   "Explore a literal clause in Emtest."
+   (emtt:explore-clause
+      (emthow:form->test-form test-id)
+      props
+      report-f))
 
 ;;;_   , Insinuate
 ;;;###autoload (require 'emtest/runner/explorers/all)
@@ -107,7 +126,7 @@ This is the heart of Emtest exploration: A test itself."
 ;;;_  . emtt:explore-indexed-clause
 ;;;###autoload
 (defun emtt:explore-indexed-clause (test-id props path report-f)
-   ""
+   "Explore an indexed clause in a suite in Emtest."
    (let*
       (
 	 (suite-sym 
@@ -118,9 +137,10 @@ This is the heart of Emtest exploration: A test itself."
 	       test-id)))
       (emtd:update-for-sym suite-sym)
       (emtd:destructure-suite-3 suite-sym
-	 (funcall report-f
-	    (emtt:explore-clause 
-	       (nth index clause-list))))))
+	 (emtt:explore-clause 
+	    (nth index clause-list)
+	    props
+	    report-f))))
 
 
 ;;;_   , Insinuate
