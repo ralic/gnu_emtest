@@ -44,8 +44,6 @@
    
    `(let
       (
-	 ;;$$OBSOLESCENT
-	 (emt:testral:*parent-id* 0)
 	 ;;Counter to make unique IDs.  Although UUIDs are appealing,
 	 ;;they are slower to make.
 	 (emt:testral:*id-counter* 1)
@@ -53,15 +51,11 @@
 	 (emt:testral:*path-prefix* ()))
        ,@body))
 
-;;Macro: Run code with a TESTRAL receiver
-;;$$WRITE ME
-;;$$USE ME
-;;See `emtt:explore-clause' in clause.el, which should use this
 ;;;_  . emtt:testral:create
 ;;
 (defsubst emtt:testral:create ()
-   "Create a TESTRAL receiver - actually an empty list"
-   ())
+   "Create a TESTRAL receiver - An list of 1 element"
+   (list '()))
 
 ;;;_  . emtt:testral:add-note
 ;;Must "note" be a `emt:testral:base'?
@@ -102,7 +96,7 @@ TAGS is not used yet, it controls what notes to add (For now, any note)."
 	       :badnesses 
 	       '((ungraded 'error 
 		    "A non-TESTRAL object was tried to be used as note"))))
-	 emt:testral:*events-seen*)))
+	 (cdr emt:testral:*events-seen*))))
 
 ;;;_  . emtt:testral:report-false
 ;;Higher level, may belong elsewhere.
@@ -121,7 +115,7 @@ TAGS is not used yet, it controls what notes to add (For now, any note)."
       :notes
       ;;Reverse the note list so it's in the order that it
       ;;was received in.
-      (nreverse emt:testral:*events-seen*)))
+      (nreverse (cdr emt:testral:*events-seen*))))
 
 ;;;_  . emtt:testral:set-object-origin
 (defun emtt:testral:set-object-origin (object origin)
