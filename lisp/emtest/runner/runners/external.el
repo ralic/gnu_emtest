@@ -47,8 +47,9 @@
 ;;unneeded. 
 ;;Make a fresh buffer
 '
-(setq my-buf
-   (generate-new-buffer "external"))
+(setq my-buf nil
+   ;(generate-new-buffer "external")
+   )
 
 '
 (setq my-prog+args
@@ -63,7 +64,6 @@
 (setq my-tq
    (tq-create my-proc))
 
-;;Some aren't tests, just setup.
 (defvar my-56-a)
 '
 (tq-enqueue my-tq 
@@ -74,6 +74,8 @@
 	 (setq my-56-a (list data answer)))
    
     t)
+'
+my-56-a
 
 '
 (tq-enqueue my-tq 
@@ -84,6 +86,12 @@
 	(setq my-56-a (list data answer)))
    
           t)
+'
+my-56-a
+
+;;Cleanup: 
+'
+(tq-close my-tq)
 
 ;;;_. Footers
 ;;;_ , Provides
