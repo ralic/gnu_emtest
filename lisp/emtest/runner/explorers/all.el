@@ -53,13 +53,30 @@ Format: Each entry is (PREDICATE FUNCTION NAME), where
       (push 
 	 (list pred func name)
 	 emtt:test-finder:method-list)))
-;;;_  . emtt:get-explore-func Get relevant function for emthow object
-;;$$WRITE ME
+;;;_  . emtt:match-explorer
+(defsubst emtt:match-explorer (how method)
+   "Return non-nil if METHOD is right for HOW"
+   (funcall (car method) how))
+;;;_  . emtt:get-explore-func 
+(defun emtt:get-explore-func (how)
+   "Get a relevant function for HOW.
+Should not fail.
+HOW must be of a subtype of emthow"
+   
+   (catch 'emtt:explore-func
+      (progn
+	 (dolist (method emtt:test-finder:method-list)
+	    (when (emtt:match-explorer how method)
+	       (throw 'emtt:explore-func (second method))))
+	 #'emtt:explore-fallback)))
 
-;;;_  . emtt:explore-hello
+
+
+;;;_  . Special explorers
+;;;_   , emtt:explore-hello
 ;;This doesn't require an autoload but all others do.
 (defun emtt:explore-hello (test-id props path report-f)
-   ""
+   "Report about Emtest, listing the explore methods."
    
    (funcall report-f
       (emt:testral:make-test-runner-info
@@ -68,11 +85,35 @@ Format: Each entry is (PREDICATE FUNCTION NAME), where
 	 :explore-methods-supported
 	 (mapcar #'third emtt:test-finder:method-list))))
 
-;;;_  . Insinuate
+;;;_    . Insinuate
 
 (emtt:add-explorer #'emthow:hello-p #'emtt:explore-hello
    "Tester signature") 
 
+;;;_   , emtt:explore-fallback
+;;Not part of the list of methods.
+(defun emtt:explore-fallback (test-id props path report-f)
+   "Report that no matching explore method could be found."
+
+   (funcall local-report-f
+      (emt:testral:make-suite
+	 :contents 
+	 (emt:testral:make-note-list
+	    :notes 
+	    (list
+	       (emt:testral:make-error-raised
+		  :err 
+		  '(error 
+		      "Unrecognized internal explore type")
+		  :badnesses 
+		  '((ungraded 'error 
+		       "Unrecognized internal explore type")))))
+	 ;;Actual form is TBD.
+	 :badnesses 
+	 '((ungraded 'error 
+	      "Unrecognized internal explore type"))
+	 ;;Punt info for now.
+	 :info '())))
 
 ;;;_. Footers
 ;;;_ , Provides

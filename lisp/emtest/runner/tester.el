@@ -95,6 +95,10 @@ Each one must be a `emtt:explorable'" )
       ;;`emtt:get-explore-func' in all.el, which is yet to be written.
       (emtp tp:a084136e-8f02-49a5-ac0d-9f65509cedf2
 	 (test-id)
+	 (funcall (emtt:get-explore-func test-id)
+	    test-id props path local-report-f)
+	 
+	 '
 	 (typecase test-id
 	    (emthow:form
 	       (emtt:explore-literal-clause
