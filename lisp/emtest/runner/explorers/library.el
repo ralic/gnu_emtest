@@ -114,7 +114,7 @@ LIB-PATH must be a path to a library that is already loaded."
 ;;$$ADD TESTS for all 3 behaviors.
 
 ;;;_ , emtt:explore-library
-
+;;;###autoload
 (defun emtt:explore-library (test-id props path report-f)
    ""
 
@@ -155,6 +155,10 @@ LIB-PATH must be a path to a library that is already loaded."
 	    ;;Punt info for now.
 	    :info '())
 	 list-to-run)))
+;;;_ , Insinuate
+;;;###autoload (require 'emtest/runner/explorers/all)
+;;;###autoload (emtt:add-explorer #'emthow:library:elisp-load-p #'emtt:explore-library
+;;;###autoload "Elisp library") 
 
 ;;;_. Footers
 ;;;_ , Provides

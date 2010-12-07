@@ -38,6 +38,7 @@
 ;;;_. Body
 
 ;;;_ , emtt:explore-suite
+;;;###autoload
 (defun emtt:explore-suite (test-id props-unused path report-f)
    ""
    (let* 
@@ -87,10 +88,9 @@
 '(or (get symbol 'emtt:test-thru) symbol)
 
 ;;;_ , Insinuate
-;;Autoloads that put this on a list:
-
-'(#'emthow:suite-p #'emtt:explore-suite "suite")
-
+;;;###autoload (require 'emtest/runner/explorers/all)
+;;;###autoload (emtt:add-explorer #'emthow:suite-p #'emtt:explore-suite
+;;;###autoload "Suite") 
 
 ;;;_. Footers
 ;;;_ , Provides

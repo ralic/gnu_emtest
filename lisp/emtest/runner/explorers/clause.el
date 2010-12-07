@@ -93,6 +93,7 @@ This is the heart of Emtest exploration: A test itself."
 	    ;;its name?  (And watch the scoping)
 	    :info '()))))
 ;;;_  . emtt:explore-literal-clause
+;;;###autoload
 (defun emtt:explore-literal-clause (test-id props path report-f)
    ""
    (funcall report-f 
@@ -100,7 +101,11 @@ This is the heart of Emtest exploration: A test itself."
 	 (emthow:form->test-form test-id))))
 
 ;;;_   , Insinuate
+;;;###autoload (require 'emtest/runner/explorers/all)
+;;;###autoload (emtt:add-explorer #'emthow:form-p #'emtt:explore-literal-clause
+;;;###autoload "Literal clause") 
 ;;;_  . emtt:explore-indexed-clause
+;;;###autoload
 (defun emtt:explore-indexed-clause (test-id props path report-f)
    ""
    (let*
@@ -119,6 +124,8 @@ This is the heart of Emtest exploration: A test itself."
 
 
 ;;;_   , Insinuate
+;;;###autoload (emtt:add-explorer #'emthow:indexed-clause-p #'emtt:explore-indexed-clause
+;;;###autoload "Indexed clause") 
 
 ;;;_. Footers
 ;;;_ , Provides

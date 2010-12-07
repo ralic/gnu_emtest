@@ -36,12 +36,12 @@
 (require 'emtest/common/testral-types)
 (require 'emtest/runner/testral)
 (require 'emtest/runner/define)
+(require 'emtest/runner/explorers/all)
 
-;;Require these for now, until we set up to insinuate the explorers
-;;from their collective autoloads file.
-(require 'emtest/runner/explorers/clause)
-(require 'emtest/runner/explorers/suite)
-(require 'emtest/runner/explorers/library)
+;;$$OBSOLETE 
+;;(require 'emtest/runner/explorers/clause)
+;;(require 'emtest/runner/explorers/suite)
+;;(require 'emtest/runner/explorers/library)
 
 ;;;_. Body
 
@@ -58,19 +58,13 @@
    ""
    (report-func () :type (satisfies #'functionp)))
 
-;;;_ , test finder
+;;;_ , Data
 
 ;;;_  . Pending list
-(defvar emt:test-finder:pending-list () 
+(defvar emtt:test-finder:pending-list () 
    "List of pending tests (etc) to explore.
 Each one must be a `emtt:explorable'" )
-;;;_  . List of explorers
-(defvar emt:test-finder:method-list 
-   '()
-   "List of explorer methods.
-This is to be appended to by files that define explorers
-Each one must be (NAME FUNCTION ARG-NAMES), where FUNCTION is a
-   function to convert it" )
+
 
 ;;;_ , Run tests
 ;;;_  . emtt:explore-one
@@ -94,6 +88,8 @@ Each one must be (NAME FUNCTION ARG-NAMES), where FUNCTION is a
 		   tests
 		   prefix))))
 
+      ;;$$IMPROVE ME condition-case this and report bad test if we
+      ;;miss.
       (emtp tp:a084136e-8f02-49a5-ac0d-9f65509cedf2
 	 (test-id)
 	 (typecase test-id
@@ -120,7 +116,7 @@ Each one must be (NAME FUNCTION ARG-NAMES), where FUNCTION is a
 		     :name "Emtest"
 		     :version emtt:version
 		     :explore-methods-supported
-		     (mapcar #'car emt:test-finder:method-list))))
+		     (mapcar #'car emtt:test-finder:method-list))))
 
 	    ;;Fallback case
 	    (t
@@ -156,14 +152,14 @@ Each one must be (NAME FUNCTION ARG-NAMES), where FUNCTION is a
    ""
    
    (let*
-      (  (emt:test-finder:pending-list ())
+      (  (emtt:test-finder:pending-list ())
 	 ;; Poor-man's closures.
 	 (report-f
 	    `(lambda (suites tests &optional prefix)
 		(when tests
 		   (callf2 append 
 		      tests
-		      emt:test-finder:pending-list))
+		      emtt:test-finder:pending-list))
 		(funcall #',report-cb
 		   (emt:testral:make-report
 		      :run-done-p nil ;;$$OBSOLESCENT
@@ -182,12 +178,12 @@ Each one must be (NAME FUNCTION ARG-NAMES), where FUNCTION is a
 	       :properties ())))
       
       ;;Loop thru the pending list.
-      (while emt:test-finder:pending-list
+      (while emtt:test-finder:pending-list
 	 ;;Careful: `pop' seems to have a problem if called in
 	 ;;something that sets the value of the list, as
 	 ;;`emtt:explore-one' sometimes did.
 	 (let
-	    ((next (pop emt:test-finder:pending-list)))
+	    ((next (pop emtt:test-finder:pending-list)))
 	    (emtt:explore-one next report-cb report-f)))
 
       ;;$$OBSOLESCENT This will be replaced by reports of how many are
