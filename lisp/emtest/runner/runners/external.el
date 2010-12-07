@@ -42,6 +42,48 @@
       ()
       
       ))
+;;;_  . Scratch area
+;;Could also use start-process-shell-command but wildcards etc seem
+;;unneeded. 
+;;Make a fresh buffer
+'
+(setq my-buf
+   (generate-new-buffer "external"))
+
+'
+(setq my-prog+args
+   '("/bin/sh" "-i"))
+
+
+'
+(setq my-proc
+   (apply #'start-process "external" my-buf my-prog+args))
+
+'
+(setq my-tq
+   (tq-create my-proc))
+
+;;Some aren't tests, just setup.
+(defvar my-56-a)
+'
+(tq-enqueue my-tq 
+    "PS1='% '\n"
+    "% "
+    56
+    #'(lambda (data answer)
+	 (setq my-56-a (list data answer)))
+   
+    t)
+
+'
+(tq-enqueue my-tq 
+   "echo hello\n"
+   "% "
+   57
+   #'(lambda (data answer)
+	(setq my-56-a (list data answer)))
+   
+          t)
 
 ;;;_. Footers
 ;;;_ , Provides

@@ -37,10 +37,12 @@
    '()
    "The normal surrounders for emtest/runner/runners/external tests" )
 ;;;_ , Script
-;;Just a script that should work for expect.  Borrowed from Greg
-;;examples.
+;;Just a script that should work for expect.  Borrowed from a Greg
+;;example.
 '(
-    '("/bin/sh" "-i")  ;;how to launch the child process.
+    ;;This is *not* freeform, `child' is a governor and we might allow
+    ;;others.
+    (child '("/bin/sh" "-i"))  ;;how to launch the child process.
 )
 
 ;
