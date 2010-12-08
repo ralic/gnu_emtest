@@ -97,6 +97,27 @@ there was any error inside a `emth:trap-errors'."
        (let
 	  ((,var emtt:*abort-p*))
 	  ,after)))
+;;;_  . emth:abortscope-other
+;;Different logic: Set VAR just if there was an error not handled by
+;;`emth:trap-errors'.  Not sure if this is better or worse.
+'''' ;;$$TEST ME
+(defmacro emth:abortscope-other (var body after)
+   "Eval BODY, which may call `emth:trap-errors'
+Then eval AFTER in a scope where VAR is bound to the boolean whether
+there was any error inside a `emth:trap-errors'."
+   
+   `(let
+       ((,var t))
+       (unwind-protect
+	  (setq  ,var
+	     (condition-case nil
+		(let
+		   ((emtt:*abort-p* nil))
+		   ,body
+		   nil)
+		('emt:already-handled nil)
+		(error t)))
+	  ,after)))
 
 
 ;;;_  . emth:trap-errors
