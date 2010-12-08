@@ -65,7 +65,11 @@
 	    aborted-p
 	    (emth:trap-errors 
 	       (eval (first data)))
-	    t))))
+	    t)))
+   ;;$$TRANSITIONAL The `when' test is just for development.
+   (when (third data)
+      (emtr:external-start-next (third data))))
+
 
 ;;;_  . emtr:external-start-next
 (defun emtr:external-start-next (data)
@@ -100,7 +104,8 @@
 	       (emtr:external-data->prompt data)
 	       (list 
 		  (emtr:interact-predata->form next) 
-		  (emtr:external-data->testral-obj data))
+		  (emtr:external-data->testral-obj data)
+		  data)
 	       #'emtr:external-cb
 	       nil)))
       
