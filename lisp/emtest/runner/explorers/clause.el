@@ -59,7 +59,7 @@
    (emtt:testral:with
       (let
 	 ( 
-	    (emtt:*abort-p* nil)
+	    ;;$$IMPROVE ME  Push more of this out to `emth:abortscope'
 	    ;;These badnesses are only for problems that manifest right
 	    ;;here, not lower down. 
 	    ;;$$RETHINK ME: Instead, be signalled to abort (that's
@@ -72,18 +72,19 @@
 		  form 
 		  (emtts:get-surrounders props)
 		  props)))
-	 ;;$$USE STANDARD
-	 ;;(emth:trap-errors (eval form-1))
-	 (condition-case err
-	    (eval form-1)
-	    (error
-	       (emtt:testral:add-note
-		  (emt:testral:make-error-raised
-		     :err err
-		     :badnesses '(ungraded)))
-	       (push
-		  'ungraded
-		  badnesses)))
+	 (emth:abortscope
+	    ;;$$USE STANDARD
+	    ;;(emth:trap-errors (eval form-1))
+	    (condition-case err
+	       (eval form-1)
+	       (error
+		  (emtt:testral:add-note
+		     (emt:testral:make-error-raised
+			:err err
+			:badnesses '(ungraded)))
+		  (push
+		     'ungraded
+		     badnesses))))
 
 	 (funcall report-f
 	    (emt:testral:make-suite
