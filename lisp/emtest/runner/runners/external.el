@@ -95,7 +95,7 @@
 			(emtr:external-start-next data))
 		   data))
 
-	    (tq-enqueue my-tq 
+	    (tq-enqueue (emtr:external-data->tq data)
 	       (emtr:interact-predata->question next)
 	       (emtr:external-data->prompt data)
 	       (list 
@@ -171,7 +171,16 @@
 	       (emt:doc "Another note")
 	       (assert (equal answer 5) t))
 	    :timeout 
+	    10)
+	 (emtr:make-interact-predata
+	    :question 
+	    "echo hello again\n"
+	    :form
+	    '(progn
+		(emt:doc "No test here"))
+	    :timeout 
 	    10))
+      
       
       :prompt "% "
       :testral-obj my-con))
@@ -184,9 +193,9 @@
 (tq-enqueue my-tq 
     "PS1='% '\n"
     "% "
-    (list nil my-con)
+    (list '(emt:doc "This note should go OK") my-con)
     #'(lambda (data answer)
-	 (emtt:testral:continued-with (first data)
+	 (emtt:testral:continued-with (second data)
 	    (emt:doc "This note should go OK")))
    
     t)
@@ -211,7 +220,7 @@ my-con
 (tq-enqueue my-tq 
    "echo hello\n"
    "% "
-   (list my-con nil)
+   (list nil my-con)
    #'emtr:external-cb
    t)
 
