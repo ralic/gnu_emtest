@@ -54,6 +54,14 @@
    form
    timeout)
 
+;;;_ , Utility
+;;;_  . emtr:external-1note
+(defun emtr:external-1note (text data)
+   ""
+   ;;$$PUNT For now, as a doc note
+   (emtt:testral:continued-with
+      (emtr:external-data->testral-obj data)
+      (emt:doc text)))
 
 ;;;_ , Support
 ;;;_  . emtr:external-cb
@@ -68,7 +76,23 @@
 	    t)))
    ;;$$TRANSITIONAL The `when' test is just for development.
    (when (third data)
+      (ignore-errors
+	 (cancel-timer
+	    (emtr:external-data->timer (third data))))
       (emtr:external-start-next (third data))))
+
+;;;_  . emtr:external-timer-cb
+(defun emtr:external-timer-cb (data question)
+   ""
+   (emtr:external-1note 
+      (concat 
+	 "An interaction failed: " 
+	 question)
+      data)
+   ;;Pop tq
+   (tq-queue-pop (emtr:external-data->tq data))
+   ;;Start another.
+   (emtr:external-start-next data))
 
 
 ;;;_  . emtr:external-start-next
@@ -81,6 +105,12 @@
 	 ((next
 	     (pop (emtr:external-data->pending data)))
 	    timer)
+	 ;;$$REPLACE WITH ME The `emtt:testral:continued-with' section
+	 ;;isn't needed for most of this.
+	 '(emtr:external-1note 
+	     (emtr:interact-predata->question next)
+	     data)
+	 
 	 (emtt:testral:continued-with 
 	    (emtr:external-data->testral-obj data)
 	    ;;Make a note of what the next thing is expected to send.
@@ -88,16 +118,12 @@
 	    (emt:doc (emtr:interact-predata->question next))
 	    (setf
 	       (emtr:external-data->timer data)
-	       ;;$$PUNT 
-	       '(run-at-time 
-		   (emtr:interact-predata->timeout next)
-		   nil
-		   #'(lambda (data)
-			;;Note a fail
-			;;Pop tq
-			;;Start another.
-			(emtr:external-start-next data))
-		   data))
+	       (run-at-time 
+		  (emtr:interact-predata->timeout next)
+		  nil
+		  #'emtr:external-timer-cb
+		  data
+		  (emtr:interact-predata->question next)))
 
 	    (tq-enqueue (emtr:external-data->tq data)
 	       (emtr:interact-predata->question next)
@@ -228,6 +254,57 @@ my-con
    (list nil my-con)
    #'emtr:external-cb
    t)
+
+'  ;;Freeze up
+(tq-enqueue my-tq 
+    "x"
+    "% "
+    (list '(emt:doc "This note should not go thru") my-con)
+   #'emtr:external-cb
+    t)
+'
+(tq-queue-pop my-tq)
+
+'
+(setq my-freezing-data
+   (emtr:make-external-data
+      :tq my-tq
+      :result-f 'no-result-f-yet
+      :timer 'no-timer-yet
+      :pending 
+      (list
+	 (emtr:make-interact-predata
+	    :question 
+	    "ec"
+	    :form
+	    '(progn
+	       (emt:doc "Another note"))
+	    :timeout 
+	    10)
+	 (emtr:make-interact-predata
+	    :question 
+	    "ho hello again\n"
+	    :form
+	    '(progn
+		(emt:doc "We got here"))
+	    :timeout 
+	    1))
+      
+      
+      :prompt "% "
+      :testral-obj my-con))
+
+'
+(emtr:external-start-next
+   my-freezing-data)
+
+'
+(run-at-time 
+   1
+   nil
+   #'emtr:external-timer-cb
+   my-freezing-data
+   "This 302 string")
 
 '
 (emtt:testral:continued-with my-con
