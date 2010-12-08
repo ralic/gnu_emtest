@@ -35,7 +35,7 @@
 ;;;_ , Declarations
 (declare (special emt:testral:*events-seen*))
 (declare (special emt:testral:*path-prefix*))
-(declare (special emt:testral:*count*))
+(declare (special emt:testral:*id-counter*))
 
 ;;;_ , TESTRAL functions
 ;;;_  . emtt:testral:with
@@ -46,15 +46,42 @@
       (
 	 ;;Counter to make unique IDs.  Although UUIDs are appealing,
 	 ;;they are slower to make.
-	 (emt:testral:*id-counter* 1)
+	 (emt:testral:*id-counter* (emtt:testral:create-counter))
 	 (emt:testral:*events-seen* (emtt:testral:create))
 	 (emt:testral:*path-prefix* ()))
        ,@body))
 
+;;;_  . Continued note-collecting
+;;;_   , emtt:testral:make-continuing
+(defun emtt:testral:make-continuing ()
+   ""
+   
+   (list (emtt:testral:create-counter) (emtt:testral:create)))
+
+
+;;;_   , emtt:testral:continued-with
+(defmacro emtt:testral:continued-with (obj &rest body)
+   ""
+   (let
+      ((obj-sym (make-symbol "obj")))
+      `(let*
+	  (
+	     (,obj-sym ,obj)
+	     (emt:testral:*id-counter*  (first ,obj-sym))
+	     (emt:testral:*events-seen* (second ,obj-sym))
+	     (emt:testral:*path-prefix* ()))
+	  ,@body)))
+
+;;;_ , Support
+;;;_  . emtt:testral:create-counter
+(defsubst emtt:testral:create-counter ()
+   "Create a TESTRAL counter - A list of 1 element"
+   (list 1))
+
 ;;;_  . emtt:testral:create
 ;;
 (defsubst emtt:testral:create ()
-   "Create a TESTRAL receiver - An list of 1 element"
+   "Create a TESTRAL receiver - A list of 1 element"
    (list '()))
 
 ;;;_  . emtt:testral:add-note
@@ -76,8 +103,8 @@ TAGS is not used yet, it controls what notes to add (For now, any note)."
 	       ;;Set the note's presentation path to w/e plus
 	       ;;`emt:testral:*parent-path*'.  Possibly by a count.
 	       ;;Name could be nil or a list, or be derived from
-	       ;;`emt:testral:*count*'.  It can't be a bare string (yet, for
-	       ;;ease of trying this out)
+	       ;;`emt:testral:*id-counter*'.  It can't be a bare
+	       ;;string (yet, for ease of trying this out)
 	 
 	       (setf (emt:testral:base->prestn-path note)
 		  (append emt:testral:*path-prefix* name))
