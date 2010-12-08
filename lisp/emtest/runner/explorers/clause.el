@@ -59,7 +59,10 @@
    (emtt:testral:with
       (let
 	 ( 
-	    (emt:trace:properties props) ;;OBSOLESCENT.
+	    ;;Still needed for emt:persist.
+	    ;;$$IMPROVE ME Encap the interface to here, possibly thru
+	    ;;emtt:testral:with. 
+	    (emt:trace:properties props) 
 	    (form-1
 	       (emts:add-surrounders 
 		  form 
@@ -73,8 +76,6 @@
 		  :contents
 		  (emtt:testral:note-list)
 		  :badnesses (if aborted-p '(ungraded) '())
-		  ;;$$WRITEME Use `emt:trace:properties' for this?  But change
-		  ;;its name?  (And watch the scoping)
 		  ;;$$RETHINK ME Maybe just use notes to capture this info.
 		  :info '()))))))
 
