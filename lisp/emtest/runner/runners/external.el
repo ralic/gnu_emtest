@@ -94,8 +94,7 @@
 			;;Start another.
 			(emtr:external-start-next data))
 		   data))
-	    
-	    '
+
 	    (tq-enqueue my-tq 
 	       (emtr:interact-predata->question next)
 	       (emtr:external-data->prompt data)
