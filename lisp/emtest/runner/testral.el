@@ -36,11 +36,36 @@
 (declare (special emt:testral:*events-seen*))
 (declare (special emt:testral:*path-prefix*))
 (declare (special emt:testral:*id-counter*))
+;;;_ , Support
+;;;_  . Counters
+;;;_   , emtt:testral:create-counter
+(defsubst emtt:testral:create-counter ()
+   "Create a TESTRAL counter"
+   (list 1))
+;;;_  . Note queues.
+;;;_   , emtt:testral:create
+(defsubst emtt:testral:create ()
+   "Create a TESTRAL receiver"
+   (list '()))
+;;;_   , emtt:testral:push-note
+(defsubst emtt:testral:push-note (note)
+   "Push a TESTRAL note"
+   (when
+      (boundp 'emt:testral:*events-seen*)
+      (push note
+	 (cdr emt:testral:*events-seen*))))
+;;;_   , emtt:testral:get-notes
 
-;;;_ , TESTRAL functions
+;;Reverse the note list so it's in the order that it was received in.
+(defsubst emtt:testral:get-notes ()
+   "Return a list of the notes received in the same order they were
+received in."
+   (nreverse (cdr emt:testral:*events-seen*)))
+
+;;;_ , Entry points primarily for Emtest itself
 ;;;_  . emtt:testral:with
 (defmacro emtt:testral:with (&rest body)
-   ""
+   "Evaluate BODY with TESTRAL facilities available"
    
    `(let
       (
@@ -54,14 +79,19 @@
 ;;;_  . Continued note-collecting
 ;;;_   , emtt:testral:make-continuing
 (defun emtt:testral:make-continuing ()
-   ""
+   "Make an object suitable for use in `emtt:testral:continued-with'."
    
    (list (emtt:testral:create-counter) (emtt:testral:create)))
 
 
 ;;;_   , emtt:testral:continued-with
 (defmacro emtt:testral:continued-with (obj &rest body)
-   ""
+   "Evaluate BODY with TESTRAL facilities available.
+OBJ should be an object made by `emtt:testral:make-continuing'.  
+This continues any previous invocations of
+`emtt:testral:continued-with' with the same OBJ argument.
+"
+
    (let
       ((obj-sym (make-symbol "obj")))
       `(let*
@@ -72,58 +102,45 @@
 	     (emt:testral:*path-prefix* ()))
 	  ,@body)))
 
-;;;_ , Support
-;;;_  . emtt:testral:create-counter
-(defsubst emtt:testral:create-counter ()
-   "Create a TESTRAL counter - A list of 1 element"
-   (list 1))
-
-;;;_  . emtt:testral:create
-;;
-(defsubst emtt:testral:create ()
-   "Create a TESTRAL receiver - A list of 1 element"
-   (list '()))
-
+;;;_ , Entry points for test code and its support
 ;;;_  . emtt:testral:add-note
-;;Must "note" be a `emt:testral:base'?
+
 (defun emtt:testral:add-note (note &optional name tags arglist)
    "Add NOTE as a TESTRAL note
 NOTE must be a type derived from `emt:testral:base'
 NAME is a list of strings.
-TAGS is not used yet, it controls what notes to add (For now, any note)."
-   (when
-      (boundp 'emt:testral:*events-seen*)
-      (push
-	 (if 
-	    (typep note 'emt:testral:base)
-	    (progn
-	       ;;Later, tags will inform a report-manager, which also checks
-	       ;;whether to add notes.
+TAGS is not used yet, it controls what notes to add (For now, any
+   note)."
+   (emtt:testral:push-note
+      (if 
+	 (typep note 'emt:testral:base)
+	 (progn
+	    ;;Later, tags will inform a report-manager, which also checks
+	    ;;whether to add notes.
 
-	       ;;Set the note's presentation path to w/e plus
-	       ;;`emt:testral:*parent-path*'.  Possibly by a count.
-	       ;;Name could be nil or a list, or be derived from
-	       ;;`emt:testral:*id-counter*'.  It can't be a bare
-	       ;;string (yet, for ease of trying this out)
+	    ;;Set the note's presentation path to w/e plus
+	    ;;`emt:testral:*parent-path*'.  Possibly by a count.
+	    ;;Name could be nil or a list, or be derived from
+	    ;;`emt:testral:*id-counter*'.  It can't be a bare
+	    ;;string (yet, for ease of trying this out)
 	 
-	       (setf (emt:testral:base->prestn-path note)
-		  (append emt:testral:*path-prefix* name))
+	    (setf (emt:testral:base->prestn-path note)
+	       (append emt:testral:*path-prefix* name))
 	 
 
-	       ;;Later, for "call" tags, arglist will be processed wrt objects
-	       ;;whose origin is known.  This used to relate to the
-	       ;;`emt:result:diag:call' type, but the design has changed.
-	       note)
+	    ;;Later, for "call" tags, arglist will be processed wrt objects
+	    ;;whose origin is known.  This used to relate to the
+	    ;;`emt:result:diag:call' type, but the design has changed.
+	    note)
 	 
-	    ;;Give an error note instead.
-	    (emt:testral:make-error-raised
-	       :err 
-	       '(error 
-		   "A non-TESTRAL object was tried to be used as note")
-	       :badnesses 
-	       '((ungraded 'error 
-		    "A non-TESTRAL object was tried to be used as note"))))
-	 (cdr emt:testral:*events-seen*))))
+	 ;;Give an error note instead.
+	 (emt:testral:make-error-raised
+	    :err 
+	    '(error 
+		"A non-TESTRAL object was tried to be used as note")
+	    :badnesses 
+	    '((ungraded 'error 
+		 "A non-TESTRAL object was tried to be used as note"))))))
 
 ;;;_  . emtt:testral:report-false
 ;;Higher level, may belong elsewhere.
@@ -139,10 +156,7 @@ TAGS is not used yet, it controls what notes to add (For now, any note)."
 (defun emtt:testral:note-list ()
    ""
    (emt:testral:make-note-list
-      :notes
-      ;;Reverse the note list so it's in the order that it
-      ;;was received in.
-      (nreverse (cdr emt:testral:*events-seen*))))
+      :notes (emtt:testral:get-notes)))
 
 ;;;_  . emtt:testral:set-object-origin
 (defun emtt:testral:set-object-origin (object origin)
