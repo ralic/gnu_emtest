@@ -59,13 +59,6 @@
    (emtt:testral:with
       (let
 	 ( 
-	    ;;$$IMPROVE ME  Push more of this out to `emth:abortscope'
-	    ;;These badnesses are only for problems that manifest right
-	    ;;here, not lower down. 
-	    ;;$$RETHINK ME: Instead, be signalled to abort (that's
-	    ;;compatible with `emth:trap-errors' and if we see
-	    ;;emtt:*abort-p*, set that badness)
-	    (badnesses '())	 
 	    (emt:trace:properties props) ;;OBSOLESCENT.
 	    (form-1
 	       (emts:add-surrounders 
@@ -73,30 +66,18 @@
 		  (emtts:get-surrounders props)
 		  props)))
 	 (emth:abortscope
-	    ;;$$USE STANDARD
-	    ;;(emth:trap-errors (eval form-1))
-	    (condition-case err
-	       (eval form-1)
-	       (error
-		  (emtt:testral:add-note
-		     (emt:testral:make-error-raised
-			:err err
-			:badnesses '(ungraded)))
-		  (push
-		     'ungraded
-		     badnesses))))
+	    aborted-p
+	    (emth:trap-errors (eval form-1))
+	    (funcall report-f
+	       (emt:testral:make-suite
+		  :contents
+		  (emtt:testral:note-list)
+		  :badnesses (if aborted-p '(ungraded) '())
+		  ;;$$WRITEME Use `emt:trace:properties' for this?  But change
+		  ;;its name?  (And watch the scoping)
+		  ;;$$RETHINK ME Maybe just use notes to capture this info.
+		  :info '()))))))
 
-	 (funcall report-f
-	    (emt:testral:make-suite
-	       :contents
-	       (emtt:testral:note-list)
-	       ;;Need to acquire this.  At least errors that we
-	       ;;handle here - which may be just overall abort.
-	       ;;See the call to `emth:trap-errors'
-	       :badnesses badnesses
-	       ;;$$WRITEME Use `emt:trace:properties' for this?  But change
-	       ;;its name?  (And watch the scoping)
-	       :info '())))))
 ;;;_ , Functions
 ;;;_  . emtt:explore-clause
 

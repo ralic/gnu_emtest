@@ -85,14 +85,19 @@
 
 ;;;_ , Error / retry management
 ;;;_  . emth:abortscope
-;;$$IMPROVE ME Parameterize on what to do if emtt:*abort-p* is non-nil
-;;when this finishes.
-(defmacro emth:abortscope (&rest body)
-   "Eval BODY in a scope where abort stops it but goes no further."
+;;$$IMPROVE ME  Encap emtt:*abort-p* in an uninterned symbol
+(defmacro emth:abortscope (var body after)
+   "Eval BODY, which may call `emth:trap-errors'
+Then eval AFTER in a scope where VAR is bound to the boolean whether
+there was any error inside a `emth:trap-errors'."
    
    `(let
        ((emtt:*abort-p* nil))
-       ,@body))
+       ,body
+       (let
+	  ((,var emtt:*abort-p*))
+	  ,after)))
+
 
 ;;;_  . emth:trap-errors
 ;;$$USE ME
