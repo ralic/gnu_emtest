@@ -55,6 +55,9 @@
 (setq my-prog+args
    '("/bin/sh" "-i"))
 
+'
+(setq my-con
+   (emtt:testral:make-continuing))
 
 '
 (setq my-proc
@@ -64,18 +67,18 @@
 (setq my-tq
    (tq-create my-proc))
 
-(defvar my-56-a)
 '
 (tq-enqueue my-tq 
     "PS1='% '\n"
     "% "
-    56
+    my-con
     #'(lambda (data answer)
-	 (setq my-56-a (list data answer)))
+	 (emtt:testral:continued-with data
+	    (emt:doc "This note should go OK")))
    
     t)
 '
-my-56-a
+my-con
 
 '
 (tq-enqueue my-tq 
