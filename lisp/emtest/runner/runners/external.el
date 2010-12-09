@@ -116,6 +116,7 @@
 	    ;;Make a note of what the next thing is expected to send.
 	    ;;$$PUNT For now, as a doc note.
 	    (emt:doc (emtr:interact-predata->question next))
+	    ;;$$ENCAP ME.
 	    (setf
 	       (emtr:external-data->timer data)
 	       (run-at-time 
@@ -136,19 +137,37 @@
 	       nil)))
       
       ;;Untested
-      '(progn
-	  ;;Otherwise report results
-	  (funcall report-f
-	     (emt:testral:make-suite
-		:contents
-		(emtt:testral:continued-with 
-		   (emtr:external-data->testral-obj data)
-		   (emtt:testral:get-notes))
-		:badnesses '()
-		:info '()))
-	  ;;, close tq, and we're done.
-	  (tq-close (emtr:external-data->tq data)))))
+      (progn
+	 ;;Otherwise report results
+	 (funcall report-f
+	    (emt:testral:make-suite
+	       :contents
+	       (emtt:testral:continued-with 
+		  (emtr:external-data->testral-obj data)
+		  (emtt:testral:get-notes))
+	       :badnesses '()
+	       :info '()))
+	 ;;, close tq, and we're done.
+	 (tq-close (emtr:external-data->tq data)))))
 
+;;;_  . emtr:external-form->predata Form to predata
+(defun emtr:external-form->predata (form)
+   "Make a `emtr:interact-predata' from FORM."
+   (declare (special timeout))
+   (case (car form)
+      ((t)
+	 (emtr:make-interact-predata
+	    :question (second form)
+	    :form (cddr form)
+	    ;;$$PUNT Take a timeout nicely.
+	    :timeout timeout))
+      ;;It will complain about the unknown governor when it's run.
+      (t
+	 (emtr:make-interact-predata
+	    :question ""
+	    ;;$$PUNT  Show what the governor is.
+	    :form     '(emt:doc "unknown governor")
+	    :timeout 0.0000001))))
 
 
 ;;;_ , Entry points (for clause explorer)
@@ -156,11 +175,64 @@
 (defun emtr:external (props form report-f)
    "Run a test-case on external program and report the result."
 
-   ;;$$PUNT for now
-   (let*
-      ()
+   ;;Testpoint to check what we receive.
+   (emtp tp:96304f8f-2edc-4ac9-8ecb-9c6ad9ce0415
+      (form)
+
+      (let*
+	 (  (form-parms (car form))
+	    (exec+args
+	       (second (assq 'exec+args form-parms)))
+	    (prompt
+	       (second (assq 'prompt    form-parms)))
+	    (shell
+	       (second (assq 'shell     form-parms)))
+	    (timeout
+	       (or
+		  (second (assq 'timeout   form-parms))
+		  30)))
       
-      ))
+	 (if
+	    (or
+	       (null exec+args)
+	       (null prompt))
+	    ;;Report bad test and why
+	    (funcall report-f
+	       (emt:testral:make-suite
+		  :contents '() ;;$$PUNT:  No notes yet
+		  :badnesses '(ungraded)
+		  :info '()))
+	    ;;Do test
+	    (let* 
+	       ((con
+		   (emtt:testral:make-continuing))
+		  (proc
+		     (apply 
+			(if shell
+			   #'start-process
+			   #'start-process-shell-command)
+			 "external" nil exec+args))
+		  (tq
+		     (tq-create proc))
+		  (pending
+		     (mapcar
+			#'emtr:external-form->predata
+			(cdr form)))
+		  (data
+		     (emtr:make-external-data
+			:tq tq
+			:result-f result-f
+			;;Timer is not set now, it will be set when we
+			;;start
+			:timer nil 
+			:pending pending
+			:prompt prompt
+			:testral-obj con)))
+
+	       ;;Start it all.
+	       (emtr:external-start-next data))))))
+
+
 ;;;_  . Scratch area
 ;;Could also use start-process-shell-command but wildcards etc seem
 ;;unneeded. 
