@@ -36,6 +36,26 @@
 (defconst emtest/runner/runners/external:th:surrounders 
    '()
    "The normal surrounders for emtest/runner/runners/external tests" )
+;;;_ , emtr:external
+(emt:deftest-3
+   ((of 'emtr:external))
+   (external ;;The governor.
+      ;;The parameters
+      ((exec+args '("/bin/sh" "-i"))
+	 (shell nil)
+	 (prompt "% ")
+	 (timeout 10))
+
+      ;;The interactions.  In each, `t' is the governor.
+      ;;Nil cdr = no test
+      (t "PS1='% '\n")
+      ;;If there's a cdr, it's the form.
+      (t "echo hello\n"
+	 (emt:doc "A simple test")
+	 (assert 
+	    (equal answer "hello\r\n")
+	    t))))
+
 ;;;_ , Script
 ;;Just a script that should work for expect.  Borrowed from a Greg
 ;;example.
@@ -43,7 +63,27 @@
     ;;This is *not* freeform, `child' is a governor and we might allow
     ;;others.
     (child '("/bin/sh" "-i"))  ;;how to launch the child process.
+    ((prompt
+	
+	))
 )
+
+'(external ;;The governor.
+    ;;The parameters
+    ((exec+args '("/bin/sh" "-i"))
+       (shell nil)
+       (prompt "% ")
+       (timeout 10))
+
+    ;;The interactions.  In each, `t' is the governor.
+    ;;Nil cdr = no test
+    (t "PS1='% '\n")
+    ;;If there's a cdr, it's the form.
+    (t "echo hello\n"
+       (emt:doc "A simple test")
+       (assert 
+	  (equal answer "hello\r\n")
+	  t)))
 
 ;
 ; Run an interactive shell as a child process
@@ -68,6 +108,16 @@
     )
   )
 )
+;;;_ , To meta-test
+;;Receive and test that fail/no fail was found, and no other badnesses.
+;;Check the notes in the order they come in.
+
+;;Use emtt:th:explore-one with the bare form and the callback of
+;;interest.  Top testhelp doesn't provide such a one, but summarize
+;;may.  In fact, 'emtest/viewer/emviewer/testhelp' provides something,
+;;but just `emtve:ts:run-test:callback' to check that results are the
+;;right type.  Similarly `emtest/viewer/emviewer2/testhelp'.  We'd
+;;want to summarize them and check the summary.
 
 ;;;_. Footers
 ;;;_ , Provides
