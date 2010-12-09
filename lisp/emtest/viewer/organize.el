@@ -91,12 +91,15 @@ It just tells a pathtree to add this node."
    (emtvp:freshen emtvo:pathtree))
 
 ;;;_ , Command entry points
+;;;_  . emtv2:tests-outstanding hollow. 
+(defvar emtv2:tests-outstanding)
 ;;;_  . emtvo:reset
 ;;;###autoload
 (defun emtvo:reset ()
    ""
    
    (interactive)
+   (setq emtv2:tests-outstanding 0)
    (setq emtvo:pathtree nil)
    (setq emtvo:receiver nil))
 

@@ -123,6 +123,10 @@
 	 (outline-mode))))
 
 ;;;_ , Overall callback
+;;;_  . emtv2:tests-outstanding
+(defvar emtv2:tests-outstanding 0 
+   "Number of tests currently enqueued that we haven't received
+   reports from." )
 ;;;_  . emtv2:tester-cb
 
 (defun emtv2:tester-cb (report)
@@ -130,8 +134,16 @@
    (check-type report emt:testral:report)
    (emtv2:setup-if-needed)
    (emtvo:receive report)
+   (incf emtv2:tests-outstanding
+      (-
+	 (emt:testral:report->newly-pending report)
+	 (length
+	    (emt:testral:report->suites report))))
+   
    (when
-      (emt:testral:report->run-done-p report)
+      (or
+	 (emt:testral:report->run-done-p report)
+	 (equal emtv2:tests-outstanding 0))
       (emtv2:print-all (emtvo:get-root))
       (pop-to-buffer emtv2:report-buffer)))
 

@@ -155,8 +155,9 @@
 	    (:conc-name emt:testral:report->))
   "A report sent by test-runner to viewer"
   (testrun-id     () :type emt:testral:testrun-id)
-  (tester-id      () :type emt:testral:tester-id)
-  (run-done-p     () :type bool)
+  (tester-id      () :type emt:testral:tester-id)  ;;$$OBSOLESCENT
+  (run-done-p     () :type bool)  ;;$$OBSOLESCENT
+  (newly-pending  () :type integer)
   ;;This is really visible-path prefix.
   (test-id-prefix () :type emt:testral:prefix-suite-id)
   (suites () :type 

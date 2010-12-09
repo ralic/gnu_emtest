@@ -170,6 +170,7 @@ Each one must be a `emtt:explorable'" )
 		(funcall #',report-cb
 		   (emt:testral:make-report
 		      :run-done-p nil ;;$$OBSOLESCENT
+		      :newly-pending (length tests)
 		      :testrun-id ,testrun-id
 		      :tester-id "" ;;$$OBSOLESCENT
 		      :test-id-prefix prefix
