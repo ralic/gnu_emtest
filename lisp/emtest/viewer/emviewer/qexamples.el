@@ -84,6 +84,7 @@
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
 ;;;_  + mode: allout
+;;;_  + no-byte-compile: t
 ;;;_  + End:
 
 ;;;_ , End
