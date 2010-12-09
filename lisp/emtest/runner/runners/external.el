@@ -29,7 +29,14 @@
 
 ;;;_ , Requires
 
-
+(require 'tq)
+(require 'emtest/common/testral-types)
+(require 'emtest/testhelp/standard)
+(require 'emtest/runner/testral)
+(progn
+   (eval-when-compile
+      (require 'emtest/testhelp/testpoint/requirer))
+   (emtp:require))
 
 ;;;_. Body
 ;;;_ , Structures
@@ -40,7 +47,7 @@
 	      (:constructor emtr:make-external-data))
    "Data telling us how to run the interaction sequence"
    tq
-   result-f
+   report-f
    timer
    pending
    prompt
@@ -209,8 +216,8 @@
 		  (proc
 		     (apply 
 			(if shell
-			   #'start-process
-			   #'start-process-shell-command)
+			   #'start-process-shell-command
+			   #'start-process)
 			 "external" nil exec+args))
 		  (tq
 		     (tq-create proc))
@@ -221,7 +228,7 @@
 		  (data
 		     (emtr:make-external-data
 			:tq tq
-			:result-f result-f
+			:report-f report-f
 			;;Timer is not set now, it will be set when we
 			;;start
 			:timer nil 
@@ -231,7 +238,6 @@
 
 	       ;;Start it all.
 	       (emtr:external-start-next data))))))
-
 
 ;;;_  . Scratch area
 ;;Could also use start-process-shell-command but wildcards etc seem
@@ -262,7 +268,7 @@
 (setq my-data
    (emtr:make-external-data
       :tq my-tq
-      :result-f 'no-result-f-yet
+      :report-f 'no-report-f-yet
       :timer 'no-timer-yet
       :pending 
       (list
@@ -341,7 +347,7 @@ my-con
 (setq my-freezing-data
    (emtr:make-external-data
       :tq my-tq
-      :result-f 'no-result-f-yet
+      :report-f 'no-report-f-yet
       :timer 'no-timer-yet
       :pending 
       (list
@@ -385,6 +391,7 @@ my-con
 ;;Cleanup: 
 '
 (tq-close my-tq)
+
 
 ;;;_. Footers
 ;;;_ , Provides
