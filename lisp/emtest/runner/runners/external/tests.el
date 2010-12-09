@@ -39,6 +39,8 @@
 ;;;_ , emtr:external
 (emt:deftest-3
    ((of 'emtr:external))
+   ;;A simple test, which should just pass.
+
    (external ;;The governor.
       ;;The parameters
       ((exec+args ("/bin/sh" "-i"))

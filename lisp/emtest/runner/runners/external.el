@@ -143,19 +143,19 @@
 	       #'emtr:external-cb
 	       nil)))
       
-      ;;Untested
+      ;;Otherwise report results
       (progn
-	 ;;Otherwise report results
-	 (funcall report-f
+	 (funcall (emtr:external-data->report-f data)
 	    (emt:testral:make-suite
 	       :contents
 	       (emtt:testral:continued-with 
 		  (emtr:external-data->testral-obj data)
-		  (emtt:testral:get-notes))
+		  (emtt:testral:note-list))
 	       :badnesses '()
 	       :info '()))
 	 ;;, close tq, and we're done.
 	 (tq-close (emtr:external-data->tq data)))))
+
 
 ;;;_  . emtr:external-form->predata Form to predata
 (defun emtr:external-form->predata (form)
@@ -177,7 +177,7 @@
 	    :timeout 0.0000001))))
 
 
-;;;_ , Entry points (for clause explorer)
+;;;_ , Entry point (for clause explorer)
 ;;;_  . emtr:external
 (defun emtr:external (props form report-f)
    "Run a test-case on external program and report the result."
@@ -238,159 +238,6 @@
 
 	       ;;Start it all.
 	       (emtr:external-start-next data))))))
-
-;;;_  . Scratch area
-;;Could also use start-process-shell-command but wildcards etc seem
-;;unneeded. 
-;;Make a fresh buffer
-'
-(setq my-buf nil
-   ;(generate-new-buffer "external")
-   )
-
-'
-(setq my-prog+args
-   '("/bin/sh" "-i"))
-
-'
-(setq my-con
-   (emtt:testral:make-continuing))
-
-'
-(setq my-proc
-   (apply #'start-process "external" my-buf my-prog+args))
-
-'
-(setq my-tq
-   (tq-create my-proc))
-
-'
-(setq my-data
-   (emtr:make-external-data
-      :tq my-tq
-      :report-f 'no-report-f-yet
-      :timer 'no-timer-yet
-      :pending 
-      (list
-	 (emtr:make-interact-predata
-	    :question 
-	    "echo hello\n"
-	    :form
-	    '(progn
-	       (emt:doc "Another note")
-	       (assert (equal answer 5) t))
-	    :timeout 
-	    10)
-	 (emtr:make-interact-predata
-	    :question 
-	    "echo hello again\n"
-	    :form
-	    '(progn
-		(emt:doc "No test here"))
-	    :timeout 
-	    10))
-      
-      
-      :prompt "% "
-      :testral-obj my-con))
-
-'
-(emtr:external-start-next
-   my-data)
-
-'
-(tq-enqueue my-tq 
-    "PS1='% '\n"
-    "% "
-    (list '(emt:doc "This note should go OK") my-con)
-    #'(lambda (data answer)
-	 (emtt:testral:continued-with (second data)
-	    (emt:doc "This note should go OK")))
-   
-    t)
-'
-my-con
-
-'
-(tq-enqueue my-tq 
-   "echo hello\n"
-   "% "
-   (list 
-      '(progn
-	  (emt:doc "Another note")
-	  (assert (equal answer 5) t))
-      my-con )
-   #'emtr:external-cb
-   t)
-'
-my-con
-
-' ;;No test.
-(tq-enqueue my-tq 
-   "echo hello\n"
-   "% "
-   (list nil my-con)
-   #'emtr:external-cb
-   t)
-
-'  ;;Freeze up
-(tq-enqueue my-tq 
-    "x"
-    "% "
-    (list '(emt:doc "This note should not go thru") my-con)
-   #'emtr:external-cb
-    t)
-'
-(tq-queue-pop my-tq)
-
-'
-(setq my-freezing-data
-   (emtr:make-external-data
-      :tq my-tq
-      :report-f 'no-report-f-yet
-      :timer 'no-timer-yet
-      :pending 
-      (list
-	 (emtr:make-interact-predata
-	    :question 
-	    "ec"
-	    :form
-	    '(progn
-	       (emt:doc "Another note"))
-	    :timeout 
-	    10)
-	 (emtr:make-interact-predata
-	    :question 
-	    "ho hello again\n"
-	    :form
-	    '(progn
-		(emt:doc "We got here"))
-	    :timeout 
-	    1))
-      
-      
-      :prompt "% "
-      :testral-obj my-con))
-
-'
-(emtr:external-start-next
-   my-freezing-data)
-
-'
-(run-at-time 
-   1
-   nil
-   #'emtr:external-timer-cb
-   my-freezing-data
-   "This 302 string")
-
-'
-(emtt:testral:continued-with my-con
-    (emtt:testral:get-notes))
-
-;;Cleanup: 
-'
-(tq-close my-tq)
 
 
 ;;;_. Footers
