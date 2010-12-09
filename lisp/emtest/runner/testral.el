@@ -111,50 +111,55 @@ NOTE must be a type derived from `emt:testral:base'
 NAME is a list of strings.
 TAGS is not used yet, it controls what notes to add (For now, any
    note)."
-   (emtt:testral:push-note
-      (if 
-	 (typep note 'emt:testral:base)
-	 (progn
-	    ;;Later, tags will inform a report-manager, which also checks
-	    ;;whether to add notes.
+   (when (boundp 'emt:testral:*events-seen*)
+      (emtt:testral:push-note
+	 (if 
+	    (typep note 'emt:testral:base)
+	    (progn
+	       ;;Later, tags will inform a report-manager, which also checks
+	       ;;whether to add notes.
 
-	    ;;Set the note's presentation path to w/e plus
-	    ;;`emt:testral:*parent-path*'.  Possibly by a count.
-	    ;;Name could be nil or a list, or be derived from
-	    ;;`emt:testral:*id-counter*'.  It can't be a bare
-	    ;;string (yet, for ease of trying this out)
+	       ;;Set the note's presentation path to w/e plus
+	       ;;`emt:testral:*parent-path*'.  Possibly by a count.
+	       ;;Name could be nil or a list, or be derived from
+	       ;;`emt:testral:*id-counter*'.  It can't be a bare
+	       ;;string (yet, for ease of trying this out)
 	 
-	    (setf (emt:testral:base->prestn-path note)
-	       (append emt:testral:*path-prefix* name))
+	       (setf (emt:testral:base->prestn-path note)
+		  (append emt:testral:*path-prefix* name))
 	 
 
-	    ;;Later, for "call" tags, arglist will be processed wrt objects
-	    ;;whose origin is known.  This used to relate to the
-	    ;;`emt:result:diag:call' type, but the design has changed.
-	    note)
+	       ;;Later, for "call" tags, arglist will be processed wrt objects
+	       ;;whose origin is known.  This used to relate to the
+	       ;;`emt:result:diag:call' type, but the design has changed.
+	       note)
 	 
-	 ;;Give an error note instead.
-	 (emt:testral:make-error-raised
-	    :err 
-	    '(error 
-		"A non-TESTRAL object was tried to be used as note")
-	    :badnesses 
-	    '((ungraded 'error 
-		 "A non-TESTRAL object was tried to be used as note"))))))
+	    ;;Give an error note instead.
+	    (emt:testral:make-error-raised
+	       :err 
+	       '(error 
+		   "A non-TESTRAL object was tried to be used as note")
+	       :badnesses 
+	       '((ungraded 'error 
+		    "A non-TESTRAL object was tried to be used as note")))))))
 
 ;;;_  . emtt:testral:report-false
 ;;Higher level, may belong elsewhere.
 (defun emtt:testral:report-false (prestn-prefix str)
    "Report that a compare leaf was false"
    ;;For now, we just use a `doc' note.
-   (emtt:testral:add-note
-      (emt:testral:make-doc :str str)
-      prestn-prefix))
+   (when (boundp 'emt:testral:*events-seen*)
+      (emtt:testral:add-note
+	 (emt:testral:make-doc :str str)
+	 prestn-prefix)))
 
 
 ;;;_  . emtt:testral:note-list
 (defun emtt:testral:note-list ()
    ""
+   (unless 
+      (boundp 'emt:testral:*events-seen*)
+      (error "Not in a TESTRAL collection scope"))
    (emt:testral:make-note-list
       :notes (emtt:testral:get-notes)))
 
