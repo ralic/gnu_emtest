@@ -312,12 +312,10 @@
 	 ((type presentation-path))
 	 (item
 	    ((what-test test-1))
-	    (cons "0"
-	       (emtg (type presentation-name)(what-test test-1))))
+	    (emtg (type presentation-name)(what-test test-1)))
 	 (item
 	    ((what-test test-2))
-	    (cons "0"
-	       (emtg (type presentation-name)(what-test test-2)))))
+	    (emtg (type presentation-name)(what-test test-2))))
 
       (group
 	 ;; Test-runner info
@@ -429,6 +427,7 @@
 	       :testrun-id (emtg (type testrun-id)(role original-add))
 	       :tester-id "0"
 	       :test-id-prefix ()
+	       :newly-pending 0
 	       :suites (list)))
 
 	 ;;Just-test-runner report
@@ -438,6 +437,7 @@
 	       :testrun-id (emtg (type testrun-id)(role original-add))
 	       :tester-id "0"
 	       :test-id-prefix ()
+	       :newly-pending 0
 	       :suites (list
 			  (list 
 			     (emtg (type explorable)(name just-test-runner))
@@ -453,6 +453,7 @@
 	       :testrun-id (emtg (type testrun-id)(role original-add))
 	       :tester-id "0"
 	       :test-id-prefix ()
+	       :newly-pending 0
 	       :suites (list
 			  (list 
 			     (emtg (type explorable)(what-test test-1))
@@ -468,6 +469,7 @@
 	       :testrun-id (emtg (type testrun-id)(role replace))
 	       :tester-id "0" 
 	       :test-id-prefix ()
+	       :newly-pending 0
 	       :suites (list
 			  (list
 			     (emtg (type explorable)(what-test test-1))
@@ -483,6 +485,7 @@
 	       :testrun-id (emtg (type testrun-id)(role remove-previous))
 	       :tester-id "0" 
 	       :test-id-prefix ()
+	       :newly-pending 0
 	       :suites (list
 			  (list
 			     (emtg (type explorable)(what-test test-1))
@@ -499,6 +502,7 @@
 	       :testrun-id (emtg (type testrun-id)(role original-add))
 	       :tester-id "0"
 	       :test-id-prefix ()
+	       :newly-pending 0
 	       :suites (list
 			  (list 
 			     (emtg (type explorable)(what-test test-2))

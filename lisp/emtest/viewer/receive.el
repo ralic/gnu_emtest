@@ -65,9 +65,7 @@
       (  (testrun-id 
 	    (emt:testral:report->testrun-id report))
 	 (prefix 
-	    (append
-	       (list (emt:testral:report->tester-id report))
-	       (emt:testral:report->test-id-prefix report))))
+	    (emt:testral:report->test-id-prefix report)))
       
       ;;For each suite in the report, 
       (dolist (entry (emt:testral:report->suites report))
