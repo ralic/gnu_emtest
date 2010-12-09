@@ -196,6 +196,7 @@ Each one must be a `emtt:explorable'" )
 
       ;;$$OBSOLESCENT This will be replaced by reports of how many are
       ;;enqueued. 
+      '
       (funcall report-cb
 	 (emt:testral:make-report
 	    :run-done-p t
