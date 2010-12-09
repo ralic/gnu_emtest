@@ -160,15 +160,13 @@ DATA-LIST must be a list of alists."
 	 (emt:view:TESTRAL-unexpanded
 	    '("Unexpanded TESTRAL data"))
 
-	 ;;$$FIX WHAT MAKES ME This case shouldn't happen.
+	 ;;The top node, being the root of pathtree, will be this base
+	 ;;top and not a emt:view:presentable.
 	 (emtvp:node
 	    (let
 	       ((ch-data-list
 		   (loal:acons 'hdln-path '() data-list)))
-	       (append
-		  "[Allowed for now]"
-		  "\n"
-		  (hiformat:map 
+	       (hiformat:map 
 		     ;;Formatting for each child
 		     #'(lambda (obj data &rest d)
 			  (list
@@ -178,7 +176,7 @@ DATA-LIST must be a list of alists."
 		     children
 		     :separator '("\n")
 		     :data-loal data-list)))
-	    )
+	 
 	 ;;$$REPLACE MY WHOLE IDEA This could be a type for
 	 ;;tester-info instead.
 	 ;;Base type, for blank nodes.  
