@@ -99,7 +99,7 @@ HOW must be of a subtype of emthow"
 (defun emtt:explore-fallback (test-id props path report-f)
    "Report that no matching explore method could be found."
 
-   (funcall local-report-f
+   (funcall report-f
       (emt:testral:make-suite
 	 :contents 
 	 (emt:testral:make-note-list
