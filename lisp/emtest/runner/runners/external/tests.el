@@ -55,61 +55,9 @@
       (t "echo hello\n"
 	 (emt:doc "A simple test")
 	 (assert 
-	    (equal answer "hello\r\n")
+	    (equal answer "hello\r\n% ")
 	    t))))
 
-;;;_ , Script
-;;Just a script that should work for expect.  Borrowed from a Greg
-;;example.
-'(
-    ;;This is *not* freeform, `child' is a governor and we might allow
-    ;;others.
-    (child '("/bin/sh" "-i"))  ;;how to launch the child process.
-    ((prompt
-	
-	))
-)
-
-'(external ;;The governor.
-    ;;The parameters
-    ((exec+args '("/bin/sh" "-i"))
-       (shell nil)
-       (prompt "% ")
-       (timeout 10))
-
-    ;;The interactions.  In each, `t' is the governor.
-    ;;Nil cdr = no test
-    (t "PS1='% '\n")
-    ;;If there's a cdr, it's the form.
-    (t "echo hello\n"
-       (emt:doc "A simple test")
-       (assert 
-	  (equal answer "hello\r\n")
-	  t)))
-
-;
-; Run an interactive shell as a child process
-;
-'(greg-child "/bin/sh" "-i")
-
-;
-; Set the shell prompt
-;
-'(greg-send "PS1='% '\n")   
-
-;
-; Now test that the shell echoes what we expect.
-; If we have a timeout or an eof, we will get a failure result.
-;
-'
-(greg-testcase "echo 'hello'" #t
-  (lambda ()
-    (greg-send "echo hello\n")  ; Get it to send us something
-    (expect-strings
-      ("hello\r\n% " #t)
-    )
-  )
-)
 ;;;_ , To meta-test
 ;;Receive and test that fail/no fail was found, and no other badnesses.
 ;;Check the notes in the order they come in.
