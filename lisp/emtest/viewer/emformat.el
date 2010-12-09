@@ -277,8 +277,11 @@ DATA-LIST must be a list of alists."
    (let*
       ()
       (if obj
-	 ;;Punt for now.
-	 '("Something failed""\n")
+	 (list
+	    (if (memq 'ungraded obj) "Some bad testage"   '())
+	    (if (memq 'fail obj)     "Some failures"      '())
+	    (if (memq 'dormant obj)  "Some dormant tests" '()))
+
 	 '("All OK""\n"))))
 
 
