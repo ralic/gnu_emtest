@@ -165,7 +165,10 @@
       ((t)
 	 (emtr:make-interact-predata
 	    :question (second form)
-	    :form (cddr form)
+	    :form 
+	    (let* 
+	       ((forms (cddr form)))
+	       (if forms `(progn ,@forms) nil))
 	    ;;$$PUNT Take a timeout nicely.
 	    :timeout timeout))
       ;;It will complain about the unknown governor when it's run.
