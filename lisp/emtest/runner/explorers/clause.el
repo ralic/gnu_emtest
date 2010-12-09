@@ -85,11 +85,12 @@
 (defun emtt:explore-clause (clause props report-f)
    "Explore one clause in Emtest.
 This is the heart of Emtest exploration: A test itself."
-   (emtd:destructure-clause-3 clause
-      (case governor
-	 (quote (emtr:quoted props form report-f))
-	 ((nil) (emtr:vanilla props form report-f))
-	 (external (emtr:external props form report-f))
+   (let
+      ((rest (emtd:clause->form clause)))
+      (case (emtd:clause->governor clause)
+	 (quote (emtr:quoted props rest report-f))
+	 ((nil) (emtr:vanilla props (car rest) report-f))
+	 (external (emtr:external props rest report-f))
 	 (t
 	    (funcall report-f
 	       (emt:testral:make-suite

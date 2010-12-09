@@ -81,9 +81,10 @@
 		     (length clause-list)
 		     1)
 		  t)
-	       (emtd:destructure-clause-3
-		  (car clause-list)
-		  (equal form
+	       (let*
+		  ((clause (car clause-list)))
+		  (equal 
+		     (car (emtd:clause->form clause)) 
 		     '(progn 12)))
 	       t))))
    (nil

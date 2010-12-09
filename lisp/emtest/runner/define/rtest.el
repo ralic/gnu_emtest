@@ -67,9 +67,11 @@ Response: Destructuring finds the expected clauses."
 	 (emtd:destructure-suite-3 'dummy-sym
 	    (assert
 	       (= (length clause-list) 1) t)
-	    (emtd:destructure-clause-3
-	       (car clause-list)
-	       (equal form '(progn 12)))
+	    (let*
+	       ((clause (car clause-list)))
+	       (equal 
+		  (car (emtd:clause->form clause)) 
+		  '(progn 12)))
 	    t)))
 
    (  "Situation: A test is defined with properties
