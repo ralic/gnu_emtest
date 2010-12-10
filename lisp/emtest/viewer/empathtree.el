@@ -38,7 +38,10 @@
 ;;;_ , Handling badnesses
 ;;;_  . emtvr:combine-badnesses
 (defsubst emtvr:combine-badnesses (bads)
-   (reduce #'union bads))
+   (reduce
+      #'(lambda (a b)
+	   (union a b))
+      bads))
 
 ;;;_  . emtvr:notelist-raw-badnesses
 (defun emtvr:notelist-raw-badnesses (note-list)
