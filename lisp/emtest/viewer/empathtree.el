@@ -42,11 +42,10 @@
    (let
       ((cell (assq key (cdr summary))))
       (if cell (cdr cell) 0)))
-;;(emtvr:count-1-badness 'ungraded '(summary (ungraded . 5)))
 
 
 ;;;_  . emtvr:combine-badnesses
-(defsubst emtvr:combine-badnesses (bads)
+(defun emtvr:combine-badnesses (bads)
    (let* 
       (  (pass     0)
 	 (fail     0)
@@ -69,7 +68,6 @@
 	  (ungraded . ,ungraded)
 	  (dormant  . ,dormant)))))
 
-;;(emtvr:combine-badnesses '((summary (ungraded . 5))))
 
 ;;;_  . emtvr:notelist-raw-badnesses
 (defun emtvr:notelist-raw-badnesses (note-list)
@@ -94,7 +92,10 @@ could be, such as when a note-list hasn't been expanded."
 	       (null) 
 	       (emt:testral:suite
 		  (let
-		     ((own-badnesses (emt:testral:suite->badnesses s)))
+		     ((own-badnesses 
+			 (or
+			    (emt:testral:suite->badnesses s)
+			    '((pass)))))
 		  (if
 		     (emtvp:node->children node)
 		     own-badnesses

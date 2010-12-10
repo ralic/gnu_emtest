@@ -56,7 +56,17 @@
 			(emtg:value+
 			   `((type suite-own+notes-badness-list)
 			       (name ,result-name))))
-		     t)))))))
+		     nil
+		     "Original %s\nExpected %s\nSummed %s"
+		     (emtg:value+
+			`((type emtvr:alist-item) ,@role&test-tags))
+		     (emtg:value+
+			`((type suite-own+notes-badness-list)
+			    (name ,result-name)))
+		     (emtvr:get-subtree-badnesses
+			   (emtg:value+
+			      `((type emtvr:alist-item) ,@role&test-tags)))
+		     )))))))
 
 ;;;_ , emtvr:combine-badnesses
 ;;$$WRITE MY EXAMPLES
@@ -84,6 +94,11 @@
 		     t)))))))
 
 
+;;(emtvr:count-1-badness 'ungraded '(summary (ungraded . 5)))
+
+;;(emtvr:combine-badnesses '((summary (ungraded . 5))(summary (ungraded . 5))))
+;;(emtvr:combine-badnesses '((summary (ungraded . 5))))
+;;(emtvr:combine-badnesses '((dormant "Reason")))
 
 
 ;;;_. Footers

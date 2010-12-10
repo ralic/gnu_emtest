@@ -176,19 +176,19 @@
 	 (type-must-be () (repeat emt:result-badness))
 	 (item
 	    ((name test-bad))
-	    '(ungraded))
+	    '((summary (pass . 0) (fail . 0) (ungraded . 1) (dormant . 0))))
       
 	 (item
 	    ((name test-passes))
-	    '())
+	    '((summary (pass . 1) (fail . 0) (ungraded . 0) (dormant . 0))))
       
 	 (item
 	    ((name has-children-1))
-	    '(ungraded))
+	    '((summary (pass . 0) (fail . 0) (ungraded . 1) (dormant . 0))))
 
 	 (item
 	    ((name gone))
-	    (emtg (type suite-own-badness-list)(name gone))))
+	    '((summary (pass . 0) (fail . 0) (ungraded . 1) (dormant . 0)))))
 
 ;;       (group
 ;; 	 ;;$$RETHINK ME  Suites should only have own badnesses
