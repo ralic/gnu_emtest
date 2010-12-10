@@ -121,23 +121,14 @@
 	       ;;such method.
 	       (funcall local-report-f
 		  (emt:testral:make-suite
-		     :contents 
-		     (emt:testral:make-note-list
-			:notes 
-			(list
-			   (emt:testral:make-error-raised
-			      :err 
-			      '(error 
-				  "Unrecognized internal explore type")
-			      :badnesses 
-			      '((ungraded 'error 
-				   "Unrecognized internal explore type"))
-			      )))
+		     :contents nil
 		     ;;Actual form is TBD.
 		     :badnesses 
-		     '((ungraded 'error 
-			  "Unrecognized internal explore type"))
-		     ;;Punt info for now.
+		     (list
+			(emt:testral:make-grade:ungraded
+			   :contents
+			   "Unrecognized internal explore type"))
+		     ;;$$OBSOLESCENT
 		     :info '())))))))
 
 ;;;_  . emtt:test-finder:top

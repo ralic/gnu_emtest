@@ -278,7 +278,7 @@ DATA-LIST must be a list of alists."
 	    (if (member* nil obj :test 
 		   #'(lambda (dummy o)
 			(emt:testral:grade-p o)))
-	       "More dormant tests"
+	       "A new mark"
 	       '())
 	    
 	    (if (memq 'ungraded obj) "Some bad testage"   '())

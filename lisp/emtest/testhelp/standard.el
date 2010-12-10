@@ -137,7 +137,11 @@ there was any error inside a `emth:trap-errors'."
 	     (emtt:testral:add-note
 		(emt:testral:make-error-raised
 		   :err err
-		   :badnesses '(ungraded)))
+		   :badnesses 
+		   (list
+		      (emt:testral:make-grade:ungraded
+			 :contents 
+			 "An error escaped to `emth:trap-errors'"))))
 	     (setq emtt:*abort-p* t)))))
 
 

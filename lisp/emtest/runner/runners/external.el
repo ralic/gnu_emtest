@@ -210,7 +210,12 @@
 	    (funcall report-f
 	       (emt:testral:make-suite
 		  :contents '() ;;$$PUNT:  No notes yet
-		  :badnesses '(ungraded)
+		  :badnesses 
+		  (list
+		     (emt:testral:make-grade:ungraded
+			:contents
+			(list
+			   "emtr:external: no exec+args or no prompt")))
 		  :info '()))
 	    ;;Do test
 	    (let* 

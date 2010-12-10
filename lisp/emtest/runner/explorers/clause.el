@@ -75,7 +75,13 @@
 	       (emt:testral:make-suite
 		  :contents
 		  (emtt:testral:note-list)
-		  :badnesses (if aborted-p '(ungraded) '())
+		  :badnesses 
+		  (if aborted-p 
+		     (list
+			(emt:testral:make-grade:ungraded
+			   :contents
+			   "Evaluation aborted")) 
+		     '())
 		  ;;$$RETHINK ME Maybe just use notes to capture this info.
 		  :info '()))))))
 
@@ -95,7 +101,15 @@ This is the heart of Emtest exploration: A test itself."
 	    (funcall report-f
 	       (emt:testral:make-suite
 		  :contents '()
-		  :badnesses '(ungraded)
+		  :badnesses
+		  (list
+		     (emt:testral:make-grade:ungraded
+			:contents
+			(list
+			   "emtt:explore-clause does not recognize that governor"
+			   (emtd:clause->governor clause))
+
+			))
 		  :info '()))))))
 
 
