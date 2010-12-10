@@ -31,11 +31,34 @@
 
 (eval-when-compile
    (require 'cl))
+(require 'emtest/common/grade-types)
 
 ;;;_. Body
+;;;_ , Grades
 
-;;;_  . TESTRAL types
-;;;_   , Base class
+;;$$TRANSITIONAL - later replace by just emt:testral:grade
+(deftype emt:result-badness () (or emt:testral:grade symbol))
+;;;_ , IDs
+;;;_  . Suites
+
+;;We'd like to can restrict this.  But it depends on some internal
+;;information about how elements are interpreted, depending on
+;;`method-relaunch'.  Not clear how that can be passed into here.
+;;$$RETHINKING We distinguish conceptual path from how-to-run
+(deftype emt:testral:id-element () 
+   "Id elements are strings."
+   'string)
+;;(deftype emt:testral:suite-id () '(repeat emt:testral:id-element))
+;;$$RENAME ME  This has to do with presentation-paths, not ids.
+(deftype emt:testral:prefix-suite-id () '(repeat emt:testral:id-element))
+(deftype emt:testral:partial-suite-id () 'emt:testral:prefix-suite-id)
+;;;_  . Others
+(defalias 'emt:testral:testrun-id-p 'stringp)
+(defalias 'emt:testral:tester-id-p 'stringp) ;;$$OBSOLESCENT
+
+
+;;;_ , TESTRAL types
+;;;_  . Base class
 
 (defstruct (emt:testral:base
 	      (:constructor emt:testral:make-base)
@@ -47,6 +70,7 @@
    ;;Not clear that parent-id is of general use.
    parent-id ;;`nil' for root events that have no parent.
 
+   ;;$$OBSOLESCENT  Info is becoming just other notes.
    info
    (prestn-path () 
       :type emt:testral:partial-suite-id
@@ -55,16 +79,16 @@
    ;;need it in case (say) a whole stage is dormantized or aborted.
    (badnesses () :type (repeat emt:result-badness)))
 
-;;;_   , Basic notes 
+;;;_  . Basic notes 
 ;;(All inherit from the base class, none have data)
-;;;_    . Alone
+;;;_   , Alone
 (defstruct (emt:testral:alone
 	    (:constructor emt:testral:make-alone)
 	    (:conc-name emt:testral:alone->)
 	      (:include emt:testral:base))
    ""
    )
-;;;_    . Push
+;;;_   , Push
 (defstruct (emt:testral:push
 	    (:constructor emt:testral:make-push)
 	    (:conc-name emt:testral:push->)
@@ -72,14 +96,14 @@
    ""
    fenceposting ;;
    )
-;;;_    . Pop
+;;;_   , Pop
 (defstruct (emt:testral:pop
 	    (:constructor emt:testral:make-pop)
 	    (:conc-name emt:testral:pop->)
 	      (:include emt:testral:base))
    ""
    )
-;;;_    . Separate
+;;;_   , Separate
 (defstruct (emt:testral:separate
 	    (:constructor emt:testral:make-separate)
 	    (:conc-name emt:testral:separate->)
@@ -87,8 +111,8 @@
    ""
    )
 
-;;;_   , Specific ones
-;;;_    . Doc
+;;;_  . Specific ones
+;;;_   , Doc
 (defstruct (emt:testral:doc
 	    (:constructor emt:testral:make-doc)
 	    (:conc-name emt:testral:doc->)
@@ -96,7 +120,7 @@
    "A note indicating a docstring"
    (str () :type string))
 
-;;;_    . Check
+;;;_   , Check
 (defstruct (emt:testral:check:push
 	    (:constructor emt:testral:make-check:push)
 	    (:conc-name emt:testral:check:push->)
@@ -109,7 +133,7 @@
 	      (:include emt:testral:pop))
    ""
    )
-;;;_    . Stage
+;;;_   , Stage
 (defstruct (emt:testral:stage:push
 	    (:constructor emt:testral:make-stage:push)
 	    (:conc-name emt:testral:stage:push->)
@@ -124,7 +148,7 @@
    ""
    )
 
-;;;_    . Error-raised
+;;;_   , Error-raised
 (defstruct (emt:testral:error-raised
 	    (:constructor emt:testral:make-error-raised)
 	    (:conc-name emt:testral:error-raised->)
@@ -132,23 +156,23 @@
    ""
    (err () :type t))
 
-;;;_   , Contents discrimination for suite type
+;;;_  . Contents discrimination for suite type
 
-;;;_    . emt:testral:runform-list
+;;;_   , emt:testral:runform-list
 (defstruct (emt:testral:runform-list
 	    (:constructor emt:testral:make-runform-list)
 	    (:conc-name emt:testral:runform-list->))
   
   "List of explorables"
   (els () :type (repeat emtt:explorable)))
-;;;_    . emt:testral:note-list
+;;;_   , emt:testral:note-list
 (defstruct (emt:testral:note-list
 	    (:constructor emt:testral:make-note-list)
 	    (:conc-name emt:testral:note-list->))
   ""
   (notes () :type (repeat emt:testral:base)))
 
-;;;_   , TESTRAL general report
+;;;_  . TESTRAL general report
 
 (defstruct (emt:testral:report
 	    (:constructor emt:testral:make-report)
@@ -158,7 +182,7 @@
   (tester-id      () :type emt:testral:tester-id)  ;;$$OBSOLESCENT
   (run-done-p     () :type bool)  ;;$$OBSOLESCENT
   (newly-pending  () :type integer)
-  ;;This is really visible-path prefix.
+  ;;This is really presentation-path prefix.
   (test-id-prefix () :type emt:testral:prefix-suite-id)
   (suites () :type 
 	  (repeat
@@ -169,9 +193,9 @@
 	    null ;;let's leave that an empty list for now
 	    (or emt:testral:suite emt:testral:test-runner-info)))))
 
-;;;_   , Suites etc specific reports
+;;;_  . Suites etc specific reports
 
-;;;_   , test-runner info
+;;;_  . test-runner info
 (defstruct (emt:testral:test-runner-info
 	    (:constructor emt:testral:make-test-runner-info)
 	    (:conc-name emt:testral:test-runner-info->))
@@ -184,7 +208,7 @@
   (explore-methods-supported () :type (repeat emt:testral:explore-method-id)))
 
 
-;;;_   , NEW suite
+;;;_  . NEW suite
 (defstruct (emt:testral:suite
 	    (:constructor emt:testral:make-suite)
 	    (:conc-name emt:testral:suite->))
@@ -198,7 +222,7 @@
   (badnesses () :type (repeat emt:result-badness))
   info)
 
-;;;_   , (Suggested) emt:testral:problem
+;;;_  . (Suggested) emt:testral:problem
 ;;Name?  emt:testral:bad-launch
 ;;Suggested for when tester tries to launch a suite and can't.  This
 ;;would have or inherit a testral notelist about the problem

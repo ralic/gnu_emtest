@@ -31,6 +31,7 @@
 
 (eval-when-compile (require 'cl))
 (require 'emtest/common/testral-types)
+
 ;;;_. Body
 ;;;_ , Root
 ;;$$OBSOLESCENT
@@ -367,7 +368,8 @@ especially in configuration testing for new installations"
 
 
 ;;;_ , emthow
-;;Most of this could be moved into runner/explorers/ directory.  
+;;Most of this could be moved into runner/explorers/ directory.  But
+;;it must be available to launchers too.
 ;;;_  . Base
 (defstruct (emthow
 	      (:copier nil)
@@ -400,6 +402,7 @@ especially in configuration testing for new installations"
 	      (:include emthow))
    ""
    ;;Type not expressed.  Co-varies with tester.
+   ;;$$IMPROVE ME Type me (as a symbol)
    ;;$$This is NOT emt:testral:suite-id, which is just a name.
    suite-ID)
 
@@ -570,27 +573,8 @@ especially in configuration testing for new installations"
 ;;
 '(deftype emt:result-badness () '(member fail ungraded dormant))
 
-(deftype emt:result-badness () t)
-
 ;;;_   , Summary info
 ;;Set of badnesses plus count of total checks.
-
-;;;_  . IDs (NEWER)
-;;;_   , Suites
-
-;;We'd like to can restrict this.  But it depends on some internal
-;;information about how elements are interpreted, depending on
-;;`method-relaunch'.  Not clear how that can be passed into here.
-;;$$RETHINKING We distinguish conceptual path from how-to-run
-(deftype emt:testral:id-element () 
-   "Id elements are strings."
-   'string)
-(deftype emt:testral:suite-id () '(repeat emt:testral:id-element))
-(deftype emt:testral:partial-suite-id () '(repeat emt:testral:id-element))
-(deftype emt:testral:prefix-suite-id () '(repeat emt:testral:id-element))
-;;;_   , Others
-(defalias 'emt:testral:testrun-id-p 'stringp)
-(defalias 'emt:testral:tester-id-p 'stringp)
 
 
 ;;;_. Footers
