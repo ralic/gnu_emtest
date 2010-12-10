@@ -62,7 +62,7 @@
 	 (type-must-be () emt:testral:alone)
 	 (item ((name error-1))
 	    (emt:testral:make-error-raised
-	       :badnesses '(ungraded)
+	       :badnesses '((ungraded))
 	       :err
 	       ;;We ct it from the actual error form, so we can't get out
 	       ;;of sync with it.
@@ -148,9 +148,8 @@
 
 	 (item
 	    ((name gone))
-	    ;;$$REVIEWME This representation is tentative.
 	    (list
-	       '(bad-before-test not-found))))
+	       '((bad-before-test not-found)))))
 
       ;;$$TEMPORARY until mapping can be easily used.
       (group

@@ -53,7 +53,7 @@
       :doc "The presentation path of this note")
    ;;Reflects only the note's's intrinsic problems.  Even push/pops
    ;;need it in case (say) a whole stage is dormantized or aborted.
-   (badnesses () :type (repeat emt:result-badness)))
+   (badnesses () :type (repeat (cons emt:result-badness (repeat t)))))
 
 ;;;_   , Basic notes 
 ;;(All inherit from the base class, none have data)
@@ -195,7 +195,7 @@
 	     emt:testral:note-list
 	     emt:testral:runform-list
 	     null)) 
-  (badnesses () :type (repeat emt:result-badness))
+  (badnesses () :type (repeat (cons emt:result-badness (repeat t))))
   info)
 
 ;;;_   , (Suggested) emt:testral:problem

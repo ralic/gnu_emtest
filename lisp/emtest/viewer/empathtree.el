@@ -36,9 +36,40 @@
 
 ;;;_. Body
 ;;;_ , Handling badnesses
+;;;_  . emtvr:count-1-badness
+(defun emtvr:count-1-badness (key summary)
+   "Return the count of 1 particular badness"
+   (let
+      ((cell (assq key (cdr summary))))
+      (if cell (cdr cell) 0)))
+;;(emtvr:count-1-badness 'ungraded '(summary (ungraded . 5)))
+
+
 ;;;_  . emtvr:combine-badnesses
 (defsubst emtvr:combine-badnesses (bads)
-   (reduce #'union bads))
+   (let* 
+      (  (pass     0)
+	 (fail     0)
+	 (ungraded 0)
+	 (dormant  0))
+      (dolist (bad bads)
+	 (case (car bad)
+	    (pass     (incf pass))
+	    (fail     (incf fail))
+	    (dormant  (incf dormant))
+	    (ungraded (incf ungraded))
+	    (summary
+	       (incf pass     (emtvr:count-1-badness 'pass     bad))
+	       (incf fail     (emtvr:count-1-badness 'fail     bad))
+	       (incf dormant  (emtvr:count-1-badness 'dormant  bad))
+	       (incf ungraded (emtvr:count-1-badness 'ungraded bad)))))
+      `((summary
+	  (pass     . ,pass)
+	  (fail     . ,fail)
+	  (ungraded . ,ungraded)
+	  (dormant  . ,dormant)))))
+
+;;(emtvr:combine-badnesses '((summary (ungraded . 5))))
 
 ;;;_  . emtvr:notelist-raw-badnesses
 (defun emtvr:notelist-raw-badnesses (note-list)

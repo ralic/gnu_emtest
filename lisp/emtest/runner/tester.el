@@ -133,6 +133,8 @@ Each one must be a `emtt:explorable'" )
 	       (funcall local-report-f
 		  (emt:testral:make-suite
 		     :contents 
+		     ;;$$RECONSIDER ME Is a note wanted here?  Since
+		     ;;the suite itself can express this.
 		     (emt:testral:make-note-list
 			:notes 
 			(list

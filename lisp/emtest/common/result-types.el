@@ -625,7 +625,11 @@ especially in configuration testing for new installations"
 (deftype emt:result-badness () t)
 
 ;;;_   , Summary info
-;;Set of badnesses plus count of total checks.
+;;symbol can also be 'pass
+(deftype emt:testral:badness-summary () 
+   '(cons (member summary)
+       (repeat (cons symbol integer))))
+;;(typep '(summary (ungraded . 5)) 'emt:testral:badness-summary)
 
 ;;;_  . IDs (NEWER)
 ;;;_   , Suites

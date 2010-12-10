@@ -137,7 +137,7 @@ there was any error inside a `emth:trap-errors'."
 	     (emtt:testral:add-note
 		(emt:testral:make-error-raised
 		   :err err
-		   :badnesses '(ungraded)))
+		   :badnesses '((ungraded))))
 	     (setq emtt:*abort-p* t)))))
 
 
@@ -237,7 +237,7 @@ there was any error inside a `emth:trap-errors'."
 	       (retval
 		  (eval form-x)))
 	    (unless retval
-	       (push '(failed) badnesses))
+	       (push '((failed)) badnesses))
 	    retval))))
 
 ;;;_  . should
