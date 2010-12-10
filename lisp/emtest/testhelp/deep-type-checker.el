@@ -125,7 +125,7 @@
    (if (cdr r)
       (and
 	 (emty:typep-annoted (car obj) (car r) (int-to-string index))
-	 (emty:list*-f (cdr obj) (cdr r)) (1+ index))
+	 (emty:list*-f (cdr obj) (cdr r) (1+ index)))
       (emty:typep-annoted obj (car r) "dotted-tail")))
 
 ;;;_ , emty:typep-annoted
