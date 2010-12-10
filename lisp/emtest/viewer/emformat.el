@@ -269,24 +269,33 @@ DATA-LIST must be a list of alists."
 
 ;;;_  . emtvf:sum-badnesses
 (defun emtvf:sum-badnesses (obj data &rest d)
-   ""
-   
-   (let*
-      ()
-      (if obj
-	 (list
-	    (if (emt:testral:grade-p obj) '() "Some bad grade type")
-	    (let ((grade obj))
-	       (if grade
-		  (list
-		     "A new mark"
-		     (emt:testral:grade->contents grade))
-		  '()))
-	    "\n"
-	    (prin1-to-string obj)
-	    "\n")
-
-	 '("All OK""\n"))))
+   "Give a summary of grades for this object."
+   (if obj
+      (let*
+	 (
+	    (obj (emtvr:grade->summary obj))
+	    (test-cases (emt:testral:grade:summary->test-cases obj))
+	    (fails      (emt:testral:grade:summary->fails      obj))
+	    (ungradeds  (emt:testral:grade:summary->ungradeds  obj))
+	    (dormants   (emt:testral:grade:summary->dormants   obj))
+	    (blowouts   (emt:testral:grade:summary->blowouts   obj)))
+	 (if
+	    (and
+	       (= fails     0)
+	       (= ungradeds 0)
+	       (= dormants  0)
+	       (= blowouts  0))
+	    (list
+	       "All OK\n"
+	       (prin1-to-string obj)
+	       "\n")
+	    (list
+	       (prin1-to-string fails    ) " fails, "
+	       (prin1-to-string ungradeds) " ungradeds, "
+	       (prin1-to-string dormants ) " dormants, "
+	       (prin1-to-string blowouts ) " blowouts")))
+      
+      '("All OK""\n")))
 
 
 

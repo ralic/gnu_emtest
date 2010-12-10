@@ -28,14 +28,28 @@
 
 
 ;;;_ , Requires
-
+(eval-when-compile (require 'cl))
 (require 'utility/pathtree)
 (require 'emtest/common/testral-types)
 (require 'emtest/viewer/view-types)
-(require 'cl)  ;;For `union'
+(require 'emtest/common/grade-types)
 
 ;;;_. Body
-;;;_ , Handling badnesses
+;;;_ , Summing grades
+;;;_  . emtvr:grade->summary
+(defun emtvr:grade->summary (obj)
+   "Change OBJ object into a grade summary.
+OBJ must be a emt:testral:grade-aux and may already be a summary."
+   (check-type obj emt:testral:grade-aux)
+   (typecase obj 
+      (emt:testral:grade:summary obj)
+      (null nil)
+      (t
+	 (let
+	    ((obj-aux (emt:testral:make-grade:summary)))
+	    (emtvr:add-badnesses obj-aux obj)
+	    obj-aux))))
+
 ;;;_  . emtvr:add-badnesses
 (defun emtvr:add-badnesses (sums a)
    ""
