@@ -32,6 +32,9 @@
 ;;$$IMPROVE ME later  When we have truly separated autoloads, require
 ;;the file these explorers' autoloads are defined in, and change their
 ;;autoload forms to no longer require this (else we'll be circular)
+(require 'emtest/common/config)
+(require 'emtest/common/result-types)
+(require 'emtest/common/testral-types)
 
 ;;;_. Body
 ;;;_ , Registering explorers

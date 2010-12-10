@@ -37,7 +37,7 @@
 ;;;_ , Grades
 
 ;;$$TRANSITIONAL - later replace by just emt:testral:grade
-(deftype emt:result-badness () (or emt:testral:grade symbol))
+(deftype emt:result-badness () '(or emt:testral:grade symbol))
 ;;;_ , IDs
 ;;;_  . Suites
 

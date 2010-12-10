@@ -45,10 +45,6 @@
 
 ;;;_. Body
 
-;;;_ , Constants
-(defconst emtt:version "4.4" 
-   "Current version of Emtest" )
-
 ;;;_ , Info available to tests (Not used yet)
 ;;;_  . Type `emtt:top-data'
 ;;$$RETHINK ME

@@ -31,16 +31,20 @@
 (require 'custom)
 
 ;;;_. Body
+;;;_ , Constants
+(defconst emtt:version "4.4" 
+   "Current version of Emtest" )
 
+;;;_ , Customizations
 (defgroup emtest ()
    "Customization for Emtest testhelp"
    :package-version '(emtest . "4.5")
    :group 'development
    :group 'programming)
 
-;;;_ , Viewer/display configuration
+;;;_  . Viewer/display configuration
 
-;;;_  . emtl:receiver-f
+;;;_   , emtl:receiver-f
 ;;Cheat for now: Always know to use emviewer2.  Later use a
 ;;customizable variable.
 (defconst emtl:receiver-f

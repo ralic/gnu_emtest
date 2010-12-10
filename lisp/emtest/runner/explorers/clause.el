@@ -49,7 +49,7 @@
    (funcall report-f
       (emt:testral:make-suite
 	 :contents '()
-	 :badnesses '(dormant)
+	 :badnesses (list (emt:testral:make-grade:dormant))
 	 :info '())))
 
 
