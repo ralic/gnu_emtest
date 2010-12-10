@@ -275,12 +275,19 @@ DATA-LIST must be a list of alists."
       ()
       (if obj
 	 (list
-	    (if (member* nil obj :test 
-		   #'(lambda (dummy o)
-			(emt:testral:grade-p o)))
-	       "A new mark"
-	       '())
-	    
+	    (let ((grade
+		    (car
+		       (member* nil obj :test 
+			  #'(lambda (dummy o)
+			       (emt:testral:grade-p o))))))
+	       (if grade
+		  (list
+		     "A new mark"
+		     (emt:testral:grade->contents grade))
+		  '()))
+	    "\n"
+	    (prin1-to-string obj)
+	    "\n"
 	    (if (memq 'ungraded obj) "Some bad testage"   '())
 	    (if (memq 'fail obj)     "Some failures"      '())
 	    (if (memq 'dormant obj)  "Some dormant tests" '()))
