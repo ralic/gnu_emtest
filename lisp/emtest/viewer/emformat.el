@@ -268,74 +268,20 @@ DATA-LIST must be a list of alists."
       ))
 
 ;;;_  . emtvf:sum-badnesses
-
 (defun emtvf:sum-badnesses (obj data &rest d)
-   "Summarize the results, short form"
-   (let
-      ((cell (assq 'summary obj)))
-      (if cell
-	 (let
-	    (  ;;(pass     (emtvr:count-1-badness 'pass     cell))
-	       (fail     (emtvr:count-1-badness 'fail     cell))
-	       (ungraded (emtvr:count-1-badness 'ungraded cell))
-	       (dormant  (emtvr:count-1-badness 'dormant  cell)))
-	    (if
-	       (and 
-		  (equal fail     0)
-		  (equal ungraded 0)
-		  (equal dormant  0))
-	       "All OK"
-	       (list
-		  ""
-		  (prin1-to-string fail)
-		  " fails ("
-		  (prin1-to-string ungraded)
-		  ", "
-		  (prin1-to-string dormant)
-		  ")")))
-	 
-	 "No summary")))
+   ""
+   
+   (let*
+      ()
+      (if obj
+	 (list
+	    (if (memq 'ungraded obj) "Some bad testage"   '())
+	    (if (memq 'fail obj)     "Some failures"      '())
+	    (if (memq 'dormant obj)  "Some dormant tests" '()))
 
-;;
-;; (emtvf:sum-badnesses
-;;    (emtvr:combine-badnesses '((summary (ungraded . 5))))
-;;    '())
-
-;;;_  . emtvf:sum-badnesses
-
-(defun emtvf:sum-badnesses-long (obj data &rest d)
-   "Summarize the results, long form"
-   (let
-      ((cell (assq 'summary obj)))
-      (if cell
-	 (let
-	    (  (pass     (emtvr:count-1-badness 'pass     cell))
-	       (fail     (emtvr:count-1-badness 'fail     cell))
-	       (ungraded (emtvr:count-1-badness 'ungraded cell))
-	       (dormant  (emtvr:count-1-badness 'dormant  cell)))
-	    (if
-	       (and 
-		  (equal fail     0)
-		  (equal ungraded 0)
-		  (equal dormant  0))
-	       "\nAll OK\n"
-	       (list
-		  "\n"
-		  (prin1-to-string pass)
-		  " passes, "
-		  (prin1-to-string fail)
-		  " failures, "
-		  (prin1-to-string ungraded)
-		  " bad tests, "
-		  (prin1-to-string dormant)
-		  " dormant tests\n")))
-	 
-	 "\nNo summary available\n")))
+	 '("All OK""\n"))))
 
 
-;; (emtvf:sum-badnesses-long
-;;    (emtvr:combine-badnesses '((summary (ungraded . 5))))
-;;    '())
 
 ;;;_. Footers
 ;;;_ , Provides

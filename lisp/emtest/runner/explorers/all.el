@@ -102,7 +102,6 @@ HOW must be of a subtype of emthow"
    (funcall report-f
       (emt:testral:make-suite
 	 :contents 
-	 ;;$$RECONSIDER ME
 	 (emt:testral:make-note-list
 	    :notes 
 	    (list

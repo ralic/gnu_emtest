@@ -136,7 +136,6 @@ TAGS is not used yet, it controls what notes to add (For now, any
 	 
 	    ;;Give an error note instead.
 	    (emt:testral:make-error-raised
-	       ;;$$RECONSIDER ME - is this an ungraded or is it incidental?
 	       :err 
 	       '(error 
 		   "A non-TESTRAL object was tried to be used as note")

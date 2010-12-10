@@ -49,7 +49,7 @@
    (funcall report-f
       (emt:testral:make-suite
 	 :contents '()
-	 :badnesses '((dormant))
+	 :badnesses '(dormant)
 	 :info '())))
 
 
@@ -75,7 +75,7 @@
 	       (emt:testral:make-suite
 		  :contents
 		  (emtt:testral:note-list)
-		  :badnesses (if aborted-p '((ungraded)) '())
+		  :badnesses (if aborted-p '(ungraded) '())
 		  ;;$$RETHINK ME Maybe just use notes to capture this info.
 		  :info '()))))))
 
@@ -95,7 +95,7 @@ This is the heart of Emtest exploration: A test itself."
 	    (funcall report-f
 	       (emt:testral:make-suite
 		  :contents '()
-		  :badnesses '((ungraded))
+		  :badnesses '(ungraded)
 		  :info '()))))))
 
 

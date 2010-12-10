@@ -62,7 +62,7 @@
 	 (type-must-be () emt:testral:alone)
 	 (item ((name error-1))
 	    (emt:testral:make-error-raised
-	       :badnesses '((ungraded))
+	       :badnesses '(ungraded)
 	       :err
 	       ;;We ct it from the actual error form, so we can't get out
 	       ;;of sync with it.
@@ -148,8 +148,9 @@
 
 	 (item
 	    ((name gone))
+	    ;;$$REVIEWME This representation is tentative.
 	    (list
-	       '((bad-before-test not-found)))))
+	       '(bad-before-test not-found))))
 
       ;;$$TEMPORARY until mapping can be easily used.
       (group
@@ -176,19 +177,19 @@
 	 (type-must-be () (repeat emt:result-badness))
 	 (item
 	    ((name test-bad))
-	    '((summary (pass . 0) (fail . 0) (ungraded . 1) (dormant . 0))))
+	    '(ungraded))
       
 	 (item
 	    ((name test-passes))
-	    '((summary (pass . 1) (fail . 0) (ungraded . 0) (dormant . 0))))
+	    '())
       
 	 (item
 	    ((name has-children-1))
-	    '((summary (pass . 0) (fail . 0) (ungraded . 1) (dormant . 0))))
+	    '(ungraded))
 
 	 (item
 	    ((name gone))
-	    '((summary (pass . 0) (fail . 0) (ungraded . 1) (dormant . 0)))))
+	    (emtg (type suite-own-badness-list)(name gone))))
 
 ;;       (group
 ;; 	 ;;$$RETHINK ME  Suites should only have own badnesses

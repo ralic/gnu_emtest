@@ -36,38 +36,9 @@
 
 ;;;_. Body
 ;;;_ , Handling badnesses
-;;;_  . emtvr:count-1-badness
-(defun emtvr:count-1-badness (key summary)
-   "Return the count of 1 particular badness"
-   (let
-      ((cell (assq key (cdr summary))))
-      (if cell (cdr cell) 0)))
-
-
 ;;;_  . emtvr:combine-badnesses
-(defun emtvr:combine-badnesses (bads)
-   (let* 
-      (  (pass     0)
-	 (fail     0)
-	 (ungraded 0)
-	 (dormant  0))
-      (dolist (bad bads)
-	 (case (car bad)
-	    (pass     (incf pass))
-	    (fail     (incf fail))
-	    (dormant  (incf dormant))
-	    (ungraded (incf ungraded))
-	    (summary
-	       (incf pass     (emtvr:count-1-badness 'pass     bad))
-	       (incf fail     (emtvr:count-1-badness 'fail     bad))
-	       (incf dormant  (emtvr:count-1-badness 'dormant  bad))
-	       (incf ungraded (emtvr:count-1-badness 'ungraded bad)))))
-      `((summary
-	  (pass     . ,pass)
-	  (fail     . ,fail)
-	  (ungraded . ,ungraded)
-	  (dormant  . ,dormant)))))
-
+(defsubst emtvr:combine-badnesses (bads)
+   (reduce #'union bads))
 
 ;;;_  . emtvr:notelist-raw-badnesses
 (defun emtvr:notelist-raw-badnesses (note-list)
@@ -92,10 +63,7 @@ could be, such as when a note-list hasn't been expanded."
 	       (null) 
 	       (emt:testral:suite
 		  (let
-		     ((own-badnesses 
-			 (or
-			    (emt:testral:suite->badnesses s)
-			    '((pass)))))
+		     ((own-badnesses (emt:testral:suite->badnesses s)))
 		  (if
 		     (emtvp:node->children node)
 		     own-badnesses

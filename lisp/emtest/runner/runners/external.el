@@ -210,7 +210,7 @@
 	    (funcall report-f
 	       (emt:testral:make-suite
 		  :contents '() ;;$$PUNT:  No notes yet
-		  :badnesses '((ungraded))
+		  :badnesses '(ungraded)
 		  :info '()))
 	    ;;Do test
 	    (let* 
