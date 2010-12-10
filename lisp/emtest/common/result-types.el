@@ -370,30 +370,34 @@ especially in configuration testing for new installations"
 ;;Most of this could be moved into runner/explorers/ directory.  
 ;;;_  . Base
 (defstruct (emthow
-	    (:constructor emthow:make)
-	    (:conc-name emthow->))
+	      (:copier nil)
+	      (:constructor emthow:make)
+	      (:conc-name emthow->))
    ""
    ;;Abstract.
    )
 ;;;_  . emthow:hello
 (defstruct (emthow:hello
-	    (:constructor emthow:make-hello)
-	    (:conc-name emthow:hello->)
-	    (:include emthow))
+	      (:copier nil)
+	      (:constructor emthow:make-hello)
+	      (:conc-name emthow:hello->)
+	      (:include emthow))
    "")
 
 ;;;_  . emthow:invalid
 (defstruct (emthow:invalid
-	    (:constructor emthow:make-invalid)
-	    (:conc-name emthow:invalid->)
-	    (:include emthow))
+	      (:copier nil)
+	      (:constructor emthow:make-invalid)
+	      (:conc-name emthow:invalid->)
+	      (:include emthow))
    "")
 
 ;;;_  . emthow:suite
 (defstruct (emthow:suite
-	    (:constructor emthow:make-suite)
-	    (:conc-name emthow:suite->)
-	    (:include emthow))
+	      (:copier nil)
+	      (:constructor emthow:make-suite)
+	      (:conc-name emthow:suite->)
+	      (:include emthow))
    ""
    ;;Type not expressed.  Co-varies with tester.
    ;;$$This is NOT emt:testral:suite-id, which is just a name.
@@ -401,18 +405,20 @@ especially in configuration testing for new installations"
 
 ;;;_  . emthow:form
 (defstruct (emthow:form
-	    (:constructor emthow:make-form)
-	    (:conc-name emthow:form->)
-	    (:include emthow))
+	      (:copier nil)
+	      (:constructor emthow:make-form)
+	      (:conc-name emthow:form->)
+	      (:include emthow))
    ""
    ;;A test form.
    test-form
    )
 ;;;_  . emthow:indexed-clause
 (defstruct (emthow:indexed-clause
-	    (:constructor emthow:make-indexed-clause)
-	    (:conc-name emthow:indexed-clause->)
-	    (:include emthow))
+	      (:copier nil)
+	      (:constructor emthow:make-indexed-clause)
+	      (:conc-name emthow:indexed-clause->)
+	      (:include emthow))
    ""
    (suite-sym () :type symbol)
    ;;Formerly index was considered part of context.
@@ -421,9 +427,10 @@ especially in configuration testing for new installations"
 
 ;;;_  . emthow:library
 (defstruct (emthow:library
-	    (:constructor nil)
-	    (:conc-name emthow:library->)
-	    (:include emthow))
+	      (:copier nil)
+	      (:constructor nil)
+	      (:conc-name emthow:library->)
+	      (:include emthow))
    ""
    ;;Abstract.
    )
@@ -431,6 +438,7 @@ especially in configuration testing for new installations"
 
 
 (defstruct (emthow:library:elisp-load
+	      (:copier nil)
 	      (:constructor emthow:make-library:elisp-load)
 	      (:conc-name emthow:library:elisp-load->)
 	      (:include emthow:library))
@@ -485,24 +493,27 @@ especially in configuration testing for new installations"
 
 ;;;_  . emthow:from-t-dir
 (defstruct (emthow:from-t-dir
-	    (:constructor emthow:make-from-t-dir)
-	    (:conc-name emthow:from-t-dir->)
-	    (:include emthow))
+	      (:copier nil)
+	      (:constructor emthow:make-from-t-dir)
+	      (:conc-name emthow:from-t-dir->)
+	      (:include emthow))
    ""
    (dir-name () :type string))
 
 
 ;;;_  . emthow:from-dir
 (defstruct (emthow:from-dir
-	    (:constructor emthow:make-from-dir)
-	    (:conc-name emthow:from-dir->)
-	    (:include emthow))
+	      (:copier nil)
+	      (:constructor emthow:make-from-dir)
+	      (:conc-name emthow:from-dir->)
+	      (:include emthow))
    ""
    (dir-name () :type string))
 ;;;_  . emthow:dynamic
 (defstruct (emthow:dynamic
-	    (:constructor emthow:make-dynamic)
-	    (:conc-name emthow:dynamic->)
+	      (:copier nil)
+	      (:constructor emthow:make-dynamic)
+	      (:conc-name emthow:dynamic->)
 	      (:include emthow))
    "Special method to make explorables at runtime."
    name
@@ -511,6 +522,7 @@ especially in configuration testing for new installations"
 
 ;;;_  . emtt:explorable (Full runnable)
 (defstruct (emtt:explorable
+	      (:copier nil)
 	      (:conc-name emtt:explorable->)
 	      (:constructor emtt:make-explorable))
    "All the information needed to specify how to run a test or suite/"
@@ -534,8 +546,9 @@ especially in configuration testing for new installations"
 ;;;_  . emtt:dynamic-method
 ;;$$USE ME
 (defstruct (emtt:dynamic-method
-	    (:constructor emtt:make-dynamic-method)
-	    (:conc-name emtt:dynamic-method->))
+	      (:constructor emtt:make-dynamic-method)
+	      (:copier nil)
+	      (:conc-name emtt:dynamic-method->))
    "A dynamic exploration method."
    name
    keys)
@@ -546,71 +559,6 @@ especially in configuration testing for new installations"
    "A static or dynamic exploration method, for test-runner-info"
    '(or emtt:dynamic-method emtt:explorable))
 
-
-;;;_  . diagnostic-info (OBSOLETE in favor of TESTRAL)
-
-;;;_   , Boolean-valued things
-;;;_    . emt:result:diag:bool
-;;This class is abstract.  If it is ever tried to be used, make a new
-;;class for it using this as a base.
-'
-(defstruct emt:result:diag:bool
-   "Base class for boolean-value things in diagnostic traces"
-
-   (info-about nil :type (repeat emt:result:info-about))
-   (status () :type (member t nil error)))
-
-
-;;;_    . emt:result:diag:error
-'
-(defstruct (emt:result:diag:error (:include emt:result:diag:bool))
-   ""
-   error)
-
-
-;;;_    . emt:result:diag:call
-'
-(defstruct (emt:result:diag:call (:include emt:result:diag:bool))
-   ""
-   call-sexp
-   ;;List of TBD
-   (tried () :type (repeat emt:result:diag:tried.)))
-
-
-;;;_    . emt:result:diag:logic
-'
-(defstruct (emt:result:diag:logic (:include emt:result:diag:bool))
-   "Used to trace `and', `or', `not', etc."
-   (functor nil :type symbol)
-   (traces () :type (list emt:result:diag:bool)))
-
-;;;_   , Try-types
-;;;_    . Base type emt:result:diag:tried.
-'
-(defstruct emt:result:diag:tried.
-   "Tried to use something as substitute argument"
-   ;;0-based
-   (arg-ix () :type integer))
-
-;;;_    . emt:result:diag:tried-persist-archive.
-'
-(defstruct (emt:result:diag:tried-persist-archive.
-	      (:include emt:result:diag:tried.))
-   "Tried to use a persist archive as substitute argument"
-   (placeholder () :type emt:db:id-index)
-   (use-category () :type emt:persist:use-category)
-   (reason () :type (member t too-many-found none-found)))
-
-;;;_    . emt:result:diag:tried-persist-version.
-'
-(defstruct (emt:result:diag:tried-persist-version.
-	      (:include emt:result:diag:tried.))
-   "Tried to use a persist version as substitute argument"
-   (placeholder () :type emt:db:version-index)
-   ;;Don't really need this because placeholder provides it.
-   ;;(use-category () :type emt:persist:use-category)
-
-   )
 
 ;;;_  . (OBSOLESCENT) gradedness
 '
