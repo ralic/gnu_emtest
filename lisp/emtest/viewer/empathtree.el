@@ -36,11 +36,62 @@
 
 ;;;_. Body
 ;;;_ , Handling badnesses
+;;;_  . emtvr:add-badnesses
+(defun emtvr:add-badnesses (sums a)
+   ""
+   (typecase a
+      (emt:testral:grade:summary
+	 (incf 
+	    (emt:testral:grade:summary->test-cases sums)
+	    (emt:testral:grade:summary->test-cases sums))
+	 (incf 
+	    (emt:testral:grade:summary->fails sums)
+	    (emt:testral:grade:summary->fails sums))	 
+	 (incf 
+	    (emt:testral:grade:summary->ungradeds sums)
+	    (emt:testral:grade:summary->ungradeds sums))
+	 (incf 
+	    (emt:testral:grade:summary->dormants sums)
+	    (emt:testral:grade:summary->dormants sums))
+	 (incf 
+	    (emt:testral:grade:summary->blowouts sums)
+	    (emt:testral:grade:summary->blowouts sums)))
+
+      (emt:testral:grade:fail
+	 (incf 
+	    (emt:testral:grade:summary->fails sums)))
+      (emt:testral:grade:ungraded
+	 (incf 
+	    (emt:testral:grade:summary->ungradeds sums)))
+      (emt:testral:grade:dormant
+	 (incf 
+	    (emt:testral:grade:summary->dormants sums)))
+      (emt:testral:grade:blowout
+	 (incf 
+	    (emt:testral:grade:summary->blowouts sums)))      
+      (t nil)))
+
 ;;;_  . emtvr:combine-badnesses
-(defsubst emtvr:combine-badnesses (bads)
+(defun emtvr:combine-badnesses (bads)
+   
    (reduce
       #'(lambda (a b)
-	   (union a b))
+	   (check-type a (repeat emt:testral:grade))
+	   (check-type b (repeat emt:testral:grade))
+	   (cond
+	      ((null a) b)
+	      ((null b) a)
+	      ((and
+		  (= (length a) 1)
+		  (= (length b) 1))
+		 (let
+		    ((sums (emt:testral:make-grade:summary)))
+		    (emtvr:add-badnesses sums a)
+		    (emtvr:add-badnesses sums a)
+		    (list sums)))
+	      
+	      (t
+		 (union a b))))
       bads))
 
 ;;;_  . emtvr:notelist-raw-badnesses
