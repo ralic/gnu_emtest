@@ -275,11 +275,7 @@ DATA-LIST must be a list of alists."
       ()
       (if obj
 	 (list
-	    (let ((grade
-		    (car
-		       (member* nil obj :test 
-			  #'(lambda (dummy o)
-			       (emt:testral:grade-p o))))))
+	    (let ((grade obj))
 	       (if grade
 		  (list
 		     "A new mark"

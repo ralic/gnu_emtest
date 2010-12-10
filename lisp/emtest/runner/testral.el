@@ -140,10 +140,9 @@ TAGS is not used yet, it controls what notes to add (For now, any
 	       '(error 
 		   "A non-TESTRAL object was tried to be used as note")
 	       :badnesses 
-	       (list
-		  (emt:testral:make-grade:ungraded
-		     :contents
-		     "A non-TESTRAL object was tried to be used as note")))))))
+	       (emt:testral:make-grade:ungraded
+		  :contents
+		  "A non-TESTRAL object was tried to be used as note"))))))
 
 ;;;_  . emtt:testral:report-false
 ;;Higher level, may belong elsewhere.

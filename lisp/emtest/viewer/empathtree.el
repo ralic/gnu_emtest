@@ -73,26 +73,30 @@
 
 ;;;_  . emtvr:combine-badnesses
 (defun emtvr:combine-badnesses (bads)
-   
-   (reduce
-      #'(lambda (a b)
-	   (check-type a (repeat emt:testral:grade))
-	   (check-type b (repeat emt:testral:grade))
-	   (cond
-	      ((null a) b)
-	      ((null b) a)
-	      ((and
-		  (= (length a) 1)
-		  (= (length b) 1))
-		 (let
-		    ((sums (emt:testral:make-grade:summary)))
-		    (emtvr:add-badnesses sums a)
-		    (emtvr:add-badnesses sums a)
-		    (list sums)))
-	      
-	      (t
-		 (union a b))))
-      bads))
+   "Combine the list BADS into one entry"
+   (let
+      ((all
+	  (reduce
+	     #'(lambda (a b)
+		  (check-type a emt:testral:grade-aux)
+		  (check-type b emt:testral:grade-aux)
+		  (cond
+		     ((null a) b)
+		     ((null b) a)
+		     ((and
+			 (= (length a) 1)
+			 (= (length b) 1))
+			(let
+			   ((sums (emt:testral:make-grade:summary)))
+			   (emtvr:add-badnesses sums (car a))
+			   (emtvr:add-badnesses sums (car b))
+			   (list sums)))
+		     (t
+			(error "Shouldn't get here"))))
+	     bads)))
+      (check-type all emt:testral:grade-aux)
+      all))
+
 
 ;;;_  . emtvr:notelist-raw-badnesses
 (defun emtvr:notelist-raw-badnesses (note-list)
@@ -127,7 +131,7 @@ could be, such as when a note-list hasn't been expanded."
 			(typecase contents
 			   (emt:testral:note-list
 			      (emtvr:combine-badnesses
-				 (cons
+				 (list
 				    own-badnesses
 				    (emtvr:notelist-raw-badnesses contents))))
 			   (t own-badnesses))))))

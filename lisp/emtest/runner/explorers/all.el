@@ -107,10 +107,9 @@ HOW must be of a subtype of emthow"
 	 :contents nil
 	 ;;Actual form is TBD.
 	 :badnesses 
-	 (list
-	    (emt:testral:make-grade:ungraded
-	       :contents
-	       "Unrecognized internal explore type"))
+	 (emt:testral:make-grade:ungraded
+	    :contents
+	    "Unrecognized internal explore type")
 	 ;;$$OBSOLESCENT
 	 :info '())))
 

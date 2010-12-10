@@ -37,7 +37,8 @@
 ;;;_ , Grades
 
 ;;$$TRANSITIONAL - later replace by just emt:testral:grade
-(deftype emt:result-badness () '(or emt:testral:grade symbol))
+(deftype emt:result-badness () 'emt:testral:grade)
+(deftype emt:testral:grade-aux () '(or null (list emt:testral:grade)))
 ;;;_ , IDs
 ;;;_  . Suites
 
@@ -77,7 +78,7 @@
       :doc "The presentation path of this note")
    ;;Reflects only the note's's intrinsic problems.  Even push/pops
    ;;need it in case (say) a whole stage is dormantized or aborted.
-   (badnesses () :type (repeat emt:result-badness)))
+   (badnesses () :type emt:testral:grade-aux))
 
 ;;;_  . Basic notes 
 ;;(All inherit from the base class, none have data)
@@ -219,7 +220,7 @@
 	     emt:testral:note-list
 	     emt:testral:runform-list
 	     null)) 
-  (badnesses () :type (repeat emt:result-badness))
+  (badnesses () :type emt:testral:grade-aux)
   info)
 
 ;;;_  . (Suggested) emt:testral:problem
