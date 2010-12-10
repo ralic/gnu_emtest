@@ -284,10 +284,7 @@ DATA-LIST must be a list of alists."
 		  '()))
 	    "\n"
 	    (prin1-to-string obj)
-	    "\n"
-	    (if (memq 'ungraded obj) "Some bad testage"   '())
-	    (if (memq 'fail obj)     "Some failures"      '())
-	    (if (memq 'dormant obj)  "Some dormant tests" '()))
+	    "\n")
 
 	 '("All OK""\n"))))
 

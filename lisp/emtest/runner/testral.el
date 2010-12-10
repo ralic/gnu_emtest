@@ -116,6 +116,9 @@ TAGS is not used yet, it controls what notes to add (For now, any
 	 (if 
 	    (typep note 'emt:testral:base)
 	    (progn
+	       (check-type 
+		  (emt:testral:base->badnesses note)
+		  emt:testral:grade-aux)
 	       ;;Later, tags will inform a report-manager, which also checks
 	       ;;whether to add notes.
 

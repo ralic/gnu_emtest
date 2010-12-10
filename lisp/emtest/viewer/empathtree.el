@@ -88,8 +88,8 @@
 			 (emt:testral:grade-p b))
 			(let
 			   ((sums (emt:testral:make-grade:summary)))
-			   (emtvr:add-badnesses sums (car a))
-			   (emtvr:add-badnesses sums (car b))
+			   (emtvr:add-badnesses sums a)
+			   (emtvr:add-badnesses sums b)
 			   sums))
 		     (t
 			(error "Shouldn't get here"))))
