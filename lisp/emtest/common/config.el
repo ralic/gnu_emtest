@@ -32,13 +32,13 @@
 
 ;;;_. Body
 ;;;_ , Constants
-(defconst emtt:version "4.4" 
+(defconst emtt:version "4.5" 
    "Current version of Emtest" )
 
 ;;;_ , Customizations
 (defgroup emtest ()
    "Customization for Emtest testhelp"
-   :package-version '(emtest . "4.5")
+   :package-version `(emtest . ,emtt:version)
    :group 'development
    :group 'programming)
 
