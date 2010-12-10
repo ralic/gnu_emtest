@@ -58,13 +58,6 @@
    ""
    (report-func () :type (satisfies #'functionp)))
 
-;;;_ , Data
-
-;;;_  . Pending list
-(defvar emtt:test-finder:pending-list () 
-   "List of pending tests (etc) to explore.
-Each one must be a `emtt:explorable'" )
-
 
 ;;;_ , Run tests
 ;;;_  . emtt:explore-one
@@ -158,15 +151,15 @@ Each one must be a `emtt:explorable'" )
 (defun emtt:test-finder:top (what-to-run path-prefix testrun-id report-cb)
    ""
    
-   (let*  ;;$$IMPROVE ME Take this as an object.
-      (  (emtt:test-finder:pending-list (list '()))
+   (let*  
+      (  (emtt:pending-list (list '()))
 	 ;; Poor-man's closures.
 	 (report-f
 	    `(lambda (suites tests &optional prefix)
 		(when tests
 		   (callf2 append 
 		      tests
-		      (car ',emtt:test-finder:pending-list)))
+		      (car ',emtt:pending-list)))
 		(funcall #',report-cb
 		   (emt:testral:make-report
 		      :run-done-p nil ;;$$OBSOLESCENT
@@ -186,12 +179,12 @@ Each one must be a `emtt:explorable'" )
 	       :properties ())))
       
       ;;Loop thru the pending list.
-      (while (car emtt:test-finder:pending-list)
+      (while (car emtt:pending-list)
 	 ;;Careful: `pop' seems to have a problem if called in
 	 ;;something that sets the value of the list, as
 	 ;;`emtt:explore-one' sometimes did.
 	 (let
-	    ((next (pop (car emtt:test-finder:pending-list))))
+	    ((next (pop (car emtt:pending-list))))
 	    (emtt:explore-one next report-cb report-f)))))
 
 
