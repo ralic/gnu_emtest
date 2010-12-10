@@ -159,14 +159,14 @@ Each one must be a `emtt:explorable'" )
    ""
    
    (let*  ;;$$IMPROVE ME Take this as an object.
-      (  (emtt:test-finder:pending-list ())
+      (  (emtt:test-finder:pending-list (list '()))
 	 ;; Poor-man's closures.
 	 (report-f
 	    `(lambda (suites tests &optional prefix)
 		(when tests
 		   (callf2 append 
 		      tests
-		      emtt:test-finder:pending-list))
+		      (car ',emtt:test-finder:pending-list)))
 		(funcall #',report-cb
 		   (emt:testral:make-report
 		      :run-done-p nil ;;$$OBSOLESCENT
@@ -186,24 +186,13 @@ Each one must be a `emtt:explorable'" )
 	       :properties ())))
       
       ;;Loop thru the pending list.
-      (while emtt:test-finder:pending-list
+      (while (car emtt:test-finder:pending-list)
 	 ;;Careful: `pop' seems to have a problem if called in
 	 ;;something that sets the value of the list, as
 	 ;;`emtt:explore-one' sometimes did.
 	 (let
-	    ((next (pop emtt:test-finder:pending-list)))
-	    (emtt:explore-one next report-cb report-f)))
-
-      ;;$$OBSOLESCENT This will be replaced by reports of how many are
-      ;;enqueued. 
-      '
-      (funcall report-cb
-	 (emt:testral:make-report
-	    :run-done-p t
-	    :testrun-id testrun-id
-	    :tester-id "Emtest"
-	    :test-id-prefix '()	    
-	    :suites '()))))
+	    ((next (pop (car emtt:test-finder:pending-list))))
+	    (emtt:explore-one next report-cb report-f)))))
 
 
 
