@@ -38,7 +38,7 @@
 
 ;;$$TRANSITIONAL - later replace by just emt:testral:grade
 (deftype emt:result-badness () 'emt:testral:grade)
-(deftype emt:testral:grade-aux () '(or null (list emt:testral:grade)))
+(deftype emt:testral:grade-aux () '(or null emt:testral:grade))
 ;;;_ , IDs
 ;;;_  . Suites
 

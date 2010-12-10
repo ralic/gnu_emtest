@@ -84,13 +84,13 @@
 		     ((null a) b)
 		     ((null b) a)
 		     ((and
-			 (= (length a) 1)
-			 (= (length b) 1))
+			 (emt:testral:grade-p a)
+			 (emt:testral:grade-p b))
 			(let
 			   ((sums (emt:testral:make-grade:summary)))
 			   (emtvr:add-badnesses sums (car a))
 			   (emtvr:add-badnesses sums (car b))
-			   (list sums)))
+			   sums))
 		     (t
 			(error "Shouldn't get here"))))
 	     bads)))
@@ -131,7 +131,7 @@ could be, such as when a note-list hasn't been expanded."
 			(typecase contents
 			   (emt:testral:note-list
 			      (emtvr:combine-badnesses
-				 (list
+				 (cons
 				    own-badnesses
 				    (emtvr:notelist-raw-badnesses contents))))
 			   (t own-badnesses))))))

@@ -275,6 +275,7 @@ DATA-LIST must be a list of alists."
       ()
       (if obj
 	 (list
+	    (if (emt:testral:grade-p obj) '() "Some bad grade type")
 	    (let ((grade obj))
 	       (if grade
 		  (list
