@@ -358,19 +358,19 @@ DATA-LIST must be a list of alists."
 		     (when (> blowouts  0) 
 			(hiformat:grammar:num-and-noun 
 			   blowouts
-			   "Blowouts"))
+			   "Blowout" "Blowouts"))
 		     (when (> ungradeds 0) 
 			(hiformat:grammar:num-and-noun 
 			   ungradeds
-			   "Ungraded tests"))
+			   "Ungraded test" "Ungraded tests"))
 		     (when (> fails     0) 
 			(hiformat:grammar:num-and-noun 
 			   fails
-			   "Failures"))
+			   "Failure" "Failures"))
 		     (when (> dormants  0) 
 			(hiformat:grammar:num-and-noun 
 			   dormants
-			   "Dormant tests"))))
+			   "Dormant test" "Dormant tests"))))
 	       :separator '(".\n"))
 	    "\n"
 	    (if (> test-cases 0)
