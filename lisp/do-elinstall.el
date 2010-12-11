@@ -43,6 +43,7 @@
 		"^testhelp.el"
 		"^explorers$"
 		"^rtest.el"
+		"examples"
 		"qexamples.el")
 	     t) 
 	  ;;Explorer plugins use this to inform top about their
