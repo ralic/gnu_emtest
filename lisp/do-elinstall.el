@@ -37,15 +37,22 @@
    "emtest"
    (elinstall-directory-true-name)
    '(load-path 
-       (all t 
+       (all 
+	  (block-in-subtree 
+	     (  "^tests.el"
+		"^testhelp.el"
+		"^explorers$"
+		"^rtest.el"
+		"qexamples.el")
+	     t) 
 	  ;;Explorer plugins use this to inform top about their
 	  ;;existence via this file.
 	  (def-file "emtest/runner/loadexplorers.el" nil
 	     (dir "emtest/runner/explorers"))))
    t)
 
-;;$$IMPROVE ME And then handle the various plugins that should 
-;;, by defining a different deffile for them.
+;;$$IMPROVE ME Add plugins for testhelp too.
+
 
 ;;;_. Footers
 ;;;_ , Provides
