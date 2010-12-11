@@ -267,10 +267,21 @@ DATA-LIST must be a list of alists."
       '("Information: None" "\n")
       ))
 ;;;_  . hiformat:grammar:number-agreement
+;;$$MOVE ME into hiformat or a new grammar section
 (defun hiformat:grammar:number-agreement (n singular plural)
    ""
    
    (if (= n 1) singular plural))
+
+;;;_  . hiformat:grammar:num-and-noun
+;;$$MOVE ME same
+(defun hiformat:grammar:num-and-noun (n singular plural)
+   ""
+   (list 
+      (prin1-to-string n)
+      " "
+      (hiformat:grammar:number-agreement 
+	 n singular plural)))
 
 ;;;_  . emtvf:sum-badnesses-short
 (defun emtvf:sum-badnesses-short (obj data &rest d)
@@ -292,9 +303,7 @@ DATA-LIST must be a list of alists."
 	 (if (> test-cases 0)
 	    (list
 	       "All OK ("
-	       (prin1-to-string test-cases)
-	       " "
-	       (hiformat:grammar:number-agreement 
+	       (hiformat:grammar:num-and-noun
 		  test-cases "case" "cases")
 	       ")")
 	    (list "Nothing was tested"))
@@ -330,17 +339,48 @@ DATA-LIST must be a list of alists."
 	    (= ungradeds 0)
 	    (= dormants  0)
 	    (= blowouts  0))
+	 (if (> test-cases 0)
+	    (list
+	       "All OK ("
+	       (prin1-to-string test-cases)
+	       " "
+	       (hiformat:grammar:number-agreement 
+		  test-cases "case" "cases")
+	       ")" "\n")
+	    (list "Nothing was tested" "\n"))
 	 (list
-	    "All OK\n"
-	    (prin1-to-string obj)
-	    "\n")
-	 (list
-	    "In "
-	    (prin1-to-string test-cases) " test cases: "
-	    (prin1-to-string fails    ) " fails, "
-	    (prin1-to-string ungradeds) " ungradeds, "
-	    (prin1-to-string dormants ) " dormants, "
-	    (prin1-to-string blowouts ) " blowouts"))))
+	    "Problems: "
+	    (hiformat:map 
+	       #'(lambda (obj &rest r)
+		    obj)
+	       (delq nil
+		  (list
+		     (when (> blowouts  0) 
+			(hiformat:grammar:num-and-noun 
+			   blowouts
+			   "Blowouts"))
+		     (when (> ungradeds 0) 
+			(hiformat:grammar:num-and-noun 
+			   ungradeds
+			   "Ungraded tests"))
+		     (when (> fails     0) 
+			(hiformat:grammar:num-and-noun 
+			   fails
+			   "Failures"))
+		     (when (> dormants  0) 
+			(hiformat:grammar:num-and-noun 
+			   dormants
+			   "Dormant tests"))))
+	       :separator '(".\n"))
+	    "\n"
+	    (if (> test-cases 0)
+	       (list
+		  (prin1-to-string test-cases)
+		  " successful "
+		  (hiformat:grammar:number-agreement 
+		     test-cases "test case" "test cases"))
+	       (list "No test cases succeeded"))
+	    "\n"))))
 
 
 

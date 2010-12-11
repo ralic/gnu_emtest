@@ -151,7 +151,7 @@
 	       (emtt:testral:continued-with 
 		  (emtr:external-data->testral-obj data)
 		  (emtt:testral:note-list))
-	       :badnesses '()
+	       :badnesses (emt:testral:make-grade:test-case)
 	       :info '()))
 	 ;;, close tq, and we're done.
 	 (tq-close (emtr:external-data->tq data)))))
