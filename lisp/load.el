@@ -5,3 +5,8 @@
       (if load-file-name
 	 (file-name-directory
 	    (file-truename load-file-name)))))
+
+;;;_  + Local variables:
+;;;_  + no-byte-compile: t
+;;;_  + no-update-autoloads: t
+;;;_  + End:
