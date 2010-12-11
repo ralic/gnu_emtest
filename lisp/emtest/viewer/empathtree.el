@@ -43,7 +43,6 @@ OBJ must be a emt:testral:grade-aux and may already be a summary."
    (check-type obj emt:testral:grade-aux)
    (typecase obj 
       (emt:testral:grade:summary obj)
-      (null nil)
       (t
 	 (let
 	    ((obj-aux (emt:testral:make-grade:summary)))
@@ -57,19 +56,19 @@ OBJ must be a emt:testral:grade-aux and may already be a summary."
       (emt:testral:grade:summary
 	 (incf 
 	    (emt:testral:grade:summary->test-cases sums)
-	    (emt:testral:grade:summary->test-cases sums))
+	    (emt:testral:grade:summary->test-cases a))
 	 (incf 
 	    (emt:testral:grade:summary->fails sums)
-	    (emt:testral:grade:summary->fails sums))	 
+	    (emt:testral:grade:summary->fails a))	 
 	 (incf 
 	    (emt:testral:grade:summary->ungradeds sums)
-	    (emt:testral:grade:summary->ungradeds sums))
+	    (emt:testral:grade:summary->ungradeds a))
 	 (incf 
 	    (emt:testral:grade:summary->dormants sums)
-	    (emt:testral:grade:summary->dormants sums))
+	    (emt:testral:grade:summary->dormants a))
 	 (incf 
 	    (emt:testral:grade:summary->blowouts sums)
-	    (emt:testral:grade:summary->blowouts sums)))
+	    (emt:testral:grade:summary->blowouts a)))
 
       (emt:testral:grade:fail
 	 (incf 

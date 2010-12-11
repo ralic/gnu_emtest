@@ -61,7 +61,7 @@
 		 (list x " "))
 	    (loal:val 'hdln-path data-list '())))
       (list name " ")
-      (emtvf:sum-badnesses badnesses data-list) 
+      (emtvf:sum-badnesses-short badnesses data-list) 
       (list "\n")))
 
 ;;;_  . emtvf:node
@@ -267,35 +267,62 @@ DATA-LIST must be a list of alists."
       '("Information: None" "\n")
       ))
 
-;;;_  . emtvf:sum-badnesses
-(defun emtvf:sum-badnesses (obj data &rest d)
+;;;_  . emtvf:sum-badnesses-short
+(defun emtvf:sum-badnesses-short (obj data &rest d)
    "Give a summary of grades for this object."
-   (if obj
-      (let*
-	 (
-	    (obj (emtvr:grade->summary obj))
-	    (test-cases (emt:testral:grade:summary->test-cases obj))
-	    (fails      (emt:testral:grade:summary->fails      obj))
-	    (ungradeds  (emt:testral:grade:summary->ungradeds  obj))
-	    (dormants   (emt:testral:grade:summary->dormants   obj))
-	    (blowouts   (emt:testral:grade:summary->blowouts   obj)))
-	 (if
-	    (and
-	       (= fails     0)
-	       (= ungradeds 0)
-	       (= dormants  0)
-	       (= blowouts  0))
-	    (list
-	       "All OK\n"
-	       (prin1-to-string obj)
-	       "\n")
-	    (list
-	       (prin1-to-string fails    ) " fails, "
-	       (prin1-to-string ungradeds) " ungradeds, "
-	       (prin1-to-string dormants ) " dormants, "
-	       (prin1-to-string blowouts ) " blowouts")))
-      
-      '("All OK""\n")))
+   (let*
+      (
+	 (obj (emtvr:grade->summary obj))
+	 (test-cases (emt:testral:grade:summary->test-cases obj))
+	 (fails      (emt:testral:grade:summary->fails      obj))
+	 (ungradeds  (emt:testral:grade:summary->ungradeds  obj))
+	 (dormants   (emt:testral:grade:summary->dormants   obj))
+	 (blowouts   (emt:testral:grade:summary->blowouts   obj)))
+      (if
+	 (and
+	    (= fails     0)
+	    (= ungradeds 0)
+	    (= dormants  0)
+	    (= blowouts  0))
+	 (list
+	    "All OK\n"
+	    (prin1-to-string obj)
+	    "\n")
+	 (list
+	    (prin1-to-string test-cases) " cases, "
+	    (prin1-to-string fails    ) " fails ("
+	    (prin1-to-string ungradeds) ", "
+	    (prin1-to-string dormants ) ", "
+	    (prin1-to-string blowouts ) ")"))))
+
+;;;_  . emtvf:sum-badnesses-long
+(defun emtvf:sum-badnesses-long (obj data &rest d)
+   "Give a summary of grades for this object."
+   (let*
+      (
+	 (obj (emtvr:grade->summary obj))
+	 (test-cases (emt:testral:grade:summary->test-cases obj))
+	 (fails      (emt:testral:grade:summary->fails      obj))
+	 (ungradeds  (emt:testral:grade:summary->ungradeds  obj))
+	 (dormants   (emt:testral:grade:summary->dormants   obj))
+	 (blowouts   (emt:testral:grade:summary->blowouts   obj)))
+      (if
+	 (and
+	    (= fails     0)
+	    (= ungradeds 0)
+	    (= dormants  0)
+	    (= blowouts  0))
+	 (list
+	    "All OK\n"
+	    (prin1-to-string obj)
+	    "\n")
+	 (list
+	    "In "
+	    (prin1-to-string test-cases) " test cases: "
+	    (prin1-to-string fails    ) " fails, "
+	    (prin1-to-string ungradeds) " ungradeds, "
+	    (prin1-to-string dormants ) " dormants, "
+	    (prin1-to-string blowouts ) " blowouts"))))
 
 
 
