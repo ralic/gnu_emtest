@@ -69,19 +69,21 @@ OBJ must be a emt:testral:grade-aux and may already be a summary."
 	 (incf 
 	    (emt:testral:grade:summary->blowouts sums)
 	    (emt:testral:grade:summary->blowouts a)))
-
+      (emt:testral:grade:test-case
+	 (incf 
+	    (emt:testral:grade:summary->test-cases sums)))
       (emt:testral:grade:fail
 	 (incf 
-	    (emt:testral:grade:summary->fails sums)))
+	    (emt:testral:grade:summary->fails      sums)))
       (emt:testral:grade:ungraded
 	 (incf 
-	    (emt:testral:grade:summary->ungradeds sums)))
+	    (emt:testral:grade:summary->ungradeds  sums)))
       (emt:testral:grade:dormant
 	 (incf 
-	    (emt:testral:grade:summary->dormants sums)))
+	    (emt:testral:grade:summary->dormants   sums)))
       (emt:testral:grade:blowout
 	 (incf 
-	    (emt:testral:grade:summary->blowouts sums)))      
+	    (emt:testral:grade:summary->blowouts   sums)))      
       (t nil)))
 
 ;;;_  . emtvr:combine-badnesses

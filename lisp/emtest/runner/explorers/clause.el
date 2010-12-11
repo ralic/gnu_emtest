@@ -80,7 +80,7 @@
 		     (emt:testral:make-grade:ungraded
 			:contents
 			"Evaluation aborted") 
-		     '())
+		     (emt:testral:make-grade:test-case))
 		  ;;$$RETHINK ME Maybe just use notes to capture this info.
 		  :info '()))))))
 

@@ -72,6 +72,13 @@
 	      (:copier nil)
 	      (:conc-name emt:testral:grade:blowout->))
    "A lack of grade because of errors outside the test")
+;;;_  . Test-case
+(defstruct (emt:testral:grade:test-case
+	      (:include emt:testral:grade)
+	      (:constructor emt:testral:make-grade:test-case)
+	      (:copier nil)
+	      (:conc-name emt:testral:grade:test-case->))
+   "A pseudo-grade indicating that a test-case completed")
 
 ;;;_  . Summary
 (defstruct (emt:testral:grade:summary
