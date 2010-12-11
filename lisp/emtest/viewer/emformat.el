@@ -266,6 +266,11 @@ DATA-LIST must be a list of alists."
       ()
       '("Information: None" "\n")
       ))
+;;;_  . hiformat:grammar:number-agreement
+(defun hiformat:grammar:number-agreement (n singular plural)
+   ""
+   
+   (if (= n 1) singular plural))
 
 ;;;_  . emtvf:sum-badnesses-short
 (defun emtvf:sum-badnesses-short (obj data &rest d)
@@ -284,16 +289,29 @@ DATA-LIST must be a list of alists."
 	    (= ungradeds 0)
 	    (= dormants  0)
 	    (= blowouts  0))
+	 (if (> test-cases 0)
+	    (list
+	       "All OK ("
+	       (prin1-to-string test-cases)
+	       " "
+	       (hiformat:grammar:number-agreement 
+		  test-cases "case" "cases")
+	       ")")
+	    (list "Nothing was tested"))
 	 (list
-	    "All OK\n"
-	    (prin1-to-string obj)
-	    "\n")
-	 (list
-	    (prin1-to-string test-cases) " cases, "
-	    (prin1-to-string fails    ) " fails ("
-	    (prin1-to-string ungradeds) ", "
-	    (prin1-to-string dormants ) ", "
-	    (prin1-to-string blowouts ) ")"))))
+	    "Problems: "
+	    (hiformat:map 
+	       #'(lambda (obj &rest r)
+		    obj)
+	       (delq nil
+		  (list
+		     (when (> blowouts  0) '("Blowouts"))
+		     (when (> ungradeds 0) '("Ungraded tests"))
+		     (when (> fails     0) '("Failures"))
+		     (when (> dormants  0) '("Dormant tests"))))
+	       :separator '(", "))
+	    "."))))
+
 
 ;;;_  . emtvf:sum-badnesses-long
 (defun emtvf:sum-badnesses-long (obj data &rest d)
