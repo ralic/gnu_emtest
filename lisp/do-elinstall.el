@@ -39,12 +39,12 @@
    '(load-path 
        (all 
 	  (block-in-subtree 
-	     (  "^tests.el"
-		"^testhelp.el"
+	     (  "^tests\\.el"
+		"^testhelp\\.el"
 		"^explorers$"
-		"^rtest.el"
-		"examples"
-		"qexamples.el")
+		"^rtest\\.el"
+		"^examples$"
+		"^qexamples\\.el")
 	     t) 
 	  ;;Explorer plugins use this to inform top about their
 	  ;;existence via this file.
