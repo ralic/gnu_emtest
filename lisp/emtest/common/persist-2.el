@@ -33,12 +33,12 @@
 
 ;;;_. Body
 ;;;_ , Types
-;;;_  . emt:db:record
-(defstruct (emt:db:record
+;;;_  . emdb:record
+(defstruct (emdb:record
 	      (:type list)
 	      (:copier nil)
-	      (:constructor emt:db:make-record)
-	      (:conc-name emt:db:record->))
+	      (:constructor emdb:make-record)
+	      (:conc-name emdb:record->))
    "A record in the database"
    key ;;First so that we can use assoc
    use-category
@@ -50,13 +50,13 @@
    '(member correct-answer correct-type wrong-answer nil))
 ;;;_ , Accessing items
 
-;;;_  . emt:db:get-value
-(defun emt:db:get-value (backend id &optional category)
+;;;_  . emdb:get-value
+(defun emdb:get-value (backend id &optional category)
    ""
    
    (let*
       ((all
-	  (emt:db:internal:get-all backend))
+	  (emdb:tinydb:get-all backend))
 	 (cell
 	    (assoc id all)))
       (if cell
@@ -65,61 +65,61 @@
 	 (error "Key not found: %s in backend %s" id backend))))
 
 
-;;;_  . emt:db:set-value
-(defun emt:db:set-value (backend id value &optional dummy-category)
+;;;_  . emdb:set-value
+(defun emdb:set-value (backend id value &optional dummy-category)
    ""
   
    (let*
       ((all
 	  (remove*
 	     id
-	     (emt:db:internal:get-all backend)
-	     :key #'emt:db:record->key)))
+	     (emdb:tinydb:get-all backend)
+	     :key #'emdb:record->key)))
       (push
-	 (emt:db:make-record
+	 (emdb:make-record
 	    :key          id
 	    :use-category 'correct-answer
 	    :timestamp    (current-time)
 	    :value        value)
 	 all)
-      (emt:db:internal:set-all backend all)))
+      (emdb:tinydb:set-all backend all)))
 
 
 ;;;_ , The database itself
 ;;For now, always use tinydb.el as the backend
-;;;_  . emt:db:internal:tinydb-alist
-(defvar emt:db:internal:tinydb-alist 
+;;;_  . emdb:tinydb:tinydb-alist
+(defvar emdb:tinydb:tinydb-alist 
    '()
-   "Alist from absolute filenames to file tqs" )
+   "Alist from absolute filenames to tinydb objects" )
 
 ;;;_  . Make the queues - one for each distinct filename
-(defun emt:db:internal:name->tinydb (filename)
-   "Return a tinydb "
+(defun emdb:tinydb:name->tinydb (filename)
+   "Return a tinydb object"
    (or
       (let
-	 ((cell (assoc filename emt:db:internal:tinydb-alist)))
+	 ((cell (assoc filename emdb:tinydb:tinydb-alist)))
 	 (second cell))
       (let 
 	 ((filetq
 	     (tinydb-persist-make-q filename '() nil #'listp)))
-	 (push (list filename filetq) emt:db:internal:tinydb-alist)
+	 (push (list filename filetq) emdb:tinydb:tinydb-alist)
 	 filetq)))
 
-;;;_  . emt:db:internal:get-all
-(defun emt:db:internal:get-all (backend)
+;;;_  . emdb:tinydb:get-all
+(defun emdb:tinydb:get-all (backend)
    "Return the database object as a whole"
    (let
       ((filename
 	  (second backend)))
-      (tinydb-get-obj (emt:db:internal:name->tinydb filename))))
+      (tinydb-get-obj (emdb:tinydb:name->tinydb filename))))
 
-;;;_  . emt:db:internal:set-all
-(defun emt:db:internal:set-all (backend value)
+;;;_  . emdb:tinydb:set-all
+(defun emdb:tinydb:set-all (backend value)
    "Set the database object as a whole"
    (let
       ((filename
 	  (second backend)))
-      (tinydb-set-obj (emt:db:internal:name->tinydb filename) value)))
+      (tinydb-set-obj (emdb:tinydb:name->tinydb filename) value)))
 
 
 ;;;_. Footers
