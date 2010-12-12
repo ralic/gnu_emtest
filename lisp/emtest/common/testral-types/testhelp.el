@@ -135,7 +135,7 @@
       ;;Suites' intrinsic badnesses
       (group
 	 ((type suite-own-badness-list))
-	 (type-must-be () (repeat emt:result-badness))
+	 (type-must-be () emt:testral:grade-aux)
 	 (item
 	    ((name test-bad))
 	    '())
@@ -150,14 +150,12 @@
 
 	 (item
 	    ((name gone))
-	    ;;$$REVIEWME This representation is tentative.
-	    (list
-	       '(bad-before-test not-found))))
+	    (emt:testral:make-grade:blowout)))
 
       ;;$$TEMPORARY until mapping can be easily used.
       (group
 	 ((type suite-own-badness-list)(tagged-by role&test))
-	 (type-must-be () (repeat emt:result-badness))
+	 (type-must-be () emt:testral:grade-aux)
 	 (item
 	    ((what-test test-1)(role original-add))
 	    (emtg (type suite-own-badness-list)(name test-bad)))
@@ -176,10 +174,10 @@
       ;;Suites' badnesses, including that of their TESTRAL notes.
       (group
 	 ((type suite-own+notes-badness-list))
-	 (type-must-be () (repeat emt:result-badness))
+	 (type-must-be () emt:testral:grade-aux)
 	 (item
 	    ((name test-bad))
-	    '(ungraded))
+	    (emt:testral:make-grade:ungraded))
       
 	 (item
 	    ((name test-passes))
@@ -187,7 +185,7 @@
       
 	 (item
 	    ((name has-children-1))
-	    '(ungraded))
+	    (emt:testral:make-grade:ungraded))
 
 	 (item
 	    ((name gone))
@@ -196,7 +194,7 @@
 ;;       (group
 ;; 	 ;;$$RETHINK ME  Suites should only have own badnesses
 ;; 	 ((type suite-badness-list))
-;; 	 (type-must-be () (repeat emt:result-badness))
+;; 	 (type-must-be () emt:testral:grade-aux)
 
 ;; 	 (item
 ;; 	    ((name test-bad)(tagged-by name))
