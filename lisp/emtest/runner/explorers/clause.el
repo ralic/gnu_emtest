@@ -68,6 +68,7 @@
 		  form 
 		  (emtts:get-surrounders props)
 		  props)))
+	 (declare (special emt:trace:properties))
 	 (emth:abortscope
 	    aborted-p
 	    (emth:trap-errors (eval form-1))

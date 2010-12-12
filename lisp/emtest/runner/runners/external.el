@@ -200,8 +200,9 @@
 	    (timeout
 	       (or
 		  (second (assq 'timeout   form-parms))
-		  30)))
-      
+		  30))
+	    (emt:trace:properties props))
+	 (declare (special emt:trace:properties))
 	 (if
 	    (or
 	       (null exec+args)
