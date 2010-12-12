@@ -203,7 +203,7 @@ A and B must be use-categories"
 
 ;;;_ , Access to the database
 ;;;_  . emt:db:internal:with-db
-;;Mode can be {read, read/write}
+;;Mode can be {read, read/write}.  mode is not actually checked.
 (defmacro* emt:db:internal:with-db ((id backend) mode &rest body)
    ""
    (declare (debug ((&define symbolp symbolp) symbolp &rest form)))
@@ -216,7 +216,6 @@ A and B must be use-categories"
 	 (when
 	    (emt:db:whole->dirty ,id)
 	    (emt:db:internal:set-all ,backend ,id)))))
-
 
 ;;;_ , Persist object types interface
 
@@ -380,9 +379,8 @@ If CREATE-P is non-nil, create it if it doesn't exist."
 (defvar emt:db:internal:tq-alist 
    '()
    "Alist from absolute filenames to file tqs" )
+
 ;;;_  . Make the queues - one for each distinct filename
-;;$$NEW, untested, to be used in the functions below (uncomment it and
-;;replace other code with it)
 (defun emt:db:internal:name->tq (filename)
    ""
    (or
@@ -400,29 +398,25 @@ If CREATE-P is non-nil, create it if it doesn't exist."
 ;;;_  . emt:db:internal:get-all
 (defun emt:db:internal:get-all (backend)
    ""
-   ;;For now, always use persist.el as the backend
+   ;;For now, always use tinydb.el as the backend
    (let
-      ((filename  ;;Is this an index or the list to one?
+      ((filename
 	  (second backend)))
-      '
+
       (emt:db:make-whole
 	 :list
-	 (tehom-persist-buffer-as-const-obj filename x () #'listp
-	    x))
-      (tinydb-get-obj (emt:db:internal:name->tq filename))))
+	 (tinydb-get-obj (emt:db:internal:name->tq filename)))))
 
 ;;;_  . emt:db:internal:set-all
 (defun emt:db:internal:set-all (backend arg)
    ""
    
-   ;;For now, always use persist.el as the backend
+   ;;For now, always use tinydb.el as the backend
    (let
       ((filename
 	  (second backend))
 	 (obj
 	    (emt:db:whole->list arg)))
-      '
-      (tehom-update-persist-buffer filename obj nil #'listp)
       (tinydb-set-obj (emt:db:internal:name->tq filename) obj)))
 
 ;;;_. Footers
