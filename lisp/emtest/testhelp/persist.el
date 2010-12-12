@@ -43,6 +43,7 @@
 ;;;###autoload
 (defun emt:persist (id &optional backend)
    "Return a persisting object or a placeholder"
+   (declare (special emt:trace:properties))
    (let
       ((backend
 	  (or
