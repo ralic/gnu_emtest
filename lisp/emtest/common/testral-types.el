@@ -148,7 +148,6 @@
 	      (:include emt:testral:pop))
    ""
    )
-
 ;;;_   , Error-raised
 (defstruct (emt:testral:error-raised
 	    (:constructor emt:testral:make-error-raised)
@@ -156,6 +155,17 @@
 	      (:include emt:testral:alone))
    ""
    (err () :type t))
+
+;;;_   , not-in-db
+(defstruct (emt:testral:not-in-db
+	    (:constructor emt:testral:make-not-in-db)
+	    (:conc-name emt:testral:not-in-db->)
+	      (:include emt:testral:alone))
+   "Report that ID was not in the database"
+   (backend  () :type t)
+   (id-in-db () :type t)
+   (value    () :type t))
+
 
 ;;;_  . Contents discrimination for suite type
 

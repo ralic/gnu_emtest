@@ -31,7 +31,8 @@
 ;;;_ , Requires
 
 (require 'emtest/common/result-types)
-;;$ADD ME Also requires the shared persist functionality
+(require 'emtest/common/persist-2)
+
 
 ;;;_. Body
 
@@ -39,8 +40,7 @@
 
 
 ;;;_  . emt:persist
-;;$$NORMALIZE ME  Don't use emt:trace:properties, use TESTRAL
-;;;###autoload
+' ;;$$OBSOLETE
 (defun emt:persist (id &optional backend)
    "Return a persisting object or a placeholder"
    (declare (special emt:trace:properties))
@@ -60,6 +60,56 @@
       (emt:db:make-id-index
 	 :id id
 	 :backend backend)))
+
+;;;_  . emt:eq-persist-p
+;;$$NORMALIZE ME  Don't use emt:trace:properties, use TESTRAL
+;;;###autoload
+(defun emt:eq-persist-p (compare-f value id &optional backend)
+   "Compare VALUE to the value of ID in a database, using COMPARE-F.
+If ID does not exist in the database, make a TESTRAL note which
+includes the value of VALUE.
+
+BACKEND, if given, describes the database backend."
+
+   ;;$$IMPROVE ME This implies it is called in an clause context and
+   ;;an abort-controlled context.  We should check those and act OK
+   ;;even when they're false.
+   (declare (special emt:trace:properties emtt:*abort-p*))
+   (let*
+      ((backend
+	  (or
+	     backend
+	     ;;$$ENCAP ME - this should be a standard property-getter,
+	     ;;and not expose `emt:trace:properties'.
+	     ;;Use utim:get-properties.  But first remove that from
+	     ;;tester.el and give it the right default.
+	     ;;(utim:get-properties 'db-id emt:trace:properties)
+	     (let
+		((cell (assoc 'db-id emt:trace:properties)))
+		(when cell
+		   (second cell)))
+	     ;;Here add any other ways of learning the backend
+	     (error "No backend was provided")))
+
+	 ;;Try to get the object. If we can't, make a note.
+	 (stored-value
+	    (condition-case err
+	       (emdb:get-value backend id 'correct-answer)
+	       ;;$$IMPROVE ME Would like to take a dedicated error
+	       ;;value, same as what `emdb:get-value' throws.
+	       (error
+		  (emtt:testral:add-note
+		     (emt:testral:make-not-in-db
+			:id-in-db id
+			:backend  backend
+			:value    value
+			:badnesses 
+			(emt:testral:make-grade:ungraded
+			   :contents 
+			   "ID is not in the database")))
+		  (setq emtt:*abort-p* t)))))
+      
+      (funcall compare-f value stored-value)))
 
 
 ;;;_. Footers
