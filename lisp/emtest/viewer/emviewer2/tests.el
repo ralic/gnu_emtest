@@ -30,8 +30,8 @@
 ;;;_ , Requires
 
 (require 'emtest/runner/define)
-(require 'emtest/viewer/emviewer)
-(require 'emtest/viewer/emviewer/testhelp)
+(require 'emtest/viewer/emviewer2)
+(require 'emtest/viewer/emviewer2/testhelp)
 (require 'emtest/testhelp/persist)
 (require 'emtest/testhelp/tagnames)
 (require 'emtest/common/testral-types/testhelp)
