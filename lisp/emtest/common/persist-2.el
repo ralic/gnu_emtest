@@ -46,7 +46,7 @@
    value)
 
 ;;;_  . use-category type
-(deftype emt:persist:use-category () 
+(deftype emdb:use-category () 
    '(member correct-answer correct-type wrong-answer nil))
 ;;;_ , Accessing items
 
@@ -60,7 +60,7 @@
 	 (cell
 	    (assoc id all)))
       (if cell
-	 cell
+	 (emdb:record->value cell)
 	 ;;$$IMPROVE ME  Would like a dedicated error value
 	 (error "Key not found: %s in backend %s" id backend))))
 
