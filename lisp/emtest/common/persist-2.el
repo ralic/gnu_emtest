@@ -86,44 +86,40 @@
 
 
 ;;;_ , The database itself
-;;;_  . emt:db:internal:tq-alist
-(defvar emt:db:internal:tq-alist 
+;;For now, always use tinydb.el as the backend
+;;;_  . emt:db:internal:tinydb-alist
+(defvar emt:db:internal:tinydb-alist 
    '()
    "Alist from absolute filenames to file tqs" )
 
 ;;;_  . Make the queues - one for each distinct filename
-(defun emt:db:internal:name->tq (filename)
-   ""
+(defun emt:db:internal:name->tinydb (filename)
+   "Return a tinydb "
    (or
       (let
-	 ((cell (assoc filename emt:db:internal:tq-alist)))
+	 ((cell (assoc filename emt:db:internal:tinydb-alist)))
 	 (second cell))
       (let 
 	 ((filetq
 	     (tinydb-persist-make-q filename '() nil #'listp)))
-	 (push (list filename filetq) emt:db:internal:tq-alist)
+	 (push (list filename filetq) emt:db:internal:tinydb-alist)
 	 filetq)))
-
-
 
 ;;;_  . emt:db:internal:get-all
 (defun emt:db:internal:get-all (backend)
-   ""
-   ;;For now, always use tinydb.el as the backend
+   "Return the database object as a whole"
    (let
       ((filename
 	  (second backend)))
-      (tinydb-get-obj (emt:db:internal:name->tq filename))))
+      (tinydb-get-obj (emt:db:internal:name->tinydb filename))))
 
 ;;;_  . emt:db:internal:set-all
 (defun emt:db:internal:set-all (backend value)
-   ""
-   
-   ;;For now, always use tinydb.el as the backend
+   "Set the database object as a whole"
    (let
       ((filename
 	  (second backend)))
-      (tinydb-set-obj (emt:db:internal:name->tq filename) value)))
+      (tinydb-set-obj (emt:db:internal:name->tinydb filename) value)))
 
 
 ;;;_. Footers
