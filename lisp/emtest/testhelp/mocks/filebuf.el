@@ -100,15 +100,6 @@ You may want to use this to umount a ramdisk"
    :group 'emtest/testhelp/mocks/filebuf)
 
 ;;;_: Code:
-;;;_ , emtb:expand-filename-by-load-file
-;;;###autoload
-(defun emtb:expand-filename-by-load-file (filename)
-   ""
-   (expand-file-name filename
-      (if load-file-name
-	 (file-name-directory 
-	    (file-truename load-file-name)))))
-
 ;;;_ , Setup file
 
 ;;;_  . Buffer containing known contents

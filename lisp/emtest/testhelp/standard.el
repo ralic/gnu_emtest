@@ -47,6 +47,19 @@
    '(error emt:already-handled))
 (put 'emt:already-handled 'error-message
    "This error has already been recorded in the diagnostic trace")
+;;;_ , File location
+
+;;;_  . emt:expand-filename-here
+;;;###autoload
+(defun emt:expand-filename-here (filename)
+   ""
+   (expand-file-name filename
+      (if load-file-name
+	 (file-name-directory 
+	    (file-truename load-file-name)))))
+;;For backward compatibility.
+;;;###autoload
+(defalias 'emtb:expand-filename-by-load-file 'emt:expand-filename-here)
 
 ;;;_ , Doc
 ;;;_  . emt:doc
