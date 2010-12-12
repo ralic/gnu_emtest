@@ -96,6 +96,7 @@
    (list () :type (repeat emt:db:single)))
 
 ;;;_  . Group index
+;;Seems never to have been used.
 (defstruct (emt:db:group
 	    (:constructor emt:db:make-group)
 	    (:conc-name emt:db:group-))
