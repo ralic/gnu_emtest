@@ -156,7 +156,6 @@ LIB-PATH must be a path to a library that is already loaded."
 	    :info '())
 	 list-to-run)))
 ;;;_ , Insinuate
-;;;###autoload (require 'emtest/runner/explorers/all)
 ;;;###autoload (emtt:add-explorer #'emthow:library:elisp-load-p #'emtt:explore-library
 ;;;###autoload "Elisp library") 
 

@@ -88,7 +88,6 @@
 '(or (get symbol 'emtt:test-thru) symbol)
 
 ;;;_ , Insinuate
-;;;###autoload (require 'emtest/runner/explorers/all)
 ;;;###autoload (emtt:add-explorer #'emthow:suite-p #'emtt:explore-suite
 ;;;###autoload "Suite") 
 

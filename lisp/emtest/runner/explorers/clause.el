@@ -121,7 +121,6 @@ This is the heart of Emtest exploration: A test itself."
       report-f))
 
 ;;;_   , Insinuate
-;;;###autoload (require 'emtest/runner/explorers/all)
 ;;;###autoload (emtt:add-explorer #'emthow:form-p #'emtt:explore-literal-clause
 ;;;###autoload "Literal clause") 
 ;;;_  . emtt:explore-indexed-clause
@@ -147,6 +146,9 @@ This is the heart of Emtest exploration: A test itself."
 ;;;_   , Insinuate
 ;;;###autoload (emtt:add-explorer #'emthow:indexed-clause-p #'emtt:explore-indexed-clause
 ;;;###autoload "Indexed clause") 
+
+;;$$TRANSITIONAL
+;;;###autoload (provide 'emtest/runner/loadexplorers)
 
 ;;;_. Footers
 ;;;_ , Provides

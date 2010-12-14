@@ -35,6 +35,7 @@
 (require 'emtest/common/config)
 (require 'emtest/common/result-types)
 (require 'emtest/common/testral-types)
+(require 'emtest/runner/loadexplorers)
 
 ;;;_. Body
 ;;;_ , Registering explorers
