@@ -90,30 +90,31 @@
        "\n"
        ,(emtvf:node view-node data-list)))
 ;;;_  . emtvf:headline
-(defun emtvf:headline (depth face)
+(defun emtvf:headline (depth face headtext)
    "Make a headline beginning for DEPTH, using FACE"
    
    `(
        (sep 3)
        (w/face ,(make-string depth ?*) ,face)
-       " " ))
+       " " 
+       ,headtext))
+
 
 ;;;_  . emtvf:headline-w-badnesses
 (defun emtvf:headline-w-badnesses (depth name badnesses data-list)
    "Make a headline"
-   (append
-      (emtvf:headline depth (emtvf:grade-overall-face badnesses))
+   `(
+      ,(emtvf:headline depth (emtvf:grade-overall-face badnesses) '())
       ;;This is used in the dynamic method.
-      (apply #'append
+      ,(apply #'append
 	 (mapcar
 	    #'(lambda (x)
 		 (list x " "))
 	    (loal:val 'hdln-path data-list '())))
-      (list 
-	 `(w/face ,name font-lock-function-name-face) 
-	 " ")
-      (emtvf:sum-badnesses-short badnesses data-list) 
-      '((sep 2))))
+       (w/face ,name font-lock-function-name-face)
+       " "
+      ,(emtvf:sum-badnesses-short badnesses data-list) 
+      (sep 2)))
 
 ;;;_  . emtvf:node
 (defun emtvf:node (view-node data-list)
