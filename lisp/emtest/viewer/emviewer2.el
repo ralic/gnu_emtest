@@ -43,7 +43,7 @@
 ;;;_ , Constants
 ;;;_  . emtv2:report-buffer-name
 (defconst emtv2:report-buffer-name 
-   "*Emtest Report (Plain viewer)*")
+   "*Emtest Report*")
 ;;;_ , Vars
 (defvar emtv2:report-buffer nil 
    "Buffer that we write reports in" )
@@ -121,7 +121,7 @@
 	    (append
 	       '((dynamic emtv2:insert-dynamic))
 	       loformat:default-alist))
-	 (outline-mode))))
+	 (emtest/viewer/mode))))
 
 ;;;_ , Overall callback
 ;;;_  . emtv2:tests-outstanding

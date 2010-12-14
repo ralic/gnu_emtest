@@ -54,15 +54,38 @@
       (define-key map "o" 'hide-other)
 
       (when (featurep 'outline-magic)
-	 (define-key map [TAB] 'outline-cycle))
+	 (define-key map "\t" 'outline-cycle))
       
       map)
    "Keymap for emtest/viewer/mode" )
 ;;;_ , Keymap for menu bar
+;;;_ , emtest/viewer/mode-hook
+(defvar emtest/viewer/mode-hook nil 
+   "This hook is run when emtest/viewer/mode starts" )
+;;;_ , emtest/viewer/mode
+(defun emtest/viewer/mode ()
+   "Mode for Emtest results."
 
-;;;_ , Mode setup
+   (let*
+      ()
 
-;;$$WRITE ME - mostly borrow from outline mode
+      (kill-all-local-variables)
+
+      ;;Borrowed from outline mode to support its borrowed commands.
+      (make-local-variable 'line-move-ignore-invisible)
+      (setq line-move-ignore-invisible t)
+      ;; Cause use of ellipses for invisible text.
+      (add-to-invisibility-spec '(outline . t))
+      (add-hook 'change-major-mode-hook 'show-all nil t)
+
+      (setq major-mode 'emtest/viewer/mode)
+      (setq mode-name "Emtest")
+      (use-local-map emtest/viewer/mode-map)
+      (put 'funny-mode 'mode-class 'special)
+      (run-mode-hooks
+	 emtest/viewer/mode-hook)))
+
+
 
 ;;;_. Footers
 ;;;_ , Provides
