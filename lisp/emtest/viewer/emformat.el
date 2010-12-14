@@ -97,24 +97,27 @@
        (sep 3)
        (w/face ,(make-string depth ?*) ,face)
        " " 
-       ,headtext))
+       ,headtext
+       (sep 2)))
 
 
 ;;;_  . emtvf:headline-w-badnesses
 (defun emtvf:headline-w-badnesses (depth name badnesses data-list)
    "Make a headline"
-   `(
-      ,(emtvf:headline depth (emtvf:grade-overall-face badnesses) '())
-      ;;This is used in the dynamic method.
-      ,(apply #'append
-	 (mapcar
-	    #'(lambda (x)
-		 (list x " "))
-	    (loal:val 'hdln-path data-list '())))
-       (w/face ,name font-lock-function-name-face)
-       " "
-      ,(emtvf:sum-badnesses-short badnesses data-list) 
-      (sep 2)))
+   (emtvf:headline 
+      depth 
+      (emtvf:grade-overall-face badnesses) 
+      `(
+	  ;;This is used in the dynamic method.
+	  ,(apply #'append
+	      (mapcar
+		 #'(lambda (x)
+		      (list x " "))
+		 (loal:val 'hdln-path data-list '())))
+	  (w/face ,name font-lock-function-name-face)
+	  " "
+	  ,(emtvf:sum-badnesses-short badnesses data-list))))
+
 
 ;;;_  . emtvf:node
 (defun emtvf:node (view-node data-list)

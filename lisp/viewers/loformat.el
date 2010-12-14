@@ -161,7 +161,7 @@ The insert function is always `insert'."
       ((consp tree)
 	 (let
 	    ((gov (car tree)))
-	 (if (symbolp gov)
+	 (if (and gov (symbolp gov))
 	    (let
 	       ((cell
 		   (assoc gov loformat:alist)))
