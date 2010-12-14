@@ -35,7 +35,6 @@
 (require 'emtest/common/config)
 (require 'emtest/common/result-types)
 (require 'emtest/common/testral-types)
-(require 'emtest/runner/loadexplorers)
 
 ;;;_. Body
 ;;;_ , Registering explorers
@@ -81,6 +80,9 @@ HOW must be of a subtype of emthow"
 	 #'emtt:explore-fallback)))
 
 ;;;_  . Special explorers
+;;;_   , Include the autoload list of explorers
+(require 'emtest/runner/loadexplorers)
+
 ;;;_   , emtt:explore-hello
 ;;This doesn't require an autoload but all others do.
 (defun emtt:explore-hello (test-id props path report-f)
