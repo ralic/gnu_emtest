@@ -32,86 +32,10 @@
 (require 'utility/pathtree)
 (require 'emtest/common/testral-types)
 (require 'emtest/viewer/view-types)
-(require 'emtest/common/grade-types)
+(require 'emtest/viewer/sumgrades)
 
 ;;;_. Body
 ;;;_ , Summing grades
-;;;_  . emtvr:grade->summary
-(defun emtvr:grade->summary (obj)
-   "Change OBJ object into a grade summary.
-OBJ must be a emt:testral:grade-aux and may already be a summary."
-   (check-type obj emt:testral:grade-aux)
-   (typecase obj 
-      (emt:testral:grade:summary obj)
-      (t
-	 (let
-	    ((obj-aux (emt:testral:make-grade:summary)))
-	    (emtvr:add-badnesses obj-aux obj)
-	    obj-aux))))
-
-;;;_  . emtvr:add-badnesses
-(defun emtvr:add-badnesses (sums a)
-   ""
-   (typecase a
-      (emt:testral:grade:summary
-	 (incf 
-	    (emt:testral:grade:summary->test-cases sums)
-	    (emt:testral:grade:summary->test-cases a))
-	 (incf 
-	    (emt:testral:grade:summary->fails sums)
-	    (emt:testral:grade:summary->fails a))	 
-	 (incf 
-	    (emt:testral:grade:summary->ungradeds sums)
-	    (emt:testral:grade:summary->ungradeds a))
-	 (incf 
-	    (emt:testral:grade:summary->dormants sums)
-	    (emt:testral:grade:summary->dormants a))
-	 (incf 
-	    (emt:testral:grade:summary->blowouts sums)
-	    (emt:testral:grade:summary->blowouts a)))
-      (emt:testral:grade:test-case
-	 (incf 
-	    (emt:testral:grade:summary->test-cases sums)))
-      (emt:testral:grade:fail
-	 (incf 
-	    (emt:testral:grade:summary->fails      sums)))
-      (emt:testral:grade:ungraded
-	 (incf 
-	    (emt:testral:grade:summary->ungradeds  sums)))
-      (emt:testral:grade:dormant
-	 (incf 
-	    (emt:testral:grade:summary->dormants   sums)))
-      (emt:testral:grade:blowout
-	 (incf 
-	    (emt:testral:grade:summary->blowouts   sums)))      
-      (t nil)))
-
-;;;_  . emtvr:combine-badnesses
-(defun emtvr:combine-badnesses (bads)
-   "Combine the list BADS into one entry"
-   (let
-      ((all
-	  (reduce
-	     #'(lambda (a b)
-		  (check-type a emt:testral:grade-aux)
-		  (check-type b emt:testral:grade-aux)
-		  (cond
-		     ((null a) b)
-		     ((null b) a)
-		     ((and
-			 (emt:testral:grade-p a)
-			 (emt:testral:grade-p b))
-			(let
-			   ((sums (emt:testral:make-grade:summary)))
-			   (emtvr:add-badnesses sums a)
-			   (emtvr:add-badnesses sums b)
-			   sums))
-		     (t
-			(error "Shouldn't get here"))))
-	     bads)))
-      (check-type all emt:testral:grade-aux)
-      all))
-
 
 ;;;_  . emtvr:notelist-raw-badnesses
 (defun emtvr:notelist-raw-badnesses (note-list)
@@ -156,10 +80,11 @@ could be, such as when a note-list hasn't been expanded."
 			      (t own-badnesses))))))
 	       (emt:testral:test-runner-info
 		  '()))))
+      ;;$$IMPROVE ME Treat this.
       (emt:view:TESTRAL '())
       (emt:view:TESTRAL-unexpanded
 	 '())
-      ;;The base case shouldn't be here, but accept it for now
+      ;;Only the root will have this type.
       (emt:view:presentable '())))
 
 
