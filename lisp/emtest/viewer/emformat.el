@@ -33,6 +33,7 @@
 (require 'utility/loal)     ;;The data-list type
 (require 'viewers/hiformat)
 (require 'emtest/viewer/view-types)
+(require 'emtest/common/grade-types)
 
 ;;;_. Body
 

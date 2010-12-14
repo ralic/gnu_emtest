@@ -39,35 +39,6 @@
    "Can be a UUID string or a how-to-run object"
    '(or string emthow))
 
-;;;_ , emtvr:suite-newstyle
-
-;;Note that changes will affect basically just `emtvr:one-newstyle'.
-' ;;$$OBSOLETE
-(defstruct (emtvr:suite-newstyle
-	    (:constructor emtvr:make-suite-newstyle)
-	    (:conc-name emtvr:suite-newstyle->))
-   "Report element in receive tree"
-   (id () :type emtvr:suite-newstyle->id
-      :doc "The \"official\" id.")
-
-   (how-to-run ():type emtt:explorable
-      :doc "How to run this as a test.")
-
-   ;;The full presentation path, including any prefix from report.
-   (presentation-path ()   
-      :type emt:testral:suite-id
-      :doc "The path to the corresponding node in the pathtree.")
-
-   ;;This is becoming more of a datestamp/circumstance info.
-   (testrun-id ()
-      :type emt:testral:testrun-id
-      :doc "The ID of the testrun that created this result.")
-   (result ()     
-      :type (or null 
-	       emt:testral:suite 
-	       emt:testral:test-runner-info)
-      :doc "The result data itself"))
-
 
 ;;;_ , Presentables
 ;;$$RENAME US Use prefix emtvr:
@@ -84,8 +55,6 @@
    (sum-badnesses () :type (repeat emt:result-badness))
    ;;This relates to a display
    (list ()))
-
-
 
 ;;;_  . Suite in tree (as by emviewer)
 (defstruct (emt:view:suite-newstyle
