@@ -111,11 +111,12 @@ PROPS is the property-list for the text, if any."
 (defun loformat:insert:text-w/face (recurse-f str face)
    ""
 
-   (let*
-      ((str-2
-	  (propertize str 'face face)))
+   (let
+      ((loformat:text-properties
+	  (list 'face face)))
+      (declare (special loformat:text-properties))
       
-      (insert str-2)))
+      (funcall recurse-f str)))
 
 ;;;_ , Defaults
 ;;;_  . loformat:default-alist
@@ -132,9 +133,11 @@ PROPS is the property-list for the text, if any."
 (defun loformat:insert (tree &optional alist loformat:default)
    ""
    ;;The arguments become special variables
-   (declare (special loformat:alist loformat:default))
+   (declare (special 
+	       loformat:alist loformat:text-properties loformat:default))
    (let
-      ((loformat:alist (or alist loformat:default-alist)))
+      ((loformat:alist (or alist loformat:default-alist))
+	 (loformat:text-properties nil))
       (loformat:insert-x tree)))
 
 ;;;_   , loformat:insert-x
@@ -147,7 +150,7 @@ Each such function takes a callback (to loformat:insert) and arbitrary
 arguments.
 
 The insert function is always `insert'."
-   (declare (special loformat:alist))
+   (declare (special loformat:alist loformat:text-properties))
    (cond
       ;;Do nothing for empty list
       ((null tree) nil)
@@ -166,6 +169,11 @@ The insert function is always `insert'."
 	    ;;component, not a governor.
 	    (mapcar #'loformat:insert-x tree))))
       ;;Just insert atoms
+      ((stringp tree)
+	 (insert
+	    (if loformat:text-properties
+	       (apply #'propertize tree loformat:text-properties)
+	       tree)))
       (t (insert tree))))
 
 ;;;_. Footers
