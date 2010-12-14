@@ -91,7 +91,7 @@
        ,(emtvf:node view-node data-list)))
 ;;;_  . emtvf:headline
 (defun emtvf:headline (depth face headtext)
-   "Make a headline beginning for DEPTH, using FACE"
+   "Make a headline of HEADTEXT for DEPTH, using FACE"
    
    `(
        (sep 3)
@@ -103,7 +103,7 @@
 
 ;;;_  . emtvf:headline-w-badnesses
 (defun emtvf:headline-w-badnesses (depth name badnesses data-list)
-   "Make a headline"
+   "Make a headline for NAME, describing BADNESSES. "
    (emtvf:headline 
       depth 
       (emtvf:grade-overall-face badnesses) 
@@ -166,18 +166,13 @@ DATA-LIST must be a list of alists."
 		  
 		     (emt:testral:suite
 			(append
-			   (list
-			      "Results for " name "\n")
-
+			   ;;$$IMPROVE ME Add a button to rerun the
+			   ;;test.
 			   ;;(emtvr:suite-newstyle->how-to-run cell)
-			   ;;`how-to-run' informs a button.
-			   ;;NB, this will now be a `emtt:explorable'
-			   ;;or even a `emtt:method', not an :e-n as
-			   ;;it was before.
-
-			   ;;Info shows nothing for now.  It has no
-			   ;;canonical fields yet.
-			   ;;Use `emtvf:info'
+			   ;;`how-to-run' informs a button.  For now,
+			   ;;just use the `emthow'.  Later we may keep
+			   ;;or build an `emtt:explorable'
+			   ;;or even an `emtt:method'
 
 			   (etypecase (emt:testral:suite->contents object)
 			      (emt:testral:runform-list
@@ -256,7 +251,9 @@ DATA-LIST must be a list of alists."
    ""
    
    (let*
-      ()
+      ((depth
+	  ;;$$FIX ME We are not getting the incremented depth here.
+	  (1+ (loal:val 'depth data-list 0))))
       (append
 	 (apply #'append
 	    (mapcar
@@ -265,33 +262,59 @@ DATA-LIST must be a list of alists."
 	       (emt:testral:base->prestn-path obj)))
 	 (etypecase obj
 	    ;;This is the only one that will actually carry over in the
-	    ;;long term, the others just inform structure.
-	    ;;$$RETHINK:  The others are obsolescent
+	    ;;long term, the others are actually obsolescent.
+
 	    (emt:testral:alone
 	       (typecase obj
 		  (emt:testral:error-raised
-		     `((nl-if-none)
-			 "Error raised: "
+		     `(
+			 ,(emtvf:headline 
+			     (1+ depth)
+			     'emtvf:face:ungraded
+			     "Error raised: ")
 			 ,(prin1-to-string
 			     (emt:testral:error-raised->err obj))
 			 "\n"))
 		  (emt:testral:doc
-		     `((nl-if-none)
+		     `(
+			 ,(emtvf:headline 
+			     (1+ depth)
+			     nil
+			     "Doc ")
 			 ,(emt:testral:doc->str obj)
 			 "\n"))
 		  (emt:testral:not-in-db
 		     ;;$$IMPROVE ME Add a button to accept value,
 		     ;;putting it in the database.
-		     `((nl-if-none)
-			 ,(make-string 10 ?*)
-			 (sep 2)
+		     `(
+			 ,(emtvf:headline 
+			     (1+ depth)
+			     'emtvf:face:ungraded
+			     "ID not in database ")
+			 ,(emtvf:headline 
+			     (+ 2 depth)
+			     nil
+			     "Value ")
 			 ,(object (emt:testral:not-in-db->value obj))
-			 ,(make-string 10 ?*)
-			 (sep 2)
-			 ,(object (emt:testral:not-in-db->id obj))
-			 ))
+			 ;;$$CHECK ME Is this too prolix wrt ID and
+			 ;;backend?  Maybe a plain list instead.
+			 ,(emtvf:headline 
+			     (+ 2 depth)
+			     nil
+			     "ID ")
+			 ,(object (emt:testral:not-in-db->id-in-db obj))
+			 ,(emtvf:headline 
+			     (+ 2 depth)
+			     nil
+			     "Backend ")
+			 ,(object (emt:testral:not-in-db->backend obj))))
+		  
 		  
 		  (t '((nl-if-none )
+			 ,(emtvf:headline 
+			     (1+ depth)
+			     nil
+			     "Doc ")
 			 "A TESTRAL note (alone)"
 			 "\n"))))
 
