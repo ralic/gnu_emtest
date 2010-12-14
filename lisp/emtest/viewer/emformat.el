@@ -96,7 +96,9 @@
    (append
       (list
 	 "\n"
-	 (make-string depth ?*) 
+	 `(text-w/face 
+	     ,(make-string depth ?*)
+	     ,(emtvf:grade-overall-face badnesses))
 	 " " )
       (apply #'append
 	 (mapcar
@@ -307,6 +309,26 @@ DATA-LIST must be a list of alists."
       (hiformat:grammar:number-agreement 
 	 n singular plural)))
 
+;;;_  . emtvf:grade-overall-face
+(defun emtvf:grade-overall-face (obj)
+   ""
+   
+   (let*
+      (
+	 (obj (emtvr:grade->summary obj))
+	 (test-cases (emt:testral:grade:summary->test-cases obj))
+	 (fails      (emt:testral:grade:summary->fails      obj))
+	 (ungradeds  (emt:testral:grade:summary->ungradeds  obj))
+	 (dormants   (emt:testral:grade:summary->dormants   obj))
+	 (blowouts   (emt:testral:grade:summary->blowouts   obj)))
+      (cond
+	 ((> blowouts   0) 'emtvf:face:blowout)
+	 ((> ungradeds  0) 'emtvf:face:ungraded)
+	 ((> fails      0) 'emtvf:face:failed)
+	 ((> dormants   0) 'emtvf:face:dormant)
+	 ((> test-cases 0) 'emtvf:face:ok)
+	 (t                'emtvf:face:dormant))))
+
 ;;;_  . emtvf:sum-badnesses-short
 (defun emtvf:sum-badnesses-short (obj data &rest d)
    "Give a summary of grades for this object."
@@ -326,24 +348,28 @@ DATA-LIST must be a list of alists."
 	    (= blowouts  0))
 	 (if (> test-cases 0)
 	    (list
-	       '(text-w/face "All OK" compilation-info)
+	       '(text-w/face "All OK" emtvf:face:ok)
 	       " ("
 	       (hiformat:grammar:num-and-noun
 		  test-cases "case" "cases")
 	       ")")
-	    (list "Nothing was tested"))
+	    '(text-w/face "Nothing was tested" emtvf:face:dormant))
 	 (list
-	    '(text-w/face "Problems: " compilation-error)
-	    
+	    '(text-w/face "Problems: " emtvf:face:failed)
 	    (hiformat:map 
 	       #'(lambda (obj &rest r)
 		    obj)
 	       (delq nil
-		  (list
-		     (when (> blowouts  0) '("Blowouts"))
-		     (when (> ungradeds 0) '("Ungraded tests"))
-		     (when (> fails     0) '("Failures"))
-		     (when (> dormants  0) '("Dormant tests"))))
+		  (mapcar
+		     #'(lambda (n text face)
+			  (when (> n  0) 
+			     `(text-w/face text face)))
+		     (list
+			(list blowouts  "Blowouts"	 emtvf:face:blowout)
+			(list ungradeds "Ungraded tests" emtvf:face:ungraded)
+			(list fails     "Failures" 	 emtvf:face:failed)
+			(list dormants  "Dormant tests"  emtvf:face:dormant))))
+	       
 	       :separator '(", "))
 	    "."))))
 

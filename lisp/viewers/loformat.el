@@ -113,7 +113,7 @@ PROPS is the property-list for the text, if any."
 
    (let*
       ((str-2
-	  (propertize "Emtest results" 'face face)))
+	  (propertize str 'face face)))
       
       (insert str-2)))
 
