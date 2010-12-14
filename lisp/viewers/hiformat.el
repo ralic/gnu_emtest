@@ -62,8 +62,6 @@ The type only demands a function, so it's mostly for
 
 ;;;_ , Functions
 ;;;_  . hiformat:map Map over a list
-;;Perhaps more generally with a function to get next element.
-
 (defun* hiformat:map (func list &key data-loal separator els=0 els=1)
    "Format LIST, using FUNC to transform each element.
 FUNC must be a function taking 3 args:
@@ -98,8 +96,8 @@ ELS=1 must be a function taking 3 args (same signature as FUNC).
 		     (immediate-data
 			(append
 			   (list (list 'index index))
-			   (if (= index 0) '((first t)) '())
-			   (if (= index (1- len)) '((last t)) '())))
+			   (if (= index 0)        '((first t)) '())
+			   (if (= index (1- len)) '((last t))  '())))
 		     (sub-list
 			(funcall func el data-loal immediate-data)))
 	    
