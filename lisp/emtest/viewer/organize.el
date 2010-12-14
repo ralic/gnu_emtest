@@ -60,10 +60,9 @@ It just tells a pathtree to add this node."
    ""
    (unless emtvo:pathtree
       (setq emtvo:pathtree
-	 (emtvp:make-empty-tree-newstyle
+	 (emtvp:make-pathtree
 	    pathtree-cb
-	    ;;$$IMPROVE ME make-display-data risks capture.
-	    `(lambda ()
+	    `(lambda (old-version arg)
 		 (emt:view:make-presentable
 		    :list (,make-display-data)))
 	    'emt:view:presentable)))

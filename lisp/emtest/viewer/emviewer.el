@@ -69,12 +69,14 @@ An `emtve' or `nil'." )
 ;;;_  . emtve:vp-node->dlist
 (defun emtve:vp-node->dlist (obj)
    ""
+   (error "Obsolete, pathtree nodes no longer accept data")
    (emt:view:presentable->list
       (emtvp:node->data obj)))
 
 ;;;_  . emtest:viewer:pathtree-cb
 (defun emtest:viewer:pathtree-cb (obj)
    "Callback to handle dirty flags, that `pathree' gets."
+   (error "Obsolete, pathtree nodes no longer accept data")
    (emtvp:util:handle-dirty obj
       (cond
 	 ((or
@@ -126,6 +128,7 @@ An `emtve' or `nil'." )
 ;;;_ , Setup emtest:viewer:setup-if-needed
 (defun emtest:viewer:setup-if-needed ()
    ""
+   (error "Obsolete, pathtree nodes no longer accept data")
    (unless 
       (and 
 	 emtve:chewie
@@ -158,6 +161,7 @@ An `emtve' or `nil'." )
 ;;;_ , emtve:tester-cb
 (defun emtve:tester-cb (report)
    "The Emviewer callback for emtest to use"
+   (error "Obsolete, pathtree nodes no longer accept data")
    (check-type report emt:testral:report)
    (emtest:viewer:setup-if-needed)
    (emtvo:receive report)

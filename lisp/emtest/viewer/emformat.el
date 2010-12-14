@@ -161,23 +161,21 @@ DATA-LIST must be a list of alists."
 
 	 ;;The top node, being the root of pathtree, will be this base
 	 ;;top and not a emt:view:presentable.
-	 (emtvp:node
-	    (let
-	       ((ch-data-list
-		   (loal:acons 'hdln-path '() data-list)))
-	       (hiformat:map 
-		     ;;Formatting for each child
-		     #'(lambda (obj data &rest d)
-			  (list
-			     `(dynamic ,obj 
-				 ,data
-				 ,#'emtvf:node)))
-		     children
-		     :separator '("\n")
-		     :data-loal data-list)))
+;; 	 (emtvp:node
+;; 	    (let
+;; 	       ((ch-data-list
+;; 		   (loal:acons 'hdln-path '() data-list)))
+;; 	       (hiformat:map 
+;; 		     ;;Formatting for each child
+;; 		     #'(lambda (obj data &rest d)
+;; 			  (list
+;; 			     `(dynamic ,obj 
+;; 				 ,data
+;; 				 ,#'emtvf:node)))
+;; 		     children
+;; 		     :separator '("\n")
+;; 		     :data-loal data-list)))
 	 
-	 ;;$$REPLACE MY WHOLE IDEA This could be a type for
-	 ;;tester-info instead.
 	 ;;Base type, for blank nodes.  
 	 (emt:view:presentable
 	    (if
