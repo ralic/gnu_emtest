@@ -115,8 +115,8 @@ PROPS is the property-list for the text, if any."
 
 (defun loformat:insert:w/face (recurse-f object face)
    "Insert OBJECT with the given face"
-   ;;$$IMPROVE ME Make and use `loformat:insert:w/extra-props' which
-   ;;only adds the properties.
+   ;;$$IMPROVE ME Make and use `loformat:insert:w/more-props' which
+   ;;would add to existing properties.
    (loformat:insert:w/props recurse-f object (list 'face face)))
 
 
@@ -128,7 +128,8 @@ PROPS is the property-list for the text, if any."
        (object      loformat:insert:object)
        (overlay     loformat:insert:overlay)
        (sep         loformat:insert:sep)
-       (w/face loformat:insert:w/face))
+       (w/face      loformat:insert:w/face)
+       (w/props     loformat:insert:w/props))
    "The default alist for `loformat:insert'" )
 ;;;_  . The insert function itself
 ;;;_   , loformat:insert
