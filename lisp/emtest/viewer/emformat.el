@@ -44,7 +44,7 @@
    "List of formatters that emformat uses." )
 ;;;_  . Faces
 (defface emtvf:face:ok 
-   '((default :foreground "green" :weight bold))
+   '((default :foreground "green3" :weight bold))
    "Face for reporting passed tests")
 
 (defface emtvf:face:failed 
@@ -361,14 +361,15 @@ DATA-LIST must be a list of alists."
 		    obj)
 	       (delq nil
 		  (mapcar
-		     #'(lambda (n text face)
-			  (when (> n  0) 
-			     `(text-w/face text face)))
+		     #'(lambda (data)
+			  (destructuring-bind (n text face) data
+			     (when (> n  0) 
+				`(text-w/face ,text ,face))))
 		     (list
-			(list blowouts  "Blowouts"	 emtvf:face:blowout)
-			(list ungradeds "Ungraded tests" emtvf:face:ungraded)
-			(list fails     "Failures" 	 emtvf:face:failed)
-			(list dormants  "Dormant tests"  emtvf:face:dormant))))
+			(list blowouts  "Blowouts"	 'emtvf:face:blowout)
+			(list ungradeds "Ungraded tests" 'emtvf:face:ungraded)
+			(list fails     "Failures" 	 'emtvf:face:failed)
+			(list dormants  "Dormant tests"  'emtvf:face:dormant))))
 	       
 	       :separator '(", "))
 	    "."))))
