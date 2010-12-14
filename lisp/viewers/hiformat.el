@@ -34,7 +34,6 @@
 ;;;_. Body
 ;;;_ , Types
 ;;;_  . hiformat:xformer
-;;$$MOVE ME
 (deftype hiformat:xformer ()
    "A formatting function.  
  * Takes an input object.
@@ -45,21 +44,6 @@ The type only demands a function, so it's mostly for
    documentation."
    '(satisfies functionp))
 
-;;;_  . hiformat:format Format list type
-;;$$OBSOLETE
-(deftype hiformat:format ()
-   "A format list"
-   '(repeat
-      (or
-	 ;;This may change from `string', because it should be
-	 ;;covariant with input type to loformat.
-	 string 
-	 (list 
-	    (member dynamic)
-	    t ;;Should be covariant with emformatter input type
-	    loal
-	    hiformat:xformer))))
-
 ;;;_ , Functions
 ;;;_  . hiformat:map Map over a list
 (defun* hiformat:map (func list &key data-loal separator els=0 els=1)
@@ -68,7 +52,7 @@ FUNC must be a function taking 3 args:
  * Object
  * A loal which is all the passed-down data
  * Immediate data.  This is a list.  It will contain `first', `last'
-   and `index' as appropriate.
+   and `index' set to appropriate values.
 
 DATA-LOAL must be a loal.
 
