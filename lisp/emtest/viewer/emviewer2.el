@@ -37,6 +37,7 @@
 (require 'emtest/viewer/empathtree)
 (require 'emtest/viewer/view-types)
 (require 'viewers/loformat)
+(require 'emtest/viewer/mode)
 
 ;;;_. Body
 ;;;_ , Constants
