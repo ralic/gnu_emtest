@@ -65,25 +65,19 @@
 ;;;_ , emtest/viewer/mode
 (defun emtest/viewer/mode ()
    "Mode for Emtest results."
+   (kill-all-local-variables)
 
-   (let*
-      ()
+   ;;Borrowed from outline mode to support its borrowed commands.
+   (make-local-variable 'line-move-ignore-invisible)
+   (setq line-move-ignore-invisible t)
+   (add-to-invisibility-spec '(outline . t))
+   (add-hook 'change-major-mode-hook 'show-all nil t)
 
-      (kill-all-local-variables)
-
-      ;;Borrowed from outline mode to support its borrowed commands.
-      (make-local-variable 'line-move-ignore-invisible)
-      (setq line-move-ignore-invisible t)
-      ;; Cause use of ellipses for invisible text.
-      (add-to-invisibility-spec '(outline . t))
-      (add-hook 'change-major-mode-hook 'show-all nil t)
-
-      (setq major-mode 'emtest/viewer/mode)
-      (setq mode-name "Emtest")
-      (use-local-map emtest/viewer/mode-map)
-      (put 'funny-mode 'mode-class 'special)
-      (run-mode-hooks
-	 emtest/viewer/mode-hook)))
+   (setq major-mode 'emtest/viewer/mode)
+   (setq mode-name "Emtest")
+   (use-local-map emtest/viewer/mode-map)
+   (put 'emtest/viewer/mode 'mode-class 'special)
+   (run-mode-hooks emtest/viewer/mode-hook))
 
 
 
