@@ -36,6 +36,7 @@
 ;;;_ , emtest/viewer/mode-map
 (defconst emtest/viewer/mode-map 
    (let ((map (make-sparse-keymap)))
+      (suppress-keymap map)
       (define-key map "n" 'outline-next-visible-heading)
       (define-key map "p" 'outline-previous-visible-heading)
       (define-key map "i" 'show-children)
