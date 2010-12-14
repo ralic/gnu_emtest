@@ -96,24 +96,29 @@ PROPS is the property-list for the text, if any."
 	 (bare-str
 	    ;;$$Possibly should be `custom-prin1-to-string' instead.
 	    (pp-to-string object))
-		     
+	 ;;$$IMPROVE ME Use loformat:insert:w/props instead.
 	 (str
 	    (if props
 	       (apply #'propertize bare-str props)
 	       bare-str)))
 		  
       (mapcar recurse-f (list '(sep 2) str '(sep 2)))))
+;;;_  . loformat:insert:w/props
+(defun loformat:insert:w/props (recurse-f object props)
+   ""
+   (let
+      ((loformat:text-properties props))
+      (declare (special loformat:text-properties))
+      (funcall recurse-f object)))
+
 ;;;_  . loformat:insert:w/face
 
-(defun loformat:insert:w/face (recurse-f str face)
-   ""
+(defun loformat:insert:w/face (recurse-f object face)
+   "Insert OBJECT with the given face"
+   ;;$$IMPROVE ME Make and use `loformat:insert:w/extra-props' which
+   ;;only adds the properties.
+   (loformat:insert:w/props recurse-f object (list 'face face)))
 
-   (let
-      ((loformat:text-properties
-	  (list 'face face)))
-      (declare (special loformat:text-properties))
-      
-      (funcall recurse-f str)))
 
 ;;;_ , Defaults
 ;;;_  . loformat:default-alist
@@ -123,7 +128,7 @@ PROPS is the property-list for the text, if any."
        (object      loformat:insert:object)
        (overlay     loformat:insert:overlay)
        (sep         loformat:insert:sep)
-       (w/face      loformat:insert:w/face))
+       (w/face loformat:insert:w/face))
    "The default alist for `loformat:insert'" )
 ;;;_  . The insert function itself
 ;;;_   , loformat:insert
