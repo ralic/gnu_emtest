@@ -108,7 +108,7 @@
       depth 
       (emtvf:grade-overall-face badnesses) 
       `(
-	  ;;This is used in the dynamic method.
+	  ;;This is used in the dynamic treatment.
 	  ,(apply #'append
 	      (mapcar
 		 #'(lambda (x)
@@ -240,11 +240,7 @@ DATA-LIST must be a list of alists."
 				    ,#'emtvf:node)))
 			children
 			:separator '("\n")
-			:data-loal data-list)))))
-
-	 ;;`nil' should not come here.
-	 )))
-
+			:data-loal data-list))))))))
 
 ;;;_  . emtvf:TESTRAL (TESTRAL note formatter)
 (defun emtvf:TESTRAL (obj data &rest d)
@@ -276,13 +272,37 @@ DATA-LIST must be a list of alists."
 			     (emt:testral:error-raised->err obj))
 			 "\n"))
 		  (emt:testral:doc
-		     `(
-			 ,(emtvf:headline 
-			     (1+ depth)
-			     nil
-			     "Doc ")
-			 ,(emt:testral:doc->str obj)
-			 "\n"))
+		     (let
+			((doc (emt:testral:doc->str obj)))
+			(cond
+			   ((not (string-match "\n" doc))
+			      `(
+				  ,(emtvf:headline 
+				      (1+ depth)
+				      nil
+				      doc)))
+			   ((string-match ": " doc)
+			      `(
+				  ,(emtvf:headline 
+				      (1+ depth)
+				      nil
+				      (substring
+					 doc
+					 0
+					 (match-end 0)))
+				  ,(substring
+				      doc
+				      (match-end 0))
+				  "\n"))
+			   (t
+			      `(
+				  ,(emtvf:headline 
+				      (1+ depth)
+				      nil
+				      "Doc ")
+				  ,(emt:testral:doc->str obj)
+				  "\n")))))
+		  
 		  (emt:testral:not-in-db
 		     ;;$$IMPROVE ME Add a button to accept value,
 		     ;;putting it in the database.
