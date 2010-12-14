@@ -86,7 +86,7 @@
 
    (check-type view-node emtvp:node)
    (list*
-      '(text-w/face "Emtest results" emtvf:face:title)
+      '(w/face "Emtest results" emtvf:face:title)
       "\n"
       (emtvf:node view-node data-list)))
 
@@ -96,7 +96,7 @@
    (append
       (list
 	 "\n"
-	 `(text-w/face 
+	 `(w/face 
 	     ,(make-string depth ?*)
 	     ,(emtvf:grade-overall-face badnesses))
 	 " " )
@@ -348,14 +348,14 @@ DATA-LIST must be a list of alists."
 	    (= blowouts  0))
 	 (if (> test-cases 0)
 	    (list
-	       '(text-w/face "All OK" emtvf:face:ok)
+	       '(w/face "All OK" emtvf:face:ok)
 	       " ("
 	       (hiformat:grammar:num-and-noun
 		  test-cases "case" "cases")
 	       ")")
-	    '(text-w/face "Nothing was tested" emtvf:face:dormant))
+	    '(w/face "Nothing was tested" emtvf:face:dormant))
 	 (list
-	    '(text-w/face "Problems: " emtvf:face:failed)
+	    '(w/face "Problems: " emtvf:face:failed)
 	    (hiformat:map 
 	       #'(lambda (obj &rest r)
 		    obj)
@@ -364,7 +364,7 @@ DATA-LIST must be a list of alists."
 		     #'(lambda (data)
 			  (destructuring-bind (n text face) data
 			     (when (> n  0) 
-				`(text-w/face ,text ,face))))
+				`(w/face ,text ,face))))
 		     (list
 			(list blowouts  "Blowouts"	 'emtvf:face:blowout)
 			(list ungradeds "Ungraded tests" 'emtvf:face:ungraded)
