@@ -292,23 +292,6 @@ DATA-LIST must be a list of alists."
       ()
       '("Information: None" "\n")
       ))
-;;;_  . hiformat:grammar:number-agreement
-;;$$MOVE ME into hiformat or a new grammar section
-(defun hiformat:grammar:number-agreement (n singular plural)
-   ""
-   
-   (if (= n 1) singular plural))
-
-;;;_  . hiformat:grammar:num-and-noun
-;;$$MOVE ME same
-(defun hiformat:grammar:num-and-noun (n singular plural)
-   ""
-   (list 
-      (prin1-to-string n)
-      " "
-      (hiformat:grammar:number-agreement 
-	 n singular plural)))
-
 ;;;_  . emtvf:grade-overall-face
 (defun emtvf:grade-overall-face (obj)
    ""

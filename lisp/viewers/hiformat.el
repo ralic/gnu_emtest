@@ -108,11 +108,23 @@ ELS=1 must be a function taking 3 args (same signature as FUNC).
 			    (if (functionp separator)
 			       (funcall separator data-loal immediate-data)
 			       separator)))
-			(append sep-form sub-list))))
-	 
-	       ;;Do we need a separate statement to get the results?
-	       )))))
+			(append sep-form sub-list)))))))))
 
+;;;_ , Slightly touching on grammar
+;;;_  . hiformat:grammar:number-agreement
+(defun hiformat:grammar:number-agreement (n singular plural)
+   ""
+   
+   (if (= n 1) singular plural))
+
+;;;_  . hiformat:grammar:num-and-noun
+(defun hiformat:grammar:num-and-noun (n singular plural)
+   ""
+   (list 
+      (prin1-to-string n)
+      " "
+      (hiformat:grammar:number-agreement 
+	 n singular plural)))
 
 ;;;_. Footers
 ;;;_ , Provides
