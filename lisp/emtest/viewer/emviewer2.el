@@ -111,17 +111,10 @@
 ;;;_  . emtv2:print-all
 (defun emtv2:print-all (top-node)
    ""
-
-   (let*
-      ((tree (emtvf:top top-node '())))
-      (with-current-buffer emtv2:report-buffer
-	 (erase-buffer)
-	 (loformat:insert
-	    tree
-	    (append
-	       '((dynamic emtv2:insert-dynamic))
-	       loformat:default-alist))
-	 (emtest/viewer/mode))))
+   (with-current-buffer emtv2:report-buffer
+      (erase-buffer)
+      (emtvf:insert top-node '() '((dynamic emtv2:insert-dynamic)))
+      (emtest/viewer/mode)))
 
 ;;;_ , Overall callback
 ;;;_  . emtv2:tests-outstanding

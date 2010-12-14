@@ -103,15 +103,29 @@ PROPS is the property-list for the text, if any."
 	       bare-str)))
 		  
       (mapcar recurse-f (list '(sep 2) str '(sep 2)))))
+;;;_  . loformat:insert:text-w/face
 
-;;;_  . Defaults
+;;$$IMPROVE ME This could treat trees rather than strings, using a
+;;special variable to pass the correct face down.  That'd involve
+;;modifying `loformat:insert-x' too.
+(defun loformat:insert:text-w/face (recurse-f str face)
+   ""
+
+   (let*
+      ((str-2
+	  (propertize "Emtest results" 'face face)))
+      
+      (insert str-2)))
+
+;;;_ , Defaults
 ;;;_  . loformat:default-alist
 (defconst loformat:default-alist 
    '(
-       (nl-if-none loformat:insert:nl-if-none)
-       (object     loformat:insert:object)
-       (overlay    loformat:insert:overlay)
-       (sep        loformat:insert:sep))
+       (nl-if-none  loformat:insert:nl-if-none)
+       (object      loformat:insert:object)
+       (overlay     loformat:insert:overlay)
+       (sep         loformat:insert:sep)
+       (text-w/face loformat:insert:text-w/face))
    "The default alist for `loformat:insert'" )
 ;;;_  . The insert function itself
 ;;;_   , loformat:insert

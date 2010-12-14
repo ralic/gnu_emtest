@@ -32,11 +32,27 @@
 (require 'utility/pathtree) ;;The view-node type
 (require 'utility/loal)     ;;The data-list type
 (require 'viewers/hiformat)
+(require 'viewers/loformat)
 (require 'emtest/viewer/view-types)
 (require 'emtest/common/grade-types)
 
 ;;;_. Body
-
+;;;_ , Data
+;;;_  . emtvf:format-alist
+(defconst emtvf:format-alist loformat:default-alist
+   "List of formatters that emformat uses." )
+;;;_ , Lower format functions
+;;;_  . emtvf:insert
+(defun emtvf:insert (top-node data-list extra-formats)
+   "Insert TOP-NODE via loformat"
+   
+   (let*
+      ((tree (emtvf:top top-node data-list)))
+      (loformat:insert
+	 tree
+	 (append
+	    extra-formats
+	    emtvf:format-alist))))
 ;;;_ , Format functions
 ;;;_  . emtvf:top
 
@@ -45,7 +61,8 @@
 
    (check-type view-node emtvp:node)
    (list*
-      "Emtest results" "\n"
+      '(text-w/face "Emtest results" info-title-1)
+      "\n"
       (emtvf:node view-node data-list)))
 
 ;;;_  . emtvf:headline-w-badnesses
@@ -301,13 +318,15 @@ DATA-LIST must be a list of alists."
 	    (= blowouts  0))
 	 (if (> test-cases 0)
 	    (list
-	       "All OK ("
+	       '(text-w/face "All OK" compilation-info)
+	       " ("
 	       (hiformat:grammar:num-and-noun
 		  test-cases "case" "cases")
 	       ")")
 	    (list "Nothing was tested"))
 	 (list
-	    "Problems: "
+	    '(text-w/face "Problems: " compilation-error)
+	    
 	    (hiformat:map 
 	       #'(lambda (obj &rest r)
 		    obj)
@@ -348,7 +367,7 @@ DATA-LIST must be a list of alists."
 	       ")" "\n")
 	    (list "Nothing was tested" "\n"))
 	 (list
-	    "Problems: "
+	    "Problems: \n"
 	    (hiformat:map 
 	       #'(lambda (obj &rest r)
 		    obj)
