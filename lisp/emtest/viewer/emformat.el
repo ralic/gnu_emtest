@@ -85,29 +85,35 @@
    "VIEW-NODE must be at least an `emtvp:node'."
 
    (check-type view-node emtvp:node)
-   (list*
-      '(w/face "Emtest results" emtvf:face:title)
-      "\n"
-      (emtvf:node view-node data-list)))
+   `(
+       (w/face "Emtest results" emtvf:face:title)
+       "\n"
+       ,(emtvf:node view-node data-list)))
+;;;_  . emtvf:headline
+(defun emtvf:headline (depth face)
+   "Make a headline beginning for DEPTH, using FACE"
+   
+   `(
+       (sep 3)
+       (w/face ,(make-string depth ?*) ,face)
+       " " ))
 
 ;;;_  . emtvf:headline-w-badnesses
 (defun emtvf:headline-w-badnesses (depth name badnesses data-list)
-   ""
+   "Make a headline"
    (append
-      (list
-	 "\n"
-	 `(w/face 
-	     ,(make-string depth ?*)
-	     ,(emtvf:grade-overall-face badnesses))
-	 " " )
+      (emtvf:headline depth (emtvf:grade-overall-face badnesses))
+      ;;This is used in the dynamic method.
       (apply #'append
 	 (mapcar
 	    #'(lambda (x)
 		 (list x " "))
 	    (loal:val 'hdln-path data-list '())))
-      (list name " ")
+      (list 
+	 `(w/face ,name font-lock-function-name-face) 
+	 " ")
       (emtvf:sum-badnesses-short badnesses data-list) 
-      (list "\n")))
+      '((sep 2))))
 
 ;;;_  . emtvf:node
 (defun emtvf:node (view-node data-list)
@@ -269,10 +275,23 @@ DATA-LIST must be a list of alists."
 		     `((nl-if-none)
 			 ,(emt:testral:doc->str obj)
 			 "\n"))
+		  (emt:testral:not-in-db
+		     ;;$$IMPROVE ME Add a button to accept value,
+		     ;;putting it in the database.
+		     `((nl-if-none)
+			 ,(make-string 10 ?*)
+			 (sep 2)
+			 ,(object (emt:testral:not-in-db->value obj))
+			 ,(make-string 10 ?*)
+			 (sep 2)
+			 ,(object (emt:testral:not-in-db->id obj))
+			 ))
+		  
 		  (t '((nl-if-none )
 			 "A TESTRAL note (alone)"
 			 "\n"))))
-	    ;;Temporary (Probably)
+
+	    ;;Temporary
 	    (emt:testral:check:push
 	       '("Begin a TESTRAL check"))
 	 
