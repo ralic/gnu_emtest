@@ -35,12 +35,37 @@
 (require 'viewers/loformat)
 (require 'emtest/viewer/view-types)
 (require 'emtest/common/grade-types)
+(require 'custom)
 
 ;;;_. Body
 ;;;_ , Data
 ;;;_  . emtvf:format-alist
 (defconst emtvf:format-alist loformat:default-alist
    "List of formatters that emformat uses." )
+;;;_  . Faces
+(defface emtvf:face:ok 
+   '((default :foreground "green" :weight bold))
+   "Face for reporting passed tests")
+
+(defface emtvf:face:failed 
+   '((default :foreground "red" :weight bold))
+   "Face for reporting failed tests")
+
+(defface emtvf:face:ungraded
+   '((default :foreground "red" :strike-through t))
+   "Face for reporting ungraded tests")
+
+(defface emtvf:face:blowout 
+   '((default :foreground "black" :background "red" :weight bold))
+   "Face for reporting blown-out tests")
+
+(defface emtvf:face:dormant
+   '((default :foreground "black"))
+   "Face for reporting dormant tests")
+
+(defface emtvf:face:title
+   '((default :inherit info-title-1))
+   "Face for displaying Emtest banner")
 ;;;_ , Lower format functions
 ;;;_  . emtvf:insert
 (defun emtvf:insert (top-node data-list extra-formats)
@@ -61,7 +86,7 @@
 
    (check-type view-node emtvp:node)
    (list*
-      '(text-w/face "Emtest results" info-title-1)
+      '(text-w/face "Emtest results" emtvf:face:title)
       "\n"
       (emtvf:node view-node data-list)))
 
@@ -177,23 +202,6 @@ DATA-LIST must be a list of alists."
 	 (emt:view:TESTRAL-unexpanded
 	    '("Unexpanded TESTRAL data"))
 
-	 ;;The top node, being the root of pathtree, will be this base
-	 ;;top and not a emt:view:presentable.
-;; 	 (emtvp:node
-;; 	    (let
-;; 	       ((ch-data-list
-;; 		   (loal:acons 'hdln-path '() data-list)))
-;; 	       (hiformat:map 
-;; 		     ;;Formatting for each child
-;; 		     #'(lambda (obj data &rest d)
-;; 			  (list
-;; 			     `(dynamic ,obj 
-;; 				 ,data
-;; 				 ,#'emtvf:node)))
-;; 		     children
-;; 		     :separator '("\n")
-;; 		     :data-loal data-list)))
-	 
 	 ;;Base type, for blank nodes.  
 	 (emt:view:presentable
 	    (if
