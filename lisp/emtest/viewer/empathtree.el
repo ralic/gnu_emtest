@@ -137,19 +137,23 @@ could be, such as when a note-list hasn't been expanded."
 	       (emt:testral:suite
 		  (let
 		     ((own-badnesses (emt:testral:suite->badnesses s)))
-		  (if
-		     (emtvp:node->children node)
-		     own-badnesses
-		     (let
-			((contents
-			    (emt:testral:suite->contents s)))
-			(typecase contents
-			   (emt:testral:note-list
-			      (emtvr:combine-badnesses
-				 (cons
-				    own-badnesses
-				    (emtvr:notelist-raw-badnesses contents))))
-			   (t own-badnesses))))))
+		     ;;If NODE is an inner node (wrt pathtree), it
+		     ;;contributes only its intrinsic grading.
+		     (if
+			(emtvp:node->children node)
+			own-badnesses
+			;;But if NODE is a leaf node, it contributes
+			;;all its contents' grading.
+			(let
+			   ((contents
+			       (emt:testral:suite->contents s)))
+			   (typecase contents
+			      (emt:testral:note-list
+				 (emtvr:combine-badnesses
+				    (cons
+				       own-badnesses
+				       (emtvr:notelist-raw-badnesses contents))))
+			      (t own-badnesses))))))
 	       (emt:testral:test-runner-info
 		  '()))))
       (emt:view:TESTRAL '())

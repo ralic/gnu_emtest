@@ -63,8 +63,19 @@ It just tells a pathtree to add this node."
 	 (emtvp:make-pathtree
 	    pathtree-cb
 	    `(lambda (old-version arg)
-		 (emt:view:make-presentable
-		    :list (,make-display-data)))
+		;;emt:view:suite-newstyle
+		 '(emt:view:make-presentable
+		    :list (,make-display-data))
+		;;Give it "arg" with the display data set.
+		(if arg
+		   (progn
+		      (setf
+			 (emt:view:presentable->list arg)
+			 (,make-display-data))
+		      arg)
+		   (emt:view:make-presentable
+		      :list (,make-display-data))))
+	    
 	    'emt:view:presentable)))
 
    (unless 
