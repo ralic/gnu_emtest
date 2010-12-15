@@ -121,13 +121,17 @@
        ,(if contents '(sep 2))))
 ;;;_ , Mediu,-level functions
 ;;;_  . emtvf:headline-w-badnesses
+
+;;$$REFACTOR ME - something will make the badness face and object, and
+;;we'll feed all these objects to the two callers, and one will add a
+;;button.
 (defun emtvf:headline-w-badnesses (depth name badnesses data-list)
    "Make a headline for NAME, describing BADNESSES. "
    (emtvf:headline 
       depth 
       (emtvf:grade-overall-face badnesses) 
       `(
-	  ;;This is used in the dynamic treatment.
+	  ;;This was apparently used in the dynamic treatment.
 	  ,(apply #'append
 	      (mapcar
 		 #'(lambda (x)
@@ -333,25 +337,31 @@ OBJ must be a TESTRAL note."
 			"ID not in database "
 			;;$$IMPROVE ME Add a button to accept value,
 			;;putting it in the database.
-			(list
-			   (emtvf:headline 
+			`(
+			   ,(emtvf:headline 
 			      (+ 2 depth)
 			      nil
 			      "Value ")
-			   (object (emt:testral:not-in-db->value obj))
-			   ;;$$CHECK ME Is this too prolix wrt ID and
-			   ;;backend?  Maybe combine them in one item?
-			   (emtvf:headline 
+			   (object
+			      ,(emt:testral:not-in-db->value obj)
+			      nil)
+			   ;;$$REWRITE ME This is too prolix.  We
+			    ;;don't need to see ID and backend, only
+			    ;;button does.
+			   ,(emtvf:headline 
 			      (+ 2 depth)
 			      nil
 			      "ID ")
-			   (object (emt:testral:not-in-db->id-in-db obj))
-			   (emtvf:headline 
+			   (object 
+			      ,(emt:testral:not-in-db->id-in-db obj)
+			      nil)
+			   ,(emtvf:headline 
 			      (+ 2 depth)
 			      nil
 			      "Backend ")
-			   (object (emt:testral:not-in-db->backend
-				      obj)))))
+			   (object
+			      ,(emt:testral:not-in-db->backend obj)
+			      nil))))
 		  
 		  
 		  
