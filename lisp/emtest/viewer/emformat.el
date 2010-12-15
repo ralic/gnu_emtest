@@ -120,6 +120,16 @@ DATA-LIST must be a loal (list of alists)."
 	  " "
 	  ,(emtvf:sum-badnesses-short badnesses data-list))))
 
+;;;_  . emtvf:button
+(defun emtvf:button (text func)
+   ""
+   (let
+      ((map
+	  (make-sparse-keymap)))
+      (define-key map "\r" func)
+      `((w/props
+	   ,text
+	   (keymap ,map)))))
 
 ;;;_  . emtvf:node
 (defun emtvf:node (view-node data-list)
@@ -171,22 +181,14 @@ DATA-LIST must be a loal."
 		     (emt:testral:suite
 			(append
 			   (when explorable
-			      ;;$$ENCAP ME
-			      (let
-				 ((map
-				     (make-sparse-keymap))
-				    (func
-				       `(lambda ()
-					   (interactive)
-					   (emtl:dispatch-normal
-					      ,(emtt:explorable->how-to-run 
-						  explorable)
-					      ',(emtt:explorable->prestn-path 
-						   explorable)))))
-				 (define-key map "\r" func)
-				 `((w/props
-				      "[RUN]"
-				      (keymap ,map)))))
+			      (emtvf:button "[RUN]" 
+				 `(lambda ()
+				     (interactive)
+				     (emtl:dispatch-normal
+					,(emtt:explorable->how-to-run 
+					    explorable)
+					',(emtt:explorable->prestn-path 
+					     explorable)))))
 			   
 			   (etypecase (emt:testral:suite->contents object)
 			      (emt:testral:runform-list
