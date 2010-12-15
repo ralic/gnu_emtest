@@ -345,8 +345,6 @@ OBJ must be a TESTRAL note."
 			(1+ depth)
 			'emtvf:face:ungraded
 			"ID not in database "
-			;;$$IMPROVE ME Add a button to accept value,
-			;;putting it in the database.
 			`(
 			   ,(emtvf:headline 
 			       (+ 2 depth)
@@ -368,27 +366,7 @@ OBJ must be a TESTRAL note."
 			    
 			   (object
 			      ,(emt:testral:not-in-db->value obj)
-			      nil)
-			   ;;$$REWRITE ME This is too prolix.  We
-			    ;;don't need to see ID and backend, only
-			    ;;button does.
-			   ,(emtvf:headline 
-			      (+ 2 depth)
-			      nil
-			      "ID ")
-			   (object 
-			      ,(emt:testral:not-in-db->id-in-db obj)
-			      nil)
-			   ,(emtvf:headline 
-			      (+ 2 depth)
-			      nil
-			      "Backend ")
-			   (object
-			      ,(emt:testral:not-in-db->backend obj)
 			      nil))))
-		  
-		  
-		  
 		  (t 
 		     (emtvf:outline-item (1+ depth)
 			nil
