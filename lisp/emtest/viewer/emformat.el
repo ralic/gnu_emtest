@@ -119,31 +119,25 @@
        ,(emtvf:headline depth face headtext)
        ,contents
        ,(if contents '(sep 2))))
-;;;_ , Medium-level functions
-;;;_  . emtvf:headline-w-badnesses
-
-;;$$REFACTOR ME - something will make the badness face and object, and
-;;we'll feed all these objects to the two callers, and one will add a
-;;button.
-'
-(defun emtvf:headline-w-badnesses (depth name badnesses data-list)
-   "Make a headline for NAME, describing BADNESSES. "
-   (error "Don't use this!")
-   (emtvf:headline 
-      depth 
-      (emtvf:grade-overall-face badnesses) 
-      `(
-	  ;;This was apparently used in the dynamic treatment.
-	  ,(apply #'append
-	      (mapcar
-		 #'(lambda (x)
-		      (list x " "))
-		 (loal:val 'hdln-path data-list '())))
-	  (w/face ,name emtvf:face:suitename)
-	  " "
-	  ,(emtvf:sum-badnesses-short badnesses data-list))))
-
-
+;;;_  . emtvf:button-to-explore
+(defun emtvf:button-to-explore (explorable text)
+   "Make a button to explore EXPLORABLE.
+Hack: We add a space after the button."
+   ;;$$IMPROVE ME - instead let's use something that alternates items
+   ;;with separators, a la mapconcat or hiformat:map
+   (when explorable
+      (list
+	 (emtvf:button text
+	    `(lambda ()
+		(interactive)
+		(emtl:dispatch-normal
+		   ,(emtt:explorable->how-to-run 
+		       explorable)
+		   ',(emtt:explorable->prestn-path 
+			explorable)))
+	    '(help-echo "Rerun this test"))
+	 " ")))
+			       
 ;;;_ , Format functions
 ;;;_  . emtvf:top
 
@@ -230,18 +224,7 @@ DATA-LIST must be a loal."
 			   `(  ,dyn-headline
 			       (w/face ,name emtvf:face:suitename)
 			       " "
-			       ,(when explorable
-				   (list
-				      (emtvf:button "[RUN]" 
-					 `(lambda ()
-					     (interactive)
-					     (emtl:dispatch-normal
-						,(emtt:explorable->how-to-run 
-						    explorable)
-						',(emtt:explorable->prestn-path 
-						     explorable)))
-					 '(help-echo "Rerun this test"))
-				      " "))
+			       ,(emtvf:button-to-explore explorable "[RUN]")
 			       ,grades-sum))
 			(etypecase (emt:testral:suite->contents object)
 			   (emt:testral:runform-list
