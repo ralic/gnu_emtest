@@ -119,14 +119,16 @@
        ,(emtvf:headline depth face headtext)
        ,contents
        ,(if contents '(sep 2))))
-;;;_ , Mediu,-level functions
+;;;_ , Medium-level functions
 ;;;_  . emtvf:headline-w-badnesses
 
 ;;$$REFACTOR ME - something will make the badness face and object, and
 ;;we'll feed all these objects to the two callers, and one will add a
 ;;button.
+'
 (defun emtvf:headline-w-badnesses (depth name badnesses data-list)
    "Make a headline for NAME, describing BADNESSES. "
+   (error "Don't use this!")
    (emtvf:headline 
       depth 
       (emtvf:grade-overall-face badnesses) 
@@ -175,74 +177,98 @@ DATA-LIST must be a loal."
 
       (etypecase suite
 	 (emt:view:suite-newstyle
-	    (let
+	    (let*
 	       (
 		  (object
 		     (emt:view:suite-newstyle->result suite))
 		  (explorable
-		     (emt:view:suite-newstyle->how-to-run suite)))
-	       (append
-		  (emtvf:headline-w-badnesses 
-		     (1+ depth)
-		     name
-		     (emt:view:presentable->sum-badnesses suite)
-		     data-list)
-		  (etypecase object
-		     (null)
-		     (emt:testral:test-runner-info
-			(list*
-			   "Suites tested in " name "\n"
-			   (hiformat:map 
-			      ;;Formatting for each child
-			      #'(lambda (obj data &rest d)
-				   (list
-				      `(dynamic ,obj 
-					  ,(loal:acons 'depth (1+ depth) data)
-					  ,#'emtvf:node)))
-			      children
-			      :data-loal data-list
-			      :separator '("\n"))))
-		  
-		     (emt:testral:suite
-			(list
-			   ;;$$IMPROVE ME  Place button in the headline.
-			   (when explorable
-			      (emtvf:button "[RUN]" 
-				 `(lambda ()
-				     (interactive)
-				     (emtl:dispatch-normal
-					,(emtt:explorable->how-to-run 
-					    explorable)
-					',(emtt:explorable->prestn-path 
-					     explorable)))
-				 '(help-echo "Rerun this test")))
-			   
-			   (etypecase (emt:testral:suite->contents object)
-			      (emt:testral:runform-list
-				 (hiformat:map 
-				    ;;Formatting for each child
-				    #'(lambda (obj data &rest d)
-					 (list
-					    `(dynamic ,obj 
-						,(loal:acons 
-						    'depth (1+ depth) data)
-						,#'emtvf:node)))
-				    children
-				    :data-loal data-list
-				    :separator '("\n")
-				    :els=0 '("No child suites")))
-			      (emt:testral:note-list
-				 (hiformat:map
-				    #'emtvf:TESTRAL
-				    (emt:testral:note-list->notes
-				       (emt:testral:suite->contents object))
-				    :data-loal data-list
-				    :separator '("\n")
-				    :els=0 '("No notes")))
-			      (null
-				 '("No known contents")))
+		     (emt:view:suite-newstyle->how-to-run suite))
+		  (grades
+		     (emt:view:presentable->sum-badnesses suite))
+		  (grade-face
+		     (emtvf:grade-overall-face grades))
+		  (grades-sum
+		     (emtvf:sum-badnesses-short grades data-list))
+		  ;;$$RECONISDER ME Not clear that this is still
+		  ;;relevant since we get adequate headlines from
+		  ;;suite names.
+		  (dyn-headline
+		     (apply #'append
+			(mapcar
+			   #'(lambda (x)
+				(list x " "))
+			   (loal:val 'hdln-path data-list '())))))
 
-			   ))))))
+	       (etypecase object
+		  (null)
+		  (emt:testral:test-runner-info
+		     (list
+			;;"Suites tested in " name "\n"
+			(emtvf:headline 
+			   (1+ depth) 
+			   grade-face 
+			   `(  ,dyn-headline
+			       (w/face ,name emtvf:face:suitename)
+			       " "
+			       ,grades-sum))
+			(hiformat:map 
+			   ;;Formatting for each child
+			   #'(lambda (obj data &rest d)
+				(list
+				   `(dynamic ,obj 
+				       ,(loal:acons 'depth (1+ depth) data)
+				       ,#'emtvf:node)))
+			   children
+			   :data-loal data-list
+			   :separator '("\n"))))
+		  
+		  (emt:testral:suite
+		     (list
+			(emtvf:headline 
+			   (1+ depth) 
+			   grade-face 
+			   `(  ,dyn-headline
+			       (w/face ,name emtvf:face:suitename)
+			       " "
+			       ,(when explorable
+				   (list
+				      (emtvf:button "[RUN]" 
+					 `(lambda ()
+					     (interactive)
+					     (emtl:dispatch-normal
+						,(emtt:explorable->how-to-run 
+						    explorable)
+						',(emtt:explorable->prestn-path 
+						     explorable)))
+					 '(help-echo "Rerun this test"))
+				      " "))
+			       ,grades-sum))
+			(etypecase (emt:testral:suite->contents object)
+			   (emt:testral:runform-list
+			      (hiformat:map 
+				 ;;Formatting for each child
+				 #'(lambda (obj data &rest d)
+				      (list
+					 `(dynamic ,obj 
+					     ,(loal:acons 
+						 'depth (1+ depth) data)
+					     ,#'emtvf:node)))
+				 children
+				 :data-loal data-list
+				 :separator '("\n")
+				 :els=0 '("No child suites")))
+			   (emt:testral:note-list
+			      (hiformat:map
+				 #'emtvf:TESTRAL
+				 (emt:testral:note-list->notes
+				    (emt:testral:suite->contents object))
+				 :data-loal data-list
+				 :separator '("\n")
+				 :els=0 '("No notes")))
+			   (null
+			      '("No known contents")))
+
+			)))))
 
 	 ;;For the various TESTRAL expansions.
 	 ;;For now, these aren't even relevant yet.
@@ -252,7 +278,7 @@ DATA-LIST must be a loal."
 	 (emt:view:TESTRAL-unexpanded
 	    '("Unexpanded TESTRAL data"))
 
-	 ;;Base type, for blank nodes.  
+	 ;;Base type, appears for the root node.
 	 (emt:view:presentable
 	    (if
 	       (and
@@ -266,13 +292,14 @@ DATA-LIST must be a loal."
 	       (let
 		  ((ch-data-list
 		      (loal:acons 'hdln-path '() data-list)))
-		  (append
-		     (emtvf:headline-w-badnesses 
-			(1+ depth)
-			name
-			(emt:view:presentable->sum-badnesses suite)
-			data-list)
-
+		  (list
+		     (emtvf:headline 
+			(1+ depth) 
+			grade-face 
+			`(  ,dyn-headline
+			    (w/face ,name emtvf:face:suitename)
+			    " "
+			    ,grades-sum))
 		     "\n"
 		     (hiformat:map 
 			;;Formatting for each child
@@ -295,7 +322,7 @@ OBJ must be a TESTRAL note."
 	  ;;$$FIX ME We are not getting the incremented depth here.
 	  ;;For now we add 1 but that's just a hack.
 	  (1+ (loal:val 'depth data-list 0))))
-      (append
+      (list
 	 (apply #'append
 	    (mapcar
 	       #'(lambda (x)
