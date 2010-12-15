@@ -82,7 +82,9 @@
 ;;;_  . emtvf:top
 
 (defun emtvf:top (view-node data-list)
-   "VIEW-NODE must be at least an `emtvp:node'."
+   "Make a format form for VIEW-NODE.
+VIEW-NODE must be at least an `emtvp:node'.
+DATA-LIST must be a loal (list of alists)."
 
    (check-type view-node emtvp:node)
    `(
@@ -121,9 +123,9 @@
 
 ;;;_  . emtvf:node
 (defun emtvf:node (view-node data-list)
-   "
+   "Make a format form for VIEW-NODE.
 VIEW-NODE must be an `emt:view:presentable'.
-DATA-LIST must be a list of alists."
+DATA-LIST must be a loal."
 
    (check-type view-node emtvp:node)
 
@@ -141,7 +143,9 @@ DATA-LIST must be a list of alists."
 	    (let
 	       (
 		  (object
-		     (emt:view:suite-newstyle->result suite)))
+		     (emt:view:suite-newstyle->result suite))
+		  (explorable
+		     (emt:view:suite-newstyle->how-to-run suite)))
 	       (append
 		  (emtvf:headline-w-badnesses 
 		     (1+ depth)
@@ -166,14 +170,24 @@ DATA-LIST must be a list of alists."
 		  
 		     (emt:testral:suite
 			(append
-			   ;;$$IMPROVE ME Add a button to rerun the
-			   ;;test.
-			   ;;(emtvr:suite-newstyle->how-to-run cell)
-			   ;;`how-to-run' informs a button.  For now,
-			   ;;just use the `emthow'.  Later we may keep
-			   ;;or build an `emtt:explorable'
-			   ;;or even an `emtt:method'
-
+			   (when explorable
+			      ;;$$ENCAP ME
+			      (let
+				 ((map
+				     (make-sparse-keymap))
+				    (func
+				       `(lambda ()
+					   (interactive)
+					   (emtl:dispatch-normal
+					      ,(emtt:explorable->how-to-run 
+						  explorable)
+					      ',(emtt:explorable->prestn-path 
+						   explorable)))))
+				 (define-key map "\r" func)
+				 `((w/props
+				      "[RUN]"
+				      (keymap ,map)))))
+			   
 			   (etypecase (emt:testral:suite->contents object)
 			      (emt:testral:runform-list
 				 (hiformat:map 
@@ -242,13 +256,23 @@ DATA-LIST must be a list of alists."
 			:separator '("\n")
 			:data-loal data-list))))))))
 
+;;;_  . emtvf:outline-item
+(defun emtvf:outline-item (depth face headtext contents)
+   "Make an outline item of DEPTH."
+   `(
+       ,(emtvf:headline depth face headtext)
+       ,contents
+       ,(if contents '(sep 2))))
+
 ;;;_  . emtvf:TESTRAL (TESTRAL note formatter)
 (defun emtvf:TESTRAL (obj data &rest d)
-   ""
+   "Make a format form for OBJ.
+OBJ must be a TESTRAL note."
    
    (let*
       ((depth
 	  ;;$$FIX ME We are not getting the incremented depth here.
+	  ;;For now we add 1 but that's just a hack.
 	  (1+ (loal:val 'depth data-list 0))))
       (append
 	 (apply #'append
@@ -263,80 +287,63 @@ DATA-LIST must be a list of alists."
 	    (emt:testral:alone
 	       (typecase obj
 		  (emt:testral:error-raised
-		     `(
-			 ,(emtvf:headline 
-			     (1+ depth)
-			     'emtvf:face:ungraded
-			     "Error raised: ")
-			 ,(prin1-to-string
-			     (emt:testral:error-raised->err obj))
-			 "\n"))
+		     (emtvf:outline-item
+			(1+ depth) 
+			'emtvf:face:ungraded
+			"Error raised: "
+			`(object ,(emt:testral:error-raised->err obj) nil)))
 		  (emt:testral:doc
 		     (let
 			((doc (emt:testral:doc->str obj)))
 			(cond
 			   ((not (string-match "\n" doc))
-			      `(
-				  ,(emtvf:headline 
-				      (1+ depth)
-				      nil
-				      doc)))
+			      (emtvf:outline-item
+				 (1+ depth) nil doc nil))
 			   ((string-match ": " doc)
-			      `(
-				  ,(emtvf:headline 
-				      (1+ depth)
-				      nil
-				      (substring
-					 doc
-					 0
-					 (match-end 0)))
-				  ,(substring
-				      doc
-				      (match-end 0))
-				  "\n"))
+			      (emtvf:outline-item
+				 (1+ depth) 
+				 nil
+				 (substring doc 0 (match-end 0))
+				 (substring doc (match-end 0))))
 			   (t
-			      `(
-				  ,(emtvf:headline 
-				      (1+ depth)
-				      nil
-				      "Doc ")
-				  ,(emt:testral:doc->str obj)
-				  "\n")))))
+			      (emtvf:outline-item
+				 (1+ depth) nil "Doc" doc)))))
 		  
 		  (emt:testral:not-in-db
-		     ;;$$IMPROVE ME Add a button to accept value,
-		     ;;putting it in the database.
-		     `(
-			 ,(emtvf:headline 
-			     (1+ depth)
-			     'emtvf:face:ungraded
-			     "ID not in database ")
-			 ,(emtvf:headline 
-			     (+ 2 depth)
-			     nil
-			     "Value ")
-			 ,(object (emt:testral:not-in-db->value obj))
-			 ;;$$CHECK ME Is this too prolix wrt ID and
-			 ;;backend?  Maybe a plain list instead.
-			 ,(emtvf:headline 
-			     (+ 2 depth)
-			     nil
-			     "ID ")
-			 ,(object (emt:testral:not-in-db->id-in-db obj))
-			 ,(emtvf:headline 
-			     (+ 2 depth)
-			     nil
-			     "Backend ")
-			 ,(object (emt:testral:not-in-db->backend obj))))
+		     (emtvf:outline-item
+			(1+ depth)
+			'emtvf:face:ungraded
+			"ID not in database "
+			;;$$IMPROVE ME Add a button to accept value,
+			;;putting it in the database.
+			(list
+			   (emtvf:headline 
+			      (+ 2 depth)
+			      nil
+			      "Value ")
+			   (object (emt:testral:not-in-db->value obj))
+			   ;;$$CHECK ME Is this too prolix wrt ID and
+			   ;;backend?  Maybe combine them in one item?
+			   (emtvf:headline 
+			      (+ 2 depth)
+			      nil
+			      "ID ")
+			   (object (emt:testral:not-in-db->id-in-db obj))
+			   (emtvf:headline 
+			      (+ 2 depth)
+			      nil
+			      "Backend ")
+			   (object (emt:testral:not-in-db->backend
+				      obj)))))
 		  
 		  
-		  (t '((nl-if-none )
-			 ,(emtvf:headline 
-			     (1+ depth)
-			     nil
-			     "Doc ")
-			 "A TESTRAL note (alone)"
-			 "\n"))))
+		  
+		  (t 
+		     (emtvf:outline-item (1+ depth)
+			nil
+			"An unhandled TESTRAL note"
+			nil))))
+	    
 
 	    ;;Temporary
 	    (emt:testral:check:push
