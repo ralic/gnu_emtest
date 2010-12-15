@@ -121,15 +121,16 @@ DATA-LIST must be a loal (list of alists)."
 	  ,(emtvf:sum-badnesses-short badnesses data-list))))
 
 ;;;_  . emtvf:button
-(defun emtvf:button (text func)
+(defun emtvf:button (text func &optional extra-props)
    ""
    (let
       ((map
 	  (make-sparse-keymap)))
       (define-key map "\r" func)
+      (define-key map [mouse-1] func)
       `((w/props
 	   ,text
-	   (keymap ,map)))))
+	   (keymap ,map ,@extra-props)))))
 
 ;;;_  . emtvf:node
 (defun emtvf:node (view-node data-list)
@@ -179,7 +180,8 @@ DATA-LIST must be a loal."
 			      :separator '("\n"))))
 		  
 		     (emt:testral:suite
-			(append
+			(list
+			   ;;$$IMPROVE ME  Place button in the headline.
 			   (when explorable
 			      (emtvf:button "[RUN]" 
 				 `(lambda ()
@@ -188,7 +190,8 @@ DATA-LIST must be a loal."
 					,(emtt:explorable->how-to-run 
 					    explorable)
 					',(emtt:explorable->prestn-path 
-					     explorable)))))
+					     explorable)))
+				 '(help-echo "Rerun this test")))
 			   
 			   (etypecase (emt:testral:suite->contents object)
 			      (emt:testral:runform-list
