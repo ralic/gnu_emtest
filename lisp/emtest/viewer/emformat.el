@@ -64,10 +64,20 @@
    "Face for reporting dormant tests")
 
 (defface emtvf:face:title
-   '((default :inherit info-title-1))
+   '((default 
+	:height 1.8
+	:foreground "black"))
+   
+   "Face for displaying Emtest banner")
+(defface emtvf:face:suitename
+   '((default 
+	:foreground "blue1"))
+   
    "Face for displaying Emtest banner")
 ;;;_ , Lower format functions
 ;;;_  . emtvf:insert
+;;$$MOVE ME maybe - this is the only part that directly deals with
+;;loformat.
 (defun emtvf:insert (top-node data-list extra-formats)
    "Insert TOP-NODE via loformat"
    
@@ -78,19 +88,7 @@
 	 (append
 	    extra-formats
 	    emtvf:format-alist))))
-;;;_ , Format functions
-;;;_  . emtvf:top
-
-(defun emtvf:top (view-node data-list)
-   "Make a format form for VIEW-NODE.
-VIEW-NODE must be at least an `emtvp:node'.
-DATA-LIST must be a loal (list of alists)."
-
-   (check-type view-node emtvp:node)
-   `(
-       (w/face "Emtest results" emtvf:face:title)
-       "\n"
-       ,(emtvf:node view-node data-list)))
+;;;_ , Helper functions
 ;;;_  . emtvf:headline
 (defun emtvf:headline (depth face headtext)
    "Make a headline of HEADTEXT for DEPTH, using FACE"
@@ -102,7 +100,26 @@ DATA-LIST must be a loal (list of alists)."
        ,headtext
        (sep 2)))
 
+;;;_  . emtvf:button
+(defun emtvf:button (text func &optional extra-props)
+   ""
+   (let
+      ((map
+	  (make-sparse-keymap)))
+      (define-key map "\r" func)
+      (define-key map [mouse-1] func)
+      `((w/props
+	   ,text
+	   (keymap ,map ,@extra-props)))))
 
+;;;_  . emtvf:outline-item
+(defun emtvf:outline-item (depth face headtext contents)
+   "Make an outline item of DEPTH."
+   `(
+       ,(emtvf:headline depth face headtext)
+       ,contents
+       ,(if contents '(sep 2))))
+;;;_ , Mediu,-level functions
 ;;;_  . emtvf:headline-w-badnesses
 (defun emtvf:headline-w-badnesses (depth name badnesses data-list)
    "Make a headline for NAME, describing BADNESSES. "
@@ -116,21 +133,24 @@ DATA-LIST must be a loal (list of alists)."
 		 #'(lambda (x)
 		      (list x " "))
 		 (loal:val 'hdln-path data-list '())))
-	  (w/face ,name font-lock-function-name-face)
+	  (w/face ,name emtvf:face:suitename)
 	  " "
 	  ,(emtvf:sum-badnesses-short badnesses data-list))))
 
-;;;_  . emtvf:button
-(defun emtvf:button (text func &optional extra-props)
-   ""
-   (let
-      ((map
-	  (make-sparse-keymap)))
-      (define-key map "\r" func)
-      (define-key map [mouse-1] func)
-      `((w/props
-	   ,text
-	   (keymap ,map ,@extra-props)))))
+
+;;;_ , Format functions
+;;;_  . emtvf:top
+
+(defun emtvf:top (view-node data-list)
+   "Make a format form for VIEW-NODE.
+VIEW-NODE must be at least an `emtvp:node'.
+DATA-LIST must be a loal (list of alists)."
+
+   (check-type view-node emtvp:node)
+   `(
+       (w/face "Emtest results" emtvf:face:title)
+       "\n"
+       ,(emtvf:node view-node data-list)))
 
 ;;;_  . emtvf:node
 (defun emtvf:node (view-node data-list)
@@ -260,14 +280,6 @@ DATA-LIST must be a loal."
 			children
 			:separator '("\n")
 			:data-loal data-list))))))))
-
-;;;_  . emtvf:outline-item
-(defun emtvf:outline-item (depth face headtext contents)
-   "Make an outline item of DEPTH."
-   `(
-       ,(emtvf:headline depth face headtext)
-       ,contents
-       ,(if contents '(sep 2))))
 
 ;;;_  . emtvf:TESTRAL (TESTRAL note formatter)
 (defun emtvf:TESTRAL (obj data &rest d)
