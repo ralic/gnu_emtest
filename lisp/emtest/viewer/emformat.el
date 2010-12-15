@@ -123,15 +123,16 @@
 (defun emtvf:button-to-explore (explorable text)
    "Make a button to explore EXPLORABLE.
 Hack: We add a space after the button."
-   ;;$$IMPROVE ME - instead let's use something that alternates items
-   ;;with separators, a la mapconcat or hiformat:map
+   ;;$$IMPROVE ME - instead of always making a space let's wrap these
+   ;;in something that alternates items with separators, a la
+   ;;mapconcat or hiformat:map
    (when explorable
       (list
 	 (emtvf:button text
 	    `(lambda ()
 		(interactive)
 		(emtl:dispatch-normal
-		   ,(emtt:explorable->how-to-run 
+		   ',(emtt:explorable->how-to-run 
 		       explorable)
 		   ',(emtt:explorable->prestn-path 
 			explorable)))
@@ -160,15 +161,30 @@ DATA-LIST must be a loal."
 
    (check-type view-node emtvp:node)
 
-   (let
+   (let*
       ((suite view-node)
 	 (name
 	    (emtvp:node->name view-node))
 	 (children
 	    (emtvp:node->children view-node))
 	 (depth
-	    (loal:val 'depth data-list 0)))
-
+	    (loal:val 'depth data-list 0))
+	 (grades
+	    (emt:view:presentable->sum-badnesses suite))
+	 (grade-face
+	    (emtvf:grade-overall-face grades))
+	 (grades-sum
+	    (emtvf:sum-badnesses-short grades data-list))
+	 ;;$$RECONSIDER ME Not clear that this is still
+	 ;;relevant since we get adequate headlines from
+	 ;;suite names.
+	 (dyn-headline
+	    (apply #'append
+	       (mapcar
+		  #'(lambda (x)
+		       (list x " "))
+		  (loal:val 'hdln-path data-list '())))))
+      
       (etypecase suite
 	 (emt:view:suite-newstyle
 	    (let*
@@ -176,23 +192,7 @@ DATA-LIST must be a loal."
 		  (object
 		     (emt:view:suite-newstyle->result suite))
 		  (explorable
-		     (emt:view:suite-newstyle->how-to-run suite))
-		  (grades
-		     (emt:view:presentable->sum-badnesses suite))
-		  (grade-face
-		     (emtvf:grade-overall-face grades))
-		  (grades-sum
-		     (emtvf:sum-badnesses-short grades data-list))
-		  ;;$$RECONISDER ME Not clear that this is still
-		  ;;relevant since we get adequate headlines from
-		  ;;suite names.
-		  (dyn-headline
-		     (apply #'append
-			(mapcar
-			   #'(lambda (x)
-				(list x " "))
-			   (loal:val 'hdln-path data-list '())))))
-
+		     (emt:view:suite-newstyle->how-to-run suite)))
 	       (etypecase object
 		  (null)
 		  (emt:testral:test-runner-info
@@ -349,9 +349,23 @@ OBJ must be a TESTRAL note."
 			;;putting it in the database.
 			`(
 			   ,(emtvf:headline 
-			      (+ 2 depth)
-			      nil
-			      "Value ")
+			       (+ 2 depth)
+			       nil
+			       (list
+				  "Value "
+				  (emtvf:button "[Accept]"
+				     `(lambda ()
+					 (interactive)
+					 (emdb:set-value
+					    ',(emt:testral:not-in-db->backend
+					    obj)
+					    ',(emt:testral:not-in-db->id-in-db
+					    obj)
+					    ',(emt:testral:not-in-db->value obj)
+					    'correct-answer))
+				     '(help-echo "Accept this value"
+					 ))))
+			    
 			   (object
 			      ,(emt:testral:not-in-db->value obj)
 			      nil)
