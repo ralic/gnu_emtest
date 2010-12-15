@@ -37,22 +37,23 @@
 (defconst emtest/viewer/mode-map 
    (let ((map (make-sparse-keymap)))
       (suppress-keymap map)
-      (define-key map "n" 'outline-next-visible-heading)
-      (define-key map "p" 'outline-previous-visible-heading)
-      (define-key map "i" 'show-children)
-      (define-key map "s" 'show-subtree)
-      (define-key map "d" 'hide-subtree)
-      (define-key map "u" 'outline-up-heading)
-      (define-key map "f" 'outline-forward-same-level)
-      (define-key map "b" 'outline-backward-same-level)
-      (define-key map "t" 'hide-body)
       (define-key map "a" 'show-all)
+      (define-key map "b" 'outline-backward-same-level)
       (define-key map "c" 'hide-entry)
+      (define-key map "d" 'hide-subtree)
       (define-key map "e" 'show-entry)
-      (define-key map "l" 'hide-leaves)
+      (define-key map "f" 'outline-forward-same-level)
+      (define-key map "h" 'hide-sublevels)
+      (define-key map "i" 'show-children)
       (define-key map "k" 'show-branches)
-      (define-key map "q" 'hide-sublevels)
+      (define-key map "l" 'hide-leaves)
+      (define-key map "n" 'outline-next-visible-heading)
       (define-key map "o" 'hide-other)
+      (define-key map "p" 'outline-previous-visible-heading)
+      (define-key map "q" 'bury-buffer)
+      (define-key map "s" 'show-subtree)
+      (define-key map "t" 'hide-body)
+      (define-key map "u" 'outline-up-heading)
 
       (when (featurep 'outline-magic)
 	 (define-key map "\t" 'outline-cycle))
@@ -65,7 +66,10 @@
    "This hook is run when emtest/viewer/mode starts" )
 ;;;_ , emtest/viewer/mode
 (defun emtest/viewer/mode ()
-   "Mode for Emtest results."
+   "Mode for Emtest results.
+The default keymap resembles that of outline mode, except it uses bare
+keys and no prefix.
+"
    (kill-all-local-variables)
 
    ;;Borrowed from outline mode to support its borrowed commands.
