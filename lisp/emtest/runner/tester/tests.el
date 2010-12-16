@@ -92,13 +92,11 @@ Behavior: `utim:get-properties' returns the relevant property.")
 		     (emt:assert
 			(equal
 			   (utim:get-properties 'db-id)
-			   "my-db")
-			t)
+			   "my-db"))
 		     (emt:assert
 			(equal
 			   (utim:get-properties 'example-dir)
-			   "examples/")
-			t))))
+			   "examples/")))))
 	    t))))
 
 ;;;_ , emtt:explore-one

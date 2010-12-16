@@ -325,8 +325,7 @@ Return a list consisting of that example.")
 	       (emt:assert
 		  (equal
 		     (emtg:try-valuedef->example-2 valuedef 'dummy-id)
-		     (list valuedef))
-		  t)
+		     (list valuedef)))
 	       (emt:assert
 		  (equal
 		     (length emtg:all-examples)
@@ -1295,8 +1294,7 @@ tag.")
 	    (emt:assert
 	       (emth:sets=
 		  (emtg:map discriminator x x)
-		  '(small medium))
-	       t)
+		  '(small medium)))
 	    (let
 	       ((results
 		   (emtg:map discriminator x
@@ -1341,8 +1339,7 @@ already have been narrowed out of our scope.")
 	    (emt:assert
 	       (emth:sets=
 		  (emtg:map discriminator x x)
-		  '(small))
-	       t)
+		  '(small)))
 	    (let
 	       ((results
 		   (emtg:map discriminator x
@@ -1416,8 +1413,7 @@ Param: dummy-tag.")
 	    (emt:assert
 	       (emth:sets=
 		  (emtg:all-tag-args 'discriminator)
-		  '(small medium))
-	       t)
+		  '(small medium)))
 	    t)))
    (nil
       (progn
@@ -1432,8 +1428,7 @@ already have been narrowed out of our scope.")
 	    (emt:assert
 	       (emth:sets=
 		  (emtg:all-tag-args 'discriminator)
-		  '(small))
-	       t)
+		  '(small)))
 	    t))))
 
 
@@ -1452,8 +1447,7 @@ already have been narrowed out of our scope.")
 			 (name 0))
 		      '((project emtest)
 			  (library emtg)
-			  (topic map))))
-		t)
+			  (topic map)))))
 	     t))))
 
 
@@ -1471,8 +1465,7 @@ already have been narrowed out of our scope.")
 		      (emtg:browse:make-relative-distinction :item
 			 (emtg
 			    (type eg-item)
-			    (name 0)))))
-		t)
+			    (name 0))))))
 	     t)))
    '(nil
        (progn
@@ -1490,8 +1483,7 @@ already have been narrowed out of our scope.")
 			 (emtg:browse:make-relative-distinction :item
 			    (emtg
 			       (type eg-item)
-			       (name 1))))))
-		t)
+			       (name 1)))))))
 	     t))))
 
 

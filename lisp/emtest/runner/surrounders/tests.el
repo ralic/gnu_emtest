@@ -100,8 +100,7 @@
 		  'foo 
 		  '((progn) (save-excursion) (with-temp-buffer))
 		   '())
-	       '(progn (save-excursion (with-temp-buffer foo))))
-	    t)))
+	       '(progn (save-excursion (with-temp-buffer foo)))))))
    )
 
 ;;;_. Footers

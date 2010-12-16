@@ -183,22 +183,19 @@ Call this inside a narrowing to (which WHICH)."
 	       (emt:assert
 		  (equal
 		     (eval (emtg (type sym)))
-		     (emtg (type value)))
-		  t))
+		     (emtg (type value)))))
 	    (function
 	       (emt:assert
 		  (equal
 		     (funcall (emtg (type sym)))
-		     (emtg (type value)))
-		  t))
+		     (emtg (type value)))))
 	    (set-prop
 	       (emt:assert
 		  (equal
 		     (get
 			'foo:var2 
 			'foo:properties)
-		     (emtg (type value)))
-		  t))))))
+		     (emtg (type value)))))))))
 ;;;_ , emtmv:th:num-atoms
 (defun emtmv:th:num-atoms (oa)
    "Return how many atoms are in obarray OA"
@@ -271,8 +268,7 @@ Call this inside a narrowing to (which WHICH)."
 	    (emt:assert
 	       (equal
 		  (symbol-value (intern-soft "invalid-d535"))
-		  12)
-	       t))))
+		  12)))))
 
 
    (nil
@@ -407,8 +403,7 @@ Call this inside a narrowing to (which WHICH)."
 	       (emt:doc "Response: It no longer has that value in `new'.")
 	       (emt:assert
 		  (not 
-		     (equal foo:var1 value))
-		  t))
+		     (equal foo:var1 value))))
 
 	    (emtmv:with-version 'old lv-obj
 	       (emt:doc "Response: Its value in `old' has not changed.")
@@ -427,8 +422,7 @@ Call this inside a narrowing to (which WHICH)."
 	    (emtmv:with-version 'old lv-obj
 	       (emt:doc "Response: In `old' it has the new value.")
 	       (emt:assert
-		  (equal foo:var1 value)
-		  t))	    
+		  (equal foo:var1 value)))	    
 
 	    (emtmv:with-version 'new lv-obj
 	       (emt:doc "Response: Its value in `new' has not changed.")
@@ -456,8 +450,7 @@ Call this inside a narrowing to (which WHICH)."
 	    (emt:assert
 	       (equal
 		  (run-stuff)
-		  (emtg (which old)(name var1)(type value)))
-	       t)))))
+		  (emtg (which old)(name var1)(type value))))))))
 ;;;_ , emtmv:load-stable
 (put 'emtmv:load-stable 'emt:test-thru
    'emtmv:require-x)
@@ -653,16 +646,14 @@ give us an .elc")
 	    (emt:assert
 	       (equal
 		  (run-stuff)
-		  (emtg (which old)(name var1)(type value)))
-	       t)
+		  (emtg (which old)(name var1)(type value))))
 	    
 	    (emt:doc "Response: Inspecting `foo:var1' in the
 	    larger context gives the new value.")
 	    (emt:assert
 	       (equal
 		  foo:var1
-		  (emtg (which new)(name var1)(type value)))
-	       t))))
+		  (emtg (which new)(name var1)(type value)))))))
    
    (nil
       (let

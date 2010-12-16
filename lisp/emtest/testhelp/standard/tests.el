@@ -67,8 +67,7 @@
 			(subtype original)))
 		  (emtg
 		     (type form)
-		     (subtype wrapped)))
-	       t)
+		     (subtype wrapped))))
 	    t)))
    (nil
       (progn
@@ -91,8 +90,7 @@
 			    (emtg
 			       (type values))))))
 		  (emt:assert
-		     (not success)
-		     nil))
+		     (not success)))
 	       (emt:assert
 		  (emt:funcall #'equal
 		     (emt:persist
@@ -456,8 +454,7 @@ unreversed after all the pushing)")
 	 (emt:doc "Response: The variable has been incremented, which
 	 shows that the second clause ran.")
 	 (emt:assert
-	    (equal a 1)
-	    t))))
+	    (equal a 1)))))
 
 
 ;;;_. Footers

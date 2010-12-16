@@ -48,8 +48,7 @@
 		     (emtd:make-prop-eval-form
 			'(four
 			    (+ 2 2))))
-		  '(four 4))
-	       t)
+		  '(four 4)))
 	    (emt:assert
 	       (equal
 		  (eval
@@ -57,8 +56,7 @@
 			'(four-form
 			    '(+ 2 2))))
 		  '(four-form
-		      (+ 2 2)))
-	       t)
+		      (+ 2 2))))
 	    t))))
 
 
@@ -79,8 +77,7 @@
 	       (emt:assert
 		  (=
 		     (length clause-list)
-		     1)
-		  t)
+		     1))
 	       (let*
 		  ((clause (car clause-list)))
 		  (equal 
@@ -109,14 +106,12 @@
 	       (emt:assert
 		  (equal
 		     (assoc 'four props)
-		     '(four 4))
-		  t)
+		     '(four 4)))
 	       (emt:assert
 		  (equal
 		     (assoc 'four-form props)
 		     '(four-form
-			 (+ 2 2)))
-		  t)
+			 (+ 2 2))))
 	       t))))
    (nil
       (progn
@@ -128,8 +123,7 @@
 	       (emt:assert
 		  (=
 		     (length clause-list)
-		     0)
-		  t)
+		     0))
 	       t)))))
 
 ;;;_. Footers

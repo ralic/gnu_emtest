@@ -46,13 +46,11 @@
 	    (emt:assert
 	       (not
 		  (typep "Not a list"
-		     '(cons)))
-	       t)
+		     '(cons))))
 	    (emt:assert
 	       (typep
 		  '(1 2)
-		  '(cons))
-	       t)
+		  '(cons)))
 	    t)))
    (nil
       (progn
@@ -62,13 +60,11 @@
 	    (emt:assert
 	       (not
 		  (typep "Not a list"
-		     '(cons * *)))
-	       t)
+		     '(cons * *))))
 	    (emt:assert
 	       (typep
 		  '(1 2)
-		  '(cons * *))
-	       t)
+		  '(cons * *)))
 	    t)))
    (nil
       (progn
@@ -79,19 +75,16 @@
 	       (not
 		  (typep
 		     '(13 . 13)
-		     '(cons integer string)))
-	       t)
+		     '(cons integer string))))
 	    (emt:assert
 	       (not
 		  (typep
 		     '("No" . "Nope")
-		     '(cons integer string)))
-	       t)
+		     '(cons integer string))))
 	    (emt:assert
 	       (typep
 		  '(12 . "Yes")
-		  '(cons integer string))
-	       t)
+		  '(cons integer string)))
 	    t))))
 
 ;;;_   , emty:list-f
@@ -107,18 +100,15 @@
 	    (emt:assert
 	       (not
 		  (typep "Not a list"
-		     '(list)))
-	       t)
+		     '(list))))
 	    (emt:assert
 	       (not
 		  (typep
 		     '("A list")
-		     '(list)))
-	       t)
+		     '(list))))
 	    (emt:assert
 	       (typep 'nil
-		  '(list))
-	       t)
+		  '(list)))
 	    t)))
    (nil
       (progn
@@ -128,25 +118,21 @@
 	    (emt:assert
 	       (typep
 		  '(12)
-		  '(list integer))
-	       t)
+		  '(list integer)))
 	    (emt:assert
 	       (not
 		  (typep
 		     '("Not an integer")
-		     '(list integer)))
-	       t)
+		     '(list integer))))
 	    (emt:assert
 	       (not
 		  (typep 'nil
-		     '(list integer)))
-	       t)
+		     '(list integer))))
 	    (emt:assert
 	       (not
 		  (typep
 		     '(13 13)
-		     '(list integer)))
-	       t)
+		     '(list integer))))
 	    t)))
    (nil
       (progn
@@ -157,37 +143,31 @@ matches each type.")
 	    (emt:assert
 	       (typep
 		  '(12 "string" 12)
-		  '(list integer * integer))
-	       t)
+		  '(list integer * integer)))
 	    (emt:assert
 	       (typep
 		  '(12 'symbol 12)
-		  '(list integer * integer))
-	       t)
+		  '(list integer * integer)))
 	    (emt:assert
 	       (not
 		  (typep
 		     '(12 "string")
-		     '(list integer * integer)))
-	       t)
+		     '(list integer * integer))))
 	    (emt:assert
 	       (not
 		  (typep
 		     '(12 "string" 12 12)
-		     '(list integer * integer)))
-	       t)
+		     '(list integer * integer))))
 	    (emt:assert
 	       (not
 		  (typep
 		     '("A string" "string" 12)
-		     '(list integer * integer)))
-	       t)
+		     '(list integer * integer))))
 	    (emt:assert
 	       (not
 		  (typep
 		     '(12 "string" "A string")
-		     '(list integer * integer)))
-	       t)
+		     '(list integer * integer))))
 	    t))))
 
 ;;;_   , emty:repeat-f
@@ -260,8 +240,7 @@ integers and non-integers.")
 	       (typep
 		  '(12 144)
 		  '(list*
-		      (repeat integer)))
-	       t)
+		      (repeat integer))))
 	    t)))
    (nil
       (progn
@@ -272,8 +251,7 @@ integers and non-integers.")
 	       (typep
 		  '("Alpha" 144)
 		  '(list*
-		      (list string integer)))
-	       t)
+		      (list string integer))))
 	    t)))
    (nil
       (progn
@@ -285,8 +263,7 @@ integers and non-integers.")
 		  (typep
 		     '(144 "Alpha")
 		     '(list*
-			 (list string integer))))
-	       t)
+			 (list string integer)))))
 	    t)))
    (nil
       (progn
@@ -297,8 +274,7 @@ integers and non-integers.")
 	       (typep
 		  '(12 "Alpha" 144)
 		  '(list* integer string
-		      (repeat integer)))
-	       t)
+		      (repeat integer))))
 	    t)))
    (nil
       (progn
@@ -310,8 +286,7 @@ integers and non-integers.")
 		  (typep
 		     '(13 13 144)
 		     '(list* integer string
-			 (repeat integer))))
-	       t)
+			 (repeat integer)))))
 	    t))))
 
 
@@ -336,12 +311,10 @@ integers and non-integers.")
 	 (emt:doc "Built-in types work (integer).")
 	 (progn
 	    (emt:assert
-	       (typep 12 'integer)
-	       t)
+	       (typep 12 'integer))
 	    (emt:assert
 	       (not
-		  (typep "String" 'integer))
-	       t)
+		  (typep "String" 'integer)))
 	    t)))
    (nil
       (progn
@@ -349,18 +322,15 @@ integers and non-integers.")
 	 (progn
 	    (emt:assert
 	       (typep 12
-		  '(or integer string))
-	       t)
+		  '(or integer string)))
 	    (emt:assert
 	       (typep "String"
-		  '(or integer string))
-	       t)
+		  '(or integer string)))
 	    (emt:assert
 	       (not
 		  (typep
 		     '(repeat)
-		     '(or integer string)))
-	       t)
+		     '(or integer string))))
 	    t)))
    (nil
       (progn
@@ -396,14 +366,12 @@ integers and non-integers.")
 	       (emt:assert
 		  (cl-make-type-test
 		     (make-struct1 :field1 12)
-		     'struct1)
-		  t)
+		     'struct1))
 	       (emt:assert
 		  (eval
 		     (cl-make-type-test
 			(make-struct1 :field1 12)
-			'struct1))
-		  t)
+			'struct1)))
 	       t))))
    (nil
       (progn
@@ -433,8 +401,7 @@ value of `nil.'")
 	       (typep
 		  (make-struct1 :field1
 		     '("Any" thing "at" all))
-		  'struct1)
-	       t)
+		  'struct1))
 	    t)))
    (nil
       (progn
@@ -452,8 +419,7 @@ value of `nil.'")
 		     (typep
 			(make-struct1 :field1
 			   '("Any" thing "at" all))
-			'struct1))
-		  t)
+			'struct1)))
 	       t))))
    (nil
       (progn

@@ -48,8 +48,7 @@
 	 (emt:assert
 	    (eq
 	       (emtt:lib-path->lib-sym (emtg (type lib-path)))
-	       (emtg (type sym)))
-	    t))))
+	       (emtg (type sym)))))))
 
 
 ;;;_ , emtt:lib-path-own-suites
@@ -69,8 +68,7 @@
 		  (equal
 		     (length syms)
 		     (emtg
-			(type count)))
-		  t)
+			(type count))))
 	       t)))))
 
 ;;;_ , emtest/runner/explorers/library
@@ -114,7 +112,7 @@ Full exploration is used (Meaningless for now)")
 		     ;;We don't expect to see any other types of
 		     ;;explores.
 		     (t
-			(emt:assert (not test-id) t)
+			(emt:assert (not test-id))
 			(error "This test shouldn't reach here")))))))))
 
 

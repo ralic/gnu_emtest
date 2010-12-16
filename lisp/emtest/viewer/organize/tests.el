@@ -69,8 +69,8 @@
 	    #'emtvo:tester-cb)
 	 (emt:doc "Validate:  We have set up.")
 	 (emt:doc "Validate:  We have received some result objects.")
-	 (emt:assert (identity emtvo:receiver) t)
-	 (emt:assert (identity emtvo:pathtree) t)
+	 (emt:assert (identity emtvo:receiver))
+	 (emt:assert (identity emtvo:pathtree))
 	 (emt:doc "Validate: Tree is the right type all thru it")
 	 (emt:assert
 	    (emtvp:th:type-correct-p emtvo:pathtree))
@@ -89,8 +89,7 @@
 			(emt:view:make-suite-newstyle
 			   ;;:how-to-run
 			   ;;(satisfies emthow:hello-p)
-			   :children '())))))
-	    t)
+			   :children '()))))))
 	 (emt:doc "Response: WRITEME.")))
 
 
@@ -106,8 +105,8 @@
 
 	 (emt:doc "Validate:  We have set up.")
 	 (emt:doc "Validate:  We have received some result objects.")
-	 (emt:assert (identity emtvo:receiver) t)
-	 (emt:assert (identity emtvo:pathtree) t)
+	 (emt:assert (identity emtvo:receiver))
+	 (emt:assert (identity emtvo:pathtree))
 	 (emt:doc "Validate: Tree is the right type all thru it")
 	 (emt:assert
 	    (emtvp:th:type-correct-p emtvo:pathtree))
@@ -141,8 +140,7 @@
 				       ;; :how-to-run
 				       ;;(satisfies emthow:suite-p)
 				       :children
-				       ())))))))))
-	    t)))
+				       ()))))))))))))
    
    (nil
       (emt:library:th ((count 0))
@@ -156,8 +154,8 @@
 
 	 (emt:doc "Validate:  We have set up.")
 	 (emt:doc "Validate:  We have received some result objects.")
-	 (emt:assert (identity emtvo:receiver) t)
-	 (emt:assert (identity emtvo:pathtree) t)
+	 (emt:assert (identity emtvo:receiver))
+	 (emt:assert (identity emtvo:pathtree))
 	 (emt:doc "Validate: Tree is the right type all thru it")
 	 (emt:assert
 	    (emtvp:th:type-correct-p emtvo:pathtree))
@@ -185,8 +183,7 @@
 				 ;;:how-to-run
 				 ;;(satisfies emthow:library-p)
 				 :children
-				 (list))))))))
-	    t)))
+				 (list)))))))))))
    
    )
 

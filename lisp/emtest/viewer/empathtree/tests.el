@@ -55,8 +55,7 @@
 			      `((type emtvr:alist-item) ,@role&test-tags)))
 			(emtg:value+
 			   `((type suite-own+notes-badness-list)
-			       (name ,result-name))))
-		     t)))))))
+			       (name ,result-name)))))))))))
 
 ;;;_ , emtvr:combine-badnesses
 ;;$$WRITE MY EXAMPLES
@@ -80,8 +79,7 @@
 			      `((type emtvr:alist-item) ,@role&test-tags)))
 			(emtg:value+
 			   `((type suite-own+notes-badness-list)
-			       (name ,'test-bad))))
-		     t)))))))
+			       (name ,'test-bad)))))))))))
 
 
 

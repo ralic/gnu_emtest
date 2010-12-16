@@ -136,8 +136,7 @@
 		     (emt:assert
 			(emtmd:repr-contents-equal
 			   (emtg (type nametree)(permutation 0))
-			   (emtg (type nametree)(permutation 1)))
-			t)))))))
+			   (emtg (type nametree)(permutation 1))))))))))
    (nil
       (progn
 	 (emt:doc "An example's nametree is not equal to any others.")
@@ -156,8 +155,7 @@
 			      (not
 				 (emtmd:repr-contents-equal
 				    nametree-a
-				    (emtg (type nametree)(flavor vanilla))))
-			      t)))))))))
+				    (emtg (type nametree)(flavor vanilla)))))))))))))
 
    )
 
@@ -175,8 +173,7 @@
 	 (emtmd:repr-contents-equal nametree 
 	    (emtg (project emtest)(library mocks)(topdir "3")
 	       (flavor vanilla)
-	       (type nametree)))
-	 t)))
+	       (type nametree))))))
 
 (emt:deftest-3 
    ((of 'emtmd:get-repr-contents)
@@ -199,8 +196,7 @@
 	    (emt:doc "Result: Matches what's expected.")
 	    (emt:assert
 	       (emtmd:repr-contents-equal nametree 
-		  (emtg (type nametree)(flavor vanilla)))
-	       t)
+		  (emtg (type nametree)(flavor vanilla))))
 	       
 	    (emt:doc "Cross-validation: Does not match any another's
    nametree.") 
@@ -215,8 +211,7 @@
 			   (not
 			      (emtmd:repr-contents-equal
 				 nametree-a
-				 (emtg (type nametree)(flavor vanilla))))
-			   t))))))))
+				 (emtg (type nametree)(flavor vanilla))))))))))))
 
    (()
       (progn
@@ -240,8 +235,7 @@
 		     (emtmd:repr-contents-equal nametree 
 			(emtg 
 			   (type nametree)
-			   (source file)))
-		     t))))))
+			   (source file)))))))))
    
    (()
       (progn
@@ -267,8 +261,7 @@
 			(emtmd:repr-contents-equal nametree 
 			   (emtg 
 			      (type nametree)
-			      (contents-right nil))))
-		     t)))
+			      (contents-right nil)))))))
 	    )))
 
    )
@@ -306,8 +299,7 @@
 			repr-contents
 			(emtg 
 			   (type nametree)
-			   (flavor vanilla)))
-		     t))
+			   (flavor vanilla)))))
 	 
 	 
 

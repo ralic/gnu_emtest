@@ -48,16 +48,14 @@
 	    (emt:doc "Validate: bar is bound and has the expected value.")
 	    (emt:assert (boundp 'bar))
 	    (emt:assert
-	       (eq bar 'old-value)
-	       t)
+	       (eq bar 'old-value))
 	    (emt:doc "Operation: Redefine function `foo'.")
 	    (defun foo () 'new-value)
 	    (emt:doc "Operation: Call emtd:update-for-sym manually.")
 	    (emtd:update-for-sym 'foo)
 	    (emt:doc "Result: bar now has the new value.")
 	    (emt:assert
-	       (eq bar 'new-value)
-	       t)))))
+	       (eq bar 'new-value))))))
 
 ;;;_ , emt:keep-up-to-date-x
 (put 'emt:keep-up-to-date-x 'emt:test-thru

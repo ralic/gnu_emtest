@@ -190,8 +190,7 @@ Neither `dir' nor `file' is given.")
 		  (save-buffer 0))
 	       (emt:assert
 		  (string= "abc"
-		     (emtb:file-contents-absname slave-file))
-		  t)))))
+		     (emtb:file-contents-absname slave-file)))))))
    (nil
       (progn
 	 (emt:doc "Shows: `sequence' works.
@@ -220,8 +219,7 @@ Param: sequence with two strings")
 	       filename
 	       (setq x 12))
 	    (emt:assert
-	       (equal x 12)
-	       t)
+	       (equal x 12))
 	    t)))
    (nil
       (progn
@@ -232,8 +230,7 @@ Param: sequence with two strings")
 	       (:string str)
 	       filename
 	       (emt:assert
-		  (file-name-absolute-p filename)
-		  t))
+		  (file-name-absolute-p filename)))
 	    t)))
    (nil
       (progn
@@ -247,8 +244,7 @@ Param: sequence with two strings")
 	       (emt:assert
 		  (string=
 		     (emtb:file-contents-absname filename)
-		     str)
-		  t))
+		     str)))
 	    t)))
    (nil
       (progn
@@ -261,8 +257,7 @@ BODY.")
 		  (emtb:with-file-f
 		     (:string str)
 		     filename 12)
-		  12)
-	       t)
+		  12))
 	    t)))
    (nil
       (progn
@@ -275,8 +270,7 @@ BODY.")
 	       (setq filename-kept filename))
 	    (emt:assert
 	       (not
-		  (file-exists-p filename-kept))
-	       t)
+		  (file-exists-p filename-kept)))
 	    t)))
    (nil
       (progn
@@ -287,8 +281,7 @@ No file is made.")
 	    filename
 	    (emt:assert
 	       (not
-		  (file-exists-p filename))
-	       t)
+		  (file-exists-p filename)))
 	    t)))
    (nil
       (progn
@@ -306,8 +299,7 @@ No file is made.")
 		  (write-file filename)))
 	    (emt:assert
 	       (not
-		  (file-exists-p filename-kept))
-	       t)
+		  (file-exists-p filename-kept)))
 	    t))))
 
 

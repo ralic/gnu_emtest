@@ -68,11 +68,9 @@
 	       (emt:assert
 		  (equal
 		     (emtvr:data->alist receiver)
-		     'nil)
-		  t)
+		     'nil))
 	       (emt:assert
-		  (emtm nodes-freshened (list))
-		  t)
+		  (emtm nodes-freshened (list)))
 	       t))))
    (nil
       (progn
@@ -106,14 +104,12 @@
 			   '(emtg
 			       (type emtvr:alist-item-pattern)
 			       (role original-add)
-			       (what-test test-1)))))
-		  t)
+			       (what-test test-1))))))
 	       (emt:assert
 		  (=
 		     (length
 			(emtvr:data->alist receiver))
-		     1)
-		  t)
+		     1))
 	       (emt:doc "Response: One callback happened")
 	       (emtg:narrow ((what-test test-1)(role original-add))
 		  (emtvr:th:assert-the-1-right-node 
@@ -161,14 +157,12 @@
 			   '(emtg
 			       (type emtvr:alist-item-pattern)
 			       (role replace)
-			       (what-test test-1)))))
-		  t)
+			       (what-test test-1))))))
 	       (emt:assert
 		  (=
 		     (length
 			(emtvr:data->alist receiver))
-		     1)
-		  t)
+		     1))
 	       (emt:doc "Response: One NEW callback happened")
 	       (emtg:narrow ((what-test test-1)(role replace))
 		  (emtvr:th:assert-the-1-right-node 
@@ -206,8 +200,7 @@
 	       (emt:assert
 		  (equal
 		     (emtvr:data->alist receiver)
-		     'nil)
-		  t)
+		     'nil))
 	       t))))
    (nil
       (progn

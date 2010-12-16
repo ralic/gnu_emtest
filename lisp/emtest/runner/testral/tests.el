@@ -65,8 +65,7 @@
 	 
 	 (emt:assert
 	    (emth:sets= note-list 
-	       (list note-1 note-2))
-	    t))))
+	       (list note-1 note-2))))))
 
 
 ;;;_. Footers

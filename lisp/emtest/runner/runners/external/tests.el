@@ -55,8 +55,7 @@
       (t "echo hello\n"
 	 (emt:doc "A simple test")
 	 (emt:assert 
-	    (equal answer "hello\r\n% ")
-	    t))))
+	    (equal answer "hello\r\n% ")))))
 
 ;;;_ , To meta-test
 ;;Receive and test that fail/no fail was found, and no other badnesses.

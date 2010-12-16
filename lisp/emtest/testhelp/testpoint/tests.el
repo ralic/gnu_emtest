@@ -182,8 +182,7 @@ During execution, a throw keeps foo from ever being called.")
 		      (+ 2 10))))
 	       (arg a)
 	       (emt:assert
-		  (equal twelve 12)
-		  t)))))
+		  (equal twelve 12))))))
    (nil
       (progn
 	 (emt:doc "Situation: There is only a finally form.
@@ -254,8 +253,7 @@ The testpoint collects one arg.")
 		  (arg-list)
 		  (emt:assert
 		     (emth:sets= arg-list
-			'(x y))
-		     t)))
+			'(x y)))))
 	    t)))
    (nil
       (progn
@@ -275,12 +273,10 @@ The testpoint collects multiple args - 2.")
 		  (arg-list a-list)
 		  (emt:assert
 		     (emth:sets= arg-list
-			'(x y))
-		     t)
+			'(x y)))
 		  (emt:assert
 		     (emth:sets= a-list
-			'(b-1 b-1))
-		     t)))
+			'(b-1 b-1)))))
 	    t)))
    (nil
       (progn
@@ -301,8 +297,7 @@ order that they occur.")
 		  (arg-list)
 		  (emt:assert
 		     (equal arg-list
-			'(x y))
-		     t)))
+			'(x y)))))
 	    t)))
    (nil
       (progn
@@ -507,7 +502,7 @@ The check form is evalled under conditions of certain error.")
 	 (emt:doc "Response: Nothing bad happens.")))
    (nil
       (flet
-	 ((bad (&rest r)(emt:assert nil nil "Wrongly called")))
+	 ((bad (&rest r)(emt:assert nil)))
 	 (emt:doc "Situation: Function BAD must not be called.")
 	 (emt:doc "Operation: Form inside emtp:insulate vs BAD calls BAD.")
 	 (emtp:insulate (bad)

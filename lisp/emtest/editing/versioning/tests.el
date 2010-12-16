@@ -42,8 +42,7 @@
 	 (emt:assert
 	    (equal
 	       (emtvers:substring->docform "abc" 0 0)
-	       nil)
-	    t)))
+	       nil))))
    
    (nil
       (progn
@@ -52,8 +51,7 @@
 	 (emt:assert
 	    (equal
 	       (emtvers:substring->docform " abc" 0 1)
-	       nil)
-	    t)))
+	       nil))))
    (nil
       (progn
 	 (emt:doc "Situation: Normal.")
@@ -61,8 +59,7 @@
 	 (emt:assert
 	    (equal
 	       (emtvers:substring->docform " abc" 0 4)
-	       '(emt:doc "abc"))
-	    t)))
+	       '(emt:doc "abc")))))
 
    (nil
       (progn
@@ -72,8 +69,7 @@
 	 (emt:assert
 	    (equal
 	       (emtvers:substring->docform "a\n(bc)" 0)
-	       '(emt:doc "a\n\\(bc)"))
-	    t)))
+	       '(emt:doc "a\n\\(bc)")))))
    
    )
 
