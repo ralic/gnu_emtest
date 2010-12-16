@@ -138,7 +138,7 @@ there was any error inside a `emth:trap-errors'."
 (defmacro emth:trap-errors (&rest body)
    ""
    `(progn
-       (declare (special emt:testral:*events-seen* emtt:*abort-p*))
+       (declare (special emtt:*abort-p*))
        (condition-case err
 	  (progn ,@body)
 	  ('emt:already-handled
@@ -195,6 +195,34 @@ there was any error inside a `emth:trap-errors'."
 	 results)))
 
 ;;Usage: On forms, just (emth:map&trap #'eval form-list)
+;;;_ , Assertions
+;;;_  . emt:assert-f
+(defun emt:assert-f (form)
+   "Worker function for macro `emt:assert'"
+   
+   (if 
+      (boundp 'emt:testral:*events-seen*)
+      (let*
+	 (  
+	    (retval
+	       (eval form)))
+	 (unless retval
+	    (emtt:testral:add-note
+	       ;;$$IMPROVE ME  Make and use a dedicated note-type
+	       (emt:testral:make-doc 
+		  :badnesses 
+		  (emt:testral:make-grade:fail)
+		  :str 
+		  (pp-to-string form))
+	       '()))
+	 retval)
+      (eval `(assert ,form t))))
+
+;;;_  . emt:assert
+;;;###autoload
+(defmacro emt:assert (form &rest r)
+   ""
+   `(emt:assert-f ',form))
 
 
 ;;;_ , "should"

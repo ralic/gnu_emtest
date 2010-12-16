@@ -53,7 +53,7 @@
 Adds no error report.
 Does not signal error.")
 	 (progn
-	    (assert
+	    (emt:assert
 	       (not
 		  (emth:gives-error
 		     (emth:trap-errors
@@ -83,12 +83,12 @@ Behavior: `utim:get-properties' returns the relevant property.")
 	       (emtt:th:run-suite 'dummy-sym #'ignore)
 	       (tp 531a913c-aa10-4730-9be5-30c1cb02b7c4 nil
 		  (progn
-		     (assert
+		     (emt:assert
 			(equal
 			   (utim:get-properties 'db-id)
 			   "my-db")
 			t)
-		     (assert
+		     (emt:assert
 			(equal
 			   (utim:get-properties 'example-dir)
 			   "examples/")
