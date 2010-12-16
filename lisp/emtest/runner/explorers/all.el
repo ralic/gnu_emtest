@@ -54,7 +54,7 @@ THIS FORMAT MAY CHANGE." )
 ;;;_  . emtt:add-explorer
 
 (defun emtt:add-explorer (pred func &optional name &rest dummy)
-   ""
+   "Add an explorer to our alist of explorers"
    
    (unless (assq pred emtt:test-finder:method-list)
       (push 
@@ -92,7 +92,7 @@ HOW must be of a subtype of emthow"
 	 :explore-methods-supported
 	 (mapcar #'third emtt:test-finder:method-list))))
 
-;;;_    . Insinuate
+;;;_    . Register it
 
 (emtt:add-explorer #'emthow:hello-p #'emtt:explore-hello
    "Tester signature") 
