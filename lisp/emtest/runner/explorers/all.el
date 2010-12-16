@@ -80,9 +80,6 @@ HOW must be of a subtype of emthow"
 	 #'emtt:explore-fallback)))
 
 ;;;_  . Special explorers
-;;;_   , Include the autoload list of explorers
-(require 'emtest/runner/loadexplorers)
-
 ;;;_   , emtt:explore-hello
 ;;This doesn't require an autoload but all others do.
 (defun emtt:explore-hello (test-id props path report-f)
@@ -118,8 +115,12 @@ HOW must be of a subtype of emthow"
 
 ;;;_. Footers
 ;;;_ , Provides
-
 (provide 'emtest/runner/explorers/all)
+
+;;;_ , Include the autoload list of explorers
+;;Included with our feature already provided, so the load-forms know
+;;they are supported.
+(require 'emtest/runner/loadexplorers)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
