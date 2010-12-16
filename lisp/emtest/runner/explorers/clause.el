@@ -144,6 +144,10 @@ This is the heart of Emtest exploration: A test itself."
 
 
 ;;;_   , Insinuate
+;;;###autoload (unless (fboundp 'emtt:add-explorer)
+;;;###autoload   (error "emtest/runner/explorers/all must be loaded"))
+
+;;;_    . 
 ;;;###autoload (emtt:add-explorer #'emthow:indexed-clause-p #'emtt:explore-indexed-clause
 ;;;###autoload "Indexed clause") 
 
