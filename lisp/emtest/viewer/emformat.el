@@ -175,10 +175,9 @@ DATA-LIST must be a loal."
 	    (emtvf:grade-overall-face grades))
 	 (grades-sum
 	    (emtvf:sum-badnesses-short grades data-list))
-	 ;;$$RECONSIDER ME Not clear that this is still
-	 ;;relevant since we get adequate headlines from
-	 ;;suite names.
-	 (dyn-headline
+	 ;;This gives us the prefix of the headline if we have skipped
+	 ;;one or more plys of the tree because they were singletons.
+	 (name-prefix
 	    (apply #'append
 	       (mapcar
 		  #'(lambda (x)
@@ -201,7 +200,7 @@ DATA-LIST must be a loal."
 			(emtvf:headline 
 			   (1+ depth) 
 			   grade-face 
-			   `(  ,dyn-headline
+			   `(  ,name-prefix
 			       (w/face ,name emtvf:face:suitename)
 			       " "
 			       ,grades-sum))
@@ -221,7 +220,7 @@ DATA-LIST must be a loal."
 			(emtvf:headline 
 			   (1+ depth) 
 			   grade-face 
-			   `(  ,dyn-headline
+			   `(  ,name-prefix
 			       (w/face ,name emtvf:face:suitename)
 			       " "
 			       ,(emtvf:button-to-explore explorable "[RUN]")
@@ -279,7 +278,7 @@ DATA-LIST must be a loal."
 		     (emtvf:headline 
 			(1+ depth) 
 			grade-face 
-			`(  ,dyn-headline
+			`(  ,name-prefix
 			    (w/face ,name emtvf:face:suitename)
 			    " "
 			    ,grades-sum))
