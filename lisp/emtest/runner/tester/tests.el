@@ -46,6 +46,9 @@
 		  nil))
 	    12)))
 
+   ;;$$FIX ME: `emth:trap-errors' still puts an error into the report,
+   ;;though the assertion works.  It really needs access to a
+   ;;TESTRAL scope controller.
    (nil
       (progn
 	 (emt:doc "Situation: Body throws an emt:already-handled error.")

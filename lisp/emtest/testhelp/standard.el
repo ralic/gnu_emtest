@@ -61,7 +61,7 @@
 ;;;###autoload
 (defalias 'emtb:expand-filename-by-load-file 'emt:expand-filename-here)
 
-;;;_ , Doc
+;;;_ , Explicit notes
 ;;;_  . emt:doc
 ;;;###autoload
 (defun emt:doc (str &rest r)
@@ -134,7 +134,6 @@ there was any error inside a `emth:trap-errors'."
 
 
 ;;;_  . emth:trap-errors
-;;$$USE ME
 (defmacro emth:trap-errors (&rest body)
    ""
    `(progn
@@ -202,6 +201,8 @@ there was any error inside a `emth:trap-errors'."
    
    (if 
       (boundp 'emt:testral:*events-seen*)
+      ;;Don't use `emth:trap-errors'.  If an error would escape, the
+      ;;assert wasn't going to be meaningful anyways.
       (let*
 	 (  
 	    (retval
@@ -224,96 +225,6 @@ there was any error inside a `emth:trap-errors'."
    ""
    `(emt:assert-f ',form))
 
-
-;;;_ , "should"
-;;;_  . emth:analyze-form
-;; OBSOLESCENT.  Only used in `emth:should-f;
-(defun emth:analyze-form (form)
-   ""
-
-   (if
-      (and
-	 (listp form)
-	 (eq (car form) 'equal))
-      ;;`(emt:funcall (function ,(car form)) ,@(cdr form))
-      form
-      form))
-
-;;;_  . emth:should-f
-;;Done in an obsolete way
-(defun emth:should-f (form)
-   ""
-   ;;$ADDME When `emt:testral:*parent-id*' etc are not bound, act like
-   ;;plain `assert'.  Or possibly push results onto a ring that can be
-   ;;examined. 
-   (declare (special emt:testral:*id-counter* emt:testral:*parent-id*))
-
-
-   (let*
-      (
-	 (parent-id emt:testral:*parent-id*)
-	 ;;Use a counter or a uuid.
-	 (id (incf emt:testral:*id-counter*))
-	 ;;Bind a new parent id
-	 (emt:testral:*parent-id* id)
-	 
-	 ;;Create empty badnesses, just because `unwind-protect' must
-	 ;;see it
-	 (badnesses '()))
-      (emtt:testral:add-note
-	 (emt:testral:make-check:push
-	    :info (list (list 'form form))
-	    :parent-id parent-id
-	    :id id))
-      
-
-
-      ;;`unwind-protect' this, in place of the last form:
-      ;;Make&send a `emt:testral:check:pop'.  To know
-      ;;badnesses, if any: Each case assigns to the `badnesses'
-      ;;variable, which we use in making that. 
-
-      ;;NEW
-      (emth:trap-errors
-	 (let*
-	    (  
-	       (form-x (emth:analyze-form form))
-	       (retval
-		  (eval form-x)))
-	    (unless retval
-	       (push '(failed) badnesses))
-	    retval))))
-
-;;;_  . should
-;;Essentially unused except a bit of exploration in early development.
-;;;###autoload
-(defmacro* should (form &key doc)
-   ""
-
-   `(emth:should-f ',form))
-
-
-;;;_   , Test helper
-
-(defmacro* emth:should:th 
-   ((&key 
-       initial-stored 
-       ;;(report-control emt:report-control:thd:report-all)
-       )
-      &rest body)
-   ""
-   
-   `(let
-       ((emt:trace:current-event-list ,initial-stored)
-	  ;;Other control such as report-control is not supported yet,
-	  ;;so can't control it here.
-	  )
-       
-       (list
-	  (progn ,@body)
-	  emt:trace:current-event-list)
-       ;;We aren't interested in "should"s return value
-       emt:trace:current-event-list))
 
 
 ;;;_. Footers
