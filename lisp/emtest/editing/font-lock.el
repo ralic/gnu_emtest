@@ -31,30 +31,41 @@
 ;;Nothing
 
 ;;;_. Body
+;;;_ , emtest/editing/font-lock-make-keywordgroup
+(defun emtest/editing/font-lock-make-keywordgroup (object)
+   ""
+   `(,(regexp-opt (car object) 'words) 
+       1
+       ,(second object)
+       prepend))
+;;;_ , emtest/editing/font-lock-data
+(defconst emtest/editing/font-lock-data 
+   '(((
+	 "emtp:eval"
+	 "emtp"
+	 "emt:deftest-3"
+	 "emtb:with-buf"
+	 "emtb:with-file-f"
+	 "emtmv:require-x"
+	 "emtmv:with-version"
+	 "emt:eq-persist-p"
+	 )
+	font-lock-keyword-face)
+       (("emt:doc")
+	  font-lock-doc-face)
+       (("emt:assert")
+	  font-lock-warning-face))
+   
+   "Keywords for Emtest, by group" )
+
 ;;;_ , emtest/editing/font-lock-add-keywords
 (defun emtest/editing/font-lock-add-keywords ()
    ""
    (when (featurep 'font-lock)
       (font-lock-add-keywords 'emacs-lisp-mode
-	 `(
-	     (,(regexp-opt
-		  '(
-		      "emtp:eval"
-		      "emtp"
-		      "emt:doc"
-		      "emt:deftest-3"
-		      "emtb:with-buf"
-		      "emtb:with-file-f"
-		      "emtmv:require-x"
-		      "emtmv:with-version"
-		      "emt:eq-persist-p"
-		      )
-		  'words) 
-		1 font-lock-keyword-face prepend)
-	     (,(regexp-opt
-		  '("emt:assert")
-		  'words) 
-		1 font-lock-warning-face prepend)))))
+	 (mapcar
+	    #'emtest/editing/font-lock-make-keywordgroup
+	    emtest/editing/font-lock-data))))
 
 ;;;_ , Insinuate
 ;;;###autoload (eval-after-load 'emacs-lisp '(emtest/editing/font-lock-add-keywords))
