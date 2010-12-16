@@ -46,9 +46,6 @@
 		  nil))
 	    12)))
 
-   ;;$$FIX ME: `emth:trap-errors' still puts an error into the report,
-   ;;though the assertion works.  It really needs access to a
-   ;;TESTRAL scope controller.
    (nil
       (progn
 	 (emt:doc "Situation: Body throws an emt:already-handled error.")
@@ -59,8 +56,14 @@ Does not signal error.")
 	    (emt:assert
 	       (not
 		  (emth:gives-error
-		     (emth:trap-errors
-			(signal 'emt:already-handled nil)))))
+		     ;;Isolate the note(s) it will make
+		     (emtt:testral:with
+			;;...and isolate the *abort-p* flag.
+			(emth:abortscope
+			   x
+			   (emth:trap-errors
+			      (signal 'emt:already-handled nil))
+			   t)))))
 	    t)))
    ;;More to add.  See [[id:ca903ca0-bd5d-4985-8cd3-a5a4dd998b5c][]]
    )
