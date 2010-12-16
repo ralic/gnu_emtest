@@ -182,6 +182,7 @@
 
 ;;;_ , Entry point (for clause explorer)
 ;;;_  . emtr:external
+;;;###autoload
 (defun emtr:external (props form report-f)
    "Run a test-case on external program and report the result."
 
