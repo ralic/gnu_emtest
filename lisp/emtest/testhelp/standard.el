@@ -200,7 +200,7 @@ there was any error inside a `emth:trap-errors'."
    "Worker function for macro `emt:assert'"
    
    (if 
-      (boundp 'emt:testral:*events-seen*)
+      (emtt:testral:p)
       ;;Don't use `emth:trap-errors'.  If an error would escape, the
       ;;assert wasn't going to be meaningful anyways.
       (let*

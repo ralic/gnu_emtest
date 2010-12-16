@@ -37,6 +37,12 @@
 (declare (special emt:testral:*path-prefix*))
 (declare (special emt:testral:*id-counter*))
 ;;;_ , Support
+;;;_  . Predicates
+;;;_   , emtt:testral:p
+(defsubst emtt:testral:p ()
+   "Non-nil if called in a scope collecting TESTRAL notes"
+   (boundp 'emt:testral:*events-seen*))
+
 ;;;_  . Counters
 ;;;_   , emtt:testral:create-counter
 (defsubst emtt:testral:create-counter ()
@@ -51,7 +57,7 @@
 (defsubst emtt:testral:push-note (note)
    "Push a TESTRAL note"
    (when
-      (boundp 'emt:testral:*events-seen*)
+      (emtt:testral:p)
       (push note
 	 (cdr emt:testral:*events-seen*))))
 ;;;_   , emtt:testral:get-notes
@@ -61,7 +67,6 @@
    "Return a list of the notes received in the same order they were
 received in."
    (nreverse (cdr emt:testral:*events-seen*)))
-
 ;;;_ , Entry points primarily for Emtest itself
 ;;;_  . emtt:testral:with
 (defmacro emtt:testral:with (&rest body)
@@ -111,7 +116,7 @@ NOTE must be a type derived from `emt:testral:base'
 NAME is a list of strings.
 TAGS is not used yet, it controls what notes to add (For now, any
    note)."
-   (when (boundp 'emt:testral:*events-seen*)
+   (when (emtt:testral:p)
       (emtt:testral:push-note
 	 (if 
 	    (typep note 'emt:testral:base)
@@ -152,7 +157,7 @@ TAGS is not used yet, it controls what notes to add (For now, any
 (defun emtt:testral:report-false (prestn-prefix str)
    "Report that a compare leaf was false"
    ;;For now, we just use a `doc' note.
-   (when (boundp 'emt:testral:*events-seen*)
+   (when (emtt:testral:p)
       (emtt:testral:add-note
 	 (emt:testral:make-doc :str str)
 	 prestn-prefix)))
@@ -162,7 +167,7 @@ TAGS is not used yet, it controls what notes to add (For now, any
 (defun emtt:testral:note-list ()
    ""
    (unless 
-      (boundp 'emt:testral:*events-seen*)
+      (emtt:testral:p)
       (error "Not in a TESTRAL collection scope"))
    (emt:testral:make-note-list
       :notes (emtt:testral:get-notes)))
