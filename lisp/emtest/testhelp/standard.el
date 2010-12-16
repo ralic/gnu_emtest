@@ -196,17 +196,16 @@ there was any error inside a `emth:trap-errors'."
 ;;Usage: On forms, just (emth:map&trap #'eval form-list)
 ;;;_ , Assertions
 ;;;_  . emt:assert-f
+;;`emt:assert-f' doesn't use `emth:trap-errors'.  If an error would
+;;escape, the assert wasn't going to be meaningful anyways.
 (defun emt:assert-f (form)
    "Worker function for macro `emt:assert'"
    
    (if 
       (emtt:testral:p)
-      ;;Don't use `emth:trap-errors'.  If an error would escape, the
-      ;;assert wasn't going to be meaningful anyways.
-      (let*
-	 (  
-	    (retval
-	       (eval form)))
+      (let
+	 ((retval (eval form)))
+	 ;;$$IMPROVE ME  If passed, add a note saying so.
 	 (unless retval
 	    (emtt:testral:add-note
 	       ;;$$IMPROVE ME  Make and use a dedicated note-type
