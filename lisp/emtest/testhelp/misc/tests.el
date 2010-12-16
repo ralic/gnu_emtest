@@ -184,7 +184,7 @@ Body does throw the tag in question.")
 	 (emt:doc "Situation: OBJ is in TREE.")
 	 (emt:doc "Response: Return non-nil.")
 	 (progn
-	    (assert
+	    (emt:assert
 	       (emth:somewhere-in-tree #'eq
 		  '(((12)))
 		  12))
@@ -194,7 +194,7 @@ Body does throw the tag in question.")
 	 (emt:doc "Situation: OBJ is not in TREE.")
 	 (emt:doc "Response: Return nil.")
 	 (progn
-	    (assert
+	    (emt:assert
 	       (not
 		  (emth:somewhere-in-tree #'eq
 		     '(((12)))
@@ -228,13 +228,13 @@ Body does throw the tag in question.")
 	 (emt:doc "Proves: `emth:let-noprops' temporarily rebinds properties.")
 	 (emth:let-noprops
 	    '(foo)
-	    (assert
+	    (emt:assert
 	       (null
 		  (symbol-plist 'foo)))
 	    (emth:let-noprops
 	       '(foo)
 	       (put 'foo 'example-prop 13))
-	    (assert
+	    (emt:assert
 	       (null
 		  (symbol-plist 'foo)))
 	    t)))
@@ -243,20 +243,20 @@ Body does throw the tag in question.")
 	 (emt:doc "Proves: `emth:let-noprops' temporarily sets properties null.")
 	 (emth:let-noprops
 	    '(foo)
-	    (assert
+	    (emt:assert
 	       (null
 		  (symbol-plist 'foo)))
 	    (put 'foo 'example-prop 13)
-	    (assert
+	    (emt:assert
 	       (equal
 		  (symbol-plist 'foo)
 		  '(example-prop 13)))
 	    (emth:let-noprops
 	       '(foo)
-	       (assert
+	       (emt:assert
 		  (null
 		     (symbol-plist 'foo))))
-	    (assert
+	    (emt:assert
 	       (equal
 		  (symbol-plist 'foo)
 		  '(example-prop 13)))
@@ -272,14 +272,14 @@ Body does throw the tag in question.")
 After `emth:let-unbound' runs, foo is bound again.")
 	 (progn
 	    (defconst foo t)
-	    (assert
+	    (emt:assert
 	       (boundp 'foo))
 	    (emth:let-unbound
 	       '(foo)
-	       (assert
+	       (emt:assert
 		  (not
 		     (boundp 'foo))))
-	    (assert
+	    (emt:assert
 	       (boundp 'foo))
 	    (makunbound 'foo)
 	    t)))
@@ -292,13 +292,13 @@ After `emth:let-unbound' runs, foo is bound again.")
 	    ((syms
 		'(foo)))
 	    (defconst foo t)
-	    (assert
+	    (emt:assert
 	       (boundp 'foo))
 	    (emth:let-unbound syms
-	       (assert
+	       (emt:assert
 		  (not
 		     (boundp 'foo))))
-	    (assert
+	    (emt:assert
 	       (boundp 'foo))
 	    (makunbound 'foo)
 	    t))))
@@ -312,14 +312,14 @@ After `emth:let-unbound' runs, foo is bound again.")
 After `emth:let-unbound' runs, foo is bound again.")
 	 (progn
 	    (defun foo nil)
-	    (assert
+	    (emt:assert
 	       (fboundp 'foo))
 	    (emth:flet-unbound
 	       '(foo)
-	       (assert
+	       (emt:assert
 		  (not
 		     (fboundp 'foo))))
-	    (assert
+	    (emt:assert
 	       (fboundp 'foo))
 	    (fmakunbound 'foo)
 	    t)))
@@ -332,13 +332,13 @@ After `emth:let-unbound' runs, foo is bound again.")
 	    ((syms
 		'(foo)))
 	    (defun foo nil)
-	    (assert
+	    (emt:assert
 	       (fboundp 'foo))
 	    (emth:flet-unbound syms
-	       (assert
+	       (emt:assert
 		  (not
 		     (fboundp 'foo))))
-	    (assert
+	    (emt:assert
 	       (fboundp 'foo))
 	    (fmakunbound 'foo)
 	    t))))
@@ -352,10 +352,10 @@ After `emth:let-unbound' runs, foo is bound again.")
 	 (emt:doc "Proves: `emth:all-different' returns non-nil just if all
 members of SET are different.")
 	 (progn
-	    (assert
+	    (emt:assert
 	       (emth:all-different
 		  '(1 2)))
-	    (assert
+	    (emt:assert
 	       (not
 		  (emth:all-different
 		     '(1 1))))

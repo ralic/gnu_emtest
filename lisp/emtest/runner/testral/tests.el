@@ -63,7 +63,7 @@
 		     (emtt:testral:add-note note-2)
 		     (emtt:testral:get-notes)))))
 	 
-	 (assert
+	 (emt:assert
 	    (emth:sets= note-list 
 	       (list note-1 note-2))
 	    t))))

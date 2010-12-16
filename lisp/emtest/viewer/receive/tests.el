@@ -65,12 +65,12 @@
 			(type report)
 			(name empty))))
 	       (emtvr:newstyle receiver report)
-	       (assert
+	       (emt:assert
 		  (equal
 		     (emtvr:data->alist receiver)
 		     'nil)
 		  t)
-	       (assert
+	       (emt:assert
 		  (emtm nodes-freshened (list))
 		  t)
 	       t))))
@@ -98,7 +98,7 @@
 			(role original-add)
 			(what-test test-1))))
 	       (emtvr:newstyle receiver report)
-	       (assert
+	       (emt:assert
 		  (emtm
 		     (emtvr:data->alist receiver)
 		     (list
@@ -108,7 +108,7 @@
 			       (role original-add)
 			       (what-test test-1)))))
 		  t)
-	       (assert
+	       (emt:assert
 		  (=
 		     (length
 			(emtvr:data->alist receiver))
@@ -153,7 +153,7 @@
 		     (type report)
 		     (what-test test-1)
 		     (role replace)))
-	       (assert
+	       (emt:assert
 		  (emtm
 		     (emtvr:data->alist receiver)
 		     (list
@@ -163,7 +163,7 @@
 			       (role replace)
 			       (what-test test-1)))))
 		  t)
-	       (assert
+	       (emt:assert
 		  (=
 		     (length
 			(emtvr:data->alist receiver))
@@ -203,7 +203,7 @@
 		     (type report)
 		     (role remove-previous)
 		     (what-test test-1)))
-	       (assert
+	       (emt:assert
 		  (equal
 		     (emtvr:data->alist receiver)
 		     'nil)

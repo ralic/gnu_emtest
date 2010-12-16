@@ -39,7 +39,7 @@
       (progn
 	 (emt:doc "Situation: Start and end are the same.")
 	 (emt:doc "Response: Gives nil.")
-	 (assert
+	 (emt:assert
 	    (equal
 	       (emtvers:substring->docform "abc" 0 0)
 	       nil)
@@ -49,7 +49,7 @@
       (progn
 	 (emt:doc "Situation: Substring is all whitespace.")
 	 (emt:doc "Response: Gives nil.")
-	 (assert
+	 (emt:assert
 	    (equal
 	       (emtvers:substring->docform " abc" 0 1)
 	       nil)
@@ -58,7 +58,7 @@
       (progn
 	 (emt:doc "Situation: Normal.")
 	 (emt:doc "Response: Gives an emt docstring.")
-	 (assert
+	 (emt:assert
 	    (equal
 	       (emtvers:substring->docform " abc" 0 4)
 	       '(emt:doc "abc"))
@@ -69,7 +69,7 @@
 	 (emt:doc "Situation: String contains a left parenthesis at
       beginning of a line.")
 	 (emt:doc "Response: That parenthesis is now escaped.")
-	 (assert
+	 (emt:assert
 	    (equal
 	       (emtvers:substring->docform "a\n(bc)" 0)
 	       '(emt:doc "a\n\\(bc)"))

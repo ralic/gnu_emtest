@@ -181,7 +181,7 @@ During execution, a throw keeps foo from ever being called.")
 		  ((twelve
 		      (+ 2 10))))
 	       (arg a)
-	       (assert
+	       (emt:assert
 		  (equal twelve 12)
 		  t)))))
    (nil
@@ -214,7 +214,7 @@ Param: `:return' flag is passed non-nil")
 	 (emt:doc "Situation: There are two finally forms.")
 	 (emt:doc "Response: Error.")
 	 (progn
-	    (assert
+	    (emt:assert
 	       (emth:gives-error
 		  (emtp:eval nil
 		     (finally nil nil
@@ -252,7 +252,7 @@ The testpoint collects one arg.")
 		  (emt:tp:collect arg))
 	       (finally nil
 		  (arg-list)
-		  (assert
+		  (emt:assert
 		     (emth:sets= arg-list
 			'(x y))
 		     t)))
@@ -273,11 +273,11 @@ The testpoint collects multiple args - 2.")
 		  (emt:tp:collect arg a))
 	       (finally nil
 		  (arg-list a-list)
-		  (assert
+		  (emt:assert
 		     (emth:sets= arg-list
 			'(x y))
 		     t)
-		  (assert
+		  (emt:assert
 		     (emth:sets= a-list
 			'(b-1 b-1))
 		     t)))
@@ -299,7 +299,7 @@ order that they occur.")
 		  (emt:tp:collect arg))
 	       (finally nil
 		  (arg-list)
-		  (assert
+		  (emt:assert
 		     (equal arg-list
 			'(x y))
 		     t)))
@@ -315,7 +315,7 @@ The old version of foo is restored")
 	    (let
 	       ((old-foo-func
 		   (symbol-function 'foo)))
-	       (assert
+	       (emt:assert
 		  (not
 		     (emth:gives-error
 			(emtp:eval
@@ -324,7 +324,7 @@ The old version of foo is restored")
 			      (foo))
 			   (mock*
 			      (:symbol foo :count 2))))))
-	       (assert
+	       (emt:assert
 		  (eq old-foo-func
 		     (symbol-function 'foo))))
 	    t)))
@@ -353,14 +353,14 @@ The old version of foo is restored")
 	    (let
 	       ((old-foo-func
 		   (symbol-function 'foo)))
-	       (assert
+	       (emt:assert
 		  (emth:gives-error
 		     (emtp:eval
 			(list
 			   (foo))
 			(mock*
 			   (:symbol foo :count 2)))))
-	       (assert
+	       (emt:assert
 		  (eq old-foo-func
 		     (symbol-function 'foo))))
 	    t))))
@@ -419,7 +419,7 @@ approximating how it's done internally in `tp'.")
 	       (emt:doc "Operation: call foo after unwind-protect has
       rebound it to the original.")
 	       (emt:doc "Result: Gives expected error.")
-	       (assert
+	       (emt:assert
 		  (emth:gives-error foo))))))
 
 
@@ -507,7 +507,7 @@ The check form is evalled under conditions of certain error.")
 	 (emt:doc "Response: Nothing bad happens.")))
    (nil
       (flet
-	 ((bad (&rest r)(assert nil nil "Wrongly called")))
+	 ((bad (&rest r)(emt:assert nil nil "Wrongly called")))
 	 (emt:doc "Situation: Function BAD must not be called.")
 	 (emt:doc "Operation: Form inside emtp:insulate vs BAD calls BAD.")
 	 (emtp:insulate (bad)

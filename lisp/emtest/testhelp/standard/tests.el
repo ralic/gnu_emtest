@@ -59,7 +59,7 @@
 	    ((project emtest)
 	       (library tester)
 	       (section emth:wrap-form))
-	    (assert
+	    (emt:assert
 	       (equal
 		  (emth:wrap-form
 		     (emtg
@@ -90,10 +90,10 @@
 			 (car
 			    (emtg
 			       (type values))))))
-		  (assert
+		  (emt:assert
 		     (not success)
 		     nil))
-	       (assert
+	       (emt:assert
 		  (emt:funcall #'equal
 		     (emt:persist
 			(emtg
@@ -102,7 +102,7 @@
 		     (car
 			(emtg
 			   (type values)))))
-	       (assert
+	       (emt:assert
 		  (eval
 		     (emth:wrap-form
 			'(equal
@@ -433,7 +433,7 @@ unreversed after all the pushing)")
    (nil
       (progn
 	 (emt:doc "Proves: Maps over values.")
-	 (assert
+	 (emt:assert
 	    (equal
 	       (emth:map&trap
 		  #'eval
@@ -444,7 +444,7 @@ unreversed after all the pushing)")
       (let ((a 0))
 	 (emt:doc "Situation: First form errors. Second one increments
       a variable")
-	 (assert
+	 (emt:assert
 	    (emth:gives-error
 	       (emth:map&trap
 		  #'eval 
@@ -455,7 +455,7 @@ unreversed after all the pushing)")
 	 first clause ran.") 
 	 (emt:doc "Response: The variable has been incremented, which
 	 shows that the second clause ran.")
-	 (assert
+	 (emt:assert
 	    (equal a 1)
 	    t))))
 

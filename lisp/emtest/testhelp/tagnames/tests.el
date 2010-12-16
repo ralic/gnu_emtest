@@ -93,7 +93,7 @@
 Type spec is before item spec.")
 	 (emt:doc "Response: error.")
 	 (emtg:define:th:with-empty-tagset nil
-	    (assert
+	    (emt:assert
 	       (emth:gives-error
 		  (emtg:define dummy-id nil
 		     (type-must-be
@@ -110,7 +110,7 @@ Type spec is before item spec.")
 Item spec is before type spec.")
 	 (emt:doc "Response: error.")
 	 (emtg:define:th:with-empty-tagset nil
-	    (assert
+	    (emt:assert
 	       (emth:gives-error
 		  (emtg:define dummy-id nil
 		     (item
@@ -133,7 +133,7 @@ Item spec is before type spec.")
 	       (item
 		  ((dummy-type-tag a))
 		  'dummy-1-type-a))
-	    (assert
+	    (emt:assert
 	       (not
 		  (emth:gives-error
 		     (emtg
@@ -304,7 +304,7 @@ Can't use `emtg' in body."
 	 (emt:doc "Response: Put it on the examples list `emtg:all-examples'.
 Return the empty list.")
 	 (emtg:try-valuedef->example-2:th
-	    (assert
+	    (emt:assert
 	       (null
 		  (emtg:try-valuedef->example-2
 		     (emtg:make-valuedef-type :value-form 12)
@@ -322,12 +322,12 @@ Return a list consisting of that example.")
 	       ((valuedef
 		   (emtg:make-valuedef-type :value-form
 		      '(signal 'emtg:err:not-found nil))))
-	       (assert
+	       (emt:assert
 		  (equal
 		     (emtg:try-valuedef->example-2 valuedef 'dummy-id)
 		     (list valuedef))
 		  t)
-	       (assert
+	       (emt:assert
 		  (equal
 		     (length emtg:all-examples)
 		     0))
@@ -1292,7 +1292,7 @@ tag.")
 	    ((project emtest)
 	       (library emtg)
 	       (topic map))
-	    (assert
+	    (emt:assert
 	       (emth:sets=
 		  (emtg:map discriminator x x)
 		  '(small medium))
@@ -1313,7 +1313,7 @@ tag.")
 			    (part number))
 			 (emtg
 			    (part string))))))
-	       (assert
+	       (emt:assert
 		  (emth:sets= results
 		     '((2 "wee")
 			 (14 "medium string"))))
@@ -1338,7 +1338,7 @@ already have been narrowed out of our scope.")
 	       (library emtg)
 	       (topic map)
 	       (not-medium))
-	    (assert
+	    (emt:assert
 	       (emth:sets=
 		  (emtg:map discriminator x x)
 		  '(small))
@@ -1359,7 +1359,7 @@ already have been narrowed out of our scope.")
 			    (part number))
 			 (emtg
 			    (part string))))))
-	       (assert
+	       (emt:assert
 		  (emth:sets= results
 		     '((2 "wee"))))
 	       t)))))
@@ -1413,7 +1413,7 @@ Param: dummy-tag.")
 	    ((project emtest)
 	       (library emtg)
 	       (topic map))
-	    (assert
+	    (emt:assert
 	       (emth:sets=
 		  (emtg:all-tag-args 'discriminator)
 		  '(small medium))
@@ -1429,7 +1429,7 @@ already have been narrowed out of our scope.")
 	       (library emtg)
 	       (topic map)
 	       (not-medium))
-	    (assert
+	    (emt:assert
 	       (emth:sets=
 		  (emtg:all-tag-args 'discriminator)
 		  '(small))
@@ -1444,7 +1444,7 @@ already have been narrowed out of our scope.")
 	  (emt:doc "Situation: WRITEME.")
 	  (emt:doc "Response: WRITEME.")
 	  (progn
-	     (assert
+	     (emt:assert
 		(equal
 		   (emtg:browse:item->relative-distinction
 		      (emtg
@@ -1465,7 +1465,7 @@ already have been narrowed out of our scope.")
 	  (emt:doc "Situation: WRITEME.")
 	  (emt:doc "Response: WRITEME.")
 	  (progn
-	     (assert
+	     (emt:assert
 		(equal
 		   (emtg:browse:->stage-1
 		      (emtg:browse:make-relative-distinction :item
@@ -1479,7 +1479,7 @@ already have been narrowed out of our scope.")
 	  (emt:doc "Situation: WRITEME.")
 	  (emt:doc "Response: WRITEME.")
 	  (progn
-	     (assert
+	     (emt:assert
 		(equal
 		   (emtg:browse:->stage-1
 		      (list

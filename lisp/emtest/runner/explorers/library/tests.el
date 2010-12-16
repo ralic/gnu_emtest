@@ -45,7 +45,7 @@
    (nil
       (emt:library:th ((count 2))
 	 (emt:doc "Response: We get the lib symbol we expected.")
-	 (assert
+	 (emt:assert
 	    (eq
 	       (emtt:lib-path->lib-sym (emtg (type lib-path)))
 	       (emtg (type sym)))
@@ -65,7 +65,7 @@
 	       ((syms
 		   (emtt:lib-path-own-suites
 		      (emtg (type lib-path)))))
-	       (assert
+	       (emt:assert
 		  (equal
 		     (length syms)
 		     (emtg
@@ -114,7 +114,7 @@ Full exploration is used (Meaningless for now)")
 		     ;;We don't expect to see any other types of
 		     ;;explores.
 		     (t
-			(assert (not test-id) t)
+			(emt:assert (not test-id) t)
 			(error "This test shouldn't reach here")))))))))
 
 

@@ -69,14 +69,14 @@
 	    #'emtvo:tester-cb)
 	 (emt:doc "Validate:  We have set up.")
 	 (emt:doc "Validate:  We have received some result objects.")
-	 (assert (identity emtvo:receiver) t)
-	 (assert (identity emtvo:pathtree) t)
+	 (emt:assert (identity emtvo:receiver) t)
+	 (emt:assert (identity emtvo:pathtree) t)
 	 (emt:doc "Validate: Tree is the right type all thru it")
-	 (assert
+	 (emt:assert
 	    (emtvp:th:type-correct-p emtvo:pathtree))
 	 (emt:doc "Response: The results occur exactly in expected
    positions in the tree.")
-	 (assert
+	 (emt:assert
 	    (emtm 
 	       emtvo:pathtree
 	       (emtvp:make 
@@ -106,14 +106,14 @@
 
 	 (emt:doc "Validate:  We have set up.")
 	 (emt:doc "Validate:  We have received some result objects.")
-	 (assert (identity emtvo:receiver) t)
-	 (assert (identity emtvo:pathtree) t)
+	 (emt:assert (identity emtvo:receiver) t)
+	 (emt:assert (identity emtvo:pathtree) t)
 	 (emt:doc "Validate: Tree is the right type all thru it")
-	 (assert
+	 (emt:assert
 	    (emtvp:th:type-correct-p emtvo:pathtree))
 	 (emt:doc "Response: The results occur exactly in expected
    positions in the tree.")
-	 (assert
+	 (emt:assert
 	    (emtm 
 	       emtvo:pathtree
 	       (emtvp:make 
@@ -156,14 +156,14 @@
 
 	 (emt:doc "Validate:  We have set up.")
 	 (emt:doc "Validate:  We have received some result objects.")
-	 (assert (identity emtvo:receiver) t)
-	 (assert (identity emtvo:pathtree) t)
+	 (emt:assert (identity emtvo:receiver) t)
+	 (emt:assert (identity emtvo:pathtree) t)
 	 (emt:doc "Validate: Tree is the right type all thru it")
-	 (assert
+	 (emt:assert
 	    (emtvp:th:type-correct-p emtvo:pathtree))
 	 (emt:doc "Response: The results occur exactly in expected
    positions in the tree.")
-	 (assert
+	 (emt:assert
 	    (emtm 
 	       emtvo:pathtree
 	       (emtvp:make 

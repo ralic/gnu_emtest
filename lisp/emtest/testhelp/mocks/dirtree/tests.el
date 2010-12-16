@@ -111,7 +111,7 @@
 	 (emt:doc "Shows: An example's nametree is equal to itself.")
 	 (emtg:with emtmd:thd:examples ()
 	    (emtg:map topdir prefix
-	       (assert
+	       (emt:assert
 		  (emtmd:repr-contents-equal
 		     (emtg (type nametree)(flavor vanilla))
 		     (emtg (type nametree)(flavor vanilla)))
@@ -133,7 +133,7 @@
 		     ;;don't loop over the list and we know their
 		     ;;names (So there's no need to get fancy with
 		     ;;`emtg:value')
-		     (assert
+		     (emt:assert
 			(emtmd:repr-contents-equal
 			   (emtg (type nametree)(permutation 0))
 			   (emtg (type nametree)(permutation 1)))
@@ -152,7 +152,7 @@
 		  (emtg:with emtmd:thd:examples ()
 		     (emtg:map topdir prefix-b
 			(unless (string= prefix-a prefix-b)
-			   (assert
+			   (emt:assert
 			      (not
 				 (emtmd:repr-contents-equal
 				    nametree-a
@@ -171,7 +171,7 @@
 	  (emtmd:get-repr-contents
 	     (expand-file-name "3" emtmd:thd:master-examples))))
       (emt:doc "Result: Matches what's expected.")
-      (assert
+      (emt:assert
 	 (emtmd:repr-contents-equal nametree 
 	    (emtg (project emtest)(library mocks)(topdir "3")
 	       (flavor vanilla)
@@ -197,7 +197,7 @@
 		(emtmd:get-repr-contents
 		   (expand-file-name prefix emtmd:thd:master-examples))))
 	    (emt:doc "Result: Matches what's expected.")
-	    (assert
+	    (emt:assert
 	       (emtmd:repr-contents-equal nametree 
 		  (emtg (type nametree)(flavor vanilla)))
 	       t)
@@ -211,7 +211,7 @@
 	       (emtg:with emtmd:thd:examples ()
 		  (emtg:map topdir prefix-b
 		     (unless (string= prefix prefix-b)
-			(assert
+			(emt:assert
 			   (not
 			      (emtmd:repr-contents-equal
 				 nametree-a
@@ -236,7 +236,7 @@
 			 (expand-file-name prefix
 			    emtmd:thd:master-examples))))
 		  (emt:doc "Result: Matches the contents.")
-		  (assert
+		  (emt:assert
 		     (emtmd:repr-contents-equal nametree 
 			(emtg 
 			   (type nametree)
@@ -262,7 +262,7 @@
 			 (expand-file-name prefix
 			    emtmd:thd:master-examples))))
 		  (emt:doc "Result: Mismatches the known-wrong contents.")
-		  (assert
+		  (emt:assert
 		     (not
 			(emtmd:repr-contents-equal nametree 
 			   (emtg 
@@ -301,7 +301,7 @@
 		      (emtmd:get-repr-contents ".")))
 	    
 		  (emt:doc "Response: Contents are the same as the original repr.")
-		  (assert
+		  (emt:assert
 		     (emtmd:repr-contents-equal 
 			repr-contents
 			(emtg 

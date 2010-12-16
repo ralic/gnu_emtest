@@ -188,7 +188,7 @@ Neither `dir' nor `file' is given.")
 		  (setq slave-file
 		     (buffer-file-name))
 		  (save-buffer 0))
-	       (assert
+	       (emt:assert
 		  (string= "abc"
 		     (emtb:file-contents-absname slave-file))
 		  t)))))
@@ -219,7 +219,7 @@ Param: sequence with two strings")
 	       (:string str)
 	       filename
 	       (setq x 12))
-	    (assert
+	    (emt:assert
 	       (equal x 12)
 	       t)
 	    t)))
@@ -231,7 +231,7 @@ Param: sequence with two strings")
 	    (emtb:with-file-f
 	       (:string str)
 	       filename
-	       (assert
+	       (emt:assert
 		  (file-name-absolute-p filename)
 		  t))
 	    t)))
@@ -244,7 +244,7 @@ Param: sequence with two strings")
 	    (emtb:with-file-f
 	       (:string str)
 	       filename
-	       (assert
+	       (emt:assert
 		  (string=
 		     (emtb:file-contents-absname filename)
 		     str)
@@ -256,7 +256,7 @@ Param: sequence with two strings")
 BODY.")
 	 (let
 	    ((str "abc def ghi"))
-	    (assert
+	    (emt:assert
 	       (equal
 		  (emtb:with-file-f
 		     (:string str)
@@ -273,7 +273,7 @@ BODY.")
 	       (:string "abc def ghi")
 	       filename
 	       (setq filename-kept filename))
-	    (assert
+	    (emt:assert
 	       (not
 		  (file-exists-p filename-kept))
 	       t)
@@ -285,7 +285,7 @@ No file is made.")
 	 (emtb:with-file-f
 	    (:absent t)
 	    filename
-	    (assert
+	    (emt:assert
 	       (not
 		  (file-exists-p filename))
 	       t)
@@ -304,7 +304,7 @@ No file is made.")
 	       (with-temp-buffer
 		  (insert "Some stuff")
 		  (write-file filename)))
-	    (assert
+	    (emt:assert
 	       (not
 		  (file-exists-p filename-kept))
 	       t)

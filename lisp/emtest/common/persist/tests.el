@@ -173,11 +173,11 @@ It has the correct value.")
 		   (emt:db:get-all-values id 'correct-answer)))
 	    ;;It was empty and now has one element.  Single element
 	    ;;would not be removed (say by expiration).
-	       (assert
+	       (emt:assert
 		  (=
 		     (length value-list)
 		     1))
-	       (assert
+	       (emt:assert
 		  (=
 		     (car value-list)
 		     12))

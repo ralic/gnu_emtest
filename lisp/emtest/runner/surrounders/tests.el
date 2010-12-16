@@ -45,7 +45,7 @@
 	    "Args: Empty list of protectors.")
 	 (emt:doc
 	    "Result: The original form.")
-	 (assert
+	 (emt:assert
 	    (equal
 	       (emts:add-surrounders 'foo '() '())
 	       'foo))))
@@ -56,7 +56,7 @@
 	    "Args: List of one protector.")
 	 (emt:doc
 	    "Result: Form is surrounded by that protector.")
-	 (assert
+	 (emt:assert
 	    (equal
 	       (emts:add-surrounders 'foo '((progn)) '())
 	       '(progn foo)))))
@@ -67,7 +67,7 @@
 	    "Args: List of one protector, more complicated form.")
 	 (emt:doc
 	    "Result: More complicated form is correctly surrounded.")
-	 (assert
+	 (emt:assert
 	    (equal
 	       (emts:add-surrounders 
 		  '(let (a b) foo) 
@@ -80,7 +80,7 @@
 	    "Args: List of one more complicated surrounder.")
 	 (emt:doc
 	    "Result: Form is correctly surrounded.")
-	 (assert
+	 (emt:assert
 	    (equal
 	       (emts:add-surrounders 
 		  'foo
@@ -94,7 +94,7 @@
 	    "Args: List of three protectors.")
 	 (emt:doc
 	    "Result: Form is surrounded by all three in order, first outermost.")
-	 (assert
+	 (emt:assert
 	    (equal
 	       (emts:add-surrounders 
 		  'foo 

@@ -180,19 +180,19 @@ Call this inside a narrowing to (which WHICH)."
 	 ;;For variables:
 	 (case (emtg (type metatype))
 	    (variable
-	       (assert
+	       (emt:assert
 		  (equal
 		     (eval (emtg (type sym)))
 		     (emtg (type value)))
 		  t))
 	    (function
-	       (assert
+	       (emt:assert
 		  (equal
 		     (funcall (emtg (type sym)))
 		     (emtg (type value)))
 		  t))
 	    (set-prop
-	       (assert
+	       (emt:assert
 		  (equal
 		     (get
 			'foo:var2 
@@ -261,14 +261,14 @@ Call this inside a narrowing to (which WHICH)."
       (progn
 	 (emt:doc "Validates: obarray does reflect let bindings.")
 	 (emt:doc "Situation: Symbol is not bound globally.")
-	 (assert (not (boundp 'invalid-d535)))
+	 (emt:assert (not (boundp 'invalid-d535)))
 	 (let ((invalid-d535 12)) 
 	    (emt:doc "Situation: Symbol is bound locally.")
 	    (emt:doc "Response: Symbol can be found in obarray.")
-	    (assert (intern-soft "invalid-d535" obarray))
-	    (assert (intern-soft "invalid-d535"))
+	    (emt:assert (intern-soft "invalid-d535" obarray))
+	    (emt:assert (intern-soft "invalid-d535"))
 	    (emt:doc "Response: Symbol has the right value.")
-	    (assert
+	    (emt:assert
 	       (equal
 		  (symbol-value (intern-soft "invalid-d535"))
 		  12)
@@ -279,7 +279,7 @@ Call this inside a narrowing to (which WHICH)."
       (progn
 	 (emt:doc "Situation: Nothing is set up.")
 	 (emt:doc "Operation: `emtmv:with-version' given nil.")
-	 (assert
+	 (emt:assert
 	    (emth:gives-error
 	       (emtmv:with-version nil nil
 		  t)))
@@ -289,7 +289,7 @@ Call this inside a narrowing to (which WHICH)."
 	 (emt:doc "Situation: Nothing is set up.")
 	 (emt:doc "Operation: `emtmv:with-version' given non-nil.")
 	 (emt:doc "In particular: `old'")
-	 (assert
+	 (emt:assert
 	    (emth:gives-error
 	       (emtmv:with-version 'old nil
 		  t)))
@@ -300,7 +300,7 @@ Call this inside a narrowing to (which WHICH)."
 	 (emt:doc "Operation: `emtmv:change-state'")
 	 (emt:doc "Param: No libversion object given.")
 	 (emt:doc "Response: Makes an error.")
-	 (assert
+	 (emt:assert
 	    (emth:gives-error
 	       (emtmv:change-state 'old nil)))))
    (nil
@@ -309,7 +309,7 @@ Call this inside a narrowing to (which WHICH)."
 	 (emt:doc "Operation: `emtmv:change-state'")
 	 (emt:doc "Param: Invalid `new-state'.")
 	 (emt:doc "Response: Makes an error.")
-	 (assert
+	 (emt:assert
 	    (emth:gives-error
 	       (emtmv:change-state 'invalid nil )))))
 
@@ -379,7 +379,7 @@ Call this inside a narrowing to (which WHICH)."
 	    (  (lv-obj (emtmv:th:load))
 	       (value "Another value"))
 	    (emt:doc "Situation: In state `new'")
-	    (assert (eq (emtmv:t->version lv-obj) 'new))
+	    (emt:assert (eq (emtmv:t->version lv-obj) 'new))
 
 	    (emt:doc "Assign to a variable")
 	    (setq foo:var1 value)
@@ -394,18 +394,18 @@ Call this inside a narrowing to (which WHICH)."
 	    (emtmv:with-version 'new lv-obj
 	       (emt:doc "Operation: Eval it in `new'.")
 	       (emt:doc "Response: In `new' it has the new value.")
-	       (assert
+	       (emt:assert
 		  (equal foo:var1 value)))
 
 	    (emt:doc "Situation: Still in state `new'")
-	    (assert (eq (emtmv:t->version lv-obj) 'new))
+	    (emt:assert (eq (emtmv:t->version lv-obj) 'new))
 
 	    (emt:doc "Re-eval the `new' form")
 	    (eval
 	       (emtg (role form) (which new)))
 	    (emtmv:with-version 'new lv-obj
 	       (emt:doc "Response: It no longer has that value in `new'.")
-	       (assert
+	       (emt:assert
 		  (not 
 		     (equal foo:var1 value))
 		  t))
@@ -426,7 +426,7 @@ Call this inside a narrowing to (which WHICH)."
 	    (emt:doc "Operation: Eval it in `old'.")
 	    (emtmv:with-version 'old lv-obj
 	       (emt:doc "Response: In `old' it has the new value.")
-	       (assert
+	       (emt:assert
 		  (equal foo:var1 value)
 		  t))	    
 
@@ -453,7 +453,7 @@ Call this inside a narrowing to (which WHICH)."
 	    (emtmv:add-advice 'run-stuff 'old lv-obj)
 	    (emt:doc "Operation: Run run-stuff.")
 	    (emt:doc "Response: It returns the `old' value of `foo:var1'.")
-	    (assert
+	    (emt:assert
 	       (equal
 		  (run-stuff)
 		  (emtg (which old)(name var1)(type value)))
@@ -556,13 +556,13 @@ it's source (el), not compiled.  Otherwise do nothing and return nil."
 	 (when (featurep vc-lib-sym)
 	    (unload-feature vc-lib-sym t))
 	 (emt:doc "Situation: The VC lib is not loaded.")
-	 (assert
+	 (emt:assert
 	    (not (featurep vc-lib-sym)))
 
 	 (emt:doc "Operation: require-x on `foo'")
 	 (emtmv:require-x '(foo) '())
 	 (emt:doc "Response: The VC lib is now loaded")
-	 (assert (featurep vc-lib-sym))))
+	 (emt:assert (featurep vc-lib-sym))))
    
    (nil
       (let* 
@@ -579,18 +579,18 @@ it's source (el), not compiled.  Otherwise do nothing and return nil."
 	 (when (featurep lib-sym)
 	    (unload-feature lib-sym t))
 	 (emt:doc "Situation: The library is not loaded.")
-	 (assert
+	 (emt:assert
 	    (not (featurep lib-sym)))
 	 (emt:doc "Operation: require-x on lib-sym.")
 	 (emtmv:require-x (list lib-sym) '())
 	 (emt:doc "Response: The library is now loaded")
-	 (assert (featurep lib-sym))
+	 (emt:assert (featurep lib-sym))
 	 (let* 
 	    ((lfn foo:load-file-name))
 	    (emt:doc "Response: load-file-name is non-nil")
-	    (assert (not (null lfn)))
+	    (emt:assert (not (null lfn)))
 	    (emt:doc "Response: It points at the right location")
-	    (assert
+	    (emt:assert
 	       (string=
 		  lfn
 		  (emtg (which new)(role filename)))))))
@@ -613,10 +613,10 @@ give us an .elc")
 	 (when (featurep lib-sym)
 	    (unload-feature lib-sym t))
 	 (emt:doc "Situation: The library is not loaded.")
-	 (assert
+	 (emt:assert
 	    (not (featurep lib-sym)))
 	 (emt:doc "Situation: locate-library finds it with an .elc extension")
-	 (assert
+	 (emt:assert
 	    (string=
 	       (file-name-extension
 		  (locate-library (symbol-name lib-sym)))
@@ -624,11 +624,11 @@ give us an .elc")
 	 (emt:doc "Operation: require-x on lib-sym.")
 	 (emtmv:require-x (list lib-sym) '())
 	 (emt:doc "Response: The library is now loaded")
-	 (assert (featurep lib-sym))
+	 (emt:assert (featurep lib-sym))
 	 (let* 
 	    ((lfn compiled:load-file-name))
 	    (emt:doc "Response: library is the .el version")
-	    (assert
+	    (emt:assert
 	       (string=
 		  (file-name-extension lfn)
 		  "el")))))
@@ -650,7 +650,7 @@ give us an .elc")
 
 	    (emt:doc "Response: run-stuff returns the `old' value of
    `foo:var1'.") 
-	    (assert
+	    (emt:assert
 	       (equal
 		  (run-stuff)
 		  (emtg (which old)(name var1)(type value)))
@@ -658,7 +658,7 @@ give us an .elc")
 	    
 	    (emt:doc "Response: Inspecting `foo:var1' in the
 	    larger context gives the new value.")
-	    (assert
+	    (emt:assert
 	       (equal
 		  foo:var1
 		  (emtg (which new)(name var1)(type value)))
@@ -677,7 +677,7 @@ give us an .elc")
    `foo:var1'.")
 	    (emt:doc "Operation: require-x on `foo'")
 	    (emt:doc "Response: Error.")
-	    (assert
+	    (emt:assert
 	       (emth:gives-error
 		  (emtmv:require-x '(foo) '(run-stuff))))))))
 

@@ -43,12 +43,12 @@
 	 (emt:doc "Situation: Spec args are not given")
 	 (emt:doc "Response: Accept just cons cells.")
 	 (progn
-	    (assert
+	    (emt:assert
 	       (not
 		  (typep "Not a list"
 		     '(cons)))
 	       t)
-	    (assert
+	    (emt:assert
 	       (typep
 		  '(1 2)
 		  '(cons))
@@ -59,12 +59,12 @@
 	 (emt:doc "Situation: Spec args are both `*'.")
 	 (emt:doc "Response: Accept just cons cells.")
 	 (progn
-	    (assert
+	    (emt:assert
 	       (not
 		  (typep "Not a list"
 		     '(cons * *)))
 	       t)
-	    (assert
+	    (emt:assert
 	       (typep
 		  '(1 2)
 		  '(cons * *))
@@ -75,19 +75,19 @@
 	 (emt:doc "Situation: Spec args are given.")
 	 (emt:doc "Response: Accept just cons cells whose parts match the specs.")
 	 (progn
-	    (assert
+	    (emt:assert
 	       (not
 		  (typep
 		     '(13 . 13)
 		     '(cons integer string)))
 	       t)
-	    (assert
+	    (emt:assert
 	       (not
 		  (typep
 		     '("No" . "Nope")
 		     '(cons integer string)))
 	       t)
-	    (assert
+	    (emt:assert
 	       (typep
 		  '(12 . "Yes")
 		  '(cons integer string))
@@ -104,18 +104,18 @@
 	 (emt:doc "Situation: Spec is empty")
 	 (emt:doc "Response: Accept only nil.")
 	 (progn
-	    (assert
+	    (emt:assert
 	       (not
 		  (typep "Not a list"
 		     '(list)))
 	       t)
-	    (assert
+	    (emt:assert
 	       (not
 		  (typep
 		     '("A list")
 		     '(list)))
 	       t)
-	    (assert
+	    (emt:assert
 	       (typep 'nil
 		  '(list))
 	       t)
@@ -125,23 +125,23 @@
 	 (emt:doc "Situation: Spec has one arg")
 	 (emt:doc "Response: Accept only lists of one el that matches that type.")
 	 (progn
-	    (assert
+	    (emt:assert
 	       (typep
 		  '(12)
 		  '(list integer))
 	       t)
-	    (assert
+	    (emt:assert
 	       (not
 		  (typep
 		     '("Not an integer")
 		     '(list integer)))
 	       t)
-	    (assert
+	    (emt:assert
 	       (not
 		  (typep 'nil
 		     '(list integer)))
 	       t)
-	    (assert
+	    (emt:assert
 	       (not
 		  (typep
 		     '(13 13)
@@ -154,35 +154,35 @@
 	 (emt:doc "Response: Accepts only lists of two els, where the respective one
 matches each type.")
 	 (progn
-	    (assert
+	    (emt:assert
 	       (typep
 		  '(12 "string" 12)
 		  '(list integer * integer))
 	       t)
-	    (assert
+	    (emt:assert
 	       (typep
 		  '(12 'symbol 12)
 		  '(list integer * integer))
 	       t)
-	    (assert
+	    (emt:assert
 	       (not
 		  (typep
 		     '(12 "string")
 		     '(list integer * integer)))
 	       t)
-	    (assert
+	    (emt:assert
 	       (not
 		  (typep
 		     '(12 "string" 12 12)
 		     '(list integer * integer)))
 	       t)
-	    (assert
+	    (emt:assert
 	       (not
 		  (typep
 		     '("A string" "string" 12)
 		     '(list integer * integer)))
 	       t)
-	    (assert
+	    (emt:assert
 	       (not
 		  (typep
 		     '(12 "string" "A string")
@@ -256,7 +256,7 @@ integers and non-integers.")
 	 (emt:doc "Situation: There's only the last element")
 	 (emt:doc "Response: Last element must match the rest of the list.")
 	 (progn
-	    (assert
+	    (emt:assert
 	       (typep
 		  '(12 144)
 		  '(list*
@@ -268,7 +268,7 @@ integers and non-integers.")
 	 (emt:doc "Situation: There's only the last element")
 	 (emt:doc "Response: Last element must match the rest of the list.")
 	 (progn
-	    (assert
+	    (emt:assert
 	       (typep
 		  '("Alpha" 144)
 		  '(list*
@@ -280,7 +280,7 @@ integers and non-integers.")
 	 (emt:doc "Situation: There's only the last element")
 	 (emt:doc "Response: Last element must match the rest of the list.")
 	 (progn
-	    (assert
+	    (emt:assert
 	       (not
 		  (typep
 		     '(144 "Alpha")
@@ -293,7 +293,7 @@ integers and non-integers.")
 	 (emt:doc "Situation: There are previous elements")
 	 (emt:doc "Response: The initial elements must match them.")
 	 (progn
-	    (assert
+	    (emt:assert
 	       (typep
 		  '(12 "Alpha" 144)
 		  '(list* integer string
@@ -305,7 +305,7 @@ integers and non-integers.")
 	 (emt:doc "Situation: There are previous elements")
 	 (emt:doc "Response: The initial elements must match them.")
 	 (progn
-	    (assert
+	    (emt:assert
 	       (not
 		  (typep
 		     '(13 13 144)
@@ -335,10 +335,10 @@ integers and non-integers.")
       (progn
 	 (emt:doc "Built-in types work (integer).")
 	 (progn
-	    (assert
+	    (emt:assert
 	       (typep 12 'integer)
 	       t)
-	    (assert
+	    (emt:assert
 	       (not
 		  (typep "String" 'integer))
 	       t)
@@ -347,15 +347,15 @@ integers and non-integers.")
       (progn
 	 (emt:doc "Compound types work.")
 	 (progn
-	    (assert
+	    (emt:assert
 	       (typep 12
 		  '(or integer string))
 	       t)
-	    (assert
+	    (emt:assert
 	       (typep "String"
 		  '(or integer string))
 	       t)
-	    (assert
+	    (emt:assert
 	       (not
 		  (typep
 		     '(repeat)
@@ -393,12 +393,12 @@ integers and non-integers.")
 	    (emth:let-noprops
 	       '(struct1)
 	       (defstruct struct1 field1)
-	       (assert
+	       (emt:assert
 		  (cl-make-type-test
 		     (make-struct1 :field1 12)
 		     'struct1)
 		  t)
-	       (assert
+	       (emt:assert
 		  (eval
 		     (cl-make-type-test
 			(make-struct1 :field1 12)
@@ -427,9 +427,9 @@ value of `nil.'")
 	    '(struct1)
 	    (defstruct struct1
 	       (field1 nil :type integer))
-	    (assert
+	    (emt:assert
 	       (not emty:*use*))
-	    (assert
+	    (emt:assert
 	       (typep
 		  (make-struct1 :field1
 		     '("Any" thing "at" all))
@@ -447,7 +447,7 @@ value of `nil.'")
 	       '(struct1)
 	       (defstruct struct1
 		  (field1 nil :type integer))
-	       (assert
+	       (emt:assert
 		  (not
 		     (typep
 			(make-struct1 :field1
@@ -462,7 +462,7 @@ value of `nil.'")
 	    '(struct1)
 	    (defstruct struct1
 	       (field1 nil :type integer))
-	    (assert
+	    (emt:assert
 	       (emth:gives-error
 		  (emty:check
 		     (make-struct1 :field1
@@ -483,7 +483,7 @@ The name spec is not a bare symbol")
 		  (:type vector)
 		  :named)
 	       (field1 nil :type integer))
-	    (assert
+	    (emt:assert
 	       (emth:gives-error
 		  (emty:check
 		     (make-struct1 :field1
@@ -501,14 +501,14 @@ The name spec is not a bare symbol")
 	    (defstruct struct1
 	       (field1 nil :type integer)
 	       (field2 nil :type string))
-	    (assert
+	    (emt:assert
 	       (emth:gives-error
 		  (emty:check
 		     (make-struct1 :field1
 			'(something wrong)
 			:field2 "Correct")
 		     struct1)))
-	    (assert
+	    (emt:assert
 	       (emth:gives-error
 		  (emty:check
 		     (make-struct1 :field1 12 :field1
@@ -526,7 +526,7 @@ The name spec is not a bare symbol")
 	    (defstruct struct0 field0)
 	    (defstruct struct1
 	       (field1 nil :type struct0))
-	    (assert
+	    (emt:assert
 	       (emth:gives-error
 		  (emty:check
 		     (make-struct1 :field1
@@ -550,7 +550,7 @@ Object has the right type for that slot.")
 	    (emty:check
 	       (make-struct1 :field1 'nil)
 	       struct1)
-	    (assert
+	    (emt:assert
 	       (emth:gives-error
 		  (emty:check
 		     (make-struct1 :field1
@@ -570,12 +570,12 @@ Object has the right type for that slot.")
 	    (defstruct struct1
 	       (field1 nil :type
 		  (repeat struct0)))
-	    (assert
+	    (emt:assert
 	       (emth:gives-error
 		  (emty:check
 		     (make-struct1 :field1 13)
 		     struct1)))
-	    (assert
+	    (emt:assert
 	       (emth:gives-error
 		  (emty:check
 		     (make-struct1 :field1
@@ -597,7 +597,7 @@ Object has the right type for that slot.")
 	    (defstruct struct1
 	       (field1 nil :type
 		  (repeat struct1)))
-	    (assert
+	    (emt:assert
 	       (emth:gives-error
 		  (emty:check
 		     (make-struct1 :field1

@@ -654,15 +654,15 @@ Then it's instantiated, with the extra binding being an object.")
 		   (list a)
 		   (a)
 		   t)))
-	    (assert
+	    (emt:assert
 	       (funcall pat-f
 		  '(12)
 		  12))
-	    (assert
+	    (emt:assert
 	       (funcall pat-f
 		  '(144)
 		  144))
-	    (assert
+	    (emt:assert
 	       (not
 		  (funcall pat-f
 		     '(13)
@@ -684,15 +684,15 @@ Then it's instantiated, with the extra binding being a match box.")
 		  (emtm:make-pattern 12))
 	       (boxed-pat-2
 		  (emtm:make-pattern 144)))
-	    (assert
+	    (emt:assert
 	       (funcall pat-f
 		  '(12)
 		  boxed-pat-1))
-	    (assert
+	    (emt:assert
 	       (funcall pat-f
 		  '(144)
 		  boxed-pat-2))
-	    (assert
+	    (emt:assert
 	       (not
 		  (funcall pat-f
 		     '(13)
@@ -745,9 +745,9 @@ emtm-f param: That pattern-object.")
 	 (let
 	    ((pat
 		(emtm:make-pattern 12)))
-	    (assert
+	    (emt:assert
 	       (emtm-f 12 pat))
-	    (assert
+	    (emt:assert
 	       (not
 		  (emtm-f 13 pat)))
 	    t)))
@@ -766,10 +766,10 @@ It is used as part of another pattern.")
 			(eval 'pat)
 			144)
 		     t)))
-	    (assert
+	    (emt:assert
 	       (funcall func
 		  '(12 144)))
-	    (assert
+	    (emt:assert
 	       (not
 		  (funcall func
 		     '(13 144))))
@@ -866,10 +866,10 @@ When successful, returns the expected list of values.")
 	 (let
 	    ((pat
 		(emtm:make-pattern 12)))
-	    (assert
+	    (emt:assert
 	       (typep pat
 		  '(emtm:pattern *)))
-	    (assert
+	    (emt:assert
 	       (not
 		  (typep 13
 		     '(emtm:pattern *))))
@@ -1022,11 +1022,11 @@ emtm-f param: An object of that type.")
 	    ((pat
 		(emtm:make-pattern
 		   (rtest-struct-high-gov :my-field 12))))
-	    (assert
+	    (emt:assert
 	       (emtm-f
 		  (rtest-struct-make-item :my-field 12)
 		  pat))
-	    (assert
+	    (emt:assert
 	       (not
 		  (emtm-f
 		     (rtest-struct-make-item :my-field 13)
@@ -1119,11 +1119,11 @@ emtm-f param: An object of that type.")
 	    ((pat
 		(emtm:make-pattern
 		   (rtest-struct-literal-gov :my-field 12))))
-	    (assert
+	    (emt:assert
 	       (emtm-f
 		  (rtest-struct-make-item :my-field 12)
 		  pat))
-	    (assert
+	    (emt:assert
 	       (not
 		  (emtm-f
 		     (rtest-struct-make-item :my-field 13)

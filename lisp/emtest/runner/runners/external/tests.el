@@ -54,7 +54,7 @@
       ;;If there's a cdr, it's the form.
       (t "echo hello\n"
 	 (emt:doc "A simple test")
-	 (assert 
+	 (emt:assert 
 	    (equal answer "hello\r\n% ")
 	    t))))
 

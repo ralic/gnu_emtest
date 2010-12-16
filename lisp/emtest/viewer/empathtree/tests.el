@@ -48,7 +48,7 @@
 	       ((role&test-tags
 		   (car (emtg (type map:name->role&test-list)))))
 	       (when (emtg (type has-viewnode-p))
-		  (assert
+		  (emt:assert
 		     (equal
 			(emtvr:get-subtree-badnesses
 			   (emtg:value+
@@ -73,7 +73,7 @@
 	       ((role&test-tags
 		   (car (emtg (type map:name->role&test-list)))))
 	       (when (emtg (type has-viewnode-p))
-		  (assert
+		  (emt:assert
 		     (equal
 			(emtvr:get-subtree-badnesses
 			   (emtg:value+

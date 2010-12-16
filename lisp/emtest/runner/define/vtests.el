@@ -42,7 +42,7 @@
       (progn
 	 (emt:doc "Shows: Makes a form that evals as expected.")
 	 (progn
-	    (assert
+	    (emt:assert
 	       (equal
 		  (eval
 		     (emtd:make-prop-eval-form
@@ -50,7 +50,7 @@
 			    (+ 2 2))))
 		  '(four 4))
 	       t)
-	    (assert
+	    (emt:assert
 	       (equal
 		  (eval
 		     (emtd:make-prop-eval-form
@@ -76,7 +76,7 @@
 		  (progn 12)))
 	    (emt:doc "Response: Destructuring finds the expected clauses.")
 	    (emtd:destructure-suite-3 'dummy-sym
-	       (assert
+	       (emt:assert
 		  (=
 		     (length clause-list)
 		     1)
@@ -102,16 +102,16 @@
 		  (progn 12)))
 	    (emt:doc "Response: Destructuring finds the expected properties.")
 	    (emtd:destructure-suite-3 'dummy-sym
-	       (assert
+	       (emt:assert
 		  (equal
 		     (assoc 'db-id props)
 		     '(db-id "my-db")))
-	       (assert
+	       (emt:assert
 		  (equal
 		     (assoc 'four props)
 		     '(four 4))
 		  t)
-	       (assert
+	       (emt:assert
 		  (equal
 		     (assoc 'four-form props)
 		     '(four-form
@@ -125,7 +125,7 @@
 	    (emt:deftest-3 dummy-sym)
 	    (emt:doc "Response: Destructuring finds clauses as the empty list.")
 	    (emtd:destructure-suite-3 'dummy-sym
-	       (assert
+	       (emt:assert
 		  (=
 		     (length clause-list)
 		     0)

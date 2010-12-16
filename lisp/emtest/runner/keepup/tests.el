@@ -46,8 +46,8 @@
 	    (emt:keep-up-to-date (foo)
 	       (defconst bar (foo)))
 	    (emt:doc "Validate: bar is bound and has the expected value.")
-	    (assert (boundp 'bar))
-	    (assert
+	    (emt:assert (boundp 'bar))
+	    (emt:assert
 	       (eq bar 'old-value)
 	       t)
 	    (emt:doc "Operation: Redefine function `foo'.")
@@ -55,7 +55,7 @@
 	    (emt:doc "Operation: Call emtd:update-for-sym manually.")
 	    (emtd:update-for-sym 'foo)
 	    (emt:doc "Result: bar now has the new value.")
-	    (assert
+	    (emt:assert
 	       (eq bar 'new-value)
 	       t)))))
 
