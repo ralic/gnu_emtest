@@ -41,39 +41,48 @@
 ;;;_ , Data
 ;;;_  . emtvf:format-alist
 (defconst emtvf:format-alist loformat:default-alist
-   "List of formatters that emformat uses." )
+   "List of formatters that emformat uses."
+   :group 'emtest)
 ;;;_  . Faces
 (defface emtvf:face:ok 
    '((default :foreground "green3" :weight bold))
-   "Face for reporting passed tests")
+   "Face for reporting passed tests"
+   :group 'emtest)
 
 (defface emtvf:face:failed 
    '((default :foreground "red" :weight bold))
-   "Face for reporting failed tests")
+   "Face for reporting failed tests"
+   :group 'emtest)
 
 (defface emtvf:face:ungraded
    '((default :foreground "red" :strike-through t))
-   "Face for reporting ungraded tests")
+   "Face for reporting ungraded tests"
+   :group 'emtest)
 
 (defface emtvf:face:blowout 
    '((default :foreground "black" :background "red" :weight bold))
-   "Face for reporting blown-out tests")
+   "Face for reporting blown-out tests"
+   :group 'emtest)
 
 (defface emtvf:face:dormant
    '((default :foreground "black"))
-   "Face for reporting dormant tests")
+   "Face for reporting dormant tests"
+   :group 'emtest)
 
 (defface emtvf:face:title
    '((default 
 	:height 1.8
 	:foreground "black"))
    
-   "Face for displaying Emtest banner")
+   "Face for displaying Emtest banner"
+   :group 'emtest)
 (defface emtvf:face:suitename
    '((default 
 	:foreground "blue1"))
    
-   "Face for displaying Emtest banner")
+   "Face for displaying test names"
+   :group 'emtest)
+
 ;;;_ , Lower format functions
 ;;;_  . emtvf:insert
 ;;$$MOVE ME maybe - this is the only part that directly deals with
@@ -298,7 +307,7 @@ DATA-LIST must be a loal."
 (defun emtvf:TESTRAL (obj data &rest d)
    "Make a format form for OBJ.
 OBJ must be a TESTRAL note."
-   
+   (declare (special data-list))
    (let*
       ((depth
 	  ;;$$FIX ME We are not getting the incremented depth here.
