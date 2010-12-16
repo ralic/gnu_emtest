@@ -75,10 +75,9 @@ BINDINGS are as for a `let'"
 	 (got-index want-index type)
 	 (emt:tp:collect (list got-index want-index type)))
       (finally (:bindings ((precedence-pairs precedence-pairs))) (depend-set)
-	 (assert
+	 (emt:assert
 	    (emth:sets= depend-set 
-	       precedence-pairs)
-	    t))))
+	       precedence-pairs)))))
 ;;;_    . emter:build-code:thm2
 (defmacro* emter:build-code:thm2 
    ((&key inputs bindings precedence-pairs sym) &rest body)
@@ -112,9 +111,9 @@ BINDINGS are as for a `let'"
       
       ;;Test that it errored just if it should.
       (if should-pass-p
-	 (assert (not errs-p)
+	 (emt:assert (not errs-p)
 	    nil "Form %s failed" form)
-	 (assert errs-p
+	 (emt:assert errs-p
 	    nil "Form %s wrongly succeeded" form))))
 
 

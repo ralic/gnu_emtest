@@ -41,7 +41,7 @@
 (defun emtvr:th:assert-the-1-right-node (nodes-freshened)
    ""
    
-   (assert
+   (emt:assert
       (emtm nodes-freshened
 	 (list
 	    (list
@@ -59,8 +59,7 @@
 			 :ignore-tags (role)))
 		  :result
 		  (eval
-		     '(emtg (type suite)))))))
-      t))
+		     '(emtg (type suite)))))))))
 
 
 ;;;_. Footers

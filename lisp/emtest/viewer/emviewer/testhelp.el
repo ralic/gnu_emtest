@@ -97,9 +97,8 @@
    
       ;;Would like this + definition to be the whole form, but for now
       ;;we can't.
-      (assert
-	 (progn contents-matches-p)
-	 t))
+      (emt:assert
+	 (progn contents-matches-p)))
    t)
 
 ;;;_. Footers
