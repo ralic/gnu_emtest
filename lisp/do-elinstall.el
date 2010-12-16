@@ -43,13 +43,19 @@
 		"^testhelp\\.el"
 		"^explorers$"
 		"^rtest\\.el"
+		"^vtests\\.el"
 		"^examples$"
 		"^qexamples\\.el")
 	     t) 
 	  ;;Explorer plugins use this to inform top about their
-	  ;;existence via this file.
+	  ;;existence
 	  (def-file "emtest/runner/loadexplorers.el" nil
-	     (dir "emtest/runner/explorers"))))
+	     (dir "emtest/runner/explorers"))
+	  ;;Runner plugins use this to inform clause.el about their
+	  ;;existence
+	  (def-file "emtest/runner/runners/def-runners.el" nil
+	     (dir "emtest/runner/runners"))))
+   
    t)
 
 ;;$$IMPROVE ME Add plugins for testhelp too.

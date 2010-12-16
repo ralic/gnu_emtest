@@ -247,6 +247,17 @@
 	       ;;Start it all.
 	       (emtr:external-start-next data))))))
 
+;;;_ , Register it
+;;$$TRANSITIONAL - belongs at the top of the file
+;;;###autoload (unless (fboundp 'emtt:add-runner)
+;;;###autoload   (error "A certain unwritten file must be loaded"))
+;;;_  . Registration itself
+;;;###autoload (emtt:add-runner 'external #'emtr:external
+;;;###autoload   "External runner") 
+;;;_  . Provision
+;;$$TRANSITIONAL
+;;;###autoload (provide 'emtest/runner/runners/def-runners)
+
 
 ;;;_. Footers
 ;;;_ , Provides
