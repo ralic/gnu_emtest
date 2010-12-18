@@ -67,40 +67,44 @@ BACKEND, if given, describes the database backend."
 		(when cell
 		   (second cell)))
 	     ;;Here add any other ways of learning the backend
-	     (error "No backend was provided")))
+	     (error "No backend was provided"))))
 
-	 ;;Try to get the object. If we can't, make a note.
-	 (stored-value
-	    (condition-case err
-	       (emdb:get-value backend id 'correct-answer)
-	       ;;$$IMPROVE ME Would like to take a dedicated error
-	       ;;value, same as what `emdb:get-value' throws.
-	       (error
-		  (emtt:testral:add-note
-		     (emt:testral:make-not-in-db
-			:id-in-db id
-			:backend  backend
-			:value    value
-			:badnesses 
-			(emt:testral:make-grade:ungraded
-			   :contents 
-			   "ID is not in the database")))
-		  (setq emtt:*abort-p* t))))
-	 (result
-	    (funcall compare-f value stored-value)))
-      
-      ;;$$RETHINK MY DESIGN We are moving to a simpler note format.
-      ;;Make a note.
-      (emtt:testral:add-note
-	 (emt:testral:make-doc
-	    ;;$$IMPROVE ME Contain the values here too.
-	    :str 
-	    (if result 
-	       "Comparison succeeded"
-	       "Comparison failed")
-	    :badnesses '()))
+      (condition-case err
+	 (let*
+	    ((stored-value
+		(emdb:get-value backend id 'correct-answer))
+	       (result
+		  (funcall compare-f value stored-value)))
+		  
+	    ;;$$RETHINK MY DESIGN We are moving to a simpler note format.
+	    ;;Note the result.
+	    (emtt:testral:add-note
+	       (emt:testral:make-doc
+		  ;;$$IMPROVE ME Contain the values here too.
+		  :str 
+		  (if result 
+		     "Comparison succeeded"
+		     "Comparison failed")
+		  :badnesses '()))
+	    result)
+	       
+	 ;;If we can't get the object, make a note.
+	 ;;$$IMPROVE ME Would like to take a dedicated error
+	 ;;value, same as what `emdb:get-value' throws.
+	 (error
+	    (emtt:testral:add-note
+	       (emt:testral:make-not-in-db
+		  :id-in-db id
+		  :backend  backend
+		  :value    value
+		  :badnesses 
+		  (emt:testral:make-grade:ungraded
+		     :contents 
+		     "ID is not in the database")))
+	    (setq emtt:*abort-p* t)))))
 
-      result))
+
+
 
 
 ;;;_. Footers
