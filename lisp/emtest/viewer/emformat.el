@@ -41,8 +41,7 @@
 ;;;_ , Data
 ;;;_  . emtvf:format-alist
 (defconst emtvf:format-alist loformat:default-alist
-   "List of formatters that emformat uses."
-   :group 'emtest)
+   "List of formatters that emformat uses.")
 ;;;_  . Faces
 (defface emtvf:face:ok 
    '((default :foreground "green3" :weight bold))
