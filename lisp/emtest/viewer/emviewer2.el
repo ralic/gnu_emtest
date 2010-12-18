@@ -112,7 +112,9 @@
 (defun emtv2:print-all (top-node)
    ""
    (with-current-buffer emtv2:report-buffer
-      (erase-buffer)
+      (let
+	 ((inhibit-read-only t))
+	 (erase-buffer))
       (emtvf:insert top-node '() '((dynamic emtv2:insert-dynamic)))
       (emtest/viewer/mode)))
 
