@@ -38,31 +38,9 @@
 
 ;;;_ , Persist functions 
 
-
-;;;_  . emt:persist
-' ;;$$OBSOLETE
-(defun emt:persist (id &optional backend)
-   "Return a persisting object or a placeholder"
-   (declare (special emt:trace:properties))
-   (let
-      ((backend
-	  (or
-	     backend
-	     ;;Use utim:get-properties.  But first remove that from
-	     ;;tester.el and give it the right default.
-	     ;(utim:get-properties 'db-id emt:trace:properties)
-	     (let
-		((cell (assoc 'db-id emt:trace:properties)))
-		(when cell
-		   (second cell)))
-	     ;;Here add any other ways of learning the backend
-	     (error "No backend was provided"))))
-      (emt:db:make-id-index
-	 :id id
-	 :backend backend)))
-
 ;;;_  . emt:eq-persist-p
-;;$$NORMALIZE ME  Don't use emt:trace:properties, use TESTRAL
+;;$$NORMALIZE ME  emt:trace:properties should be renamed and set by
+;;runner functionality.
 ;;;###autoload
 (defun emt:eq-persist-p (compare-f value id &optional backend)
    "Compare VALUE to the value of ID in a database, using COMPARE-F.
@@ -107,9 +85,22 @@ BACKEND, if given, describes the database backend."
 			(emt:testral:make-grade:ungraded
 			   :contents 
 			   "ID is not in the database")))
-		  (setq emtt:*abort-p* t)))))
+		  (setq emtt:*abort-p* t))))
+	 (result
+	    (funcall compare-f value stored-value)))
       
-      (funcall compare-f value stored-value)))
+      ;;$$RETHINK MY DESIGN We are moving to a simpler note format.
+      ;;Make a note.
+      (emtt:testral:add-note
+	 (emt:testral:make-doc
+	    ;;$$IMPROVE ME Contain the values here too.
+	    :str 
+	    (if result 
+	       "Comparison succeeded"
+	       "Comparison failed")
+	    :badnesses '()))
+
+      result))
 
 
 ;;;_. Footers
