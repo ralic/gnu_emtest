@@ -348,6 +348,8 @@ OBJ must be a TESTRAL note."
 				 (1+ depth) nil "Doc" doc)))))
 		  
 		  (emt:testral:not-in-db
+		     (let
+			((value (emt:testral:not-in-db->value obj)))
 		     (emtvf:outline-item
 			(1+ depth)
 			'emtvf:face:ungraded
@@ -366,14 +368,15 @@ OBJ must be a TESTRAL note."
 					    obj)
 					    ',(emt:testral:not-in-db->id-in-db
 					    obj)
-					    ',(emt:testral:not-in-db->value obj)
+					    ',value
 					    'correct-answer))
-				     '(help-echo "Accept this value"
-					 ))))
-			    
-			   (object
-			      ,(emt:testral:not-in-db->value obj)
-			      nil))))
+				     '(help-echo "Accept this value"))))
+			    ,(if
+				(stringp value)
+				;;Indent it so it can't affect outline
+				;;structure. 
+				`(indent 4 ,value)
+				`(object ,value nil))))))
 		  (t 
 		     (emtvf:outline-item (1+ depth)
 			nil
