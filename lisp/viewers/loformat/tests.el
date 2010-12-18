@@ -102,10 +102,9 @@ given inside the overlay spec.")
 				(overlay-start ov)
 				(overlay-end ov)))
 			overlays)))
-	       (assert
+	       (emt:assert
 		  (equal overlay-data
-		     '((4 8)))
-		  t))
+		     '((4 8)))))
 	    t)))
    (nil
       (progn
@@ -116,11 +115,9 @@ given inside the overlay spec.")
 	    (:string "abc!" :point-replaces "!")
 	    (loformat:insert
 	       '(nl-if-none))
-	    (assert
-	       (equal "abc
-"
-		  (buffer-string))
-	       t)
+	    (emt:assert
+	       (equal "abc\n"
+		  (buffer-string)))
 	    t)))
    (nil
       (progn
@@ -128,17 +125,25 @@ given inside the overlay spec.")
 	 (emt:doc "Operation: (nl-if-none)")
 	 (emt:doc "Behavior: Insert nothing.")
 	 (emtb:with-buf
-	    (:string "abc
-!" :point-replaces "!")
+	    (:string "abc\n!" :point-replaces "!")
 	    (loformat:insert
 	       '(nl-if-none))
-	    (assert
-	       (equal "abc
-"
-		  (buffer-string))
-	       t)
+	    (emt:assert
+	       (equal "abc\n"
+		  (buffer-string)))
 	    t))))
 
+;;;_ , loformat:insert:indent
+(emt:deftest-3
+   ((of 'loformat:insert:indent))
+   (nil
+      (emtb:with-buf
+	 ()
+	 (loformat:insert
+	    '(indent 4 "a\nb\nc\n"))
+	 (emt:assert
+	    (equal "    a\n    b\n    c\n"
+	       (buffer-string))))))
 
 ;;;_. Footers
 ;;;_ , Provides

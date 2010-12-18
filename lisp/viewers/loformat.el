@@ -68,6 +68,21 @@ PROPERTIES gives the properties the overlay should have."
 	       (overlay-put ov name value)))
 	 ;;Now don't need the marker any more.
 	 (set-marker beg nil))))
+
+;;;_  . loformat:insert:indent
+(defun loformat:insert:indent (recurse-f depth &rest r)
+   ""
+
+   (let
+      ((beg (set-marker (make-marker) (point)))
+	 (end (set-marker (make-marker) (point))))
+      (set-marker-insertion-type end t)
+      (mapcar recurse-f r)
+      (indent-region beg end depth)
+      (set-marker beg nil)
+      (set-marker end nil)))
+
+
 ;;;_  . loformat:insert:sep
 (defun loformat:insert:sep (recurse-f strength)
    "Insert a separator of the given STRENGTH.
@@ -127,6 +142,7 @@ PROPS is the property-list for the text, if any."
        (nl-if-none  loformat:insert:nl-if-none)
        (object      loformat:insert:object)
        (overlay     loformat:insert:overlay)
+       (indent      loformat:insert:indent)
        (sep         loformat:insert:sep)
        (w/face      loformat:insert:w/face)
        (w/props     loformat:insert:w/props))
