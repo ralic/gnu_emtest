@@ -59,6 +59,7 @@
    "Keywords for Emtest, by group" )
 
 ;;;_ , emtest/editing/font-lock-add-keywords
+;;;###autoload
 (defun emtest/editing/font-lock-add-keywords ()
    ""
    (when (featurep 'font-lock)
