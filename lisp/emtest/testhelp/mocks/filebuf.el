@@ -108,7 +108,22 @@ You may want to use this to umount a ramdisk"
 ;;;_   , emtb:with-buf
 
 (defmacro emtb:with-buf (args &rest body)
-   ""
+   "Evaluate BODY in a temporary buffer whose contents accords with
+   ARGS.
+ARGS is a sequence of keys and values:
+ * Content-specifiers
+ * :sexp - Buffer contents are a printed representation of this object.
+ * :string - Buffer contents are exactly this string.
+ * :file - use filename as a source.
+ * :dir - For when `:file' is given, find filename relative to this directory.
+ * :visited-name - Buffer is to be visiting this name
+   * If it's `t', the buffer is just made mutable.
+   * If it's `tmp', the buffer visits a temporary file.
+ * :sequence - Buffer contents are given by a sequence of any of
+   `sexp' `string' `file', and `sequence'.
+ * :point-replaces - Point will be placed at the first occurrence of
+   the given string, replacing it.
+ * :mutable This buffer is mutable even though `file' is given."
    (apply #'emtb:with-buf-f body args))
 
 ;;;_    . Worker `emtb:with-buf-f'
@@ -116,10 +131,11 @@ You may want to use this to umount a ramdisk"
 ;;Key `:printed-object' has been replaced by key`:sexp'
 (defun* emtb:with-buf-f 
    (body &key printed-object sexp string file dir visited-name
-      point-replaces
-      sequence)
-   ""
-
+      point-replaces sequence mutable)
+   "Worker for `emtb:with-buf'"
+   (when (and mutable file (not visited-name))
+      (setq visited-name t))
+   
    `
    (with-temp-buffer
       ;;Do all the inserting
