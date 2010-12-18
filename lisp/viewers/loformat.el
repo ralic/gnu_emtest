@@ -71,14 +71,17 @@ PROPERTIES gives the properties the overlay should have."
 
 ;;;_  . loformat:insert:indent
 (defun loformat:insert:indent (recurse-f depth &rest r)
-   ""
-
+   "Indent the subtree rigidly"
    (let
       ((beg (set-marker (make-marker) (point)))
 	 (end (set-marker (make-marker) (point))))
       (set-marker-insertion-type end t)
       (mapcar recurse-f r)
-      (indent-region beg end depth)
+      ;;$$IMPROVE ME Make this a worker, parameterized on an indenter
+      ;;function.
+      (let
+	 ((inhibit-read-only t))
+	 (indent-rigidly beg end depth))
       (set-marker beg nil)
       (set-marker end nil)))
 
