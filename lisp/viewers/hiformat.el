@@ -73,7 +73,7 @@ ELS=1 must be a function taking 3 args (same signature as FUNC).
 	    (loop
 	       for el in list
 	       for index from 0
-	       append
+	       collect
 	       (let* 
 		  ;;Create appropriate loop variables
 		  (
@@ -92,7 +92,9 @@ ELS=1 must be a function taking 3 args (same signature as FUNC).
 			    (if (functionp separator)
 			       (funcall separator data-loal immediate-data)
 			       separator)))
-			(append sep-form sub-list)))))))))
+			(if sep-form
+			   (list nil sep-form sub-list)
+			   sub-list)))))))))
 
 ;;;_ , Slightly touching on grammar
 ;;;_  . hiformat:grammar:number-agreement
