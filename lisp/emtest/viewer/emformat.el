@@ -449,8 +449,7 @@ OBJ must be a TESTRAL note."
 	 (list
 	    '(w/face "Problems: " emtvf:face:failed)
 	    (hiformat:map 
-	       #'(lambda (obj &rest r)
-		    obj)
+	       #'(lambda (obj &rest r) obj)
 	       (delq nil
 		  (mapcar
 		     #'(lambda (data)
