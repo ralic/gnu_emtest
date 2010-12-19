@@ -78,13 +78,20 @@ BACKEND, if given, describes the database backend."
 		  
 	    ;;$$RETHINK MY DESIGN We are moving to a simpler note format.
 	    ;;Note the result.
+	    ;;$$IMPROVE ME Contain the values here too.
 	    (emtt:testral:add-note
-	       (emt:testral:make-doc
-		  ;;$$IMPROVE ME Contain the values here too.
-		  :str 
+	       (emt:testral:make-newstyle
+		  ;;$$TRANSITIONAL Later we'll encap this in testral.
+		  :id 19
+		  ;;(incf emt:testral:*id-counter*)
+		  :relation "trace" ;;For now these must be strings
+		  :governor 'comparison-w/persist
+		  :value
 		  (if result 
 		     "Comparison succeeded"
 		     "Comparison failed")
+		  ;;Failing the comparison does not neccessarily imply
+		  ;;a bad grade, that's for emt:assert to decide.
 		  :badnesses '()))
 	    result)
 	       
