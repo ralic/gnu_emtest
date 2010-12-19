@@ -215,32 +215,33 @@ We assume no circularity in NOTE-LIST."
    (check-type tree emtvp)
    (check-type node emtvp:node)
    (check-type prefix (repeat emtvp->id-element))
-   ;;Each pending item is (id prefix)
-   (pending:do-all
+   (let
       ;;Initial id is `nil', meaning looking for no parent.
-      (list (list nil prefix)) 
-      #'(lambda (el)
-	   (check-type el emtvr:pend-type)
-	   (let
-	      ;;List to build
-	      ((relations 
-		  (emtvr:collect-relation-groups (car el) note-list)))
+      ((pends (list (list nil prefix))))
+      (pending:do-all
+	 pends 
+	 #'(lambda (el)
+	      (check-type el emtvr:pend-type)
+	      (let
+		 ;;List to build
+		 ((relations 
+		     (emtvr:collect-relation-groups (car el) note-list)))
 
-	      (emtvr:add-relations-to-pathtree 
-		 relations 
-		 tree 
-		 node 
-		 (second el))
+		 (emtvr:add-relations-to-pathtree 
+		    relations 
+		    tree 
+		    node 
+		    (second el))
 	      
-	      ;;Each found child's (id prefix), to be further
-	      ;;explored.
-	      (emtvr:collect-testral-aux3 relations (second el))))
-      ;; args 
-      '() 
-      ;; error-args-f
-      '() 
-      ;;Allow the list to expand
-      t))
+		 ;;Each found child's (id prefix), to be further
+		 ;;explored.
+		 (emtvr:collect-testral-aux3 relations (second el))))
+	 ;; args 
+	 '() 
+	 ;; error-args-f
+	 '() 
+	 ;;Allow the list to expand
+	 t)))
 
 
 

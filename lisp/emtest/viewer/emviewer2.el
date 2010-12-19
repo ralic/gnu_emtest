@@ -104,7 +104,7 @@
 			    (emt:testral:suite->contents result)))
 			(when
 			   (emt:testral:note-list-p contents)
-			   '(emtvr:collect-testral note-list tree obj '()))))))
+			   (emtvr:collect-testral contents tree obj '()))))))
 	    (undirty 'notes)))))
 
 
