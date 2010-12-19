@@ -167,14 +167,15 @@ could be, such as when a note-list hasn't been expanded."
       relations))
 
 ;;;_  . emtvr:add-relations-to-pathtree
-(defun emtvr:add-relations-to-pathtree (relations tree prefix)
+(defun emtvr:add-relations-to-pathtree (relations tree node prefix)
    "Push each group in RELATIONS onto pathtree TREE.
 Prefix will be (PREFIX... relation-name)"
 
    (dolist (relation-group relations)
       (check-type relation-group emtvr:relation-group-type)
-      (emtvp:add/replace-node 
+      (emtvp:add/replace-node-recurse
 	 tree 
+	 node
 	 (emtvr:relation-group->path relation-group prefix)
 	 (list 'note (cdr relation-group)))))
 
@@ -203,7 +204,7 @@ Prefix will be (PREFIX... relation-name)"
 
 ;;;_  . emtvr:collect-testral
 ;;Caller should probably call (emtvp:freshen tree)
-(defun emtvr:collect-testral (note-list tree prefix)
+(defun emtvr:collect-testral (note-list tree node prefix)
    "Collect NOTE-LIST into a pathtree.
 NOTE-LIST is a emt:testral:note-list
 TREE is an `emtvp'
@@ -212,6 +213,7 @@ We assume no circularity in NOTE-LIST."
 
    (check-type note-list emt:testral:note-list)
    (check-type tree emtvp)
+   (check-type node emtvp:node)
    (check-type prefix (repeat emtvp->id-element))
    ;;Each pending item is (id prefix)
    (pending:do-all
@@ -224,7 +226,11 @@ We assume no circularity in NOTE-LIST."
 	      ((relations 
 		  (emtvr:collect-relation-groups (car el) note-list)))
 
-	      (emtvr:add-relations-to-pathtree relations tree (second el))
+	      (emtvr:add-relations-to-pathtree 
+		 relations 
+		 tree 
+		 node 
+		 (second el))
 	      
 	      ;;Each found child's (id prefix), to be further
 	      ;;explored.

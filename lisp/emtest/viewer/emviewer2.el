@@ -52,8 +52,11 @@
 ;;;_  . emtv2:pathtree-cb
 ;;Different from `emtest:viewer:pathtree-cb' in that it does not try
 ;;to print objects, thus does not deal with `dirty' flag.
-(defun emtv2:pathtree-cb (obj)
+(defun emtv2:pathtree-cb (obj tree)
    "Callback to handle dirty flags, that `pathree' gets."
+   (check-type obj emt:view:presentable)
+   (check-type tree emtvp)
+
    (emtvp:util:handle-dirty obj
       (cond
 	 (
@@ -65,6 +68,7 @@
 	    (undirty 'new)
 	    (undirty-car 'replaced)
 	    (new-dirty 'summary)
+	    (new-dirty 'notes)
 	    (let
 	       ((parent (emtvp:node->parent obj)))
 	       (when parent
@@ -87,7 +91,12 @@
 	       (let
 		  ((parent (emtvp:node->parent obj)))
 		  (when parent
-		     (new-dirty-node 'summary parent))))))))
+		     (new-dirty-node 'summary parent)))))
+
+	 ((member 'notes dirty-flags)
+	    '(emtvr:collect-testral note-list tree obj '())
+	    (undirty 'notes)))))
+
 
 ;;;_  . emtv2:setup-if-needed
 (defun emtv2:setup-if-needed ()

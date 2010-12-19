@@ -74,7 +74,7 @@ An `emtve' or `nil'." )
       (emtvp:node->data obj)))
 
 ;;;_  . emtest:viewer:pathtree-cb
-(defun emtest:viewer:pathtree-cb (obj)
+(defun emtest:viewer:pathtree-cb (obj tree)
    "Callback to handle dirty flags, that `pathree' gets."
    (error "Obsolete, pathtree nodes no longer accept data")
    (emtvp:util:handle-dirty obj

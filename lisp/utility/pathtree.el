@@ -226,7 +226,7 @@ ARG must be suitable as a second argument to tree field `make-node'."
 	   "Call the cleaner callback.  No-op if there are no dirty-flags."
 	   (if
 	      (emtvp:node->dirty-flags el)
-	      (funcall (emtvp->node-dirtied tree) el)
+	      (funcall (emtvp->node-dirtied tree) el tree)
 	      '()))
       (list tree)
       #'(lambda (unprocessed &rest args)

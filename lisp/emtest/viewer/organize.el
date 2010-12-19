@@ -55,7 +55,8 @@ It just tells a pathtree to add this node."
       (list 'suite cell)))
 ;;;_  . emtvo:pathtree-cb-aux
 (defun emtvo:pathtree-cb-aux (old-version arg display-data)
-   "Worker for the pathtree callback"
+   "Worker for the pathtree callback.
+Make a `emt:view:presentable' or its descendant."
    (cond
       ((null arg)
 	 (emt:view:make-presentable
