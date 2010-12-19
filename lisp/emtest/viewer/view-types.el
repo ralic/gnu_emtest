@@ -74,7 +74,6 @@
       :doc "How to run this as a test.")
 
    ;;The full presentation path, including any prefix from report.
-   ;;May go away in favor of base class's path.
    (presentation-path ()   
       :type emt:testral:suite-id
       :doc "The path to the corresponding node in the pathtree.")
@@ -90,18 +89,15 @@
       :doc "The result data itself"))
 
 
-;;;_  . TESTRAL finished
+;;;_  . TESTRAL in viewable form.
 (defstruct (emt:view:TESTRAL
 	    (:constructor emt:view:make-TESTRAL)
 	    (:conc-name emt:view:TESTRAL->)
 	      (:include emt:view:presentable))
    ""
 
-   (main () :type (or emt:testral:alone emt:testral:push))
-   (end  () :type (or null emt:testral:pop))
-   ;;May GO AWAY and be represented by child nodes having mains of
-   ;;type `emt:testral:separate'.
-   (args () :type (repeat emt:testral:separate)))
+   (content () :type (repeat emt:testral:newstyle)))
+
 
 ;;;_  . TESTRAL unexpanded leaf
 (defstruct (emt:view:TESTRAL-unexpanded

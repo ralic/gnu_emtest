@@ -45,7 +45,9 @@
 ;;We'd like to can restrict this.  But it depends on some internal
 ;;information about how elements are interpreted, depending on
 ;;`method-relaunch'.  Not clear how that can be passed into here.
-;;$$RETHINKING We distinguish conceptual path from how-to-run
+;;$$RETHINKING We distinguish conceptual path from how-to-run.
+;;$$IMPROVE ME This should allow symbols as well, and we'd use
+;;string= for comparison.
 (deftype emt:testral:id-element () 
    "Id elements are strings."
    'string)
@@ -65,10 +67,8 @@
 	      (:constructor emt:testral:make-base)
 	      (:conc-name emt:testral:base->))
    "The TESTRAL base type"
-   ;;$$OBSOLESCENT
-   id	    ;;Shared just between scope co-ordinating notes
-   ;;$$OBSOLESCENT
-   ;;Not clear that parent-id is of general use.
+   
+   id
    parent-id ;;`nil' for root events that have no parent.
 
    ;;$$OBSOLESCENT  Info is becoming just other notes.
@@ -79,8 +79,19 @@
    ;;Reflects only the note's's intrinsic problems.  Even push/pops
    ;;need it in case (say) a whole stage is dormantized or aborted.
    (badnesses () :type emt:testral:grade-aux))
+;;;_  . emt:testral:newstyle
+;;$$TRANSITIONAL  This will merge with `emt:testral:base' and be renamed.
+(defstruct (emt:testral:newstyle
+	      (:constructor emt:testral:make-base)
+	      (:conc-name emt:testral:newstyle->)
+	      (:include emt:testral:base))
+   "The TESTRAL type."
+   (relation () :type symbol)
+   value)
 
-;;;_  . Basic notes 
+;;;_  . Basic notes
+;;$$OBSOLESCENT  All of these will go away, replaced by
+;;`emt:testral:newstyle' in various relations.
 ;;(All inherit from the base class, none have data)
 ;;;_   , Alone
 (defstruct (emt:testral:alone
