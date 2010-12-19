@@ -52,7 +52,7 @@
    ""
    ;;Summarized badnesses from all subtrees.  They are summarized
    ;;treewise, including any badnesses from this node.
-   (sum-badnesses () :type (repeat emt:result-badness))
+   (sum-badnesses () :type (repeat emt:testral:grade))
    ;;This relates to a display
    (list ()))
 

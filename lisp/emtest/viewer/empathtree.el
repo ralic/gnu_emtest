@@ -121,7 +121,7 @@ could be, such as when a note-list hasn't been expanded."
 ;;;_  . emtvr:relation-group-type
 (deftype emtvr:relation-group-type ()
    "Relation-groups have this type"
-   '(list* symbol (repeat emt:testral:newstyle)))
+   '(list* emtvp->id-element (repeat emt:testral:newstyle)))
 ;;;_  . emtvr:pend-type
 (deftype emtvr:pend-type ()
    "Pending items have this type"
@@ -140,6 +140,13 @@ could be, such as when a note-list hasn't been expanded."
    (let
       ((relations '()))
       (dolist (note (emt:testral:note-list->notes note-list))
+	 ;;$$TRANSITIONAL Later, don't assertfail, just add a
+	 ;;complaint note.
+	 (assert 
+	    (not 
+	       (string= 
+		  (emt:testral:base->parent-id note)
+		  (emt:testral:base->id note))))
 	 (when (string= id (emt:testral:base->parent-id note))
 	    ;;$$TRANSITIONAL Later, no typecase needed.
 	    (typecase note
@@ -171,13 +178,16 @@ Prefix will be (PREFIX... relation-name)"
 
    (dolist (relation-group relations)
       (check-type relation-group emtvr:relation-group-type)
-      (emtvp:add/replace-node-recurse
-	 tree 
-	 node
-	 (emtvr:relation-group->path relation-group prefix)
-	 (list 'note (cdr relation-group)))))
+      ;;$$TRANSITIONAL - something is making long prefixes.
+      (unless (> (length prefix) 10)
+	 (emtvp:add/replace-node-recurse
+	    tree 
+	    node
+	    (emtvr:relation-group->path relation-group prefix)
+	    (list 'note (cdr relation-group))))))
 
 ;;;_  . emtvr:collect-testral-aux3
+;;$$FIX ME
 (defun emtvr:collect-testral-aux3 (relations prefix)
    "Return a list of each node's (id prefix)"
    

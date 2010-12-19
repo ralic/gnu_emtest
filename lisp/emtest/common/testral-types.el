@@ -73,6 +73,7 @@
 
    ;;$$OBSOLESCENT  Info is becoming just other notes.
    info
+   ;;$$OBSOLESCENT  Info is becoming just other notes.
    (prestn-path () 
       :type emt:testral:partial-suite-id
       :doc "The presentation path of this note")
@@ -82,11 +83,12 @@
 ;;;_  . emt:testral:newstyle
 ;;$$TRANSITIONAL  This will merge with `emt:testral:base' and be renamed.
 (defstruct (emt:testral:newstyle
-	      (:constructor emt:testral:make-base)
+	      (:constructor emt:testral:make-newstyle)
 	      (:conc-name emt:testral:newstyle->)
 	      (:include emt:testral:base))
    "The TESTRAL type."
    (relation () :type symbol)
+   (governor () :type symbol)
    value)
 
 ;;;_  . Basic notes
