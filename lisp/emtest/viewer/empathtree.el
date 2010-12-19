@@ -83,8 +83,6 @@ could be, such as when a note-list hasn't been expanded."
 		  '()))))
       ;;$$IMPROVE ME Treat this.
       (emt:view:TESTRAL '())
-      (emt:view:TESTRAL-unexpanded
-	 '())
       ;;Only the root will have this type.
       (emt:view:presentable '())))
 

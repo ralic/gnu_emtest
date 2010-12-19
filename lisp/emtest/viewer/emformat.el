@@ -264,9 +264,6 @@ DATA-LIST must be a loal."
 	 ;;For now, these aren't even relevant yet.
 	 (emt:view:TESTRAL
 	    '("Testral data"))
-	 
-	 (emt:view:TESTRAL-unexpanded
-	    '("Unexpanded TESTRAL data"))
 
 	 ;;Base type, appears for the root node.
 	 (emt:view:presentable
