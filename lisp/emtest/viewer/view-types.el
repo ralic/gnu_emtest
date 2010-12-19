@@ -100,6 +100,7 @@
 
 
 ;;;_  . TESTRAL unexpanded leaf
+;;$$OBSOLESCENT
 (defstruct (emt:view:TESTRAL-unexpanded
 	    (:constructor emt:view:make-TESTRAL-unexpanded)
 	    (:conc-name emt:view:TESTRAL-unexpanded->)
