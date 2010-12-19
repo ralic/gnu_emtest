@@ -97,9 +97,7 @@ BACKEND, if given, describes the database backend."
 	    result)
 	       
 	 ;;If we can't get the object, make a note.
-	 ;;$$IMPROVE ME Would like to take a dedicated error
-	 ;;value, same as what `emdb:get-value' throws.
-	 (error
+	 (emdb:error
 	    (emtt:testral:add-note
 	       (emt:testral:make-not-in-db
 		  :id-in-db id
