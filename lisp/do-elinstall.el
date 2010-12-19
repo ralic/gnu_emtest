@@ -54,12 +54,12 @@
 	  ;;Runner plugins use this to inform clause.el about their
 	  ;;existence
 	  (def-file "emtest/runner/runners/def-runners.el" nil
-	     (dir "emtest/runner/runners"))))
-   
+	     (dir "emtest/runner/runners"))
+	  ;;TESTRAL formatter plugins use this to inform emformat
+	  ;;about their existence
+	  (def-file "emtest/viewer/testral/registrations.el" nil
+	     (dir "emtest/viewer/testral"))))
    t)
-
-;;$$IMPROVE ME Add plugins for testhelp too.
-
 
 ;;;_. Footers
 ;;;_ , Provides

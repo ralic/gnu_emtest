@@ -36,6 +36,7 @@
 (require 'emtest/viewer/view-types)
 (require 'emtest/common/grade-types)
 (require 'custom)
+(require 'emtest/viewer/all-note-formatters)
 
 ;;;_. Body
 ;;;_ , Data
@@ -131,6 +132,7 @@ which may not imply failure of an assertion."
 	   (keymap ,map ,@extra-props)))))
 
 ;;;_  . emtvf:outline-item
+;;$$IMPROVE ME Make this a macro so it controls outline-depth itself.
 (defun emtvf:outline-item (depth face headtext contents)
    "Make an outline item of DEPTH."
    `(
@@ -211,7 +213,7 @@ DATA-LIST must be a loal."
 		  (explorable
 		     (emt:view:suite-newstyle->how-to-run suite)))
 	       (etypecase object
-		  (null)
+		  (null "A null viewable")
 		  (emt:testral:test-runner-info
 		     (list
 			;;"Suites tested in " name "\n"
@@ -257,6 +259,9 @@ DATA-LIST must be a loal."
 				 :data-loal data-list
 				 :separator '("\n")
 				 :els=0 '("No child suites")))
+			   ;;$$IMPROVE ME If there are children, use
+			   ;;them instead.  This will work the same as
+			   ;;for `emt:testral:runform-list'.
 			   (emt:testral:note-list
 			      (hiformat:map
 				 #'emtvf:TESTRAL
@@ -280,6 +285,7 @@ DATA-LIST must be a loal."
 	    (if
 	       (and
 		  (= (length children) 1))
+	       ;;Shortcut any singletons.
 	       (list
 		  `(dynamic ,(car children)
 		      ;;$$IMPROVE ME Get value from old hdln-path
@@ -309,58 +315,6 @@ DATA-LIST must be a loal."
 			:separator '("\n")
 			:data-loal data-list))))))))
 
-;;;_  . emtvf:TESTRAL-gov-alist
-(defvar emtvf:TESTRAL-gov-alist 
-   '((comparison-w/persist emtvf:TESTRAL-gov:comparison-w/persist))
-   "Alist from governor symbol to format function" )
-;;;_  . emtvf:TESTRAL:add-gov
-(defun emtvf:TESTRAL:add-gov (gov-symbol formatter)
-   ""
-   (unless (assq gov-symbol emtvf:TESTRAL-gov-alist)
-      (push 
-	 (list gov-symbol formatter)
-	 emtvf:TESTRAL-gov-alist)))
-
-;;;_  . emtvf:TESTRAL-gov:comparison-w/persist
-(defun emtvf:TESTRAL-gov:comparison-w/persist (obj)
-   "Formatter for TESTRAL note governed by `comparison-w/persist'"
-   (destructuring-bind
-      (result value backend id)
-      (emt:testral:newstyle->value obj)
-      ;;$$IMPROVE ME Add buttons & command to act on
-      ;;the persisting object: If rejected, to
-      ;;accept it.  To edit it and save the new
-      ;;version.  To diff the value with it.
-      (emtvf:outline-item
-	 (1+ depth) 
-	 (if result 
-	    'emtvf:face:ok
-	    'emtvf:face:mismatch)
-	 (list
-	    (if result 
-	       "Matched"
-	       "Mismatched")
-	    " persisting object"
-	    (if result 
-	       '()
-	       (emtvf:button " [Accept]"
-		  `(lambda ()
-		      (interactive)
-		      (emdb:set-value
-			 ',backend
-			 ',id
-			 ',value
-			 'correct-answer))
-		  '(help-echo "Accept the new value"))))
-			   
-	 (list
-	    (if
-	       (stringp value)
-	       ;;Indent it so it can't affect outline
-	       ;;structure. 
-	       `(indent 4 ,value)
-	       `(object ,value nil))))))
-
 ;;;_  . emtvf:TESTRAL (TESTRAL note formatter)
 (defun emtvf:TESTRAL (obj data &rest d)
    "Make a format form for OBJ.
@@ -381,14 +335,11 @@ OBJ must be a TESTRAL note."
 	    ;;This is the only one that will actually carry over in the
 	    ;;long term, the others are actually obsolescent.
 	    (emt:testral:newstyle
-	       (let*
-		  ((governor (emt:testral:newstyle->governor obj))
-		     (cell
-			(assq governor emtvf:TESTRAL-gov-alist)))
-		  (if cell
-		     (funcall (second cell) obj)
-		     (list "No formatter found for governor "
-			(symbol-name governor)))))
+	       (apply 
+		  (emtvf:get-TESTRAL-formatter 
+		     (emt:testral:newstyle->governor obj)) 
+		  (emt:testral:newstyle->value obj)))
+	    
 	    
 	    (emt:testral:alone
 	       (typecase obj
@@ -464,14 +415,6 @@ OBJ must be a TESTRAL note."
 	    (emt:testral:separate
 	       '("Separate args"))))))
 
-;;;_  . emtvf:info (Suite info formatter)
-(defun emtvf:info (obj data &rest d)
-   ""
-   
-   (let*
-      ()
-      '("Information: None" "\n")
-      ))
 ;;;_  . emtvf:grade-overall-face
 (defun emtvf:grade-overall-face (obj)
    ""

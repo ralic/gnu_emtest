@@ -29,15 +29,12 @@
 
 ;;;_ , Requires
 
-;;$$IMPROVE ME later  When we have truly separated autoloads, require
-;;the file these explorers' autoloads are defined in, and change their
-;;autoload forms to no longer require this (else we'll be circular)
 (require 'emtest/common/config)
 (require 'emtest/common/result-types)
 (require 'emtest/common/testral-types)
 
 ;;;_. Body
-;;;_ , Registering explorers
+;;;_ , Collecting explorers
 ;;;_  . List of explorers
 (defvar emtt:test-finder:method-list 
    '()
@@ -120,6 +117,7 @@ HOW must be of a subtype of emthow"
 ;;;_ , Include the autoload list of explorers
 ;;Included with our feature already provided, so the load-forms know
 ;;they are supported.
+;;$$RENAME MY STUFF Rename symbol and file emtest/runner/registrations
 (require 'emtest/runner/loadexplorers)
 
 ;;;_ * Local emacs vars.
