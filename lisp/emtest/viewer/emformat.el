@@ -321,24 +321,30 @@ OBJ must be a TESTRAL note."
 	    (emt:testral:newstyle
 	       (case (emt:testral:newstyle->governor obj)
 		  (comparison-w/persist
-		     (emtvf:outline-item
-			(1+ depth) 
-			nil
-			"Comparison with persisting object"
-			(destructuring-bind
-			   (result value backend id)
-			   (emt:testral:newstyle->value obj)
+		     (destructuring-bind
+			(result value backend id)
+			(emt:testral:newstyle->value obj)
+			(emtvf:outline-item
+			   (1+ depth) 
+			   (if result 
+			      'emtvf:face:ok
+			      ;;$$IMPROVE ME Create and use a
+			      ;;soft-fail face, for things like
+			      ;;mismatches that suggest but don't
+			      ;;neccessarily entail failure.
+			      'emtvf:face:failed)
 			   (list
 			      (if result 
-				 "Comparison succeeded"
-				 "Comparison failed")
+				 "matched"
+				 "mismatched")
+			      " persisting object")
+			   (list
 			      (if
 				 (stringp value)
 				 ;;Indent it so it can't affect outline
 				 ;;structure. 
 				 `(indent 4 ,value)
-				 `(object ,value nil))
-			      )))))
+				 `(object ,value nil)))))))
 	       
 	       ;;$$WRITE ME Find a formatter from the governor.
 	       )
