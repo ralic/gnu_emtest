@@ -309,6 +309,58 @@ DATA-LIST must be a loal."
 			:separator '("\n")
 			:data-loal data-list))))))))
 
+;;;_  . emtvf:TESTRAL-gov-alist
+(defvar emtvf:TESTRAL-gov-alist 
+   '((comparison-w/persist emtvf:TESTRAL-gov:comparison-w/persist))
+   "Alist from governor symbol to format function" )
+;;;_  . emtvf:TESTRAL:add-gov
+(defun emtvf:TESTRAL:add-gov (gov-symbol formatter)
+   ""
+   (unless (assq gov-symbol emtvf:TESTRAL-gov-alist)
+      (push 
+	 (list gov-symbol formatter)
+	 emtvf:TESTRAL-gov-alist)))
+
+;;;_  . emtvf:TESTRAL-gov:comparison-w/persist
+(defun emtvf:TESTRAL-gov:comparison-w/persist (obj)
+   "Formatter for TESTRAL note governed by `comparison-w/persist'"
+   (destructuring-bind
+      (result value backend id)
+      (emt:testral:newstyle->value obj)
+      ;;$$IMPROVE ME Add buttons & command to act on
+      ;;the persisting object: If rejected, to
+      ;;accept it.  To edit it and save the new
+      ;;version.  To diff the value with it.
+      (emtvf:outline-item
+	 (1+ depth) 
+	 (if result 
+	    'emtvf:face:ok
+	    'emtvf:face:mismatch)
+	 (list
+	    (if result 
+	       "Matched"
+	       "Mismatched")
+	    " persisting object"
+	    (if result 
+	       '()
+	       (emtvf:button " [Accept]"
+		  `(lambda ()
+		      (interactive)
+		      (emdb:set-value
+			 ',backend
+			 ',id
+			 ',value
+			 'correct-answer))
+		  '(help-echo "Accept the new value"))))
+			   
+	 (list
+	    (if
+	       (stringp value)
+	       ;;Indent it so it can't affect outline
+	       ;;structure. 
+	       `(indent 4 ,value)
+	       `(object ,value nil))))))
+
 ;;;_  . emtvf:TESTRAL (TESTRAL note formatter)
 (defun emtvf:TESTRAL (obj data &rest d)
    "Make a format form for OBJ.
@@ -329,47 +381,15 @@ OBJ must be a TESTRAL note."
 	    ;;This is the only one that will actually carry over in the
 	    ;;long term, the others are actually obsolescent.
 	    (emt:testral:newstyle
-	       (case (emt:testral:newstyle->governor obj)
-		  (comparison-w/persist
-		     (destructuring-bind
-			(result value backend id)
-			(emt:testral:newstyle->value obj)
-			;;$$IMPROVE ME Add buttons & command to act on
-			;;the persisting object: If rejected, to
-			;;accept it.  To edit it and save the new
-			;;version.  To diff the value with it.
-			(emtvf:outline-item
-			   (1+ depth) 
-			   (if result 
-			      'emtvf:face:ok
-			      'emtvf:face:mismatch)
-			   (list
-			      (if result 
-				 "Matched"
-				 "Mismatched")
-			      " persisting object"
-			      (if result 
-				 '()
-				 (emtvf:button " [Accept]"
-				    `(lambda ()
-					(interactive)
-					(emdb:set-value
-					   ',backend
-					   ',id
-					   ',value
-					   'correct-answer))
-				    '(help-echo "Accept the new value"))))
-			   
-			   (list
-			      (if
-				 (stringp value)
-				 ;;Indent it so it can't affect outline
-				 ;;structure. 
-				 `(indent 4 ,value)
-				 `(object ,value nil)))))))
-	       
-	       ;;$$WRITE ME Find a formatter from the governor.
-	       )
+	       (let*
+		  ((governor (emt:testral:newstyle->governor obj))
+		     (cell
+			(assq governor emtvf:TESTRAL-gov-alist)))
+		  (if cell
+		     (funcall (second cell) obj)
+		     (list "No formatter found for governor "
+			(symbol-name governor)))))
+	    
 	    (emt:testral:alone
 	       (typecase obj
 		  (emt:testral:error-raised
