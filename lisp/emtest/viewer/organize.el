@@ -56,21 +56,27 @@ It just tells a pathtree to add this node."
 ;;;_  . emtvo:pathtree-cb-aux
 (defun emtvo:pathtree-cb-aux (old-version arg display-data)
    "Worker for the pathtree callback"
-   ;;Give it "arg" with the display data set, if
-   ;;non-null.
-   (if arg
-      (if
-	 (eq (car arg) 'suite)
+   (cond
+      ((null arg)
+	 (emt:view:make-presentable
+	    :list display-data))
+      ((not (consp arg)) (error "Should be a cons"))
+      ((eq (car arg) 'suite)
 	 (let
-	    ((arg (second arg)))
+	    ((suite (second arg)))
 	    (setf
-	       (emt:view:presentable->list arg)
+	       (emt:view:presentable->list suite)
 	       display-data)
-	    arg)
-	 (error "Should be suite")
-	 )
-      (emt:view:make-presentable
-	 :list display-data)))
+	    suite))
+      ((eq (car arg) 'note)
+	 (check-type (second arg) (repeat emt:testral:newstyle))
+	 ;;Aside from content, it's all set in pathtree or pathtree's
+	 ;;dirty-handler callback.  `:children' is mixed-initiative,
+	 ;;but we don't set TESTRAL children.
+	 (emt:view:make-TESTRAL
+	    :content (second arg)))))
+
+
 ;;;_ , Setup
 ;;;_  . emtvo:setup-if-needed
 (defun emtvo:setup-if-needed (pathtree-cb make-display-data)
