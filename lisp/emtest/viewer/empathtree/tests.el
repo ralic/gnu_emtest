@@ -81,6 +81,10 @@
 			   `((type suite-own+notes-badness-list)
 			       (name ,'test-bad)))))))))))
 
+;;;_ , emtvr:collect-testral
+;;Tree is a parameter so it needn't be specially insulated.
+
+;;Examples.
 
 
 
