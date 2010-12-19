@@ -319,7 +319,28 @@ OBJ must be a TESTRAL note."
 	    ;;This is the only one that will actually carry over in the
 	    ;;long term, the others are actually obsolescent.
 	    (emt:testral:newstyle
-	       "\nNewstyle\n"
+	       (case (emt:testral:newstyle->governor obj)
+		  (comparison-w/persist
+		     (emtvf:outline-item
+			(1+ depth) 
+			nil
+			"Comparison with persisting object"
+			(destructuring-bind
+			   (result value backend id)
+			   (emt:testral:newstyle->value obj)
+			   (list
+			      (if result 
+				 "Comparison succeeded"
+				 "Comparison failed")
+			      (if
+				 (stringp value)
+				 ;;Indent it so it can't affect outline
+				 ;;structure. 
+				 `(indent 4 ,value)
+				 `(object ,value nil))
+			      )))))
+	       
+	       ;;$$WRITE ME Find a formatter from the governor.
 	       )
 	    (emt:testral:alone
 	       (typecase obj
