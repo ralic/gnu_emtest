@@ -48,6 +48,13 @@
 ;;;_  . use-category type
 (deftype emdb:use-category () 
    '(member correct-answer correct-type wrong-answer nil))
+;;;_  . Error type emdb:error
+;;;_  . Error type emdb:error
+(put 'emdb:error 'error-conditions
+   '(error emdb:error))
+(put 'emdb:error 'error-message
+   "Database error: Key %s not found in backend %s")
+
 ;;;_ , Accessing items
 
 ;;;_  . emdb:get-value
@@ -61,8 +68,9 @@
 	    (assoc id all)))
       (if cell
 	 (emdb:record->value cell)
-	 ;;$$IMPROVE ME  Would like a dedicated error value
-	 (error "Key not found: %s in backend %s" id backend))))
+	 (signal
+	    'emdb:error
+	    (list id backend)))))
 
 
 ;;;_  . emdb:set-value
@@ -86,7 +94,6 @@
 
 
 ;;;_ , The database itself
-;;For now, always use tinydb.el as the backend
 ;;;_  . emdb:tinydb:tinydb-alist
 (defvar emdb:tinydb:tinydb-alist 
    '()
