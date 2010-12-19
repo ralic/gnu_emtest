@@ -127,6 +127,7 @@ TAGS is not used yet, it controls what notes to add (For now, any
 	       ;;Later, tags will inform a report-manager, which also checks
 	       ;;whether to add notes.
 
+	       ;;$$OBSOLETE, we use its relation to a parent.
 	       ;;Set the note's presentation path to w/e plus
 	       ;;`emt:testral:*parent-path*'.  Possibly by a count.
 	       ;;Name could be nil or a list, or be derived from
@@ -151,6 +152,29 @@ TAGS is not used yet, it controls what notes to add (For now, any
 	       (emt:testral:make-grade:ungraded
 		  :contents
 		  "A non-TESTRAL object was tried to be used as note"))))))
+;;;_  .  emtt:testral:add-note-2
+(defun emtt:testral:add-note-2 (relation governor grade &rest args)
+   "Add a TESTRAL note.
+
+RELATION gives the relation to the parent note or the suite.  It
+must be a `emtvp:relation-element' - for now, that's a string.
+
+GOVERNOR is a symbol indicating a specific formatter for the output."
+   ;;$$IMPROVE ME If these fail, add an error not instead.  See above.
+   (check-type relation emtvp:relation-element)
+   (check-type governor symbol)
+
+   (emtt:testral:add-note
+      (emt:testral:make-newstyle
+	 ;;$$TRANSITIONAL Later we'll accept integers as ids.
+	 :id (prin1-to-string (incf (car emt:testral:*id-counter*)))
+	 :relation relation
+	 :governor governor
+	 :value    args
+	 ;;Failing the comparison does not neccessarily imply
+	 ;;a bad grade, that's for emt:assert to decide.
+	 :badnesses grade)))
+
 
 ;;;_  . emtt:testral:report-false
 ;;Higher level, may belong elsewhere.
