@@ -52,8 +52,25 @@ It just tells a pathtree to add this node."
       ;;The path
       presentation-path
       ;;The data
-      cell))
-
+      (list 'suite cell)))
+;;;_  . emtvo:pathtree-cb-aux
+(defun emtvo:pathtree-cb-aux (old-version arg display-data)
+   "Worker for the pathtree callback"
+   ;;Give it "arg" with the display data set, if
+   ;;non-null.
+   (if arg
+      (if
+	 (eq (car arg) 'suite)
+	 (let
+	    ((arg (second arg)))
+	    (setf
+	       (emt:view:presentable->list arg)
+	       display-data)
+	    arg)
+	 (error "Should be suite")
+	 )
+      (emt:view:make-presentable
+	 :list display-data)))
 ;;;_ , Setup
 ;;;_  . emtvo:setup-if-needed
 (defun emtvo:setup-if-needed (pathtree-cb make-display-data)
@@ -63,17 +80,7 @@ It just tells a pathtree to add this node."
 	 (emtvp:make-pathtree
 	    pathtree-cb
 	    `(lambda (old-version arg)
-		;;Give it "arg" with the display data set, if
-		;;non-null.
-		(if arg
-		   (progn
-		      (setf
-			 (emt:view:presentable->list arg)
-			 (,make-display-data))
-		      arg)
-		   (emt:view:make-presentable
-		      :list (,make-display-data))))
-	    
+		(emtvo:pathtree-cb-aux old-version arg (,make-display-data)))
 	    'emt:view:presentable)))
 
    (unless 
