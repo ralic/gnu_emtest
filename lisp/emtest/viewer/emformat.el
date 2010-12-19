@@ -43,6 +43,7 @@
 (defconst emtvf:format-alist loformat:default-alist
    "List of formatters that emformat uses.")
 ;;;_  . Faces
+;;;_   , Grades
 (defface emtvf:face:ok 
    '((default :foreground "green3" :weight bold))
    "Face for reporting passed tests"
@@ -68,6 +69,15 @@
    "Face for reporting dormant tests"
    :group 'emtest)
 
+;;;_   , Comparisons
+(defface emtvf:face:mismatch
+   '((default :foreground "pink" :weight bold))
+   "Face for reporting mismatches.
+NB, this is not a grade.  It indicates failure of a comparison,
+which may not imply failure of an assertion."
+   :group 'emtest)
+
+;;;_   , Pieces
 (defface emtvf:face:title
    '((default 
 	:height 1.8
@@ -328,11 +338,7 @@ OBJ must be a TESTRAL note."
 			   (1+ depth) 
 			   (if result 
 			      'emtvf:face:ok
-			      ;;$$IMPROVE ME Create and use a
-			      ;;soft-fail face, for things like
-			      ;;mismatches that suggest but don't
-			      ;;neccessarily entail failure.
-			      'emtvf:face:failed)
+			      'emtvf:face:mismatch)
 			   (list
 			      (if result 
 				 "matched"
