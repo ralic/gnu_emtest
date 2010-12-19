@@ -275,10 +275,8 @@ DATA-LIST must be a loal."
 
 			)))))
 
-	 ;;For the various TESTRAL expansions.
-	 ;;For now, these aren't even relevant yet.
 	 (emt:view:TESTRAL
-	    '("Testral data"))
+	    (emtvf:TESTRAL view-node data-list))
 
 	 ;;Base type, appears for the root node.
 	 (emt:view:presentable
@@ -539,8 +537,6 @@ OBJ must be a TESTRAL note."
 		     test-cases "test case" "test cases"))
 	       (list "No test cases succeeded"))
 	    "\n"))))
-
-
 
 ;;;_. Footers
 ;;;_ , Provides
