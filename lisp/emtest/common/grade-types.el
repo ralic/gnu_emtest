@@ -93,7 +93,11 @@
    (dormants   0 :type integer)
    (blowouts   0 :type integer))
 
+;;;_ , emt:testral:grade-aux
 
+(deftype emt:testral:grade-aux () 
+   "A grade or nothing"
+   '(or null emt:testral:grade))
 
 ;;;_. Footers
 ;;;_ , Provides

@@ -36,9 +36,8 @@
 ;;;_. Body
 ;;;_ , Grades
 
-;;$$TRANSITIONAL - later replace by just emt:testral:grade
-(deftype emt:result-badness () 'emt:testral:grade)
-(deftype emt:testral:grade-aux () '(or null emt:testral:grade))
+;;$$OBSOLETE
+'(deftype emt:result-badness () 'emt:testral:grade)
 ;;;_ , IDs
 ;;;_  . Suites
 
@@ -47,12 +46,13 @@
 ;;`method-relaunch'.  Not clear how that can be passed into here.
 ;;$$RETHINKING We distinguish conceptual path from how-to-run.
 ;;$$IMPROVE ME This should allow symbols as well, and we'd use
-;;string= for comparison.
+;;string= for comparison.  And numbers, and we'd use `equal' for
+;;that.  Comparisons are by `emt:id='
 (deftype emt:testral:id-element () 
    "Id elements are strings."
-   'string)
+   '(or string symbol integer))
 ;;(deftype emt:testral:suite-id () '(repeat emt:testral:id-element))
-;;$$RENAME ME  This has to do with presentation-paths, not ids.
+;;$$OBSOLESCENT
 (deftype emt:testral:prefix-suite-id () '(repeat emt:testral:id-element))
 (deftype emt:testral:partial-suite-id () 'emt:testral:prefix-suite-id)
 ;;;_  . Others
@@ -68,8 +68,9 @@
 	      (:conc-name emt:testral:base->))
    "The TESTRAL base type"
    
-   id
-   parent-id ;;`nil' for root events that have no parent.
+   (id        () :type emt:testral:id-element)
+   (parent-id () :type emt:testral:id-element)
+   ;;`nil' for root events that have no parent.
 
    ;;$$OBSOLESCENT  Info is becoming just other notes.
    info

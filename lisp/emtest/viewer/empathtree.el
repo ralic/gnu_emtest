@@ -118,14 +118,24 @@ could be, such as when a note-list hasn't been expanded."
 	 (emtvr:get-subtree-badnesses node))))
 
 ;;;_ , Collecting TESTRAL notes
+;;;_  . emtvp:relation-element
+;;$$TRANSITIONAL
+(deftype emtvp:relation-element ()
+   "Relations have this type"
+   ;;'(or emtvp->id-element symbol integer)
+   'string)
 ;;;_  . emtvr:relation-group-type
 (deftype emtvr:relation-group-type ()
    "Relation-groups have this type"
-   '(list* emtvp->id-element (repeat emt:testral:newstyle)))
+   '(list* emtvp:relation-element (repeat emt:testral:newstyle)))
 ;;;_  . emtvr:pend-type
 (deftype emtvr:pend-type ()
    "Pending items have this type"
-   '(list symbol (repeat emtvp->id-element)))
+   '(list emtvp->id-element (repeat emtvp:relation-element)))
+;;;_  . emt:id=
+(defun emt:id= (a b)
+   ""
+   (equal a b))
 
 ;;;_  . emtvr:relation-group->path
 (defun emtvr:relation-group->path (relation-group prefix)
@@ -140,17 +150,17 @@ could be, such as when a note-list hasn't been expanded."
    (let
       ((relations '()))
       (dolist (note (emt:testral:note-list->notes note-list))
-	 ;;$$TRANSITIONAL Later, don't assertfail, just add a
-	 ;;complaint note.
-	 (assert 
-	    (not 
-	       (string= 
-		  (emt:testral:base->parent-id note)
-		  (emt:testral:base->id note))))
-	 (when (string= id (emt:testral:base->parent-id note))
+	 (when (emt:id= id (emt:testral:base->parent-id note))
 	    ;;$$TRANSITIONAL Later, no typecase needed.
 	    (typecase note
 	       (emt:testral:newstyle
+		  ;;$$TRANSITIONAL Later, don't assertfail, just add a
+		  ;;complaint note.
+		  (assert 
+		     (not 
+			(emt:id=
+			   (emt:testral:base->parent-id note)
+			   (emt:testral:base->id note))))
 		  (let*
 		     ((relation-name
 			 (emt:testral:newstyle->relation note))

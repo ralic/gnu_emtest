@@ -82,8 +82,8 @@ BACKEND, if given, describes the database backend."
 	    (emtt:testral:add-note
 	       (emt:testral:make-newstyle
 		  ;;$$TRANSITIONAL Later we'll encap this in testral.
-		  :id 19
-		  ;;(incf emt:testral:*id-counter*)
+		  :id "19"
+		  ;;(prin1-to-string (incf emt:testral:*id-counter*))
 		  :relation "trace" ;;For now these must be strings
 		  :governor 'comparison-w/persist
 		  :value

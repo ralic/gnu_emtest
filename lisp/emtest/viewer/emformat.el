@@ -318,7 +318,9 @@ OBJ must be a TESTRAL note."
 	 (etypecase obj
 	    ;;This is the only one that will actually carry over in the
 	    ;;long term, the others are actually obsolescent.
-
+	    (emt:testral:newstyle
+	       "\nNewstyle\n"
+	       )
 	    (emt:testral:alone
 	       (typecase obj
 		  (emt:testral:error-raised
