@@ -334,6 +334,10 @@ OBJ must be a TESTRAL note."
 		     (destructuring-bind
 			(result value backend id)
 			(emt:testral:newstyle->value obj)
+			;;$$IMPROVE ME Add buttons & command to act on
+			;;the persisting object: If rejected, to
+			;;accept it.  To edit it and save the new
+			;;version.  To diff the value with it.
 			(emtvf:outline-item
 			   (1+ depth) 
 			   (if result 
@@ -341,9 +345,21 @@ OBJ must be a TESTRAL note."
 			      'emtvf:face:mismatch)
 			   (list
 			      (if result 
-				 "matched"
-				 "mismatched")
-			      " persisting object")
+				 "Matched"
+				 "Mismatched")
+			      " persisting object"
+			      (if result 
+				 '()
+				 (emtvf:button " [Accept]"
+				    `(lambda ()
+					(interactive)
+					(emdb:set-value
+					   ',backend
+					   ',id
+					   ',value
+					   'correct-answer))
+				    '(help-echo "Accept the new value"))))
+			   
 			   (list
 			      (if
 				 (stringp value)
