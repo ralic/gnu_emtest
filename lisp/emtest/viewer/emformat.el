@@ -333,10 +333,13 @@ OBJ must be a TESTRAL note."
 	    ;;This is the only one that will actually carry over in the
 	    ;;long term, the others are actually obsolescent.
 	    (emt:testral:newstyle
-	       (apply 
-		  (emtvf:get-TESTRAL-formatter 
-		     (emt:testral:newstyle->governor obj)) 
-		  (emt:testral:newstyle->value obj)))
+	       (let
+		  ((gov-symbol (emt:testral:newstyle->governor obj)))
+		  (apply 
+		     (emtvf:get-TESTRAL-formatter 
+			gov-symbol)
+		     gov-symbol
+		     (emt:testral:newstyle->value obj))))
 	    
 	    
 	    (emt:testral:alone
