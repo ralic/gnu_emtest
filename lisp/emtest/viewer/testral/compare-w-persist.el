@@ -33,7 +33,8 @@
 
 ;;;_. Body
 ;;;_ , emtvf:TESTRAL-gov:comparison-w/persist
-(defun emtvf:TESTRAL-gov:comparison-w/persist (result value backend id)
+;;;###autoload
+(defun emtvf:TESTRAL-gov:comparison-w/persist (gov-symbol result value backend id)
    "Formatter for TESTRAL note governed by `comparison-w/persist'"
 
    ;;$$IMPROVE ME Add buttons & command to act on the persisting
