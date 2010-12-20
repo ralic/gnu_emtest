@@ -77,23 +77,14 @@ BACKEND, if given, describes the database backend."
 		  (funcall compare-f value stored-value)))
 
 	    ;;Note the result.
-	    (emtt:testral:add-note
-	       (emt:testral:make-newstyle
-		  ;;$$TRANSITIONAL Later we'll encap this in testral.
-		  ;;$$TRANSITIONAL Later we'll accept integers as ids.
-		  :id (prin1-to-string (incf (car emt:testral:*id-counter*)))
-		  :relation "trace" ;;For now relations are strings
-		  :governor 'comparison-w/persist
-		  :value
-		  (list
-		     ;;Result, coerced to boolean
-		     (if result t nil)
-		     stored-value
-		     backend
-		     id)
-		  ;;Failing the comparison does not neccessarily imply
-		  ;;a bad grade, that's for emt:assert to decide.
-		  :badnesses '()))
+	    (emtt:testral:add-note-2
+	       "trace"
+	       'comparison-w/persist
+	       nil
+	       (if result t nil)
+	       stored-value
+	       backend
+	       id)
 	    result)
 	       
 	 ;;If we can't get the object, make a note.
