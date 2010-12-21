@@ -35,7 +35,7 @@ Formatter for TESTRAL note governed by `doc'
 ;;;***
 
 ;;;### (autoloads (emtvf:TESTRAL-gov:error-raised) "emtest/viewer/testral/error-raised"
-;;;;;;  "error-raised.el" (19728 13444))
+;;;;;;  "error-raised.el" (19728 63414))
 ;;; Generated autoloads from error-raised.el
 
 (autoload (quote emtvf:TESTRAL-gov:error-raised) "emtest/viewer/testral/error-raised" "\
@@ -48,11 +48,31 @@ Formatter for TESTRAL note governed by `error-raised'
 
 ;;;***
 
-;;;### (autoloads nil "emtest/viewer/testral/not-in-db" "not-in-db.el"
-;;;;;;  (19728 13113))
+;;;### (autoloads (emtvf:TESTRAL-gov:fail) "emtest/viewer/testral/fail"
+;;;;;;  "fail.el" (19729 2506))
+;;; Generated autoloads from fail.el
+
+(autoload (quote emtvf:TESTRAL-gov:fail) "emtest/viewer/testral/fail" "\
+Formatter for TESTRAL note governed by `fail'
+
+\(fn GOV-SYMBOL STR)" nil nil)
+ (emtvf:TESTRAL:add-gov
+   'fail 
+   #'emtvf:TESTRAL-gov:fail)
+
+;;;***
+
+;;;### (autoloads (emtvf:TESTRAL-gov:not-in-db) "emtest/viewer/testral/not-in-db"
+;;;;;;  "not-in-db.el" (19728 63589))
 ;;; Generated autoloads from not-in-db.el
 
-(provide (quote emtest/viewer/testral/not-in-db))
+(autoload (quote emtvf:TESTRAL-gov:not-in-db) "emtest/viewer/testral/not-in-db" "\
+Formatter for TESTRAL note governed by `not-in-db'
+
+\(fn VALUE ID BACKEND)" nil nil)
+ (emtvf:TESTRAL:add-gov
+   'not-in-db 
+   #'emtvf:TESTRAL-gov:not-in-db)
 
 ;;;***
 
