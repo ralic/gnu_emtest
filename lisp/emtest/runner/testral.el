@@ -231,15 +231,14 @@ GOVERNOR is a symbol indicating a specific formatter for the output."
 ;;Higher level, may belong elsewhere.
 ;;$$IMPROVE ME  Give this its own type of note.
 ;;$$RETHINK ME  Since we're no longer using presentation prefix, callers
-;;need to do something else, perhaps emtt:testral:with-parent-id
+;;need to do something else, perhaps emtt:testral:with-parent-id.
 (defun emtt:testral:report-false (prestn-prefix str)
    "Report that a compare leaf was false"
-   ;;For now, we just use a `doc' note of unknown relation.
    (when (emtt:testral:p)
       (emtt:testral:add-note-2
-	 "unknown"
+	 "trace"
 	 nil
-	 'doc ;;$$IMPROVE ME
+	 'fail
 	 str)))
 
 
