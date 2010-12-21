@@ -62,14 +62,9 @@
 		      ',value
 		      'correct-answer))
 	       '(help-echo "Accept the new value"))))
-			   
+
       (list
-	 (if
-	    (stringp value)
-	    ;;Indent it so it can't affect outline
-	    ;;structure. 
-	    `(indent 4 ,value)
-	    `(object ,value nil)))))
+	 (emtvf:obj-or-string value))))
 
 ;;;_. Footers
 ;;;_ , Register it

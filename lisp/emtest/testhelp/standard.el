@@ -208,14 +208,17 @@ there was any error inside a `emth:trap-errors'."
       (emtt:testral:p)
       (let
 	 ((retval (eval form)))
-	 ;;$$IMPROVE ME  If passed, add a note saying so.
-	 (unless retval
+	 (if retval
+	    (emtt:testral:add-note-2
+	       "trace"
+	       nil
+	       'succeeded
+	       form)
 	    (emtt:testral:add-note-2
 	       "trace"
 	       (emt:testral:make-grade:fail)
-	       'fail
-	       form
-	       '()))
+	       'failed
+	       form))
 	 retval)
       (eval `(assert ,form t))))
 
