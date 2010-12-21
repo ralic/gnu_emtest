@@ -42,6 +42,7 @@
 	     (  "^tests\\.el"
 		"^testhelp\\.el"
 		"^explorers$"
+		"^testral$"
 		"^rtest\\.el"
 		"^vtests\\.el"
 		"^examples$"
