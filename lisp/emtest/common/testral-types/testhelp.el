@@ -59,13 +59,17 @@
       (group
 	 ;; Notes alone
 	 ((type note)(subtype alone))
-	 (type-must-be () emt:testral:alone)
+	 (type-must-be () emt:testral:newstyle)
 	 (item ((name error-1))
-	    (emt:testral:make-error-raised
+	    (emt:testral:make-newstyle
+	       :id "1"
+	       :parent-id nil
 	       :badnesses 
 	       (emt:testral:make-grade:ungraded
 		  :contents nil)
-	       :err
+	       :relation 'trace
+	       :governor 'error-raised
+	       :value
 	       ;;We ct it from the actual error form, so we can't get out
 	       ;;of sync with it.
 	       (emtg:see-err
