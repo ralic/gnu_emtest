@@ -56,16 +56,20 @@
 		  	 
 		  (emt:doc "Operation: Use it once, adding one note.")
 		  (emtt:testral:continued-with obj
-		     (emtt:testral:add-note note-1))
+		     (emtt:testral:add-note-2
+			"example" nil 'example 12))
+		  
 	 
 		  (emt:doc "Operation: Use it again, adding another note.")
 		  (emtt:testral:continued-with obj
-		     (emtt:testral:add-note note-2)
+		     (emtt:testral:add-note-2
+			"example" nil 'example 144)
 		     (emtt:testral:get-notes)))))
 	 
 	 (emt:assert
-	    (emth:sets= note-list 
-	       (list note-1 note-2))))))
+	    (emth:sets= 
+	       (mapcar #'emt:testral:newstyle->value note-list)
+	       (list '(12) '(144)))))))
 
 
 ;;;_. Footers

@@ -33,9 +33,12 @@
 
 ;;;_. Body
 ;;;_ , Declarations
-(declare (special emt:testral:*events-seen*))
-(declare (special emt:testral:*path-prefix*))
-(declare (special emt:testral:*id-counter*))
+(declare
+   (special 
+      emt:testral:*events-seen*
+      emt:testral:*path-prefix*
+      emt:testral:*id-counter*
+      emt:testral:*parent-id*))
 ;;;_ , Support
 ;;;_  . Predicates
 ;;;_   , emtt:testral:p
@@ -43,11 +46,37 @@
    "Non-nil if called in a scope collecting TESTRAL notes"
    (boundp 'emt:testral:*events-seen*))
 
-;;;_  . Counters
+;;;_  . Note IDs
 ;;;_   , emtt:testral:create-counter
+;;Counter to make unique IDs.  Although UUIDs are appealing, they are
+;;slower to make.
 (defsubst emtt:testral:create-counter ()
    "Create a TESTRAL counter"
    (list 1))
+;;;_   , emtt:testral:new-id
+;;$$TRANSITIONAL Later we'll accept integers as ids.
+(defsubst emtt:testral:new-id ()
+   "Get a node id.
+This uses a TESTRAL counter."
+   (prin1-to-string (incf (car emt:testral:*id-counter*))))
+;;;_   , emtt:testral:create-parent-id
+(defsubst emtt:testral:create-parent-id (id)
+   "Create a TESTRAL parent-id container"
+   (list id))
+
+;;;_   , emtt:testral:get-parent-id
+(defsubst emtt:testral:get-parent-id ()
+   "Return the current TESTRAL parent-id"
+   (car emt:testral:*parent-id*))
+;;;_   , emtt:testral:with-parent-id
+(defmacro emtt:testral:with-parent-id (id &rest body)
+   "Evaluate BODY with ID as the current TESTRAL parent-id"
+   
+   `(let
+       ((emt:testral:*parent-id*
+	   (emtt:testral:create-parent-id id)))
+       ,@body))
+
 ;;;_  . Note queues.
 ;;;_   , emtt:testral:create
 (defsubst emtt:testral:create ()
@@ -72,13 +101,12 @@ received in."
 (defmacro emtt:testral:with (&rest body)
    "Evaluate BODY with TESTRAL facilities available"
    
-   `(let
+   `(let*
       (
-	 ;;Counter to make unique IDs.  Although UUIDs are appealing,
-	 ;;they are slower to make.
-	 (emt:testral:*id-counter* (emtt:testral:create-counter))
+	 (emt:testral:*id-counter*  (emtt:testral:create-counter))
 	 (emt:testral:*events-seen* (emtt:testral:create))
-	 (emt:testral:*path-prefix* ()))
+	 (emt:testral:*path-prefix* ())  ;;$$OBSOLESCENT
+	 (emt:testral:*parent-id*   (emtt:testral:create-parent-id nil)))
        ,@body))
 
 ;;;_  . Continued note-collecting
@@ -86,7 +114,10 @@ received in."
 (defun emtt:testral:make-continuing ()
    "Make an object suitable for use in `emtt:testral:continued-with'."
    
-   (list (emtt:testral:create-counter) (emtt:testral:create)))
+   (list 
+      (emtt:testral:create-counter) 
+      (emtt:testral:create)
+      (emtt:testral:create-parent-id nil)))
 
 
 ;;;_   , emtt:testral:continued-with
@@ -104,12 +135,13 @@ This continues any previous invocations of
 	     (,obj-sym ,obj)
 	     (emt:testral:*id-counter*  (first ,obj-sym))
 	     (emt:testral:*events-seen* (second ,obj-sym))
-	     (emt:testral:*path-prefix* ()))
+	     (emt:testral:*path-prefix* ())  ;;$$OBSOLESCENT
+	     (emt:testral:*parent-id*   (third ,obj-sym)))
 	  ,@body)))
 
 ;;;_ , Entry points for test code and its support
 ;;;_  . emtt:testral:add-note
-
+;;$$OBSOLESCENT
 (defun emtt:testral:add-note (note &optional name tags arglist)
    "Add NOTE as a TESTRAL note
 NOTE must be a type derived from `emt:testral:base'
@@ -144,40 +176,61 @@ TAGS is not used yet, it controls what notes to add (For now, any
 	       note)
 	 
 	    ;;Give an error note instead.
-	    (emt:testral:make-error-raised
-	       :err 
+	    (emt:testral:make-newstyle
+	       :id (emtt:testral:new-id)
+	       :relation 'problem
+	       :governor 'error-raised
+	       :value
 	       '(error 
 		   "A non-TESTRAL object was tried to be used as note")
 	       :badnesses 
 	       (emt:testral:make-grade:ungraded
 		  :contents
 		  "A non-TESTRAL object was tried to be used as note"))))))
+
 ;;;_  .  emtt:testral:add-note-2
-(defun emtt:testral:add-note-2 (relation governor grade &rest args)
+(defun emtt:testral:add-note-2 (relation grade governor &rest args)
    "Add a TESTRAL note.
 
 RELATION gives the relation to the parent note or the suite.  It
 must be a `emtvp:relation-element' - for now, that's a string.
 
 GOVERNOR is a symbol indicating a specific formatter for the output."
-   ;;$$IMPROVE ME If these fail, add an error not instead.  See above.
-   (check-type relation emtvp:relation-element)
-   (check-type governor symbol)
+   (when (emtt:testral:p)
+      (emtt:testral:push-note
+	 (condition-case err
+	    (progn
+	       (check-type relation emtvp:relation-element)
+	       (check-type governor symbol)
+	       (check-type grade    emt:testral:grade-aux)
+	       (emt:testral:make-newstyle
+		  :id        (emtt:testral:new-id)
+		  :parent-id (emtt:testral:get-parent-id)
+		  :relation  relation
+		  :governor  governor
+		  :value     args
+		  ;;Failing the comparison does not neccessarily imply
+		  ;;a bad grade, that's for emt:assert to decide.
+		  :badnesses grade))
+	    (error
+	       (emt:testral:make-newstyle
+		  :id        (emtt:testral:new-id)
+		  :parent-id (emtt:testral:get-parent-id)
+		  :relation  'problem
+		  :governor  'error-raised
+		  :value     err
+		  :badnesses 
+		  (emt:testral:make-grade:ungraded
+		     :contents
+		     "An error was seen while storing a note")))))))
 
-   (emtt:testral:add-note
-      (emt:testral:make-newstyle
-	 ;;$$TRANSITIONAL Later we'll accept integers as ids.
-	 :id (prin1-to-string (incf (car emt:testral:*id-counter*)))
-	 :relation relation
-	 :governor governor
-	 :value    args
-	 ;;Failing the comparison does not neccessarily imply
-	 ;;a bad grade, that's for emt:assert to decide.
-	 :badnesses grade)))
 
 
 ;;;_  . emtt:testral:report-false
 ;;Higher level, may belong elsewhere.
+;;$$IMPROVE ME  Give this its own type of note.
+;;$$RETHINK ME  Since we're no longer using presentation prefix, callers
+;;need to do something else, perhaps emtt:testral:with-parent-id
 (defun emtt:testral:report-false (prestn-prefix str)
    "Report that a compare leaf was false"
    ;;For now, we just use a `doc' note.
