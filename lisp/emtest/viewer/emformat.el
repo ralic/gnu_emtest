@@ -99,7 +99,8 @@ which may not imply success of an assertion."
    
    "Face for displaying test names"
    :group 'emtest)
-
+;;;_  . Special variables
+(declare (special emtvf:*outline-depth* emtvf:*fold*))
 ;;;_ , Lower format functions
 ;;;_  . emtvf:insert
 ;;$$MOVE ME maybe - this is the only part that directly deals with
@@ -140,6 +141,8 @@ which may not imply success of an assertion."
 
 ;;;_  . emtvf:outline-item
 ;;$$IMPROVE ME Make this a macro so it controls outline-depth itself.
+
+;;If folded, properties ('invisible 'outline)
 (defun emtvf:outline-item (depth face headtext contents)
    "Make an outline item of DEPTH."
    `(
