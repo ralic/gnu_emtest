@@ -146,13 +146,13 @@ there was any error inside a `emth:trap-errors'."
 	  ;;should push a dormancy note (here, not lower down, which
 	  ;;may be somehow wrong?)
 	  (error
-	     (emtt:testral:add-note
-		(emt:testral:make-error-raised
-		   :err err
-		   :badnesses 
-		   (emt:testral:make-grade:ungraded
-		      :contents 
-		      "An error escaped to `emth:trap-errors'")))
+	     (emtt:testral:add-note-2
+		'problem 
+		(emt:testral:make-grade:ungraded
+		   :contents 
+		   "An error escaped to `emth:trap-errors'")
+		'error-raised
+		err)
 	     (setq emtt:*abort-p* t)))))
 
 

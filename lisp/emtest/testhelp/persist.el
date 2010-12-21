@@ -79,8 +79,8 @@ BACKEND, if given, describes the database backend."
 	    ;;Note the result.
 	    (emtt:testral:add-note-2
 	       "trace"
-	       'comparison-w/persist
 	       nil
+	       'comparison-w/persist
 	       (if result t nil)
 	       stored-value
 	       backend
