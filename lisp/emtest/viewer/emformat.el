@@ -345,6 +345,7 @@ OBJ must be a TESTRAL note."
 	    (emt:testral:alone
 	       (typecase obj
 		  (emt:testral:error-raised
+		     (error "Obsolete emt:testral:error-raised")
 		     (emtvf:outline-item
 			(1+ depth) 
 			'emtvf:face:ungraded
