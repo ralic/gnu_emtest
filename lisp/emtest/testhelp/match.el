@@ -460,8 +460,6 @@ PATTERN is headed by governor"
 		   ,(emtm:test-form-data->form first)
 		   ,rest
 		   (ignore
-		      ;;$$IMPROVE ME  Instead of emty:*path*, use
-		      ;;parent ids or a governor that shows the path.
 		      (emtt:testral:report-false
 			 ',(emtm:test-form-data->prestn-path first)
 			 ,(emtm:test-form-data->explanation first)))))))
