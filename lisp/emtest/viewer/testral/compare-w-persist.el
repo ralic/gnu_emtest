@@ -44,7 +44,7 @@
    (emtvf:outline-item
       (1+ depth) 
       (if result 
-	 'emtvf:face:ok
+	 'emtvf:face:ok-match
 	 'emtvf:face:mismatch)
       (list
 	 (if result 

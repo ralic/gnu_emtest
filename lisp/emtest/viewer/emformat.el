@@ -78,6 +78,13 @@ NB, this is not a grade.  It indicates failure of a comparison,
 which may not imply failure of an assertion."
    :group 'emtest)
 
+(defface emtvf:face:ok-match
+   '((default :foreground "green" :weight bold))
+   "Face for reporting correct matches.
+NB, this is not a grade.  It indicates a successful comparison,
+which may not imply success of an assertion."
+   :group 'emtest)
+
 ;;;_   , Pieces
 (defface emtvf:face:title
    '((default 
