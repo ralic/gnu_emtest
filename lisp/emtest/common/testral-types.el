@@ -92,6 +92,7 @@
    (governor () :type symbol)
    value)
 
+'(progn
 ;;;_  . Basic notes
 ;;$$OBSOLESCENT  All of these will go away, replaced by
 ;;`emt:testral:newstyle' in various relations.
@@ -179,7 +180,7 @@
    (backend  () :type t)
    (id-in-db () :type t)
    (value    () :type t))
-
+)
 
 ;;;_  . Contents discrimination for suite type
 
