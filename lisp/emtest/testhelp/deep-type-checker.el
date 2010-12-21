@@ -131,7 +131,8 @@
 ;;;_ , emty:typep-annoted
 (defun emty:typep-annoted (obj spec name)
    ""
-   
+   ;;$$IMPROVE ME  Instead of emty:*path*, use parent ids or a
+   ;;governor that shows the path.
    (let
       ((emty:*path* (append emty:*path* (list name))))
       (if

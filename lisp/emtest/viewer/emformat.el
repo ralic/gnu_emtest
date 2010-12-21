@@ -349,9 +349,10 @@ OBJ must be a TESTRAL note."
 		     (emtvf:outline-item
 			(1+ depth) 
 			'emtvf:face:ungraded
-			"Error raised: "
+			"OBSOLETE Error raised: "
 			`(object ,(emt:testral:error-raised->err obj) nil)))
 		  (emt:testral:doc
+		     (error "Obsolete emt:testral:doc")
 		     (let
 			((doc (emt:testral:doc->str obj)))
 			(cond
@@ -369,6 +370,7 @@ OBJ must be a TESTRAL note."
 				 (1+ depth) nil "Doc" doc)))))
 		  
 		  (emt:testral:not-in-db
+		     (error "Obsolete emt:testral:not-in-db")
 		     (let
 			((value (emt:testral:not-in-db->value obj)))
 		     (emtvf:outline-item
@@ -376,6 +378,7 @@ OBJ must be a TESTRAL note."
 			'emtvf:face:ungraded
 			"ID not in database "
 			`(
+			    "Obsolete emt:testral:not-in-db\n"
 			   ,(emtvf:headline 
 			       (+ 2 depth)
 			       nil
@@ -402,20 +405,7 @@ OBJ must be a TESTRAL note."
 		     (emtvf:outline-item (1+ depth)
 			nil
 			"An unhandled TESTRAL note"
-			nil))))
-	    
-
-	    ;;Temporary
-	    (emt:testral:check:push
-	       '("Begin a TESTRAL check"))
-	 
-	    (emt:testral:push
-	       '("Begin a TESTRAL span"))
-	 
-	    (emt:testral:pop
-	       '("End a TESTRAL span"))
-	    (emt:testral:separate
-	       '("Separate args"))))))
+			nil))))))))
 
 ;;;_  . emtvf:grade-overall-face
 (defun emtvf:grade-overall-face (obj)

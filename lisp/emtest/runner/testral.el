@@ -148,6 +148,7 @@ NOTE must be a type derived from `emt:testral:base'
 NAME is a list of strings.
 TAGS is not used yet, it controls what notes to add (For now, any
    note)."
+   (error "Obsolete emtt:testral:add-note")
    (when (emtt:testral:p)
       (emtt:testral:push-note
 	 (if 
@@ -233,11 +234,13 @@ GOVERNOR is a symbol indicating a specific formatter for the output."
 ;;need to do something else, perhaps emtt:testral:with-parent-id
 (defun emtt:testral:report-false (prestn-prefix str)
    "Report that a compare leaf was false"
-   ;;For now, we just use a `doc' note.
+   ;;For now, we just use a `doc' note of unknown relation.
    (when (emtt:testral:p)
-      (emtt:testral:add-note
-	 (emt:testral:make-doc :str str)
-	 prestn-prefix)))
+      (emtt:testral:add-note-2
+	 "unknown"
+	 nil
+	 'doc ;;$$IMPROVE ME
+	 str)))
 
 
 ;;;_  . emtt:testral:note-list

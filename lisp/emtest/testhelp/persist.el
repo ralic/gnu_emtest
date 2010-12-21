@@ -67,6 +67,8 @@ BACKEND, if given, describes the database backend."
 		(when cell
 		   (second cell)))
 	     ;;Here add any other ways of learning the backend
+
+	     ;;$$IMPROVE ME Make a note as well as erroring.
 	     (error "No backend was provided"))))
 
       (condition-case err
@@ -89,15 +91,13 @@ BACKEND, if given, describes the database backend."
 	       
 	 ;;If we can't get the object, make a note.
 	 (emdb:error
-	    (emtt:testral:add-note
-	       (emt:testral:make-not-in-db
-		  :id-in-db id
-		  :backend  backend
-		  :value    value
-		  :badnesses 
-		  (emt:testral:make-grade:ungraded
-		     :contents 
-		     "ID is not in the database")))
+	    (emtt:testral:add-note-2
+	       "trace"
+	       nil
+	       'not-in-db
+	       value
+	       id
+	       backend)
 	    (setq emtt:*abort-p* t)))))
 
 

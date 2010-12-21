@@ -66,11 +66,10 @@
 ;;;###autoload
 (defun emt:doc (str &rest r)
    ""
-   (emtt:testral:add-note
-      (emt:testral:make-doc :str str)))
+   (emtt:testral:add-note-2 "doc" nil 'doc str))
 
 ;;;_  . emt:stage
-;;$$WRITE ME
+;;$$RETHINK ME
 ;;See  [[id:47ad9e14-9a38-40e2-a5ea-91cbc4dfb97f][redesign]]: Now this
 ;;just stores a note 
 
@@ -85,16 +84,20 @@
 (emtg:narrow-f
    `(list (list ',tag ,name))
    `(emt:stage 
-     ("Iteration" ;;Name
-      ;;$$CHANGE ME This will become a parameter note
-      (emtt:testral:add-note
-       (emt:testral:make-doc 
-	:str 
-	(concat 
-	 (prin1-to-string ',tag)
-	 " = " 
-	 (prin1-to-string ,name)))))
-     ,@body))
+       ("Iteration" ;;Name
+	  (emtt:testral:add-note-2
+	     "parameters"
+	     nil
+	     'parameter
+	     tag
+	     name
+	     (emt:testral:make-doc 
+		:str 
+		(concat 
+		   (prin1-to-string ',tag)
+		   " = " 
+		   (prin1-to-string ,name)))))
+       ,@body))
 
 ;;;_ , Error / retry management
 ;;;_  . emth:abortscope
@@ -147,7 +150,7 @@ there was any error inside a `emth:trap-errors'."
 	  ;;may be somehow wrong?)
 	  (error
 	     (emtt:testral:add-note-2
-		'problem 
+		"problem" 
 		(emt:testral:make-grade:ungraded
 		   :contents 
 		   "An error escaped to `emth:trap-errors'")
@@ -207,13 +210,12 @@ there was any error inside a `emth:trap-errors'."
 	 ((retval (eval form)))
 	 ;;$$IMPROVE ME  If passed, add a note saying so.
 	 (unless retval
-	    (emtt:testral:add-note
+	    (emtt:testral:add-note-2
+	       "trace"
+	       (emt:testral:make-grade:fail)
 	       ;;$$IMPROVE ME  Make and use a dedicated note-type
-	       (emt:testral:make-doc 
-		  :badnesses 
-		  (emt:testral:make-grade:fail)
-		  :str 
-		  (pp-to-string form))
+	       'doc
+	       form
 	       '()))
 	 retval)
       (eval `(assert ,form t))))

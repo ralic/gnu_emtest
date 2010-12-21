@@ -35,9 +35,7 @@
 ;;;_ , Insulation
 (defconst emtest/runner/testral:th:surrounders 
    '((let 
-	(
-	   (note-1 (emt:testral:make-doc :str "The first note"))
-	   (note-2 (emt:testral:make-doc :str "The second note")))))
+	()))
    
    "The normal surrounders for emtest/runner/testral tests" )
 ;;;_ , emtt:testral:continued-with

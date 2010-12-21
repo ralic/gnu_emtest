@@ -35,7 +35,33 @@
 ;;;_. Body
 ;;;_ , emtvf:TESTRAL-gov:not-in-db
 ;;;###autoload
-
+(defun emtvf:TESTRAL-gov:not-in-db (value id backend)
+   "Formatter for TESTRAL note governed by `not-in-db'"
+   (emtvf:outline-item
+      (1+ depth)
+      'emtvf:face:ungraded
+      "ID not in database "
+      `(
+	  ,(emtvf:headline 
+	      (+ 2 depth)
+	      nil
+	      (list
+		 "Value "
+		 (emtvf:button "[Accept]"
+		    `(lambda ()
+			(interactive)
+			(emdb:set-value
+			   ',backend
+			   ',id
+			   ',value
+			   'correct-answer))
+		    '(help-echo "Accept this value"))))
+	  ,(if
+	      (stringp value)
+	      ;;Indent it so it can't affect outline
+	      ;;structure. 
+	      `(indent 4 ,value)
+	      `(object ,value nil)))))
 ;;;_. Footers
 ;;;_ , Register it
 ;;;###autoload (emtvf:TESTRAL:add-gov
