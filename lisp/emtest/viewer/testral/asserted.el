@@ -1,4 +1,4 @@
-;;;_ emtest/viewer/testral/fail.el --- TESTRAL formatter for fail
+;;;_ emtest/viewer/testral/fail.el --- TESTRAL formatter for failed and succeeded
 
 ;;;_. Headers
 ;;;_ , License
@@ -33,22 +33,38 @@
 
 
 ;;;_. Body
-;;;_ , emtvf:TESTRAL-gov:fail
+;;;_ , emtvf:TESTRAL-gov:failed
 ;;;###autoload
-(defun emtvf:TESTRAL-gov:fail (gov-symbol str)
-   "Formatter for TESTRAL note governed by `fail'"
+(defun emtvf:TESTRAL-gov:failed (gov-symbol form)
+   "Formatter for TESTRAL note governed by `failed'"
    ;;$$IMPROVE ME  Take assert args as params, print them.
    (emtvf:outline-item
       (1+ depth) 
       'emtvf:face:failed
       "Failed assertion"
-      str))
+      (emtvf:obj-or-string form)))
+
+;;;_ , emtvf:TESTRAL-gov:succeeded
+;;;###autoload
+(defun emtvf:TESTRAL-gov:succeeded (gov-symbol form)
+   "Formatter for TESTRAL note governed by `succeeded'"
+   ;;$$IMPROVE ME  Take assert args as params, print them.
+   (emtvf:outline-item
+      (1+ depth) 
+      'emtvf:face:ok
+      "Assertion succeeded"
+      (emtvf:obj-or-string form)))
 
 ;;;_. Footers
-;;;_ , Register it
+;;;_ , Register then
 ;;;###autoload (emtvf:TESTRAL:add-gov
-;;;###autoload    'fail 
-;;;###autoload    #'emtvf:TESTRAL-gov:fail)
+;;;###autoload    'failed 
+;;;###autoload    #'emtvf:TESTRAL-gov:failed)
+
+;;;###autoload (emtvf:TESTRAL:add-gov
+;;;###autoload    'succeeded
+;;;###autoload    #'emtvf:TESTRAL-gov:succeeded)
+
 ;;;_ , Provides
 
 (provide 'emtest/viewer/testral/fail)
