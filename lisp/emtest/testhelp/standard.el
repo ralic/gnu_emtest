@@ -213,8 +213,7 @@ there was any error inside a `emth:trap-errors'."
 	    (emtt:testral:add-note-2
 	       "trace"
 	       (emt:testral:make-grade:fail)
-	       ;;$$IMPROVE ME  Make and use a dedicated note-type
-	       'doc
+	       'fail
 	       form
 	       '()))
 	 retval)
