@@ -40,7 +40,7 @@
    ;;$$IMPROVE ME  Take assert args as params, print them.
    (emtvf:outline-item
       (1+ depth) 
-      emtvf:face:failed
+      'emtvf:face:failed
       "Failed assertion"
       str))
 
