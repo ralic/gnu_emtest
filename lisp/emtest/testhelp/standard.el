@@ -66,7 +66,7 @@
 ;;;###autoload
 (defun emt:doc (str &rest r)
    ""
-   (emtt:testral:add-note-2 "doc" nil 'doc str))
+   (emtt:testral:add-note "doc" nil 'doc str))
 
 ;;;_  . emt:stage
 ;;$$RETHINK ME
@@ -85,7 +85,7 @@
    `(list (list ',tag ,name))
    `(emt:stage 
        ("Iteration" ;;Name
-	  (emtt:testral:add-note-2
+	  (emtt:testral:add-note
 	     "parameters"
 	     nil
 	     'parameter
@@ -149,7 +149,7 @@ there was any error inside a `emth:trap-errors'."
 	  ;;should push a dormancy note (here, not lower down, which
 	  ;;may be somehow wrong?)
 	  (error
-	     (emtt:testral:add-note-2
+	     (emtt:testral:add-note
 		"problem" 
 		(emt:testral:make-grade:ungraded
 		   :contents 
@@ -209,12 +209,12 @@ there was any error inside a `emth:trap-errors'."
       (let
 	 ((retval (eval form)))
 	 (if retval
-	    (emtt:testral:add-note-2
+	    (emtt:testral:add-note
 	       "trace"
 	       nil
 	       'succeeded
 	       form)
-	    (emtt:testral:add-note-2
+	    (emtt:testral:add-note
 	       "trace"
 	       (emt:testral:make-grade:fail)
 	       'failed

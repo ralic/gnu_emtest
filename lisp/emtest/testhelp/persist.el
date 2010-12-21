@@ -79,7 +79,7 @@ BACKEND, if given, describes the database backend."
 		  (funcall compare-f value stored-value)))
 
 	    ;;Note the result.
-	    (emtt:testral:add-note-2
+	    (emtt:testral:add-note
 	       "trace"
 	       nil
 	       'comparison-w/persist
@@ -91,7 +91,7 @@ BACKEND, if given, describes the database backend."
 	       
 	 ;;If we can't get the object, make a note.
 	 (emdb:error
-	    (emtt:testral:add-note-2
+	    (emtt:testral:add-note
 	       "trace"
 	       nil
 	       'not-in-db

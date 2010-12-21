@@ -140,8 +140,8 @@ This continues any previous invocations of
 	  ,@body)))
 
 ;;;_ , Entry points for test code and its support
-;;;_  .  emtt:testral:add-note-2
-(defun emtt:testral:add-note-2 (relation grade governor &rest args)
+;;;_  .  emtt:testral:add-note
+(defun emtt:testral:add-note (relation grade governor &rest args)
    "Add a TESTRAL note.
 
 RELATION gives the relation to the parent note or the suite.  It
@@ -186,7 +186,7 @@ GOVERNOR is a symbol indicating a specific formatter for the output."
 (defun emtt:testral:report-false (prestn-prefix str)
    "Report that a compare leaf was false"
    (when (emtt:testral:p)
-      (emtt:testral:add-note-2
+      (emtt:testral:add-note
 	 "trace"
 	 nil
 	 'fail
