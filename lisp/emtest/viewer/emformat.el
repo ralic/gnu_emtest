@@ -79,7 +79,7 @@ which may not imply failure of an assertion."
    :group 'emtest)
 
 (defface emtvf:face:ok-match
-   '((default :foreground "green" :weight bold))
+   '((default :foreground "green4" :weight bold))
    "Face for reporting correct matches.
 NB, this is not a grade.  It indicates a successful comparison,
 which may not imply success of an assertion."
@@ -165,7 +165,16 @@ Hack: We add a space after the button."
 			explorable)))
 	    '(help-echo "Rerun this test"))
 	 " ")))
-			       
+;;;_  . emtvf:obj-or-string
+(defun emtvf:obj-or-string (value)
+   ""
+   (if
+      (stringp value)
+      ;;Indent it so it can't affect outline
+      ;;structure. 
+      `(indent 4 ,value)
+      `(object ,value nil)))
+
 ;;;_ , Format functions
 ;;;_  . emtvf:top
 
