@@ -140,7 +140,43 @@ This continues any previous invocations of
 	  ,@body)))
 
 ;;;_ , Entry points for test code and its support
-;;;_  .  emtt:testral:add-note
+;;;_  .  emtt:testral:add-note-aux
+(defun emtt:testral:add-note-aux 
+   (id parent-id relation grade governor &rest args)
+   "Add a TESTRAL note.
+
+RELATION gives the relation to the parent note or the suite.  It
+must be a `emtvp:relation-element' - for now, that's a string.
+
+GOVERNOR is a symbol indicating a specific formatter for the output."
+   (assert (emtt:testral:p))
+   (emtt:testral:push-note
+      (condition-case err
+	 (progn
+	    (check-type relation emtvp:relation-element)
+	    (check-type governor symbol)
+	    (check-type grade    emt:testral:grade-aux)
+	    (emt:testral:make-newstyle
+	       :id        id
+	       :parent-id parent-id
+	       :relation  relation
+	       :governor  governor
+	       :value     args
+	       ;;Failing the comparison does not neccessarily imply
+	       ;;a bad grade, that's for emt:assert to decide.
+	       :badnesses grade))
+	 (error
+	    (emt:testral:make-newstyle
+	       :id        id
+	       :parent-id parent-id
+	       :relation  'problem
+	       :governor  'error-raised
+	       :value     err
+	       :badnesses 
+	       (emt:testral:make-grade:ungraded
+		  :contents
+		  "An error was seen while storing a note"))))))
+;;;_  . emtt:testral:add-note
 (defun emtt:testral:add-note (relation grade governor &rest args)
    "Add a TESTRAL note.
 
@@ -149,49 +185,11 @@ must be a `emtvp:relation-element' - for now, that's a string.
 
 GOVERNOR is a symbol indicating a specific formatter for the output."
    (when (emtt:testral:p)
-      (emtt:testral:push-note
-	 (condition-case err
-	    (progn
-	       (check-type relation emtvp:relation-element)
-	       (check-type governor symbol)
-	       (check-type grade    emt:testral:grade-aux)
-	       (emt:testral:make-newstyle
-		  :id        (emtt:testral:new-id)
-		  :parent-id (emtt:testral:get-parent-id)
-		  :relation  relation
-		  :governor  governor
-		  :value     args
-		  ;;Failing the comparison does not neccessarily imply
-		  ;;a bad grade, that's for emt:assert to decide.
-		  :badnesses grade))
-	    (error
-	       (emt:testral:make-newstyle
-		  :id        (emtt:testral:new-id)
-		  :parent-id (emtt:testral:get-parent-id)
-		  :relation  'problem
-		  :governor  'error-raised
-		  :value     err
-		  :badnesses 
-		  (emt:testral:make-grade:ungraded
-		     :contents
-		     "An error was seen while storing a note")))))))
-
-
-
-;;;_  . emtt:testral:report-false
-;;Higher level, may belong elsewhere.
-;;$$IMPROVE ME  Give this its own type of note.
-;;$$RETHINK ME  Since we're no longer using presentation prefix, callers
-;;need to do something else, perhaps emtt:testral:with-parent-id.
-(defun emtt:testral:report-false (prestn-prefix str)
-   "Report that a compare leaf was false"
-   (when (emtt:testral:p)
-      (emtt:testral:add-note
-	 "trace"
-	 nil
-	 'fail
-	 str)))
-
+      (apply
+	 #'emtt:testral:add-note-aux
+	 (emtt:testral:new-id)
+	 (emtt:testral:get-parent-id)
+	 relation grade governor args)))
 
 ;;;_  . emtt:testral:note-list
 (defun emtt:testral:note-list ()
@@ -201,6 +199,23 @@ GOVERNOR is a symbol indicating a specific formatter for the output."
       (error "Not in a TESTRAL collection scope"))
    (emt:testral:make-note-list
       :notes (emtt:testral:get-notes)))
+;;;_ , Higher level entry points
+;;;_  . emtt:testral:report-false
+;;Higher level, may belong elsewhere.
+;;$$RETHINK ME  Since we're no longer using presentation prefix, callers
+;;need to do something else, perhaps emtt:testral:with-parent-id.
+(defun emtt:testral:report-false (prestn-prefix str)
+   "Report that a compare leaf was false"
+   (when (emtt:testral:p)
+      ;;We
+      '(dolist (relation prestn-prefix)
+	  ;;Make a note for the car, and now make its parent.
+	  )
+      	 (emtt:testral:add-note
+	    "trace"
+	    nil
+	    'fail
+	    str)))
 
 ;;;_  . emtt:testral:set-object-origin
 (defun emtt:testral:set-object-origin (object origin)

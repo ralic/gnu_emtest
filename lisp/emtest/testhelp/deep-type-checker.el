@@ -131,8 +131,6 @@
 ;;;_ , emty:typep-annoted
 (defun emty:typep-annoted (obj spec name)
    ""
-   ;;$$IMPROVE ME  Instead of emty:*path*, use parent ids or a
-   ;;governor that shows the path.
    (let
       ((emty:*path* (append emty:*path* (list name))))
       (if
@@ -160,7 +158,7 @@ Here the args are values, not forms."
    "Return non-nil if FORM evaluates to a value of type TYPE."
    `(let
        ((emty:*use* t)
-	  (emty:*path* '("emty:check")))
+	  (emty:*path* '()))
        (check-type ,form ,type ,string)))
 ;;;_ , emty:get-type-pred-sym
 ;;Excerpted from cl-macs.  Don't need the other branches.
