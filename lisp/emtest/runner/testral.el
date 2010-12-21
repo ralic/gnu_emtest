@@ -54,10 +54,10 @@
    "Create a TESTRAL counter"
    (list 1))
 ;;;_   , emtt:testral:new-id
-;;$$TRANSITIONAL Later we'll accept integers as ids.
 (defsubst emtt:testral:new-id ()
    "Get a node id.
 This uses a TESTRAL counter."
+   ;;$$TRANSITIONAL Later we'll accept integers as ids.
    (prin1-to-string (incf (car emt:testral:*id-counter*))))
 ;;;_   , emtt:testral:create-parent-id
 (defsubst emtt:testral:create-parent-id (id)
@@ -140,55 +140,6 @@ This continues any previous invocations of
 	  ,@body)))
 
 ;;;_ , Entry points for test code and its support
-;;;_  . emtt:testral:add-note
-;;$$OBSOLESCENT
-(defun emtt:testral:add-note (note &optional name tags arglist)
-   "Add NOTE as a TESTRAL note
-NOTE must be a type derived from `emt:testral:base'
-NAME is a list of strings.
-TAGS is not used yet, it controls what notes to add (For now, any
-   note)."
-   (error "Obsolete emtt:testral:add-note")
-   (when (emtt:testral:p)
-      (emtt:testral:push-note
-	 (if 
-	    (typep note 'emt:testral:base)
-	    (progn
-	       (check-type 
-		  (emt:testral:base->badnesses note)
-		  emt:testral:grade-aux)
-	       ;;Later, tags will inform a report-manager, which also checks
-	       ;;whether to add notes.
-
-	       ;;$$OBSOLETE, we use its relation to a parent.
-	       ;;Set the note's presentation path to w/e plus
-	       ;;`emt:testral:*parent-path*'.  Possibly by a count.
-	       ;;Name could be nil or a list, or be derived from
-	       ;;`emt:testral:*id-counter*'.  It can't be a bare
-	       ;;string (yet, for ease of trying this out)
-	 
-	       (setf (emt:testral:base->prestn-path note)
-		  (append emt:testral:*path-prefix* name))
-	 
-
-	       ;;Later, for "call" tags, arglist will be processed wrt objects
-	       ;;whose origin is known.  This used to relate to the
-	       ;;`emt:result:diag:call' type, but the design has changed.
-	       note)
-	 
-	    ;;Give an error note instead.
-	    (emt:testral:make-newstyle
-	       :id (emtt:testral:new-id)
-	       :relation 'problem
-	       :governor 'error-raised
-	       :value
-	       '(error 
-		   "A non-TESTRAL object was tried to be used as note")
-	       :badnesses 
-	       (emt:testral:make-grade:ungraded
-		  :contents
-		  "A non-TESTRAL object was tried to be used as note"))))))
-
 ;;;_  .  emtt:testral:add-note-2
 (defun emtt:testral:add-note-2 (relation grade governor &rest args)
    "Add a TESTRAL note.
