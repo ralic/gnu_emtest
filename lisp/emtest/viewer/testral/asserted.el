@@ -53,7 +53,8 @@
       (1+ depth) 
       'emtvf:face:ok
       "Assertion succeeded"
-      (emtvf:obj-or-string form)))
+      (emtvf:obj-or-string form)
+      t))
 
 ;;;_. Footers
 ;;;_ , Register then

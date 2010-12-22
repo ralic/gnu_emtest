@@ -34,7 +34,7 @@
 ;;;_. Body
 ;;;_ , emtvf:TESTRAL-gov:comparison-w/persist
 ;;;###autoload
-(defun emtvf:TESTRAL-gov:comparison-w/persist (note result value backend id)
+(defun emtvf:TESTRAL-gov:comparison-w/persist (note matched-p value backend id)
    "Formatter for TESTRAL note governed by `comparison-w/persist'"
 
    ;;$$IMPROVE ME Add buttons & command to act on the persisting
@@ -43,15 +43,15 @@
 
    (emtvf:outline-item
       (1+ depth) 
-      (if result 
+      (if matched-p 
 	 'emtvf:face:ok-match
 	 'emtvf:face:mismatch)
       (list
-	 (if result 
+	 (if matched-p 
 	    "Matched"
 	    "Mismatched")
 	 " persisting object"
-	 (if result 
+	 (if matched-p 
 	    '()
 	    (emtvf:button " [Accept]"
 	       `(lambda ()
@@ -64,7 +64,8 @@
 	       '(help-echo "Accept the new value"))))
 
       (list
-	 (emtvf:obj-or-string value))))
+	 (emtvf:obj-or-string value))
+      matched-p))
 
 ;;;_. Footers
 ;;;_ , Register it
