@@ -177,13 +177,26 @@ Hack: We add a space after the button."
 	 " ")))
 ;;;_  . emtvf:obj-or-string
 (defun emtvf:obj-or-string (value)
-   ""
+   "Display VALUE.
+If VALUE is a string, display it lerally, otherwise pretty-print it."
    (if
       (stringp value)
       ;;Indent it so it can't affect outline
       ;;structure. 
       `(indent 4 ,value)
       `(object ,value nil)))
+;;;_  . emtvf:make-dynamic
+;;$$USE ME
+(defun emtvf:make-dynamic (obj &optional data)
+   "Make a form that calls a dynamic object"
+   
+`(dynamic 
+    ,obj 
+    ,data
+    ,#'emtvf:node
+    ;;$$IMPROVE ME collect the current values of our special
+    ;;variables, in order.
+    ))
 
 ;;;_ , Format functions
 ;;;_  . emtvf:top

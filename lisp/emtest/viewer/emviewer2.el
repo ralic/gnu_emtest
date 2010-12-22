@@ -121,7 +121,7 @@
 
 ;;;_ , Static printing functions
 ;;;_  . emtv2:insert-dynamic
-(defun emtv2:insert-dynamic (recurse-f obj loal func)
+(defun emtv2:insert-dynamic (recurse-f obj loal func &optional data)
    "Insert (statically) the result of a dynamic spec"
    (let*
       ((fmt-list (funcall func obj loal)))
