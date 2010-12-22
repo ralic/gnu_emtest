@@ -211,14 +211,11 @@ STR should be a string"
       (let* 
 	 ((parent-id (emtt:testral:get-parent-id))
 	    (id (emtt:testral:new-id)))
-	 
 	 ;;Make a nest of parents according with the presentation
 	 ;;prefix.
-	 ;;$$REDESIGN ME  `relation' appears twice, suggests foggy design.
-	 '  ;;$$NOT READY
 	 (dolist (relation prestn-prefix)
 	    (emtt:testral:add-note-aux id parent-id 
-	       relation nil 'scope relation)
+	       relation nil 'scope)
 	    (setq parent-id id)
 	    (setq id (emtt:testral:new-id)))
 	 
