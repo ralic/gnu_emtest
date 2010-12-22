@@ -63,8 +63,11 @@ PROPERTIES gives the properties the overlay should have."
       (let
 	 ((ov
 	     (make-overlay beg (point) nil nil nil)))
-	 (dolist (prop properties)
-	    (destructuring-bind (name value) prop
+	 (while properties
+	    (let 
+	       ((name (car properties))
+		  (value (cadr properties)))
+	       (setq properties (cddr properties))
 	       (overlay-put ov name value)))
 	 ;;Now don't need the marker any more.
 	 (set-marker beg nil))))
