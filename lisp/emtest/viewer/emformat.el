@@ -141,16 +141,21 @@ which may not imply success of an assertion."
 
 ;;;_  . emtvf:outline-item
 ;;$$IMPROVE ME Make this a macro so it controls outline-depth itself.
-
-;;If folded, properties ('invisible 'outline)
+;;$$IMPROVE ME Would like it to accord with outline-cycle's idea that
+;;already folded means including the final \n, but `emtvf:headline'
+;;wants to add that \n itself.
+;;$$IMPROVE ME Don't overlay if this item is already in a folded thing.
 (defun emtvf:outline-item (depth face headtext contents &optional fold)
    "Make an outline item of DEPTH."
    `(
        ,(emtvf:headline depth face headtext)
-       ,(if fold
-	   `(w/props ,contents (invisible outline))
-	   contents)
-       ,(if contents '(sep 2))))
+       ,(cond
+	   ((null contents) nil)
+	   (fold
+	      `(overlay (invisible outline) ,contents (sep 2)))
+	   (t
+	      `(,contents (sep 2))))))
+
 ;;;_  . emtvf:button-to-explore
 (defun emtvf:button-to-explore (explorable text)
    "Make a button to explore EXPLORABLE.

@@ -134,8 +134,9 @@
       (let
 	 ((inhibit-read-only t))
 	 (erase-buffer))
-      (emtvf:insert top-node '() '((dynamic emtv2:insert-dynamic)))
-      (emtest/viewer/mode)))
+      (emtest/viewer/mode)
+      (emtvf:insert top-node '() '((dynamic emtv2:insert-dynamic)))))
+
 
 ;;;_ , Overall callback
 ;;;_  . emtv2:tests-outstanding
