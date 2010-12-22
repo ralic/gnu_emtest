@@ -143,11 +143,13 @@ which may not imply success of an assertion."
 ;;$$IMPROVE ME Make this a macro so it controls outline-depth itself.
 
 ;;If folded, properties ('invisible 'outline)
-(defun emtvf:outline-item (depth face headtext contents)
+(defun emtvf:outline-item (depth face headtext contents &optional fold)
    "Make an outline item of DEPTH."
    `(
        ,(emtvf:headline depth face headtext)
-       ,contents
+       ,(if fold
+	   `(w/props ,contents (invisible outline))
+	   contents)
        ,(if contents '(sep 2))))
 ;;;_  . emtvf:button-to-explore
 (defun emtvf:button-to-explore (explorable text)
