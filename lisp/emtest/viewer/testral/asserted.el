@@ -35,7 +35,7 @@
 ;;;_. Body
 ;;;_ , emtvf:TESTRAL-gov:failed
 ;;;###autoload
-(defun emtvf:TESTRAL-gov:failed (gov-symbol form)
+(defun emtvf:TESTRAL-gov:failed (note form)
    "Formatter for TESTRAL note governed by `failed'"
    ;;$$IMPROVE ME  Take assert args as params, print them.
    (emtvf:outline-item
@@ -46,7 +46,7 @@
 
 ;;;_ , emtvf:TESTRAL-gov:succeeded
 ;;;###autoload
-(defun emtvf:TESTRAL-gov:succeeded (gov-symbol form)
+(defun emtvf:TESTRAL-gov:succeeded (note form)
    "Formatter for TESTRAL note governed by `succeeded'"
    ;;$$IMPROVE ME  Take assert args as params, print them.
    (emtvf:outline-item

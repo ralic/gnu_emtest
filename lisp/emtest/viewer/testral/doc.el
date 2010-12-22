@@ -35,7 +35,7 @@
 ;;;_. Body
 ;;;_ , emtvf:TESTRAL-gov:doc
 ;;;###autoload
-(defun emtvf:TESTRAL-gov:doc (gov-symbol doc)
+(defun emtvf:TESTRAL-gov:doc (note doc)
    "Formatter for TESTRAL note governed by `doc'"
    (cond
       ((not (string-match "\n" doc))

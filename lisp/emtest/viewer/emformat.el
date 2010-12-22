@@ -357,7 +357,7 @@ OBJ must be a TESTRAL note."
 		  (apply 
 		     (emtvf:get-TESTRAL-formatter 
 			gov-symbol)
-		     gov-symbol
+		     obj
 		     (emt:testral:newstyle->value obj))))
 	    
 	    

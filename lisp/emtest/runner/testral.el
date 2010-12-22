@@ -144,6 +144,7 @@ This continues any previous invocations of
 (defun emtt:testral:add-note-aux 
    (id parent-id relation grade governor &rest args)
    "Add a TESTRAL note.
+Must be called in a TESTRAL scope.
 
 RELATION gives the relation to the parent note or the suite.  It
 must be a `emtvp:relation-element' - for now, that's a string.
@@ -201,21 +202,31 @@ GOVERNOR is a symbol indicating a specific formatter for the output."
       :notes (emtt:testral:get-notes)))
 ;;;_ , Higher level entry points
 ;;;_  . emtt:testral:report-false
-;;Higher level, may belong elsewhere.
-;;$$RETHINK ME  Since we're no longer using presentation prefix, callers
-;;need to do something else, perhaps emtt:testral:with-parent-id.
 (defun emtt:testral:report-false (prestn-prefix str)
-   "Report that a compare leaf was false"
+   "Report that a compare leaf was false.
+STR should be a string"
    (when (emtt:testral:p)
-      ;;We
-      '(dolist (relation prestn-prefix)
-	  ;;Make a note for the car, and now make its parent.
-	  )
-      	 (emtt:testral:add-note
+      ;;$$ENCAP ME for adding a note with a parent nest.  For callers
+      ;;that don't want to keep making parent scopes.
+      (let* 
+	 ((parent-id (emtt:testral:get-parent-id))
+	    (id (emtt:testral:new-id)))
+	 
+	 ;;Make a nest of parents according with the presentation
+	 ;;prefix.
+	 ;;$$REDESIGN ME  `relation' appears twice, suggests foggy design.
+	 '  ;;$$NOT READY
+	 (dolist (relation prestn-prefix)
+	    (emtt:testral:add-note-aux id parent-id 
+	       relation nil 'scope relation)
+	    (setq parent-id id)
+	    (setq id (emtt:testral:new-id)))
+	 
+      	 (emtt:testral:add-note-aux id parent-id
 	    "trace"
 	    nil
 	    'fail
-	    str)))
+	    str))))
 
 ;;;_  . emtt:testral:set-object-origin
 (defun emtt:testral:set-object-origin (object origin)
