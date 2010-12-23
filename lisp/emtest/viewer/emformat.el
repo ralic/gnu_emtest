@@ -281,10 +281,9 @@ DATA-LIST must be a loal."
 			(hiformat:map 
 			   ;;Formatting for each child
 			   #'(lambda (obj data &rest d)
-				(list
-				   (emtvf:make-dynamic 
-				      obj 
-				      #'emtvf:node)))
+				(emtvf:make-dynamic 
+				   obj 
+				   #'emtvf:node))
 			   
 			   children
 			   :data-loal data-list
@@ -305,10 +304,9 @@ DATA-LIST must be a loal."
 			      (hiformat:map 
 				 ;;Formatting for each child
 				 #'(lambda (obj data &rest d)
-				      (list
-					 (emtvf:make-dynamic 
-					    obj 
-					    #'emtvf:node)))
+				      (emtvf:make-dynamic 
+					 obj 
+					 #'emtvf:node))
 				 children
 				 :data-loal data-list
 				 :separator '("\n")
@@ -355,10 +353,9 @@ DATA-LIST must be a loal."
 		     (hiformat:map 
 			;;Formatting for each child
 			#'(lambda (obj data &rest d)
-			     (list
-				(emtvf:make-dynamic
-				   obj 
-				   #'emtvf:node)))
+			     (emtvf:make-dynamic
+				obj 
+				#'emtvf:node))
 			children
 			:separator '("\n")
 			:data-loal data-list) 
@@ -371,11 +368,9 @@ DATA-LIST must be a loal."
 OBJ must be a TESTRAL note."
    (declare (special data-list))
    (let*
-      ((depth
-	  ;;$$FIX ME We are not getting the incremented depth here.
-	  ;;For now we add 1 but that's just a hack.
-	  (1+ (loal:val 'depth data-list 0))))
+      ()
       (list
+	 ;;$$OBSOLETE
 	 (apply #'append
 	    (mapcar
 	       #'(lambda (x)
