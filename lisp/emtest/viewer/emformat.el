@@ -100,7 +100,7 @@ which may not imply success of an assertion."
    "Face for displaying test names"
    :group 'emtest)
 ;;;_  . Special variables
-(declare (special emtvf:*outline-depth* emtvf:*fold*))
+(declare (special emtvf:*outline-depth* emtvf:*folded*))
 ;;;_ , Lower format functions
 ;;;_  . emtvf:insert
 ;;$$MOVE ME maybe - this is the only part that directly deals with
@@ -186,7 +186,6 @@ If VALUE is a string, display it lerally, otherwise pretty-print it."
       `(indent 4 ,value)
       `(object ,value nil)))
 ;;;_  . emtvf:make-dynamic
-;;$$USE ME
 (defun emtvf:make-dynamic (obj &optional func data)
    "Make a form that calls a dynamic object"
    
@@ -194,9 +193,8 @@ If VALUE is a string, display it lerally, otherwise pretty-print it."
     ,obj 
     ,data
     ,func ;;  ,#'emtvf:node
-    ;;$$IMPROVE ME collect the current values of our special
-    ;;variables, in order.
-    ))
+    ,(emtv2:dynamic-capture-vars)))
+
 
 ;;;_ , Format functions
 ;;;_  . emtvf:top
@@ -207,10 +205,13 @@ VIEW-NODE must be at least an `emtvp:node'.
 DATA-LIST must be a loal (list of alists)."
 
    (check-type view-node emtvp:node)
-   `(
-       (w/face "Emtest results" emtvf:face:title)
-       "\n"
-       ,(emtvf:node view-node data-list)))
+   (let
+      ((emtvf:*folded* nil)
+	 (emtvf:*outline-depth* 0))
+      `(
+	  (w/face "Emtest results" emtvf:face:title)
+	  "\n"
+	  ,(emtvf:node view-node data-list))))
 
 ;;;_  . emtvf:node
 (defun emtvf:node (view-node data-list)
