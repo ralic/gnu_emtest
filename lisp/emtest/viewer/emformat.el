@@ -212,15 +212,6 @@ If VALUE is a string, display it lerally, otherwise pretty-print it."
       ;;structure. 
       `(indent 4 ,value)
       `(object ,value nil)))
-;;;_  . emtvf:make-dynamic
-(defun emtvf:make-dynamic (obj func &optional data)
-   "Make a form that calls a dynamic object"
-   ;;$$MOVE ME into dynamic handler.
-   `(dynamic 
-       ,obj 
-       ,data
-       ,func
-       ,(emtv2:dynamic:capture-vars)))
 
 
 ;;;_ , Format functions
@@ -293,8 +284,7 @@ DATA-LIST must be a loal."
 				(list
 				   (emtvf:make-dynamic 
 				      obj 
-				      #'emtvf:node
-				      (loal:acons 'depth (1+ depth) data))))
+				      #'emtvf:node)))
 			   
 			   children
 			   :data-loal data-list
@@ -318,9 +308,7 @@ DATA-LIST must be a loal."
 				      (list
 					 (emtvf:make-dynamic 
 					    obj 
-					    #'emtvf:node
-					    (loal:acons 
-					       'depth (1+ depth) data))))
+					    #'emtvf:node)))
 				 children
 				 :data-loal data-list
 				 :separator '("\n")
@@ -354,8 +342,7 @@ DATA-LIST must be a loal."
 		  ((emtvf:*hdln-path* (list name)))
 		  (emtvf:make-dynamic 
 		     (car children)
-		     #'emtvf:node
-		     (loal:acons 'hdln-path (list name) data-list)))
+		     #'emtvf:node))
 	       
 	       (let
 		  ((emtvf:*hdln-path* '()))
@@ -371,8 +358,7 @@ DATA-LIST must be a loal."
 			     (list
 				(emtvf:make-dynamic
 				   obj 
-				   #'emtvf:node
-				   (loal:acons 'depth (1+ depth) data))))
+				   #'emtvf:node)))
 			children
 			:separator '("\n")
 			:data-loal data-list) 

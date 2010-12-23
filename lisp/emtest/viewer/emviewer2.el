@@ -160,17 +160,24 @@ DATA should have been created by `emtv2:dynamic:capture-vars'."
    `(progv (car data) (cdr data)
        ,@body))
 
-;;;_ , Static printing functions
+;;;_ , Pseudo-dynamic printing
 ;;;_  . emtv2:insert:dynamic
-(defun emtv2:insert:dynamic (recurse-f obj loal func &optional data)
+(defun emtv2:insert:dynamic (recurse-f obj func data)
    "Insert (statically) the result of a dynamic spec"
    (let*
       ((fmt-list 
 	  (emtv2:dynamic:with-vars data 
-	     (funcall func obj loal))))
+	     (funcall func obj nil))))
       (funcall recurse-f fmt-list)))
 
-
+;;;_  . emtvf:make-dynamic
+(defun emtvf:make-dynamic (obj func)
+   "Make a form that calls a dynamic object"
+   `(dynamic 
+       ,obj 
+       ,func
+       ,(emtv2:dynamic:capture-vars)))
+;;;_ , Static printing functions
 ;;;_  . emtv2:print-all
 (defun emtv2:print-all (top-node)
    ""
