@@ -192,7 +192,7 @@ If VALUE is a string, display it lerally, otherwise pretty-print it."
    `(dynamic 
        ,obj 
        ,data
-       ,func ;;  ,#'emtvf:node
+       ,func
        ,(emtv2:dynamic:capture-vars)))
 
 

@@ -119,8 +119,10 @@
    (emtvo:setup-if-needed #'emtv2:pathtree-cb #'ignore))
 
 ;;;_ , Pseudo-dynamic
-;;$$MOVE ME later into viewer package, after the vars are
+;;$$MOVE ME later into utility package, after the vars are
 ;;a parameter, not a constant.
+;;$$IMPROVE ME Let the list of vars also be a special variable named
+;;by an uninterned symbol so it can't accidentally be captured.
 ;;;_  . emtv2:dynamic:vars
 (defconst emtv2:dynamic:vars 
    '(emtvf:*outline-depth* emtvf:*folded*)
@@ -139,25 +141,24 @@ If it's already register, just change its init form."
       ()
       
       ))
-;;;_  . emtv2:dynamic:with
+;;;_  . emtv2:dynamic:with-vars
 (defmacro emtv2:dynamic:with-vars (&rest body)
    "Eval BODY with the special variables bound to their initial values."
 
-   `(progv ',emtv2:dynamic-vars (list ,@emtv2:dynamic:init-forms)
+   `(progv ',emtv2:dynamic:vars (list ,@emtv2:dynamic:init-forms)
        ,@body))
 
 ;;;_  . emtv2:dynamic:capture-vars
 (defun emtv2:dynamic:capture-vars ()
    "Capture the values of the formatter special variables."
-
-   ;;Capture the special variables.
-   (eval `(list ,@emtv2:dynamic-vars)))
+   (eval `(list ',emtv2:dynamic:vars ,@emtv2:dynamic:vars)))
+;;;_  . emtv2:dynamic
 ;;;_  . emtv2:dynamic:insert
 (defun emtv2:dynamic:insert (recurse-f obj loal func &optional data)
    "Insert (statically) the result of a dynamic spec"
    (let*
       ((fmt-list 
-	  (progv emtv2:dynamic-vars data
+	  (progv (car data) (cdr data)
 	     (funcall func obj loal))))
       (funcall recurse-f fmt-list)))
 
