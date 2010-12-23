@@ -56,9 +56,7 @@ FUNC must be a function taking 2 args:
 ELS=0 is used if the list is empty.  ELS=0 must be a formattable.
 
 ELS=1, if given, is used if the list has just 1 element (a singleton).
-ELS=1 must be a function taking 3 args (same signature as FUNC).
-
-"
+ELS=1 must be a function taking 1 arg, the singleton object."
 
    (let*
       ((len (length list)))
