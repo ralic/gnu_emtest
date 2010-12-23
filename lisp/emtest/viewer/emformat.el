@@ -254,34 +254,41 @@ Must be called in a `emtv2:dynamic:top' context."
 			    " "
 			    ,(emtvf:button-to-explore explorable "[RUN]")
 			    ,grades-sum)
-			(etypecase (emt:testral:suite->contents object)
-			   (emt:testral:runform-list
-			      (hiformat:map 
-				 ;;Formatting for each child
-				 #'(lambda (obj &rest d)
-				      (emtvf:make-dynamic 
-					 obj 
-					 #'emtvf:node))
-				 children
-				 :separator '("\n")
-				 :els=0 '("No child suites")))
-			   ;;$$IMPROVE ME If there are children, use
-			   ;;them instead.  This will work the same as
-			   ;;for `emt:testral:runform-list'.
-			   (emt:testral:note-list
-			      (hiformat:map
-				 #'emtvf:TESTRAL
-				 (emt:testral:note-list->notes
-				    (emt:testral:suite->contents object))
-				 :separator '("\n")
-				 :els=0 '("No notes")))
-			   (null
-			      '("No known contents"))) 
+			(if children
+			   ;;$$ENCAP ME, SHARE ME
+			   (hiformat:map 
+			      ;;Formatting for each child
+			      #'(lambda (obj &rest d)
+				   (emtvf:make-dynamic 
+				      obj 
+				      #'emtvf:node))
+			      children
+			      :separator '("\n")
+			      :els=0 '("No child suites"))
+			   (let
+			      ((direct-contents
+				  (emt:testral:suite->contents object)))
+			      (etypecase direct-contents
+				 (emt:testral:runform-list
+				    "Runforms weren't converted.")
+				 (emt:testral:note-list
+				    (hiformat:map
+				       #'emtvf:TESTRAL
+				       (emt:testral:note-list->notes
+					  direct-contents)
+				       :separator '("\n")
+				       :els=0 '("No notes")))
+				 (null
+				    '("No known contents")))))
 			grade-face
 			boring-p)))))
 	 
 	 (emt:view:TESTRAL
-	    (emtvf:TESTRAL view-node))
+	    (hiformat:map
+	       #'emtvf:TESTRAL
+	       (emt:view:TESTRAL->content view-node)
+	       :separator '("\n")
+	       :els=0 '("No notes")))
 
 	 ;;Base type, appears for the root node.
 	 (emt:view:presentable
