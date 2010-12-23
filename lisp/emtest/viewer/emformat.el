@@ -141,22 +141,22 @@ which may not imply success of an assertion."
 ;;;_  . Special variables
 (declare (special emtvf:*outline-depth* emtvf:*folded*))
 ;;;_  . emtvf:outline-item-f
-;;$$IMPROVE ME Would like it to accord with outline-cycle's idea that
-;;already folded means including the final \n, but `emtvf:headline'
-;;wants to add that \n itself.
-;;$$IMPROVE ME Don't overlay if this item is already in a folded
-;;thing.  
 (defun emtvf:outline-item-f (depth face headtext contents &optional fold)
    "Make an outline item of DEPTH."
    `(
-
-       ,(emtvf:headline depth face headtext)
+       (sep 3)
+       (w/face ,(make-string depth ?*) ,face)
+       " " 
+       ,headtext
+       ;;The heading terminator is made part of contents in order to
+       ;;accord with outline-cycle's understanding of folded items.
        ,(cond
 	   ((null contents) nil)
 	   (fold
-	      `(overlay (invisible outline) ,contents (sep 2)))
+	      `(overlay (invisible outline) (sep 2) ,contents))
 	   (t
-	      `(,contents (sep 2))))))
+	      `((sep 2) ,contents)))
+       (sep 2)))
 
 (defmacro emtvf:outline-item (headtext contents &optional face fold)
    "Make an outline item.
@@ -170,11 +170,13 @@ If FOLD is non-nil, fold that contents."
       
       `(let*
 	  (  (,new-depth (1+ emtvf:*outline-depth*))
+	     ;;Don't overlay if this item is already in a folded
+	     ;;thing.
 	     (,fold-now (and ,fold (not emtvf:*folded*)))
 	     (,contents-sym
 		(let
 		   (  (emtvf:*outline-depth* ,new-depth)
-		      (emtvf:*folded* (or emtvf:*folded* ,fold)))
+		      (emtvf:*folded* (or emtvf:*folded* ,fold-now)))
 		   ,contents)))
 	  (emtvf:outline-item-f ,new-depth ,face ,headtext
 	     ,contents-sym ,fold-now))))
