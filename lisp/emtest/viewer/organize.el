@@ -68,6 +68,13 @@ Make a `emt:view:presentable' or its descendant."
 	    (setf
 	       (emt:view:presentable->list suite)
 	       display-data)
+	    (setf
+	       (emtvp:node->children suite)
+	       (delq nil
+		  (mapcar
+		     #'(lambda (child)
+			  (unless (emt:view:TESTRAL-p child) child))
+		     (emtvp:node->children suite))))
 	    suite))
       ((eq (car arg) 'note)
 	 (check-type (second arg) (repeat emt:testral:newstyle))
