@@ -24,8 +24,8 @@
 
 ;;;_ , Commentary:
 
-;; 
-
+;; For format functions that prefer to be called at form-creation
+;; time, not at insertion time.
 
 ;;;_ , Requires
 (eval-when-compile
@@ -37,7 +37,6 @@
 (deftype hiformat:xformer ()
    "A formatting function.  
  * Takes an input object.
- * Takes a loal object.
  * Return value is a hiformat:format.
 
 The type only demands a function, so it's mostly for
@@ -57,7 +56,7 @@ ELS=0 is used if the list is empty.  ELS=0 must be a formattable.
 
 ELS=1, if given, is used if the list has just 1 element (a singleton).
 ELS=1 must be a function taking 1 arg, the singleton object."
-
+   (check-type func hiformat:xformer)
    (let*
       ((len (length list)))
       (cond
@@ -90,6 +89,18 @@ ELS=1 must be a function taking 1 arg, the singleton object."
 			(if sep-form
 			   (list nil sep-form sub-list)
 			   sub-list)))))))))
+
+;;;_  . hiformat:button
+(defun hiformat:button (text func &optional extra-props)
+   ""
+   (let
+      ((map
+	  (make-sparse-keymap)))
+      (define-key map "\r" func)
+      (define-key map [mouse-1] func)
+      `((w/props
+	   ,text
+	   (keymap ,map ,@extra-props)))))
 
 ;;;_ , Slightly touching on grammar
 ;;;_  . hiformat:grammar:number-agreement

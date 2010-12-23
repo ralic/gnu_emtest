@@ -113,33 +113,11 @@ which may not imply success of an assertion."
 	    extra-formats
 	    emtvf:format-alist))))
 ;;;_ , Helper functions
-;;;_  . emtvf:button
-(defun emtvf:button (text func &optional extra-props)
-   ""
-   (let
-      ((map
-	  (make-sparse-keymap)))
-      (define-key map "\r" func)
-      (define-key map [mouse-1] func)
-      `((w/props
-	   ,text
-	   (keymap ,map ,@extra-props)))))
-
-;;;_  . emtvf:headline
-;;$$OBSOLETE
-'
-(defun emtvf:headline (depth face headtext)
-   "Make a headline of HEADTEXT for DEPTH, using FACE"
-   `(
-       (sep 3)
-       (w/face ,(make-string depth ?*) ,face)
-       " " 
-       ,headtext
-       (sep 2)))
-
-;;;_  . Special variables
+;;;_  . Outlining
+;;$$MOVE ME later when we have dynamic variable registration sorted out.
+;;;_   , Special variables
 (declare (special emtvf:*outline-depth* emtvf:*folded*))
-;;;_  . emtvf:outline-item-f
+;;;_   , emtvf:outline-item-f
 (defun emtvf:outline-item-f (depth face headtext contents &optional fold)
    "Make an outline item of DEPTH."
    `(
@@ -180,17 +158,17 @@ If FOLD is non-nil, fold that contents."
 	  (emtvf:outline-item-f ,new-depth ,face ,headtext
 	     ,contents-sym ,fold-now))))
 
-
-;;;_  . emtvf:button-to-explore
+;;;_  . Buttons
+;;;_   , emtvf:button-to-explore
 (defun emtvf:button-to-explore (explorable text)
    "Make a button to explore EXPLORABLE.
 Hack: We add a space after the button."
    ;;$$IMPROVE ME - instead of always making a space let's wrap these
    ;;in something that alternates items with separators, a la
-   ;;mapconcat or hiformat:map
+   ;;hiformat:map
    (when explorable
       (list
-	 (emtvf:button text
+	 (hiformat:button text
 	    `(lambda ()
 		(interactive)
 		(emtl:dispatch-normal
@@ -200,7 +178,8 @@ Hack: We add a space after the button."
 			explorable)))
 	    '(help-echo "Rerun this test"))
 	 " ")))
-;;;_  . emtvf:obj-or-string
+;;;_  . Objects
+;;;_   , emtvf:obj-or-string
 (defun emtvf:obj-or-string (value)
    "Display VALUE.
 If VALUE is a string, display it lerally, otherwise pretty-print it."
