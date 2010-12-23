@@ -82,7 +82,7 @@ could be, such as when a note-list hasn't been expanded."
 	       (emt:testral:test-runner-info
 		  '()))))
       ;;$$IMPROVE ME Treat this.
-      (emt:view:TESTRAL '())
+      (emt:view:TESTRAL-2 '())
       ;;Only the root will have this type.
       (emt:view:presentable '())))
 
@@ -118,8 +118,8 @@ could be, such as when a note-list hasn't been expanded."
 	 (emtvr:get-subtree-badnesses node))))
 
 ;;;_ , Collecting TESTRAL notes
+'(progn
 ;;;_  . emtvp:relation-element
-;;$$TRANSITIONAL
 ;;$$OBSOLESCENT
 (deftype emtvp:relation-element ()
    "Relations have this type"
@@ -135,12 +135,8 @@ could be, such as when a note-list hasn't been expanded."
 (deftype emtvr:pend-type ()
    "Pending items have this type"
    '(list emtvp->id-element (repeat emtvp:relation-element)))
-;;;_  . emt:id=
-(defun emt:id= (a b)
-   ""
-   (equal a b))
-
 ;;;_  . emtvr:relation-group->path
+'
 (defun emtvr:relation-group->path (relation-group prefix)
    ""
    (append 
@@ -153,7 +149,7 @@ could be, such as when a note-list hasn't been expanded."
    (let
       ((relations '()))
       (dolist (note (emt:testral:note-list->notes note-list))
-	 (when (emt:id= id (emt:testral:base->parent-id note))
+	 (when (emt:testral:id= id (emt:testral:base->parent-id note))
 	    ;;$$TRANSITIONAL Later, no typecase needed.
 	    (typecase note
 	       (emt:testral:newstyle
@@ -161,7 +157,7 @@ could be, such as when a note-list hasn't been expanded."
 		  ;;complaint note.
 		  (assert 
 		     (not 
-			(emt:id=
+			(emt:testral:id=
 			   (emt:testral:base->parent-id note)
 			   (emt:testral:base->id note))))
 		  (let*
@@ -264,6 +260,75 @@ We assume no circularity in NOTE-LIST."
 	 ;;Allow the list to expand
 	 t)))
 
+)
+
+;;;_ , Collecting TESTRAL notes
+;;;_  . emtvr:alist-cell-t
+(deftype emtvr:alist-cell-t ()
+   "Alist items have this type"
+   '(list
+       emtvp->id-element
+       emt:view:presentable
+       (repeat emt:view:presentable)))
+
+;;;_  . emtvr:collect-testral-2-aux
+(defun emtvr:collect-testral-2-aux (list-of-notes node tree)
+   ""
+   (let
+      ;;A parent-id of `nil' means a child of NODE itself.
+      ((alist (cons
+		 (list nil node '())
+		 (mapcar
+		    #'(lambda (note)
+			 (list 
+			    (emt:testral:base->id note)
+			    (emt:view:make-TESTRAL-2
+			       :contents note)
+			    '()))
+		    list-of-notes))))
+      (check-type alist (repeat emtvr:alist-cell-t))
+      
+      ;;Remove any previous children.  That's only needed for NODE
+      ;;itself, the other viewables are new.
+      (setf (emtvp:node->children node) nil)
+      
+      ;;Record each note's viewable with its parent
+      (dolist (cell (cdr alist))
+	 (let*
+	    (  (note (emt:view:TESTRAL-2->contents (second cell)))
+	       (parent-id (emt:testral:base->parent-id note))
+	       (parent-cell (assoc parent-id alist)))
+	    (check-type parent-id   emtvp->id-element)
+	    (check-type parent-cell emtvr:alist-cell-t)
+	    (push (second cell) (third parent-cell))))
+
+      (check-type alist (repeat emtvr:alist-cell-t))
+
+      ;;Put them in; pathtree will dirty them etc.
+      (dolist (cell alist)
+	 (dolist (child (third cell))
+	    (emtvp:add-child
+	       tree (second cell) (first cell) child t)))))
+
+;;;_  . emtvr:collect-testral-2
+(defun emtvr:collect-testral-2  (node tree)
+   "Put NODE's TESTRAL notes under it in pathtree TREE."
+   (check-type tree emtvp)
+   (check-type node emtvp:node)
+   (when (emt:view:suite-newstyle-p node)
+      (let
+	 ((result
+	     (emt:view:suite-newstyle->result node)))
+	 (when (emt:testral:suite-p result)
+	    (let
+	       ((contents
+		   (emt:testral:suite->contents result)))
+	       (when
+		  (emt:testral:note-list-p contents)
+		  (emtvr:collect-testral-2-aux 
+		     (emt:testral:note-list->notes contents)
+		     node
+		     tree)))))))
 
 
 ;;;_. Footers

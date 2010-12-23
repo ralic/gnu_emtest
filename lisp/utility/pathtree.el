@@ -47,6 +47,8 @@
 	      (:conc-name emtvp:node->)
 	      (:copier nil))
    "A node in a pathtree"
+   ;;$$RETHINK ME How callers find their way thru the tree is no
+   ;;longer our business. 
    (name ()      :type (or null emtvp->id-element))
    ;;$$REMOVE ME and remove from callers
    ;;Is this full path ever actually useful?

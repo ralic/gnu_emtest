@@ -37,10 +37,11 @@
 ;;;_ , Preliminary
 ;;;_  . Pattern ctors
 
-;;$$OBSOLESCENT
+;;$$OBSOLETE
 (emtm:define-struct-governor emt:view:suite
    name full-id unique-id suite child-type children sum-badnesses )
 
+;;$$OBSOLETE
 (emtm:define-struct-governor emt:view:testral
    ;;We leave out `display-info' since we can't expect to compare
    ;;against it meaningfully.

@@ -283,12 +283,8 @@ Must be called in a `emtv2:dynamic:top' context."
 			grade-face
 			boring-p)))))
 	 
-	 (emt:view:TESTRAL
-	    (hiformat:map
-	       #'emtvf:TESTRAL
-	       (emt:view:TESTRAL->content view-node)
-	       :separator '("\n")
-	       :els=0 '("No notes")))
+	 (emt:view:TESTRAL-2
+	    (emtvf:TESTRAL view-node))
 
 	 ;;Base type, appears for the root node.
 	 (emt:view:presentable
@@ -324,13 +320,21 @@ Must be called in a `emtv2:dynamic:top' context."
 ;;;_  . emtvf:TESTRAL (TESTRAL note formatter)
 (defun emtvf:TESTRAL (obj &rest d)
    "Make a format form for OBJ.
-OBJ must be a TESTRAL note."
-   (check-type obj emt:testral:newstyle)
-   (apply 
-      (emtvf:get-TESTRAL-formatter 
-	 (emt:testral:newstyle->governor obj))
-      obj
-      (emt:testral:newstyle->value obj)))
+OBJ must be a TESTRAL viewable (`emt:view:TESTRAL-2')."
+   (check-type obj emt:view:TESTRAL-2)
+   (condition-case err
+      (let
+	 ((note (emt:view:TESTRAL-2->contents obj)))
+	 (apply 
+	    (emtvf:get-TESTRAL-formatter 
+	       (emt:testral:newstyle->governor note))
+	    obj
+	    (emt:testral:newstyle->value note)))
+      (error
+	 `((w/face "Error in formatter: " emtvf:face:blowout) 
+	     (object ,err nil)
+	     "\n"))))
+
 
 ;;;_  . emtvf:grade-boring
 (defun emtvf:grade-boring (obj)

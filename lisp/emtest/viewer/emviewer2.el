@@ -94,17 +94,7 @@
 		     (new-dirty-node 'summary parent)))))
 
 	 ((member 'notes dirty-flags)
-	    (when (emt:view:suite-newstyle-p obj)
-	       (let
-		  ((result
-		      (emt:view:suite-newstyle->result obj)))
-		  (when (emt:testral:suite-p result)
-		     (let
-			((contents
-			    (emt:testral:suite->contents result)))
-			(when
-			   (emt:testral:note-list-p contents)
-			   (emtvr:collect-testral contents tree obj '()))))))
+	    (emtvr:collect-testral-2 obj tree)
 	    (undirty 'notes)))))
 
 

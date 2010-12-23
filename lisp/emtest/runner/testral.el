@@ -147,14 +147,14 @@ This continues any previous invocations of
 Must be called in a TESTRAL scope.
 
 RELATION gives the relation to the parent note or the suite.  It
-must be a `emtvp:relation-element' - for now, that's a string.
+must be a `emt:testral:id-element'.
 
 GOVERNOR is a symbol indicating a specific formatter for the output."
    (assert (emtt:testral:p))
    (emtt:testral:push-note
       (condition-case err
 	 (progn
-	    (check-type relation emtvp:relation-element)
+	    (check-type relation emt:testral:id-element)
 	    (check-type governor symbol)
 	    (check-type grade    emt:testral:grade-aux)
 	    (emt:testral:make-newstyle

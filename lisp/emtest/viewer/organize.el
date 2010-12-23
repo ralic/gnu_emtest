@@ -73,7 +73,7 @@ Make a `emt:view:presentable' or its descendant."
 	       (delq nil
 		  (mapcar
 		     #'(lambda (child)
-			  (unless (emt:view:TESTRAL-p child) child))
+			  (unless (emt:view:TESTRAL-2-p child) child))
 		     (emtvp:node->children suite))))
 	    suite))
       ((eq (car arg) 'note)
