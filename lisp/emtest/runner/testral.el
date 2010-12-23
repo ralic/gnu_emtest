@@ -74,7 +74,7 @@ This uses a TESTRAL counter."
    
    `(let
        ((emt:testral:*parent-id*
-	   (emtt:testral:create-parent-id id)))
+	   (emtt:testral:create-parent-id ,id)))
        ,@body))
 
 ;;;_  . Note queues.
