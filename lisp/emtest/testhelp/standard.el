@@ -206,15 +206,25 @@ there was any error inside a `emth:trap-errors'."
    
    (if 
       (emtt:testral:p)
-      (let
-	 ((retval (eval form)))
+      ;;$$ENCAP ME  This idiom should be concisely available
+      (let*
+	 (  (id (emtt:testral:new-id))
+	    (parent-id 
+	       (emtt:testral:get-parent-id))
+	    (retval 
+	       (emtt:testral:with-parent-id id
+		  (eval form))))
 	 (if retval
-	    (emtt:testral:add-note
+	    (emtt:testral:add-note-aux
+	       id
+	       parent-id
 	       "trace"
 	       nil
 	       'succeeded
 	       form)
-	    (emtt:testral:add-note
+	    (emtt:testral:add-note-aux
+	       id
+	       parent-id
 	       "trace"
 	       (emt:testral:make-grade:fail)
 	       'failed
