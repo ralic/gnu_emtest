@@ -88,13 +88,22 @@
 
 
 ;;;_  . TESTRAL in viewable form.
+;;$$OBSOLESCENT
 (defstruct (emt:view:TESTRAL
-	    (:constructor emt:view:make-TESTRAL)
+	    (:constructor nil)
 	    (:conc-name emt:view:TESTRAL->)
 	      (:include emt:view:presentable))
    ""
-
    (content () :type (repeat emt:testral:newstyle)))
+(defun emt:view:make-TESTRAL (&rest args)
+   (error "Obsolete emt:view:make-TESTRAL"))
+;;;_  . TESTRAL in viewable form.
+(defstruct (emt:view:TESTRAL-2
+	    (:constructor emt:view:make-TESTRAL-2)
+	    (:conc-name emt:view:TESTRAL-2->)
+	      (:include emt:view:presentable))
+   ""
+   (contents () :type emt:testral:newstyle))
 
 
 ;;;_  . TESTRAL unexpanded leaf
