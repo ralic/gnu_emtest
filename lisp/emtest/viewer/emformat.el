@@ -99,8 +99,7 @@ which may not imply success of an assertion."
    
    "Face for displaying test names"
    :group 'emtest)
-;;;_  . Special variables
-(declare (special emtvf:*outline-depth* emtvf:*folded*))
+
 ;;;_ , Lower format functions
 ;;;_  . emtvf:insert
 ;;$$MOVE ME maybe - this is the only part that directly deals with
@@ -116,17 +115,6 @@ which may not imply success of an assertion."
 	    extra-formats
 	    emtvf:format-alist))))
 ;;;_ , Helper functions
-;;;_  . emtvf:headline
-(defun emtvf:headline (depth face headtext)
-   "Make a headline of HEADTEXT for DEPTH, using FACE"
-   
-   `(
-       (sep 3)
-       (w/face ,(make-string depth ?*) ,face)
-       " " 
-       ,headtext
-       (sep 2)))
-
 ;;;_  . emtvf:button
 (defun emtvf:button (text func &optional extra-props)
    ""
@@ -139,6 +127,19 @@ which may not imply success of an assertion."
 	   ,text
 	   (keymap ,map ,@extra-props)))))
 
+;;;_  . emtvf:headline
+(defun emtvf:headline (depth face headtext)
+   "Make a headline of HEADTEXT for DEPTH, using FACE"
+   
+   `(
+       (sep 3)
+       (w/face ,(make-string depth ?*) ,face)
+       " " 
+       ,headtext
+       (sep 2)))
+
+;;;_  . Special variables
+(declare (special emtvf:*outline-depth* emtvf:*folded*))
 ;;;_  . emtvf:outline-item-f
 ;;$$IMPROVE ME Would like it to accord with outline-cycle's idea that
 ;;already folded means including the final \n, but `emtvf:headline'
@@ -148,6 +149,7 @@ which may not imply success of an assertion."
 (defun emtvf:outline-item-f (depth face headtext contents &optional fold)
    "Make an outline item of DEPTH."
    `(
+
        ,(emtvf:headline depth face headtext)
        ,(cond
 	   ((null contents) nil)
@@ -162,12 +164,20 @@ HEADTEXT gives the heading and CONTENTS as contents.
 FACE is the face to display the heading in.
 If FOLD is non-nil, fold that contents."
    (let
-      ((contents-sym (make-symbol "contents")))
+      (  (contents-sym  (make-symbol "contents"))
+	 (fold-now      (make-symbol "fold-now"))
+	 (new-depth     (make-symbol "new-depth")))
+      
       `(let*
-	  (  (emtvf:*outline-depth* (1+ emtvf:*outline-depth*))
-	     (,contents-sym ,contents))
-	  (emtvf:outline-item-f
-	     emtvf:*outline-depth* ,face ,headtext ,contents-sym ,fold))))
+	  (  (,new-depth (1+ emtvf:*outline-depth*))
+	     (,fold-now (and ,fold (not emtvf:*folded*)))
+	     (,contents-sym
+		(let
+		   (  (emtvf:*outline-depth* ,new-depth)
+		      (emtvf:*folded* (or emtvf:*folded* ,fold)))
+		   ,contents)))
+	  (emtvf:outline-item-f ,new-depth ,face ,headtext
+	     ,contents-sym ,fold-now))))
 
 
 ;;;_  . emtvf:button-to-explore
