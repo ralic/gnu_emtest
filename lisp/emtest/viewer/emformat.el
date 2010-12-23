@@ -220,7 +220,7 @@ If VALUE is a string, display it lerally, otherwise pretty-print it."
 (defun emtvf:top (view-node data-list)
    "Make a format form for VIEW-NODE.
 VIEW-NODE must be at least an `emtvp:node'.
-DATA-LIST must be a loal (list of alists)."
+Must be called in a `emtv2:dynamic:top' context."
 
    (check-type view-node emtvp:node)
    (emtv2:dynamic:top
@@ -233,7 +233,7 @@ DATA-LIST must be a loal (list of alists)."
 (defun emtvf:node (view-node data-list)
    "Make a format form for VIEW-NODE.
 VIEW-NODE must be an `emt:view:presentable'.
-DATA-LIST must be a loal."
+Must be called in a `emtv2:dynamic:top' context."
 
    (check-type view-node emtvp:node)
 
@@ -243,8 +243,6 @@ DATA-LIST must be a loal."
 	    (emtvp:node->name view-node))
 	 (children
 	    (emtvp:node->children view-node))
-	 (depth
-	    (loal:val 'depth data-list 0))
 	 (grades
 	    (emt:view:presentable->sum-badnesses suite))
 	 (grade-face
@@ -286,7 +284,6 @@ DATA-LIST must be a loal."
 				   #'emtvf:node))
 			   
 			   children
-			   :data-loal data-list
 			   :separator '("\n")) 
 			grade-face
 			boring-p))
@@ -308,7 +305,6 @@ DATA-LIST must be a loal."
 					 obj 
 					 #'emtvf:node))
 				 children
-				 :data-loal data-list
 				 :separator '("\n")
 				 :els=0 '("No child suites")))
 			   ;;$$IMPROVE ME If there are children, use
@@ -319,7 +315,6 @@ DATA-LIST must be a loal."
 				 #'emtvf:TESTRAL
 				 (emt:testral:note-list->notes
 				    (emt:testral:suite->contents object))
-				 :data-loal data-list
 				 :separator '("\n")
 				 :els=0 '("No notes")))
 			   (null
@@ -357,8 +352,7 @@ DATA-LIST must be a loal."
 				obj 
 				#'emtvf:node))
 			children
-			:separator '("\n")
-			:data-loal data-list) 
+			:separator '("\n")) 
 		     grade-face)))))))
 
 
