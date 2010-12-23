@@ -119,6 +119,8 @@
    (emtvo:setup-if-needed #'emtv2:pathtree-cb #'ignore))
 
 ;;;_ , Pseudo-dynamic
+;;$$MOVE ME later into viewer package, after the vars are
+;;a parameter, not a constant.
 ;;;_  . emtv2:dynamic:vars
 (defconst emtv2:dynamic:vars 
    '(emtvf:*outline-depth* emtvf:*folded*)
