@@ -41,7 +41,7 @@
    ;;object: If rejected, to accept it.  To edit it and save the new
    ;;version as acceptable.  To diff the value with it.
 
-   (emtvf:outline-item-2
+   (emtvf:outline-item
       (list
 	 (if matched-p 
 	    "Matched"

@@ -38,7 +38,7 @@
 (defun emtvf:TESTRAL-gov:failed (note form)
    "Formatter for TESTRAL note governed by `failed'"
    ;;$$IMPROVE ME  Take assert args as params, print them.
-   (emtvf:outline-item-2
+   (emtvf:outline-item
       "Failed assertion"
       (emtvf:obj-or-string form) 
       'emtvf:face:failed))
@@ -48,7 +48,7 @@
 (defun emtvf:TESTRAL-gov:succeeded (note form)
    "Formatter for TESTRAL note governed by `succeeded'"
    ;;$$IMPROVE ME  Take assert args as params, print them.
-   (emtvf:outline-item-2
+   (emtvf:outline-item
       "Assertion succeeded"
       (emtvf:obj-or-string form) 
       'emtvf:face:ok

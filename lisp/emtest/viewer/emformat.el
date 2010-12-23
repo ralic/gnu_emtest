@@ -156,7 +156,7 @@ which may not imply success of an assertion."
 	   (t
 	      `(,contents (sep 2))))))
 
-(defmacro emtvf:outline-item-2 (headtext contents &optional face fold)
+(defmacro emtvf:outline-item (headtext contents &optional face fold)
    "Make an outline item.
 HEADTEXT gives the heading and CONTENTS as contents.
 FACE is the face to display the heading in.
@@ -267,7 +267,7 @@ DATA-LIST must be a loal."
 	       (etypecase object
 		  (null "A null viewable")
 		  (emt:testral:test-runner-info
-		     (emtvf:outline-item-2
+		     (emtvf:outline-item
 			`(  ,name-prefix
 			    (w/face ,name emtvf:face:suitename)
 			    " "
@@ -288,7 +288,7 @@ DATA-LIST must be a loal."
 		  
 		  
 		  (emt:testral:suite
-		     (emtvf:outline-item-2 
+		     (emtvf:outline-item 
 			`(  ,name-prefix
 			    (w/face ,name emtvf:face:suitename)
 			    " "
@@ -343,7 +343,7 @@ DATA-LIST must be a loal."
 		  ((ch-data-list
 		      (loal:acons 'hdln-path '() data-list)))
 
-		  (emtvf:outline-item-2 
+		  (emtvf:outline-item 
 		     `(  ,name-prefix
 			 (w/face ,name emtvf:face:suitename)
 			 " "

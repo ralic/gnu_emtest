@@ -39,14 +39,14 @@
    "Formatter for TESTRAL note governed by `doc'"
    (cond
       ((not (string-match "\n" doc))
-	 (emtvf:outline-item-2
+	 (emtvf:outline-item
 	     doc nil))
       ((string-match ": " doc)
-	 (emtvf:outline-item-2
+	 (emtvf:outline-item
 	     (substring doc 0 (match-end 0))
 	     (substring doc (match-end 0))))
       (t
-	 (emtvf:outline-item-2
+	 (emtvf:outline-item
 	     "Doc" doc))))
 
 ;;;_. Footers

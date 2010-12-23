@@ -37,7 +37,7 @@
 ;;;###autoload
 (defun emtvf:TESTRAL-gov:error-raised (note err)
    "Formatter for TESTRAL note governed by `error-raised'"
-   (emtvf:outline-item-2
+   (emtvf:outline-item
       "Error raised: "
       `(object ,err nil) 
       'emtvf:face:ungraded))

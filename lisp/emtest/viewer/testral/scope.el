@@ -37,7 +37,7 @@
 ;;;###autoload
 (defun emtvf:TESTRAL-gov:scope (note relation)
    "Formatter for TESTRAL note governed by `scope'"
-   (emtvf:outline-item-2
+   (emtvf:outline-item
       (emt:testral:newstyle->relation note)
       `(dynamic ,note 
 	  ,(loal:acons 'depth (1+ depth) data)
