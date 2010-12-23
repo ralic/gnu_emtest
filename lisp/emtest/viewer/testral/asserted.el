@@ -33,6 +33,16 @@
 
 
 ;;;_. Body
+;;;_ , emtvf:TESTRAL:do-children (Worker)
+(defun emtvf:TESTRAL:do-children (note)
+   ""
+   ;;$$IMPROVE ME Filter what is displayed, by parameter.
+   (hiformat:map
+      #'emtvf:TESTRAL
+      (emtvp:node->children note)
+      :separator '("\n")
+      :els=0 '("No notes")))
+
 ;;;_ , emtvf:TESTRAL-gov:failed
 ;;;###autoload
 (defun emtvf:TESTRAL-gov:failed (note form)
@@ -40,7 +50,9 @@
    ;;$$IMPROVE ME  Take assert args as params, print them.
    (emtvf:outline-item
       "Failed assertion"
-      (emtvf:obj-or-string form) 
+      (list
+	 (emtvf:obj-or-string form)
+	 (emtvf:TESTRAL:do-children note))
       'emtvf:face:failed))
 
 ;;;_ , emtvf:TESTRAL-gov:succeeded
@@ -50,7 +62,9 @@
    ;;$$IMPROVE ME  Take assert args as params, print them.
    (emtvf:outline-item
       "Assertion succeeded"
-      (emtvf:obj-or-string form) 
+      (list
+	 (emtvf:obj-or-string form)
+	 (emtvf:TESTRAL:do-children note)) 
       'emtvf:face:ok
       t))
 
