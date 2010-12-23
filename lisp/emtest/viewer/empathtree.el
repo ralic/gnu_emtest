@@ -120,15 +120,18 @@ could be, such as when a note-list hasn't been expanded."
 ;;;_ , Collecting TESTRAL notes
 ;;;_  . emtvp:relation-element
 ;;$$TRANSITIONAL
+;;$$OBSOLESCENT
 (deftype emtvp:relation-element ()
    "Relations have this type"
    ;;'(or emtvp->id-element symbol integer)
    'string)
 ;;;_  . emtvr:relation-group-type
+;;$$OBSOLESCENT
 (deftype emtvr:relation-group-type ()
    "Relation-groups have this type"
    '(list* emtvp:relation-element (repeat emt:testral:newstyle)))
 ;;;_  . emtvr:pend-type
+;;$$OBSOLESCENT
 (deftype emtvr:pend-type ()
    "Pending items have this type"
    '(list emtvp->id-element (repeat emtvp:relation-element)))

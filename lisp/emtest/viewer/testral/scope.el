@@ -39,9 +39,7 @@
    "Formatter for TESTRAL note governed by `scope'"
    (emtvf:outline-item
       (emt:testral:newstyle->relation note)
-      `(dynamic ,note 
-	  ,(loal:acons 'depth (1+ depth) data)
-	  ,#'emtvf:TESTRAL) 
+      "WAS VERY WRONG"
       (emtvf:grade-overall-face
 	 (emt:view:presentable->sum-badnesses note))))
 

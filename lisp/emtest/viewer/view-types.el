@@ -63,9 +63,6 @@
 	      (:include emt:view:presentable))
    ""
    ;;Just for suite nodes.
-   ;;$$REMOVE ME
-   ;;(cell () :type emtvr:suite-newstyle)
-
    ;;$$REMOVE ME later
    (id () :type emtvr:suite-newstyle->id
       :doc "The \"official\" id.")
@@ -73,7 +70,8 @@
    (how-to-run ():type emtt:explorable
       :doc "How to run this as a test.")
 
-   ;;The full presentation path, including any prefix from report.
+   ;;Where it lives in the pathtree, so that we can put new results in
+   ;;the same place.
    (presentation-path ()   
       :type emt:testral:suite-id
       :doc "The path to the corresponding node in the pathtree.")
