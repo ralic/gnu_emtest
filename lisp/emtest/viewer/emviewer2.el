@@ -141,8 +141,8 @@ If it's already register, just change its init form."
       ()
       
       ))
-;;;_  . emtv2:dynamic:with-vars
-(defmacro emtv2:dynamic:with-vars (&rest body)
+;;;_  . emtv2:dynamic:top
+(defmacro emtv2:dynamic:top (&rest body)
    "Eval BODY with the special variables bound to their initial values."
 
    `(progv ',emtv2:dynamic:vars (list ,@emtv2:dynamic:init-forms)
@@ -152,17 +152,25 @@ If it's already register, just change its init form."
 (defun emtv2:dynamic:capture-vars ()
    "Capture the values of the formatter special variables."
    (eval `(list ',emtv2:dynamic:vars ,@emtv2:dynamic:vars)))
-;;;_  . emtv2:dynamic
-;;;_  . emtv2:dynamic:insert
-(defun emtv2:dynamic:insert (recurse-f obj loal func &optional data)
+;;;_  . emtv2:dynamic:with-vars
+(defmacro emtv2:dynamic:with-vars (data &rest body)
+   "Eval BODY with the special variables bound according to DATA.
+DATA should have been created by `emtv2:dynamic:capture-vars'."
+   
+   `(progv (car data) (cdr data)
+       ,@body))
+
+;;;_ , Static printing functions
+;;;_  . emtv2:insert:dynamic
+(defun emtv2:insert:dynamic (recurse-f obj loal func &optional data)
    "Insert (statically) the result of a dynamic spec"
    (let*
       ((fmt-list 
-	  (progv (car data) (cdr data)
+	  (emtv2:dynamic:with-vars data 
 	     (funcall func obj loal))))
       (funcall recurse-f fmt-list)))
 
-;;;_ , Static printing functions
+
 ;;;_  . emtv2:print-all
 (defun emtv2:print-all (top-node)
    ""
@@ -171,7 +179,7 @@ If it's already register, just change its init form."
 	 ((inhibit-read-only t))
 	 (erase-buffer))
       (emtest/viewer/mode)
-      (emtvf:insert top-node '() '((dynamic emtv2:dynamic:insert)))))
+      (emtvf:insert top-node '() '((dynamic emtv2:insert:dynamic)))))
 
 
 ;;;_ , Overall callback

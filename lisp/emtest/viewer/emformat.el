@@ -205,7 +205,7 @@ VIEW-NODE must be at least an `emtvp:node'.
 DATA-LIST must be a loal (list of alists)."
 
    (check-type view-node emtvp:node)
-   (emtv2:dynamic:with-vars
+   (emtv2:dynamic:top
       `(
 	  (w/face "Emtest results" emtvf:face:title)
 	  "\n"
