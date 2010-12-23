@@ -318,22 +318,12 @@ Must be called in a `emtv2:dynamic:top' context."
 (defun emtvf:TESTRAL (obj &rest d)
    "Make a format form for OBJ.
 OBJ must be a TESTRAL note."
-   (list
-      ;;$$OBSOLETE
-      (apply #'append
-	 (mapcar
-	    #'(lambda (x)
-		 (list x " "))
-	    (emt:testral:base->prestn-path obj)))
-      (etypecase obj
-	 ;;This is the only one that will actually carry over in the
-	 ;;long term, the others are actually obsolescent.
-	 (emt:testral:newstyle
-	    (apply 
-	       (emtvf:get-TESTRAL-formatter 
-		  (emt:testral:newstyle->governor obj))
-	       obj
-	       (emt:testral:newstyle->value obj))))))
+   (check-type obj emt:testral:newstyle)
+   (apply 
+      (emtvf:get-TESTRAL-formatter 
+	 (emt:testral:newstyle->governor obj))
+      obj
+      (emt:testral:newstyle->value obj)))
 
 ;;;_  . emtvf:grade-boring
 (defun emtvf:grade-boring (obj)
