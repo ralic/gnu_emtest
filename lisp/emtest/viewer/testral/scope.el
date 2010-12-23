@@ -37,14 +37,14 @@
 ;;;###autoload
 (defun emtvf:TESTRAL-gov:scope (note relation)
    "Formatter for TESTRAL note governed by `scope'"
-   (emtvf:outline-item
-      (1+ depth) 
-      (emtvf:grade-overall-face
-	 (emt:view:presentable->sum-badnesses note))
+   (emtvf:outline-item-2
       (emt:testral:newstyle->relation note)
       `(dynamic ,note 
 	  ,(loal:acons 'depth (1+ depth) data)
-	  ,#'emtvf:TESTRAL)))
+	  ,#'emtvf:TESTRAL)
+      (1+ depth) 
+      (emtvf:grade-overall-face
+	 (emt:view:presentable->sum-badnesses note))))
 
 ;;;_. Footers
 ;;;_ , Register it

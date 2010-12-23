@@ -41,11 +41,7 @@
    ;;object: If rejected, to accept it.  To edit it and save the new
    ;;version as acceptable.  To diff the value with it.
 
-   (emtvf:outline-item
-      (1+ depth) 
-      (if matched-p 
-	 'emtvf:face:ok-match
-	 'emtvf:face:mismatch)
+   (emtvf:outline-item-2
       (list
 	 (if matched-p 
 	    "Matched"
@@ -65,6 +61,10 @@
 
       (list
 	 (emtvf:obj-or-string value))
+      (1+ depth) 
+      (if matched-p 
+	 'emtvf:face:ok-match
+	 'emtvf:face:mismatch)
       matched-p))
 
 ;;;_. Footers

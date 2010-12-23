@@ -141,10 +141,12 @@ which may not imply success of an assertion."
 
 ;;;_  . emtvf:outline-item
 ;;$$IMPROVE ME Make this a macro so it controls outline-depth itself.
+;;See emtvf:*outline-depth*.
 ;;$$IMPROVE ME Would like it to accord with outline-cycle's idea that
 ;;already folded means including the final \n, but `emtvf:headline'
 ;;wants to add that \n itself.
-;;$$IMPROVE ME Don't overlay if this item is already in a folded thing.
+;;$$IMPROVE ME Don't overlay if this item is already in a folded
+;;thing.  
 (defun emtvf:outline-item (depth face headtext contents &optional fold)
    "Make an outline item of DEPTH."
    `(
@@ -155,6 +157,19 @@ which may not imply success of an assertion."
 	      `(overlay (invisible outline) ,contents (sep 2)))
 	   (t
 	      `(,contents (sep 2))))))
+
+(defmacro emtvf:outline-item-2 (headtext contents &optional depth face fold)
+   "Make an outline item.
+HEADTEXT gives the heading and CONTENTS as contents.
+FACE is the face to display the heading in.
+If FOLD is non-nil, fold that contents."
+   (let
+      ((contents-sym (make-symbol "contents")))
+      `(let* ;;Bind emtvf:*outline-depth* to (1+ emtvf:*outline-depth*)
+	  ((,contents-sym ,contents))
+	  (emtvf:outline-item
+	     ,depth ,face ,headtext ,contents-sym ,fold))))
+
 
 ;;;_  . emtvf:button-to-explore
 (defun emtvf:button-to-explore (explorable text)
@@ -253,15 +268,11 @@ DATA-LIST must be a loal."
 	       (etypecase object
 		  (null "A null viewable")
 		  (emt:testral:test-runner-info
-		     (list
-			;;"Suites tested in " name "\n"
-			(emtvf:headline 
-			   (1+ depth) 
-			   grade-face 
-			   `(  ,name-prefix
-			       (w/face ,name emtvf:face:suitename)
-			       " "
-			       ,grades-sum))
+		     (emtvf:outline-item-2
+			`(  ,name-prefix
+			    (w/face ,name emtvf:face:suitename)
+			    " "
+			    ,grades-sum)
 			(hiformat:map 
 			   ;;Formatting for each child
 			   #'(lambda (obj data &rest d)
@@ -273,18 +284,18 @@ DATA-LIST must be a loal."
 			   
 			   children
 			   :data-loal data-list
-			   :separator '("\n"))))
+			   :separator '("\n"))
+			(1+ depth) 
+			grade-face))
+		  
 		  
 		  (emt:testral:suite
-		     (list
-			(emtvf:headline 
-			   (1+ depth) 
-			   grade-face 
-			   `(  ,name-prefix
-			       (w/face ,name emtvf:face:suitename)
-			       " "
-			       ,(emtvf:button-to-explore explorable "[RUN]")
-			       ,grades-sum))
+		     (emtvf:outline-item-2 
+			`(  ,name-prefix
+			    (w/face ,name emtvf:face:suitename)
+			    " "
+			    ,(emtvf:button-to-explore explorable "[RUN]")
+			    ,grades-sum)
 			(etypecase (emt:testral:suite->contents object)
 			   (emt:testral:runform-list
 			      (hiformat:map 
@@ -313,9 +324,9 @@ DATA-LIST must be a loal."
 				 :els=0 '("No notes")))
 			   (null
 			      '("No known contents")))
-
-			)))))
-
+			(1+ depth) 
+			grade-face)))))
+	 
 	 (emt:view:TESTRAL
 	    (emtvf:TESTRAL view-node data-list))
 
@@ -334,15 +345,12 @@ DATA-LIST must be a loal."
 	       (let
 		  ((ch-data-list
 		      (loal:acons 'hdln-path '() data-list)))
-		  (list
-		     (emtvf:headline 
-			(1+ depth) 
-			grade-face 
-			`(  ,name-prefix
-			    (w/face ,name emtvf:face:suitename)
-			    " "
-			    ,grades-sum))
-		     "\n"
+
+		  (emtvf:outline-item-2 
+		     `(  ,name-prefix
+			 (w/face ,name emtvf:face:suitename)
+			 " "
+			 ,grades-sum)
 		     (hiformat:map 
 			;;Formatting for each child
 			#'(lambda (obj data &rest d)
@@ -351,10 +359,12 @@ DATA-LIST must be a loal."
 				   obj 
 				   #'emtvf:node
 				   (loal:acons 'depth (1+ depth) data))))
-			
 			children
 			:separator '("\n")
-			:data-loal data-list))))))))
+			:data-loal data-list)
+		     (1+ depth) 
+		     grade-face)))))))
+
 
 ;;;_  . emtvf:TESTRAL (TESTRAL note formatter)
 (defun emtvf:TESTRAL (obj data &rest d)
@@ -376,79 +386,12 @@ OBJ must be a TESTRAL note."
 	    ;;This is the only one that will actually carry over in the
 	    ;;long term, the others are actually obsolescent.
 	    (emt:testral:newstyle
-	       (let
-		  ((gov-symbol (emt:testral:newstyle->governor obj)))
-		  (apply 
-		     (emtvf:get-TESTRAL-formatter 
-			gov-symbol)
-		     obj
-		     (emt:testral:newstyle->value obj))))
-	    
-	    
-	    (emt:testral:alone
-	       (typecase obj
-		  (emt:testral:error-raised
-		     (error "Obsolete emt:testral:error-raised")
-		     (emtvf:outline-item
-			(1+ depth) 
-			'emtvf:face:ungraded
-			"OBSOLETE Error raised: "
-			`(object ,(emt:testral:error-raised->err obj) nil)))
-		  (emt:testral:doc
-		     (error "Obsolete emt:testral:doc")
-		     (let
-			((doc (emt:testral:doc->str obj)))
-			(cond
-			   ((not (string-match "\n" doc))
-			      (emtvf:outline-item
-				 (1+ depth) nil doc nil))
-			   ((string-match ": " doc)
-			      (emtvf:outline-item
-				 (1+ depth) 
-				 nil
-				 (substring doc 0 (match-end 0))
-				 (substring doc (match-end 0))))
-			   (t
-			      (emtvf:outline-item
-				 (1+ depth) nil "Doc" doc)))))
-		  
-		  (emt:testral:not-in-db
-		     (error "Obsolete emt:testral:not-in-db")
-		     (let
-			((value (emt:testral:not-in-db->value obj)))
-		     (emtvf:outline-item
-			(1+ depth)
-			'emtvf:face:ungraded
-			"ID not in database "
-			`(
-			    "Obsolete emt:testral:not-in-db\n"
-			   ,(emtvf:headline 
-			       (+ 2 depth)
-			       nil
-			       (list
-				  "Value "
-				  (emtvf:button "[Accept]"
-				     `(lambda ()
-					 (interactive)
-					 (emdb:set-value
-					    ',(emt:testral:not-in-db->backend
-					    obj)
-					    ',(emt:testral:not-in-db->id-in-db
-					    obj)
-					    ',value
-					    'correct-answer))
-				     '(help-echo "Accept this value"))))
-			    ,(if
-				(stringp value)
-				;;Indent it so it can't affect outline
-				;;structure. 
-				`(indent 4 ,value)
-				`(object ,value nil))))))
-		  (t 
-		     (emtvf:outline-item (1+ depth)
-			nil
-			"An unhandled TESTRAL note"
-			nil))))))))
+	       (apply 
+		  (emtvf:get-TESTRAL-formatter 
+		     (emt:testral:newstyle->governor obj))
+		  obj
+		  (emt:testral:newstyle->value obj)))))))
+
 
 ;;;_  . emtvf:grade-overall-face
 (defun emtvf:grade-overall-face (obj)

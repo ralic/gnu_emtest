@@ -37,11 +37,11 @@
 ;;;###autoload
 (defun emtvf:TESTRAL-gov:error-raised (note err)
    "Formatter for TESTRAL note governed by `error-raised'"
-   (emtvf:outline-item
-      (1+ depth) 
-      'emtvf:face:ungraded
+   (emtvf:outline-item-2
       "Error raised: "
-      `(object ,err nil)))
+      `(object ,err nil)
+      (1+ depth) 
+      'emtvf:face:ungraded))
 
 ;;;_. Footers
 ;;;_ , Register it

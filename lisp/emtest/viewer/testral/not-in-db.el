@@ -37,9 +37,7 @@
 ;;;###autoload
 (defun emtvf:TESTRAL-gov:not-in-db (value id backend)
    "Formatter for TESTRAL note governed by `not-in-db'"
-   (emtvf:outline-item
-      (1+ depth)
-      'emtvf:face:ungraded
+   (emtvf:outline-item-2
       "ID not in database "
       `(
 	  ,(emtvf:headline 
@@ -61,7 +59,9 @@
 	      ;;Indent it so it can't affect outline
 	      ;;structure. 
 	      `(indent 4 ,value)
-	      `(object ,value nil)))))
+	      `(object ,value nil)))
+      (1+ depth)
+      'emtvf:face:ungraded))
 ;;;_. Footers
 ;;;_ , Register it
 ;;;###autoload (emtvf:TESTRAL:add-gov
