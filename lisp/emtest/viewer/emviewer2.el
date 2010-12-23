@@ -134,13 +134,17 @@ These variables propagate thru `dynamic' bindings." )
    "Init forms for the special variables." )
 ;;;_  . emtv2:dynamic-register-var
 (defun emtv2:dynamic-register-var (sym init-form)
-   "PUNTED.  Register SYM as a special variable for `dynamic'.
+   "Register SYM as a special variable for `dynamic'.
 If it's already registered, just change its init form."
+   
+   (let
+      ((pos (position sym emtv2:dynamic:vars :test #'eq)))
+      (if pos
+	 (setf (nth emtv2:dynamic:init-forms init-form))
+	 (progn
+	    (push sym emtv2:dynamic:vars)
+	    (push init-form emtv2:dynamic:init-forms)))))
 
-   (let*
-      ()
-      
-      ))
 ;;;_  . emtv2:dynamic:top
 (defmacro emtv2:dynamic:top (&rest body)
    "Eval BODY with the special variables bound to their initial values."
