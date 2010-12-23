@@ -125,12 +125,12 @@
 ;;by an uninterned symbol so it can't accidentally be captured.
 ;;;_  . emtv2:dynamic:vars
 (defconst emtv2:dynamic:vars 
-   '(emtvf:*outline-depth* emtvf:*folded*)
+   '(emtvf:*outline-depth* emtvf:*folded* emtvf:*hdln-path*)
    "Special variables that the formatters use.
 These variables propagate thru `dynamic' bindings." )
 ;;;_  . emtv2:dynamic:init-forms
 (defconst emtv2:dynamic:init-forms 
-   '(0 nil)
+   '(0 nil '())
    "Init forms for the special variables." )
 ;;;_  . emtv2:dynamic-register-var
 (defun emtv2:dynamic-register-var (sym init-form)
