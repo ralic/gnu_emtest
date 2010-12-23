@@ -118,15 +118,48 @@
 	    emtv2:report-buffer-name)))
    (emtvo:setup-if-needed #'emtv2:pathtree-cb #'ignore))
 
+;;;_ , Pseudo-dynamic
+;;;_  . emtv2:dynamic:vars
+(defconst emtv2:dynamic:vars 
+   '(emtvf:*outline-depth* emtvf:*folded*)
+   "Special variables that the formatters use.
+These variables propagate thru `dynamic' bindings." )
+;;;_  . emtv2:dynamic:init-forms
+(defconst emtv2:dynamic:init-forms 
+   '(0 nil)
+   "Init forms for the special variables." )
+;;;_  . emtv2:dynamic-register-var
+(defun emtv2:dynamic-register-var (sym init-form)
+   "PUNTED.  Register SYM as a special variable for `dynamic'.
+If it's already register, just change its init form."
 
-;;;_ , Static printing functions
+   (let*
+      ()
+      
+      ))
+;;;_  . emtv2:dynamic:with
+(defmacro emtv2:dynamic:with-vars (body)
+   "UNTESTED.  Even BODY with the special variables bound."
+
+   `(progv emtv2:dynamic-vars (list ,@emtv2:dynamic:init-forms)
+       ,@body))
+
+;;;_  . emtv2:dynamic-capture-vars
+(defun emtv2:dynamic-capture-vars ()
+   "Capture the values of the formatter special variables."
+
+   ;;Capture the special variables.
+   (eval `(list ,@emtv2:dynamic-vars)))
 ;;;_  . emtv2:insert-dynamic
 (defun emtv2:insert-dynamic (recurse-f obj loal func &optional data)
    "Insert (statically) the result of a dynamic spec"
    (let*
-      ((fmt-list (funcall func obj loal)))
+      ((fmt-list 
+	  (progv emtv2:dynamic-vars data
+	     (funcall func obj loal))))
       (funcall recurse-f fmt-list)))
 
+;;;_ , Static printing functions
 ;;;_  . emtv2:print-all
 (defun emtv2:print-all (top-node)
    ""
