@@ -106,7 +106,7 @@ which may not imply success of an assertion."
    "Insert TOP-NODE via loformat"
    
    (let*
-      ((tree (emtvf:top top-node data-list)))
+      ((tree (emtvf:top top-node)))
       (loformat:insert
 	 tree
 	 (append
@@ -204,7 +204,7 @@ Must be called in a `emtv2:dynamic:top' context."
       `(
 	  (w/face "Emtest results" emtvf:face:title)
 	  "\n"
-	  ,(emtvf:node view-node data-list))))
+	  ,(emtvf:node view-node))))
 
 ;;;_  . emtvf:node
 (defun emtvf:node (view-node &optional data-list)
@@ -225,7 +225,7 @@ Must be called in a `emtv2:dynamic:top' context."
 	 (grade-face
 	    (emtvf:grade-overall-face grades))
 	 (grades-sum
-	    (emtvf:sum-badnesses-short grades data-list))
+	    (emtvf:sum-badnesses-short grades))
 	 (boring-p 
 	    (emtvf:grade-boring grades))
 	 ;;This gives us the prefix of the headline if we have skipped
@@ -300,7 +300,7 @@ Must be called in a `emtv2:dynamic:top' context."
 			boring-p)))))
 	 
 	 (emt:view:TESTRAL
-	    (emtvf:TESTRAL view-node data-list))
+	    (emtvf:TESTRAL view-node))
 
 	 ;;Base type, appears for the root node.
 	 (emt:view:presentable
@@ -337,25 +337,22 @@ Must be called in a `emtv2:dynamic:top' context."
 (defun emtvf:TESTRAL (obj &optional data &rest d)
    "Make a format form for OBJ.
 OBJ must be a TESTRAL note."
-   (declare (special data-list))
-   (let*
-      ()
-      (list
-	 ;;$$OBSOLETE
-	 (apply #'append
-	    (mapcar
-	       #'(lambda (x)
-		    (list x " "))
-	       (emt:testral:base->prestn-path obj)))
-	 (etypecase obj
-	    ;;This is the only one that will actually carry over in the
-	    ;;long term, the others are actually obsolescent.
-	    (emt:testral:newstyle
-	       (apply 
-		  (emtvf:get-TESTRAL-formatter 
-		     (emt:testral:newstyle->governor obj))
-		  obj
-		  (emt:testral:newstyle->value obj)))))))
+   (list
+      ;;$$OBSOLETE
+      (apply #'append
+	 (mapcar
+	    #'(lambda (x)
+		 (list x " "))
+	    (emt:testral:base->prestn-path obj)))
+      (etypecase obj
+	 ;;This is the only one that will actually carry over in the
+	 ;;long term, the others are actually obsolescent.
+	 (emt:testral:newstyle
+	    (apply 
+	       (emtvf:get-TESTRAL-formatter 
+		  (emt:testral:newstyle->governor obj))
+	       obj
+	       (emt:testral:newstyle->value obj))))))
 
 ;;;_  . emtvf:grade-boring
 (defun emtvf:grade-boring (obj)

@@ -167,7 +167,7 @@ DATA should have been created by `emtv2:dynamic:capture-vars'."
    (let*
       ((fmt-list 
 	  (emtv2:dynamic:with-vars data 
-	     (funcall func obj nil))))
+	     (funcall func obj))))
       (funcall recurse-f fmt-list)))
 
 ;;;_  . emtvf:make-dynamic
