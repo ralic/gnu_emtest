@@ -186,8 +186,23 @@ DATA should have been created by `emtv2:dynamic:capture-vars'."
 	 ((inhibit-read-only t))
 	 (erase-buffer))
       (emtest/viewer/mode)
-      (emtvf:insert top-node '() '((dynamic emtv2:insert:dynamic)))))
+      (emtv2:insert top-node)))
+;;;_  . emtv2:format-alist
+(defconst emtv2:format-alist 
+   (append
+      '((dynamic emtv2:insert:dynamic))
+      loformat:default-alist)
+   
+   "List of formatters that emformat uses.")
 
+;;;_  . emtv2:insert
+(defun emtv2:insert (top-node)
+   "Insert TOP-NODE via loformat"
+   (let*
+      ((tree (emtvf:top top-node)))
+      (loformat:insert
+	 tree
+	 emtv2:format-alist)))
 
 ;;;_ , Overall callback
 ;;;_  . emtv2:tests-outstanding

@@ -38,9 +38,6 @@
 
 ;;;_. Body
 ;;;_ , Data
-;;;_  . emtvf:format-alist
-(defconst emtvf:format-alist loformat:default-alist
-   "List of formatters that emformat uses.")
 ;;;_  . Faces
 ;;;_   , Grades
 (defface emtvf:face:ok 
@@ -99,19 +96,6 @@ which may not imply success of an assertion."
    :group 'emtest)
 
 ;;;_ , Lower format functions
-;;;_  . emtvf:insert
-;;$$MOVE ME maybe - this is the only part that directly deals with
-;;loformat.
-(defun emtvf:insert (top-node data-list extra-formats)
-   "Insert TOP-NODE via loformat"
-   
-   (let*
-      ((tree (emtvf:top top-node)))
-      (loformat:insert
-	 tree
-	 (append
-	    extra-formats
-	    emtvf:format-alist))))
 ;;;_ , Helper functions
 ;;;_  . Outlining
 ;;$$MOVE ME later when we have dynamic variable registration sorted out.
