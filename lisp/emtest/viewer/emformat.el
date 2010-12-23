@@ -139,13 +139,13 @@ which may not imply success of an assertion."
 	   ,text
 	   (keymap ,map ,@extra-props)))))
 
-;;;_  . emtvf:outline-item
+;;;_  . emtvf:outline-item-f
 ;;$$IMPROVE ME Would like it to accord with outline-cycle's idea that
 ;;already folded means including the final \n, but `emtvf:headline'
 ;;wants to add that \n itself.
 ;;$$IMPROVE ME Don't overlay if this item is already in a folded
 ;;thing.  
-(defun emtvf:outline-item (depth face headtext contents &optional fold)
+(defun emtvf:outline-item-f (depth face headtext contents &optional fold)
    "Make an outline item of DEPTH."
    `(
        ,(emtvf:headline depth face headtext)
@@ -166,7 +166,7 @@ If FOLD is non-nil, fold that contents."
       `(let*
 	  (  (emtvf:*outline-depth* (1+ emtvf:*outline-depth*))
 	     (,contents-sym ,contents))
-	  (emtvf:outline-item
+	  (emtvf:outline-item-f
 	     emtvf:*outline-depth* ,face ,headtext ,contents-sym ,fold))))
 
 
