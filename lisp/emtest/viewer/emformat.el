@@ -260,7 +260,7 @@ DATA-LIST must be a loal."
 	    (emtvf:grade-overall-face grades))
 	 (grades-sum
 	    (emtvf:sum-badnesses-short grades data-list))
-	 (grades-boring 
+	 (boring-p 
 	    (emtvf:grade-boring grades))
 	 ;;This gives us the prefix of the headline if we have skipped
 	 ;;one or more plys of the tree because they were singletons.
@@ -299,7 +299,8 @@ DATA-LIST must be a loal."
 			   children
 			   :data-loal data-list
 			   :separator '("\n")) 
-			grade-face))
+			grade-face
+			boring-p))
 		  
 		  
 		  (emt:testral:suite
@@ -337,7 +338,8 @@ DATA-LIST must be a loal."
 				 :els=0 '("No notes")))
 			   (null
 			      '("No known contents"))) 
-			grade-face)))))
+			grade-face
+			boring-p)))))
 	 
 	 (emt:view:TESTRAL
 	    (emtvf:TESTRAL view-node data-list))
