@@ -102,7 +102,7 @@ PARAM: Separator is a function.")
 	 (hiformat:th:assert-match
 	    (hiformat:map
 	       #'(lambda
-		    (dummy-1 dummy-2 immediate-data-x)
+		    (dummy-1 immediate-data-x)
 		    (cond
 		       ((assq 'first immediate-data-x)
 			  '("FIRST"))
@@ -157,7 +157,7 @@ PARAM: LIST has 1 element")
 		       '("\n"))
 		  :els=1
 		  #'(lambda
-		       (dummy dummy-2)
+		       (dummy)
 		       '("12" "144")))
 	       '("12" "144")))
 	 ))

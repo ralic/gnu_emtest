@@ -46,15 +46,12 @@ The type only demands a function, so it's mostly for
 
 ;;;_ , Functions
 ;;;_  . hiformat:map Map over a list
-(defun* hiformat:map (func list &key data-loal separator els=0 els=1)
+(defun* hiformat:map (func list &key separator els=0 els=1)
    "Format LIST, using FUNC to transform each element.
-FUNC must be a function taking 3 args:
+FUNC must be a function taking 2 args:
  * Object
- * A loal which is all the passed-down data
  * Immediate data.  This is a list.  It will contain `first', `last'
    and `index' set to appropriate values.
-
-DATA-LOAL must be a loal.
 
 ELS=0 is used if the list is empty.  ELS=0 must be a formattable.
 
@@ -68,7 +65,7 @@ ELS=1 must be a function taking 3 args (same signature as FUNC).
       (cond
 	 ((= len 0) els=0)  ;;Correct even if els=0 is nil
 	 ((and (= len 1) els=1)
-	    (funcall els=1 (car list) data-loal))
+	    (funcall els=1 (car list)))
 	 (t
 	    (loop
 	       for el in list
@@ -83,14 +80,14 @@ ELS=1 must be a function taking 3 args (same signature as FUNC).
 			   (if (= index 0)        '((first t)) '())
 			   (if (= index (1- len)) '((last t))  '())))
 		     (sub-list
-			(funcall func el data-loal immediate-data)))
+			(funcall func el immediate-data)))
 	    
 		  (if (= index 0) 
 		     sub-list
 		     (let
 			((sep-form
 			    (if (functionp separator)
-			       (funcall separator data-loal immediate-data)
+			       (funcall separator immediate-data)
 			       separator)))
 			(if sep-form
 			   (list nil sep-form sub-list)
