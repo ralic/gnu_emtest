@@ -135,7 +135,7 @@ These variables propagate thru `dynamic' bindings." )
 ;;;_  . emtv2:dynamic-register-var
 (defun emtv2:dynamic-register-var (sym init-form)
    "PUNTED.  Register SYM as a special variable for `dynamic'.
-If it's already register, just change its init form."
+If it's already registered, just change its init form."
 
    (let*
       ()
