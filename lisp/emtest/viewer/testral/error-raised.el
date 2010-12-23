@@ -35,7 +35,7 @@
 ;;;_. Body
 ;;;_ , emtvf:TESTRAL-gov:error-raised
 ;;;###autoload
-(defun emtvf:TESTRAL-gov:error-raised (note err)
+(defun emtvf:TESTRAL-gov:error-raised (note &rest err)
    "Formatter for TESTRAL note governed by `error-raised'"
    (emtvf:outline-item
       "Error raised: "
