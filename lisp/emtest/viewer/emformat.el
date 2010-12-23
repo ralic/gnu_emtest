@@ -215,7 +215,7 @@ If VALUE is a string, display it lerally, otherwise pretty-print it."
 ;;;_  . emtvf:make-dynamic
 (defun emtvf:make-dynamic (obj func &optional data)
    "Make a form that calls a dynamic object"
-   ;;$$MOVE MOST OF ME
+   ;;$$MOVE ME into dynamic handler.
    `(dynamic 
        ,obj 
        ,data
@@ -269,7 +269,7 @@ DATA-LIST must be a loal."
 	       (mapcar
 		  #'(lambda (x)
 		       (list x " "))
-		  (loal:val 'hdln-path data-list '())))))
+		  emtvf:*hdln-path*))))
       
       (etypecase suite
 	 (emt:view:suite-newstyle
@@ -350,15 +350,15 @@ DATA-LIST must be a loal."
 	       (and
 		  (= (length children) 1))
 	       ;;Shortcut any singletons.
-	       (list
+	       (let
+		  ((emtvf:*hdln-path* (list name)))
 		  (emtvf:make-dynamic 
 		     (car children)
 		     #'emtvf:node
 		     (loal:acons 'hdln-path (list name) data-list)))
 	       
 	       (let
-		  ((ch-data-list
-		      (loal:acons 'hdln-path '() data-list)))
+		  ((emtvf:*hdln-path* '()))
 
 		  (emtvf:outline-item 
 		     `(  ,name-prefix
