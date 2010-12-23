@@ -40,7 +40,9 @@
 '(deftype emt:result-badness () 'emt:testral:grade)
 ;;;_ , IDs
 ;;;_  . Suites
-
+;;Suites are identified by an emtt:explorable they are associated
+;;with. 
+;;;_  . Notes
 ;;We'd like to can restrict this.  But it depends on some internal
 ;;information about how elements are interpreted, depending on
 ;;`method-relaunch'.  Not clear how that can be passed into here.
@@ -51,6 +53,12 @@
 (deftype emt:testral:id-element () 
    "Id elements are strings."
    '(or string symbol integer))
+
+;;;_  . emt:testral:id=
+(defun emt:testral:id= (a b)
+   ""
+   (equal a b))
+
 ;;(deftype emt:testral:suite-id () '(repeat emt:testral:id-element))
 ;;$$OBSOLESCENT
 (deftype emt:testral:prefix-suite-id () '(repeat emt:testral:id-element))
@@ -92,96 +100,6 @@
    (governor () :type symbol)
    value)
 
-'(progn
-;;;_  . Basic notes
-;;$$OBSOLESCENT  All of these will go away, replaced by
-;;`emt:testral:newstyle' in various relations.
-;;(All inherit from the base class, none have data)
-;;;_   , Alone
-(defstruct (emt:testral:alone
-	    (:constructor emt:testral:make-alone)
-	    (:conc-name emt:testral:alone->)
-	      (:include emt:testral:base))
-   ""
-   )
-;;;_   , Push
-(defstruct (emt:testral:push
-	    (:constructor emt:testral:make-push)
-	    (:conc-name emt:testral:push->)
-	      (:include emt:testral:base))
-   ""
-   fenceposting ;;
-   )
-;;;_   , Pop
-(defstruct (emt:testral:pop
-	    (:constructor emt:testral:make-pop)
-	    (:conc-name emt:testral:pop->)
-	      (:include emt:testral:base))
-   ""
-   )
-;;;_   , Separate
-(defstruct (emt:testral:separate
-	    (:constructor emt:testral:make-separate)
-	    (:conc-name emt:testral:separate->)
-	      (:include emt:testral:base))
-   ""
-   )
-
-;;;_  . Specific ones
-;;;_   , Doc
-(defstruct (emt:testral:doc
-	    (:constructor emt:testral:make-doc)
-	    (:conc-name emt:testral:doc->)
-	      (:include emt:testral:alone))
-   "A note indicating a docstring"
-   (str () :type string))
-
-;;;_   , Check
-(defstruct (emt:testral:check:push
-	    (:constructor emt:testral:make-check:push)
-	    (:conc-name emt:testral:check:push->)
-	      (:include emt:testral:push))
-   ""
-   )
-(defstruct (emt:testral:check:pop
-	    (:constructor emt:testral:make-check:pop)
-	    (:conc-name emt:testral:check:pop->)
-	      (:include emt:testral:pop))
-   ""
-   )
-;;;_   , Stage
-(defstruct (emt:testral:stage:push
-	    (:constructor emt:testral:make-stage:push)
-	    (:conc-name emt:testral:stage:push->)
-	      (:include emt:testral:push))
-   ""
-   (name () :type string))
-
-(defstruct (emt:testral:stage:pop
-	    (:constructor emt:testral:make-stage:pop)
-	    (:conc-name emt:testral:stage:pop->)
-	      (:include emt:testral:pop))
-   ""
-   )
-;;;_   , Error-raised
-(defstruct (emt:testral:error-raised
-	    (:constructor emt:testral:make-error-raised)
-	    (:conc-name emt:testral:error-raised->)
-	      (:include emt:testral:alone))
-   ""
-   (err () :type t))
-
-;;;_   , not-in-db
-(defstruct (emt:testral:not-in-db
-	    (:constructor emt:testral:make-not-in-db)
-	    (:conc-name emt:testral:not-in-db->)
-	      (:include emt:testral:alone))
-   "Report that ID was not in the database"
-   (backend  () :type t)
-   (id-in-db () :type t)
-   (value    () :type t))
-)
-
 ;;;_  . Contents discrimination for suite type
 
 ;;;_   , emt:testral:runform-list
@@ -205,21 +123,20 @@
 	    (:conc-name emt:testral:report->))
   "A report sent by test-runner to viewer"
   (testrun-id     () :type emt:testral:testrun-id)
-  (tester-id      () :type emt:testral:tester-id)  ;;$$OBSOLESCENT
-  (run-done-p     () :type bool)  ;;$$OBSOLESCENT
+  (tester-id      () :type emt:testral:tester-id)  ;;$$OBSOLETE
+  (run-done-p     () :type bool)  ;;$$OBSOLETE
   (newly-pending  () :type integer)
   ;;This is really presentation-path prefix.
   (test-id-prefix () :type emt:testral:prefix-suite-id)
   (suites () :type 
 	  (repeat
-	   ;;Maybe this should be a type too.  NB, it's a list because
-	   ;;it is a list in `emtvr:one-newstyle'
+	   ;;$$IMPROVE ME Move emtt:explorable into a common ancestor
+	     ;;of emt:testral:test-runner-info and emt:testral:suite.
+	     ;;Adjust `emtvr:one-newstyle' accordingly.
 	   (list 
 	    emtt:explorable
 	    null ;;let's leave that an empty list for now
 	    (or emt:testral:suite emt:testral:test-runner-info)))))
-
-;;;_  . Suites etc specific reports
 
 ;;;_  . test-runner info
 (defstruct (emt:testral:test-runner-info
@@ -234,7 +151,7 @@
   (explore-methods-supported () :type (repeat emt:testral:explore-method-id)))
 
 
-;;;_  . NEW suite
+;;;_  . suite info
 (defstruct (emt:testral:suite
 	    (:constructor emt:testral:make-suite)
 	    (:conc-name emt:testral:suite->))
@@ -246,6 +163,7 @@
 	     emt:testral:runform-list
 	     null)) 
   (badnesses () :type emt:testral:grade-aux)
+   ;;$$OBSOLESCENT
   info)
 
 ;;;_  . (Suggested) emt:testral:problem
@@ -254,9 +172,6 @@
 ;;would have or inherit a testral notelist about the problem
 ;;(emt:testral:note-list).  This would mean that `emt:testral:suite'
 ;;need have no `badnesses' of its own.
-
-
-
 
 ;;;_. Footers
 ;;;_ , Provides

@@ -563,19 +563,6 @@ especially in configuration testing for new installations"
    '(or emtt:dynamic-method emtt:explorable))
 
 
-;;;_  . (OBSOLESCENT) gradedness
-'
-(deftype emt:result-gradedness () '(member pass fail ungraded))
-;;;_  . badnesses
-;;Later this type may be expanded, because the badnesses carry data.
-;;For now, leave it open, because we're developing the
-;;(bad-before-test not-found) badness
-;;
-'(deftype emt:result-badness () '(member fail ungraded dormant))
-
-;;;_   , Summary info
-;;Set of badnesses plus count of total checks.
-
 
 ;;;_. Footers
 ;;;_ , Provides
