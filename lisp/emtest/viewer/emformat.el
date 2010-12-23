@@ -29,8 +29,6 @@
 
 ;;;_ , Requires
 
-(require 'utility/pathtree) ;;The view-node type
-(require 'utility/loal)     ;;The data-list type
 (require 'viewers/hiformat)
 (require 'viewers/loformat)
 (require 'emtest/viewer/view-types)
