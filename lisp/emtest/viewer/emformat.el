@@ -178,7 +178,7 @@ If VALUE is a string, display it lerally, otherwise pretty-print it."
 ;;;_ , Format functions
 ;;;_  . emtvf:top
 
-(defun emtvf:top (view-node &optional data-list)
+(defun emtvf:top (view-node)
    "Make a format form for VIEW-NODE.
 VIEW-NODE must be at least an `emtvp:node'.
 Must be called in a `emtv2:dynamic:top' context."
@@ -191,7 +191,7 @@ Must be called in a `emtv2:dynamic:top' context."
 	  ,(emtvf:node view-node))))
 
 ;;;_  . emtvf:node
-(defun emtvf:node (view-node &optional data-list)
+(defun emtvf:node (view-node)
    "Make a format form for VIEW-NODE.
 VIEW-NODE must be an `emt:view:presentable'.
 Must be called in a `emtv2:dynamic:top' context."
@@ -239,11 +239,8 @@ Must be called in a `emtv2:dynamic:top' context."
 			    ,grades-sum)
 			(hiformat:map 
 			   ;;Formatting for each child
-			   #'(lambda (obj data &rest d)
-				(emtvf:make-dynamic 
-				   obj 
-				   #'emtvf:node))
-			   
+			   #'(lambda (obj &rest d)
+				(emtvf:make-dynamic obj #'emtvf:node))
 			   children
 			   :separator '("\n")) 
 			grade-face
@@ -261,7 +258,7 @@ Must be called in a `emtv2:dynamic:top' context."
 			   (emt:testral:runform-list
 			      (hiformat:map 
 				 ;;Formatting for each child
-				 #'(lambda (obj data &rest d)
+				 #'(lambda (obj &rest d)
 				      (emtvf:make-dynamic 
 					 obj 
 					 #'emtvf:node))
@@ -308,7 +305,7 @@ Must be called in a `emtv2:dynamic:top' context."
 			 ,grades-sum)
 		     (hiformat:map 
 			;;Formatting for each child
-			#'(lambda (obj data &rest d)
+			#'(lambda (obj &rest d)
 			     (emtvf:make-dynamic
 				obj 
 				#'emtvf:node))
@@ -318,7 +315,7 @@ Must be called in a `emtv2:dynamic:top' context."
 
 
 ;;;_  . emtvf:TESTRAL (TESTRAL note formatter)
-(defun emtvf:TESTRAL (obj &optional data &rest d)
+(defun emtvf:TESTRAL (obj &rest d)
    "Make a format form for OBJ.
 OBJ must be a TESTRAL note."
    (list
@@ -366,7 +363,7 @@ OBJ must be a `emt:testral:grade:summary'"
 	 (t                'emtvf:face:dormant))))
 
 ;;;_  . emtvf:sum-badnesses-short
-(defun emtvf:sum-badnesses-short (obj &optional data &rest d)
+(defun emtvf:sum-badnesses-short (obj &rest d)
    "Give a summary of grades for this object."
    (let*
       (
@@ -411,7 +408,7 @@ OBJ must be a `emt:testral:grade:summary'"
 
 
 ;;;_  . emtvf:sum-badnesses-long
-(defun emtvf:sum-badnesses-long (obj &optional data &rest d)
+(defun emtvf:sum-badnesses-long (obj &rest d)
    "Give a summary of grades for this object."
    (let*
       (
