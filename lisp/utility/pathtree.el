@@ -171,7 +171,7 @@ ARG must be suitable as a second argument to tree field `make-node'."
 
 
 ;;;_  . emtvp:add-child
-(defun emtvp:add-child (tree parent name new-child)
+(defun emtvp:add-child (tree parent name new-child &optional prepend)
    "Add node NEW-CHILD at the end of PARENT's children"
    
    (setf
@@ -181,10 +181,13 @@ ARG must be suitable as a second argument to tree field `make-node'."
 
    ;;Don't set NEW-CHILD's children - the callback is allowed to set
    ;;them and expect them to be used.
-
-   (callf append
-      (emtvp:node->children parent)
-      (list new-child))
+   (if prepend
+      (callf2 cons
+	 new-child
+	 (emtvp:node->children parent))
+      (callf append
+	 (emtvp:node->children parent)
+	 (list new-child)))
    (push
       new-child
       (emtvp->dirty tree))
