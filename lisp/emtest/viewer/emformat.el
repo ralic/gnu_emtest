@@ -140,8 +140,6 @@ which may not imply success of an assertion."
 	   (keymap ,map ,@extra-props)))))
 
 ;;;_  . emtvf:outline-item
-;;$$IMPROVE ME Make this a macro so it controls outline-depth itself.
-;;See emtvf:*outline-depth*.
 ;;$$IMPROVE ME Would like it to accord with outline-cycle's idea that
 ;;already folded means including the final \n, but `emtvf:headline'
 ;;wants to add that \n itself.
@@ -158,17 +156,18 @@ which may not imply success of an assertion."
 	   (t
 	      `(,contents (sep 2))))))
 
-(defmacro emtvf:outline-item-2 (headtext contents &optional depth face fold)
+(defmacro emtvf:outline-item-2 (headtext contents &optional face fold)
    "Make an outline item.
 HEADTEXT gives the heading and CONTENTS as contents.
 FACE is the face to display the heading in.
 If FOLD is non-nil, fold that contents."
    (let
       ((contents-sym (make-symbol "contents")))
-      `(let* ;;Bind emtvf:*outline-depth* to (1+ emtvf:*outline-depth*)
-	  ((,contents-sym ,contents))
+      `(let*
+	  (  (emtvf:*outline-depth* (1+ emtvf:*outline-depth*))
+	     (,contents-sym ,contents))
 	  (emtvf:outline-item
-	     ,depth ,face ,headtext ,contents-sym ,fold))))
+	     emtvf:*outline-depth* ,face ,headtext ,contents-sym ,fold))))
 
 
 ;;;_  . emtvf:button-to-explore
@@ -284,8 +283,7 @@ DATA-LIST must be a loal."
 			   
 			   children
 			   :data-loal data-list
-			   :separator '("\n"))
-			(1+ depth) 
+			   :separator '("\n")) 
 			grade-face))
 		  
 		  
@@ -323,8 +321,7 @@ DATA-LIST must be a loal."
 				 :separator '("\n")
 				 :els=0 '("No notes")))
 			   (null
-			      '("No known contents")))
-			(1+ depth) 
+			      '("No known contents"))) 
 			grade-face)))))
 	 
 	 (emt:view:TESTRAL
@@ -361,8 +358,7 @@ DATA-LIST must be a loal."
 				   (loal:acons 'depth (1+ depth) data))))
 			children
 			:separator '("\n")
-			:data-loal data-list)
-		     (1+ depth) 
+			:data-loal data-list) 
 		     grade-face)))))))
 
 

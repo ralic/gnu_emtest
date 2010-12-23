@@ -60,8 +60,7 @@
 	       '(help-echo "Accept the new value"))))
 
       (list
-	 (emtvf:obj-or-string value))
-      (1+ depth) 
+	 (emtvf:obj-or-string value)) 
       (if matched-p 
 	 'emtvf:face:ok-match
 	 'emtvf:face:mismatch)

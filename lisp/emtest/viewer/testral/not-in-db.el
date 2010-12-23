@@ -60,7 +60,6 @@
 	      ;;structure. 
 	      `(indent 4 ,value)
 	      `(object ,value nil)))
-      (1+ depth)
       'emtvf:face:ungraded))
 ;;;_. Footers
 ;;;_ , Register it

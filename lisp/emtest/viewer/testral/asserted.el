@@ -40,8 +40,7 @@
    ;;$$IMPROVE ME  Take assert args as params, print them.
    (emtvf:outline-item-2
       "Failed assertion"
-      (emtvf:obj-or-string form)
-      (1+ depth) 
+      (emtvf:obj-or-string form) 
       'emtvf:face:failed))
 
 ;;;_ , emtvf:TESTRAL-gov:succeeded
@@ -51,8 +50,7 @@
    ;;$$IMPROVE ME  Take assert args as params, print them.
    (emtvf:outline-item-2
       "Assertion succeeded"
-      (emtvf:obj-or-string form)
-      (1+ depth) 
+      (emtvf:obj-or-string form) 
       'emtvf:face:ok
       t))
 

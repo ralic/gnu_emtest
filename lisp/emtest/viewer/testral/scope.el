@@ -41,8 +41,7 @@
       (emt:testral:newstyle->relation note)
       `(dynamic ,note 
 	  ,(loal:acons 'depth (1+ depth) data)
-	  ,#'emtvf:TESTRAL)
-      (1+ depth) 
+	  ,#'emtvf:TESTRAL) 
       (emtvf:grade-overall-face
 	 (emt:view:presentable->sum-badnesses note))))
 

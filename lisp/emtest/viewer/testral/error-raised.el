@@ -39,8 +39,7 @@
    "Formatter for TESTRAL note governed by `error-raised'"
    (emtvf:outline-item-2
       "Error raised: "
-      `(object ,err nil)
-      (1+ depth) 
+      `(object ,err nil) 
       'emtvf:face:ungraded))
 
 ;;;_. Footers

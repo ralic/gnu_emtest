@@ -40,15 +40,14 @@
    (cond
       ((not (string-match "\n" doc))
 	 (emtvf:outline-item-2
-	     doc nil (1+ depth)))
+	     doc nil))
       ((string-match ": " doc)
 	 (emtvf:outline-item-2
 	     (substring doc 0 (match-end 0))
-	     (substring doc (match-end 0))
-	     (1+ depth)))
+	     (substring doc (match-end 0))))
       (t
 	 (emtvf:outline-item-2
-	     "Doc" doc (1+ depth)))))
+	     "Doc" doc))))
 
 ;;;_. Footers
 ;;;_ , Register it
