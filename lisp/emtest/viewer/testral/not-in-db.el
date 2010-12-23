@@ -40,9 +40,7 @@
    (emtvf:outline-item
       "ID not in database "
       `(
-	  ,(emtvf:headline 
-	      (+ 2 depth)
-	      nil
+	  ,(emtvf:outline-item
 	      (list
 		 "Value "
 		 (emtvf:button "[Accept]"
@@ -53,13 +51,19 @@
 			   ',id
 			   ',value
 			   'correct-answer))
-		    '(help-echo "Accept this value"))))
-	  ,(if
-	      (stringp value)
-	      ;;Indent it so it can't affect outline
-	      ;;structure. 
-	      `(indent 4 ,value)
-	      `(object ,value nil)))
+		    '(help-echo "Accept this value")))
+	      (if
+		 (stringp value)
+		 ;;Indent it so it can't affect outline
+		 ;;structure. 
+		 `(indent 4 ,value)
+		 `(object ,value nil))
+	      ;;Sometimes fold it.  Say, if it's not a string or is a
+	      ;;long string.
+	      (or
+		 (not (stringp value))
+		 (> (length value) 100))))
+      
       'emtvf:face:ungraded))
 ;;;_. Footers
 ;;;_ , Register it
