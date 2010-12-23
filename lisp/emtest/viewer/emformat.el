@@ -186,14 +186,14 @@ If VALUE is a string, display it lerally, otherwise pretty-print it."
       `(indent 4 ,value)
       `(object ,value nil)))
 ;;;_  . emtvf:make-dynamic
-(defun emtvf:make-dynamic (obj &optional func data)
+(defun emtvf:make-dynamic (obj func &optional data)
    "Make a form that calls a dynamic object"
-   
-`(dynamic 
-    ,obj 
-    ,data
-    ,func ;;  ,#'emtvf:node
-    ,(emtv2:dynamic-capture-vars)))
+   ;;$$MOVE MOST OF ME
+   `(dynamic 
+       ,obj 
+       ,data
+       ,func ;;  ,#'emtvf:node
+       ,(emtv2:dynamic:capture-vars)))
 
 
 ;;;_ , Format functions
@@ -205,9 +205,7 @@ VIEW-NODE must be at least an `emtvp:node'.
 DATA-LIST must be a loal (list of alists)."
 
    (check-type view-node emtvp:node)
-   (let
-      ((emtvf:*folded* nil)
-	 (emtvf:*outline-depth* 0))
+   (emtv2:dynamic:with-vars
       `(
 	  (w/face "Emtest results" emtvf:face:title)
 	  "\n"
