@@ -187,13 +187,13 @@ If VALUE is a string, display it lerally, otherwise pretty-print it."
       `(object ,value nil)))
 ;;;_  . emtvf:make-dynamic
 ;;$$USE ME
-(defun emtvf:make-dynamic (obj &optional data)
+(defun emtvf:make-dynamic (obj &optional func data)
    "Make a form that calls a dynamic object"
    
 `(dynamic 
     ,obj 
     ,data
-    ,#'emtvf:node
+    ,func ;;  ,#'emtvf:node
     ;;$$IMPROVE ME collect the current values of our special
     ;;variables, in order.
     ))
@@ -267,9 +267,11 @@ DATA-LIST must be a loal."
 			   ;;Formatting for each child
 			   #'(lambda (obj data &rest d)
 				(list
-				   `(dynamic ,obj 
-				       ,(loal:acons 'depth (1+ depth) data)
-				       ,#'emtvf:node)))
+				   (emtvf:make-dynamic 
+				      obj 
+				      #'emtvf:node
+				      (loal:acons 'depth (1+ depth) data))))
+			   
 			   children
 			   :data-loal data-list
 			   :separator '("\n"))))
@@ -290,10 +292,11 @@ DATA-LIST must be a loal."
 				 ;;Formatting for each child
 				 #'(lambda (obj data &rest d)
 				      (list
-					 `(dynamic ,obj 
-					     ,(loal:acons 
-						 'depth (1+ depth) data)
-					     ,#'emtvf:node)))
+					 (emtvf:make-dynamic 
+					    obj 
+					    #'emtvf:node
+					    (loal:acons 
+					       'depth (1+ depth) data))))
 				 children
 				 :data-loal data-list
 				 :separator '("\n")
@@ -324,11 +327,11 @@ DATA-LIST must be a loal."
 		  (= (length children) 1))
 	       ;;Shortcut any singletons.
 	       (list
-		  `(dynamic ,(car children)
-		      ;;$$IMPROVE ME Get value from old hdln-path
-		      ;;(loal:update 'hdln-path FUNC-WRITE-ME data-list '())
-		      ,(loal:acons 'hdln-path (list name) data-list)
-		      ,#'emtvf:node))
+		  (emtvf:make-dynamic 
+		     (car children)
+		     #'emtvf:node
+		     (loal:acons 'hdln-path (list name) data-list)))
+	       
 	       (let
 		  ((ch-data-list
 		      (loal:acons 'hdln-path '() data-list)))
@@ -345,9 +348,11 @@ DATA-LIST must be a loal."
 			;;Formatting for each child
 			#'(lambda (obj data &rest d)
 			     (list
-				`(dynamic ,obj 
-				    ,(loal:acons 'depth (1+ depth) data)
-				    ,#'emtvf:node)))
+				(emtvf:make-dynamic
+				   obj 
+				   #'emtvf:node
+				   (loal:acons 'depth (1+ depth) data))))
+			
 			children
 			:separator '("\n")
 			:data-loal data-list))))))))
