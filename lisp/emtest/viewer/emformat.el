@@ -138,6 +138,7 @@ If FOLD is non-nil, fold that contents."
 		(let
 		   (  (emtvf:*outline-depth* ,new-depth)
 		      (emtvf:*folded* (or emtvf:*folded* ,fold-now)))
+		   (declare (special emtvf:*outline-depth* emtvf:*folded*))
 		   ,contents)))
 	  (emtvf:outline-item-f ,new-depth ,face ,headtext
 	     ,contents-sym ,fold-now))))
