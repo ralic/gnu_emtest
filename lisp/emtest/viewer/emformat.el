@@ -128,9 +128,10 @@ which may not imply success of an assertion."
 	   (keymap ,map ,@extra-props)))))
 
 ;;;_  . emtvf:headline
+;;$$OBSOLETE
+'
 (defun emtvf:headline (depth face headtext)
    "Make a headline of HEADTEXT for DEPTH, using FACE"
-   
    `(
        (sep 3)
        (w/face ,(make-string depth ?*) ,face)
@@ -259,6 +260,8 @@ DATA-LIST must be a loal."
 	    (emtvf:grade-overall-face grades))
 	 (grades-sum
 	    (emtvf:sum-badnesses-short grades data-list))
+	 (grades-boring 
+	    (emtvf:grade-boring grades))
 	 ;;This gives us the prefix of the headline if we have skipped
 	 ;;one or more plys of the tree because they were singletons.
 	 (name-prefix
@@ -400,6 +403,12 @@ OBJ must be a TESTRAL note."
 		  obj
 		  (emt:testral:newstyle->value obj)))))))
 
+;;;_  . emtvf:grade-boring
+(defun emtvf:grade-boring (obj)
+   "Return non-nil if OBJ is all passing grades.
+OBJ must be a `emt:testral:grade:summary'"
+   ;;$$REDESIGN ME  Complete hack here.
+   (eq (emtvf:grade-overall-face obj) 'emtvf:face:ok))
 
 ;;;_  . emtvf:grade-overall-face
 (defun emtvf:grade-overall-face (obj)
