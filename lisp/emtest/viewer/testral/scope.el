@@ -39,7 +39,7 @@
    "Formatter for TESTRAL note governed by `scope'"
    (emtvf:outline-item
       (emt:testral:newstyle->relation note)
-      "WAS VERY WRONG"
+      (emtvf:TESTRAL:all-children note)
       (emtvf:grade-overall-face
 	 (emt:view:presentable->sum-badnesses note))))
 

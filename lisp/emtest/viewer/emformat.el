@@ -317,6 +317,20 @@ Must be called in a `emtv2:dynamic:top' context."
 			:separator '("\n")) 
 		     grade-face)))))))
 
+;;;_  . emtvf:TESTRAL:all-children
+;;The basic difference from the others is that it assumes notes, not
+;;suites, and it figures out children.  There's plenty of room for
+;;future variation in all of that.
+(defun emtvf:TESTRAL:all-children (note &optional filter)
+   "Format the children of NOTE.
+NOTE must be a `emt:view:TESTRAL-2'"
+   ;;$$IMPROVE ME Filter what is displayed, by parameter.
+   ;;Filter is TBD
+   (hiformat:map
+      #'emtvf:TESTRAL
+      (emtvp:node->children note)
+      :separator '("\n")
+      :els=0 '("No notes")))
 
 ;;;_  . emtvf:TESTRAL (TESTRAL note formatter)
 (defun emtvf:TESTRAL (obj &rest d)
@@ -336,7 +350,7 @@ OBJ must be a TESTRAL viewable (`emt:view:TESTRAL-2')."
 	     (object ,err nil)
 	     "\n"))))
 
-
+;;;_ , About grades
 ;;;_  . emtvf:grade-boring
 (defun emtvf:grade-boring (obj)
    "Return non-nil if OBJ is all passing grades.
