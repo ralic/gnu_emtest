@@ -60,10 +60,11 @@ GOV-SYMBOL must be a symbol."
 	 #'emtvf:TESTRAL-formatter-fallback)))
 ;;;_ , Special formatters
 ;;;_  . emtvf:TESTRAL-formatter-fallback
-(defun emtvf:TESTRAL-formatter-fallback (gov-symbol &rest r)
+(defun emtvf:TESTRAL-formatter-fallback (obj &rest r)
    ""
    (list "No formatter found for governor "
-      (symbol-name gov-symbol)))
+      (symbol-name 
+	 (emt:testral:newstyle->governor (emt:view:TESTRAL-2->contents obj)))))
 ;;;_. Footers
 ;;;_ , Provides
 
