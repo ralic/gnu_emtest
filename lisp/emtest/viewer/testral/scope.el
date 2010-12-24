@@ -35,13 +35,14 @@
 ;;;_. Body
 ;;;_ , emtvf:TESTRAL-gov:scope
 ;;;###autoload
-(defun emtvf:TESTRAL-gov:scope (note relation)
-   "Formatter for TESTRAL note governed by `scope'"
+(defun emtvf:TESTRAL-gov:scope (obj)
+   "Formatter for TESTRAL viewable governed by `scope'"
    (emtvf:outline-item
-      (emt:testral:newstyle->relation note)
-      (emtvf:TESTRAL:all-children note)
+      (emt:testral:newstyle->relation 
+	 (emt:view:TESTRAL-2->contents obj))
+      (emtvf:TESTRAL:all-children obj)
       (emtvf:grade-overall-face
-	 (emt:view:presentable->sum-badnesses note))))
+	 (emt:view:presentable->sum-badnesses obj))))
 
 ;;;_. Footers
 ;;;_ , Register it

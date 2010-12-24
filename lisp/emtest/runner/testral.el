@@ -222,7 +222,7 @@ STR should be a string"
       	 (emtt:testral:add-note-aux id parent-id
 	    "trace"
 	    nil
-	    'fail
+	    'failed
 	    str))))
 
 ;;;_  . emtt:testral:set-object-origin

@@ -330,7 +330,7 @@ NOTE must be a `emt:view:TESTRAL-2'"
       #'emtvf:TESTRAL
       (emtvp:node->children note)
       :separator '("\n")
-      :els=0 '("No notes")))
+      :els=0 '((sep 2) "No notes")))
 
 ;;;_  . emtvf:TESTRAL (TESTRAL note formatter)
 (defun emtvf:TESTRAL (obj &rest d)
