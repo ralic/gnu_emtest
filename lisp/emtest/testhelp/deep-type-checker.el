@@ -89,7 +89,7 @@
 	    (eq (car el-type-list) '*)
 	    t
 	    (emty:typep-annoted (car obj) (car el-type-list) 
-	       (int-to-string index)))
+	       (concat "Element " (int-to-string index))))
 	 (emty:list-f (cdr obj) (cdr el-type-list) (1+ index)))))
 
 ;;;_  . type repeat
@@ -110,7 +110,8 @@
       (null obj)
       (and
 	 (consp obj)
-	 (emty:typep-annoted (car obj) el-type (int-to-string index))
+	 (emty:typep-annoted (car obj) el-type 
+	    (concat "Element " (int-to-string index)))
 	 (emty:repeat-f (cdr obj) el-type (1+ index)))))
 
 ;;;_  . type list*
@@ -124,7 +125,8 @@
    ""
    (if (cdr r)
       (and
-	 (emty:typep-annoted (car obj) (car r) (int-to-string index))
+	 (emty:typep-annoted (car obj) (car r) 
+	    (concat "Element " (int-to-string index)))
 	 (emty:list*-f (cdr obj) (cdr r) (1+ index)))
       (emty:typep-annoted obj (car r) "dotted-tail")))
 
