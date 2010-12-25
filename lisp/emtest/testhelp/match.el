@@ -613,23 +613,26 @@ contain the symbol `testhelp-483s'.
 
 Intended for testing governor functions in isolation."
 
+   ;;$$IMPROVE ME: Use a make-symbol instead of testhelp-483s
    ;;For this, punt: Always use `testhelp-483s' as the symbol.
    (let
       ((testhelp-483s obj))
-      (eval
-	 (emtm:build-form 
-	    '(testhelp-483s) 
-	    (funcall func 'testhelp-483s pattern) 
-	    't))))
+      (emtt:testral:with-prestn-path ()
+	 (eval
+	    (emtm:build-form 
+	       '(testhelp-483s) 
+	       (funcall func 'testhelp-483s pattern) 
+	       't)))))
 ;;;_  . emtm
 ;;Does this order of arguments make sense?  Or should it be vv?
 (defmacro emtm (object-form pattern)
    ""
    (let
       ((sym (gensym)))
-      `(let
-	 ((,sym ,object-form))
-	  ,(emtm:build-form--1 sym pattern 't))))
+      `(emtt:testral:with-prestn-path ()
+	  (let
+	     ((,sym ,object-form))
+	     ,(emtm:build-form--1 sym pattern 't)))))
 
 ;;;_  . emtm-f
 (defun emtm-f (obj pattern)
@@ -675,10 +678,11 @@ BODY is a form body."
       ((sym (gensym)))
       `
       (lambda (,sym ,@bindings)
-	 ,(emtm:build-form 
-	     (list* sym bindings)
-	     (emtm:parse-pattern sym pattern nil) 
-	      `(progn ,@body)))))
+	 (emtt:testral:with-prestn-path ()
+	    ,(emtm:build-form 
+		(list* sym bindings)
+		(emtm:parse-pattern sym pattern nil) 
+		`(progn ,@body))))))
 
 ;;;_  . emtm:lambda
 (defmacro emtm:lambda (pattern &rest body)
@@ -686,10 +690,11 @@ BODY is a form body."
    (let
       ((sym (gensym)))
       `(lambda (,sym)
-	  ,(emtm:build-form--1 
-	      sym 
-	      pattern 
-	      `(progn ,@body)))))
+	  (emtt:testral:with-prestn-path ()
+	     ,(emtm:build-form--1 
+		 sym 
+		 pattern 
+		 `(progn ,@body))))))
 
 
 ;;;_  . emtm:lambda-binds
@@ -718,9 +723,10 @@ BODY is a form body."
 	       (list sym) 
 	       formdata 
 	       `(progn ,@body))))
-      `(let
-	 ((,sym ,object-form))
-	  ,form)))
+      `(emtt:testral:with-prestn-path ()
+	  (let
+	     ((,sym ,object-form))
+	     ,form))))
 
 ;;;_  . emtm-case
 ;;Not implemented.
