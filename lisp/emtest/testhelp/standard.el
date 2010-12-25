@@ -77,11 +77,13 @@ STR should be a string"
       (emtt:testral:add-note "trace" nil 'failed str)))
 
 ;;;_  . emt:stage
-;;$$WRITE ME
 (defmacro emt:stage (stage-args &rest body)
    "Run BODY in an Emtest stage"
-   ;;Make a `scope' note and run body in 
-   `(emtt:testral:with-parent-id id ,@body))
+   (let
+      ((id (make-symbol "id")))
+      `(let ((,id (emtt:testral:new-id)))
+	  (emtt:testral:add-note-w/id id "trace" nil 'scope)
+	  (emtt:testral:with-parent-id ,id ,@body))))
 
 ;;;_ , Error / retry management
 ;;;_  . emth:abortscope
