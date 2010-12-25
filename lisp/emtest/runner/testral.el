@@ -179,9 +179,29 @@ circumstances, but that still want scoping."
 	   (emtt:testral:update-prestn-path ,name)))
        ,@body))
 
-;;;_ , Entry points for test code and its support
+;;;_  . emtt:testral:get-interposing-id
+(defun emtt:testral:get-interposing-id (data)
+   "Return the id of an interposing note, according to DATA.
+Make one if neccessary, setting DATA accordingly.
+DATA must the head of a presentation-path."
+   (if
+      (eq (car data) 'parent)
+      ;;No parent note made yet.  Make one and store its id.
+      (let ((parent-id (emtt:testral:new-id)))
+	 (emtt:testral:add-note-aux 
+	    parent-id
+	    (emtt:testral:get-parent-id)
+	    '()
+	    relation nil 'scope)
+	 (setf (first data)  'self)
+	 (setf (second data)  id)
+	 parent-id)
+      ;;Parent note already made.  Re-use it.
+      (progn
+	 (assert (eq (car data) 'self))
+	 (second data))))
+;;;_ , Making notes
 ;;;_  .  emtt:testral:add-note-aux
-;;$$CLEAN MY CALLERS: This shouldn't be directly used.
 (defun emtt:testral:add-note-aux 
    (id parent-id prestn-path relation grade governor &rest args)
    "Add a TESTRAL note.
@@ -220,28 +240,8 @@ GOVERNOR is a symbol indicating a specific formatter for the output."
 	       (emt:testral:make-grade:ungraded
 		  :contents
 		  "An error was seen while storing a note"))))))
-;;;_  . emtt:testral:interpose-parent-note
-(defun emtt:testral:get-interposing-id (head)
-   "Return the id of an interposing note, according to HEAD.
-Make one if neccessary."
-   (if
-      (eq (car head) 'parent)
-      ;;No parent note made yet.  Make one and store its id.
-      (let ((parent-id (emtt:testral:new-id)))
-	 (emtt:testral:add-note-aux 
-	    parent-id
-	    (emtt:testral:get-parent-id)
-	    '()
-	    relation nil 'scope)
-	 (setf (first head)  'self)
-	 (setf (second head)  id)
-	 parent-id)
-      ;;Parent note already made.  Re-use it.
-      (progn
-	 (assert (eq (car head) 'self))
-	 (second head))))
-
-;;;_  . emtt:testral:add-note-w/id
+;;;_  . Entry points
+;;;_   , emtt:testral:add-note-w/id
 (defun emtt:testral:add-note-w/id (id relation grade governor &rest args)
    "Add a TESTRAL note.
 
@@ -277,14 +277,14 @@ GOVERNOR is a symbol indicating a specific formatter for the output."
 	    '()
 	    relation grade governor args))))
 
-;;;_  . emtt:testral:add-note
+;;;_   , emtt:testral:add-note
 (defun emtt:testral:add-note (&rest args)
    ""
    (apply #'emtt:testral:add-note-w/id
       (emtt:testral:new-id)
       args))
 
-;;;_  . emtt:testral:note-list
+;;;_   , emtt:testral:note-list
 (defun emtt:testral:note-list ()
    ""
    (unless 
@@ -292,17 +292,8 @@ GOVERNOR is a symbol indicating a specific formatter for the output."
       (error "Not in a TESTRAL collection scope"))
    (emt:testral:make-note-list
       :notes (emtt:testral:get-notes)))
-;;;_ , Higher level entry points
-;;;_  . emtt:testral:report-false
-;;$$IMPROVE ME Remove unused prestn-path arg
-(defun emtt:testral:report-false (prestn-path str)
-   "Report that a compare leaf was false.
-STR should be a string"
-   (when (emtt:testral:p)
-      (emtt:testral:add-note "trace" nil 'failed str)))
 
-
-;;;_  . emtt:testral:set-object-origin
+;;;_ , emtt:testral:set-object-origin
 (defun emtt:testral:set-object-origin (object origin)
    ""
 

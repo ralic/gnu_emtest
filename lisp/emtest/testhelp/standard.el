@@ -68,6 +68,14 @@
    ""
    (emtt:testral:add-note "doc" nil 'doc str))
 
+;;;_  . emtt:testral:report-false
+;;$$IMPROVE ME Remove unused prestn-path arg
+(defun emtt:testral:report-false (prestn-path str)
+   "Report that a compare leaf was false.
+STR should be a string"
+   (when (emtt:testral:p)
+      (emtt:testral:add-note "trace" nil 'failed str)))
+
 ;;;_  . emt:stage
 ;;$$RETHINK ME
 ;;See  [[id:47ad9e14-9a38-40e2-a5ea-91cbc4dfb97f][redesign]]: Now this
