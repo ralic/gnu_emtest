@@ -79,6 +79,9 @@ Make a `emt:view:presentable' or its descendant."
 	    suite))
       ((eq (car arg) 'note-2)
 	 (check-type (second arg) emt:view:presentable)
+	 (setf
+	    (emt:view:presentable->list (second arg))
+	    display-data)
 	 (second arg))
       ;;$$OBSOLETE
       ((eq (car arg) 'note)
