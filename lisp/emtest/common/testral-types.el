@@ -82,10 +82,11 @@
 
    ;;$$OBSOLESCENT  Info is becoming just other notes.
    info
-   ;;$$OBSOLESCENT  Info is becoming just other notes.
+
    (prestn-path () 
       :type emt:testral:partial-suite-id
-      :doc "The presentation path of this note")
+      :doc "Extra presentation path for this note.  Used to report
+   some deeply-nested checks such as type checking.")
    ;;Reflects only the note's's intrinsic problems.  Even push/pops
    ;;need it in case (say) a whole stage is dormantized or aborted.
    (badnesses () :type emt:testral:grade-aux))

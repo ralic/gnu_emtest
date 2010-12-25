@@ -327,7 +327,8 @@ NOTE must be a `emt:view:TESTRAL-2'"
    ;;$$IMPROVE ME Filter what is displayed, by parameter.
    ;;Filter is TBD
    (hiformat:map
-      #'emtvf:TESTRAL
+      #'(lambda (view-node &rest d)
+	   (emtvf:node view-node))
       (emtvp:node->children note)
       :separator '("\n")
       :els=0 '((sep 2) "No notes")))

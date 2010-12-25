@@ -59,6 +59,7 @@ It just tells a pathtree to add this node."
 Make a `emt:view:presentable' or its descendant."
    (cond
       ((null arg)
+	 ;;Just enough to show the name.
 	 (emt:view:make-presentable
 	    :list display-data))
       ((not (consp arg)) (error "Should be a cons"))
@@ -76,6 +77,10 @@ Make a `emt:view:presentable' or its descendant."
 			  (unless (emt:view:TESTRAL-2-p child) child))
 		     (emtvp:node->children suite))))
 	    suite))
+      ((eq (car arg) 'note-2)
+	 (check-type (second arg) emt:view:presentable)
+	 (second arg))
+      ;;$$OBSOLETE
       ((eq (car arg) 'note)
 	 (check-type (second arg) (repeat emt:testral:newstyle))
 	 ;;Aside from content, it's all set in pathtree or pathtree's

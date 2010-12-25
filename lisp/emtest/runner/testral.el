@@ -142,7 +142,7 @@ This continues any previous invocations of
 ;;;_ , Entry points for test code and its support
 ;;;_  .  emtt:testral:add-note-aux
 (defun emtt:testral:add-note-aux 
-   (id parent-id relation grade governor &rest args)
+   (id parent-id prestn-path relation grade governor &rest args)
    "Add a TESTRAL note.
 Must be called in a TESTRAL scope.
 
@@ -158,21 +158,23 @@ GOVERNOR is a symbol indicating a specific formatter for the output."
 	    (check-type governor symbol)
 	    (check-type grade    emt:testral:grade-aux)
 	    (emt:testral:make-newstyle
-	       :id        id
-	       :parent-id parent-id
-	       :relation  relation
-	       :governor  governor
-	       :value     args
+	       :id          id
+	       :parent-id   parent-id
+	       :prestn-path prestn-path
+	       :relation    relation
+	       :governor    governor
+	       :value       args
 	       ;;Failing the comparison does not neccessarily imply
 	       ;;a bad grade, that's for emt:assert to decide.
-	       :badnesses grade))
+	       :badnesses   grade))
 	 (error
 	    (emt:testral:make-newstyle
-	       :id        id
-	       :parent-id parent-id
-	       :relation  'problem
-	       :governor  'error-raised
-	       :value     err
+	       :id          id
+	       :parent-id   parent-id
+	       :prestn-path '()
+	       :relation    'problem
+	       :governor    'error-raised
+	       :value       err
 	       :badnesses 
 	       (emt:testral:make-grade:ungraded
 		  :contents
@@ -190,6 +192,7 @@ GOVERNOR is a symbol indicating a specific formatter for the output."
 	 #'emtt:testral:add-note-aux
 	 (emtt:testral:new-id)
 	 (emtt:testral:get-parent-id)
+	 '()
 	 relation grade governor args)))
 
 ;;;_  . emtt:testral:note-list
@@ -202,7 +205,7 @@ GOVERNOR is a symbol indicating a specific formatter for the output."
       :notes (emtt:testral:get-notes)))
 ;;;_ , Higher level entry points
 ;;;_  . emtt:testral:report-false
-(defun emtt:testral:report-false (prestn-prefix str)
+(defun emtt:testral:report-false (prestn-path str)
    "Report that a compare leaf was false.
 STR should be a string"
    (when (emtt:testral:p)
@@ -213,13 +216,14 @@ STR should be a string"
 	    (id (emtt:testral:new-id)))
 	 ;;Make a nest of parents according with the presentation
 	 ;;prefix.
-	 (dolist (relation prestn-prefix)
+	 '
+	 (dolist (relation prestn-path)
 	    (emtt:testral:add-note-aux id parent-id 
 	       relation nil 'scope)
 	    (setq parent-id id)
 	    (setq id (emtt:testral:new-id)))
 	 
-      	 (emtt:testral:add-note-aux id parent-id
+      	 (emtt:testral:add-note-aux id parent-id prestn-path
 	    "trace"
 	    nil
 	    'failed
