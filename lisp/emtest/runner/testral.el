@@ -136,8 +136,7 @@ This continues any previous invocations of
 	     (emt:testral:*events-seen* (second ,obj-sym))
 	     (emt:testral:*parent-id*   (third ,obj-sym)))
 	  ,@body)))
-
-;;;_ , Entry points for test code and its support
+;;;_ , Presentation-paths
 ;;;_  . emtt:testral:make-prestn-path
 (defun emtt:testral:make-prestn-path ()
    "Return a presentation path with no components"
@@ -164,6 +163,7 @@ problem, but that still want scoping."
 	      (emtt:testral:make-prestn-path))))
        ,@body))
 
+;;;_ , Entry points for test code and its support
 ;;;_  .  emtt:testral:add-note-aux
 (defun emtt:testral:add-note-aux 
    (id parent-id prestn-path relation grade governor &rest args)
