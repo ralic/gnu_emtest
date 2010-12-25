@@ -159,8 +159,6 @@ This continues any previous invocations of
       (emtt:testral:make-prestn-path)))
 
 ;;;_  . emtt:testral:with-prestn-path (Entry point)
-;;$$IMPROVE ME if NAME is a list, use it as (prefix of) the path.  As
-;;match.el wants. 
 ;;;###autoload
 (defmacro emtt:testral:with-prestn-path (name &rest body)
    "Evaluate BODY with a presentation-path defined.
