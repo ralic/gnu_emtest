@@ -147,6 +147,17 @@ This continues any previous invocations of
 (defun emtt:testral:add-to-prestn-path (name path)
    "Return PATH with NAME added as its leafward prefix."
    (append path name))
+;;;_  . emtt:testral:get-prestn-path
+(defun emtt:testral:get-prestn-path (name)
+   ""
+   (if (boundp 'emt:testral:*prestn-path*)
+      (emtt:testral:add-to-prestn-path
+	 (if (listp name)
+	    name
+	    (list name))
+	 emt:testral:*prestn-path*)
+      (emtt:testral:make-prestn-path)))
+
 ;;;_  . emtt:testral:with-prestn-path (Entry point)
 ;;$$IMPROVE ME if NAME is a list, use it as (prefix of) the path.  As
 ;;match.el wants. 
@@ -160,13 +171,7 @@ problem, but that still want scoping."
   
    `(let
        ((emt:testral:*prestn-path*
-	   (if (boundp 'emt:testral:*prestn-path*)
-	      (emtt:testral:add-to-prestn-path
-		 (if (listp name)
-		    name
-		    (list name))
-		 emt:testral:*prestn-path*)
-	      (emtt:testral:make-prestn-path))))
+	   (emtt:testral:get-prestn-path ,name)))
        ,@body))
 
 ;;;_ , Entry points for test code and its support

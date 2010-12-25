@@ -460,12 +460,14 @@ PATTERN is headed by governor"
 		   ,(emtm:test-form-data->form first)
 		   ,rest
 		   (ignore
-		      ;;$$FIX ME Treat testral presentation-path
-		      ;;properly.  Anchor it in the entry points,
-		      ;;give (add to) path here
-		      (emtt:testral:report-false
+		      ;;$$IMPROVE ME.  Anchor prestn-path in the entry
+		      ;;points, can use
+		      ;;`emtt:testral:with-prestn-path'
+		      (emtt:testral:with-prestn-path
 			 ',(emtm:test-form-data->prestn-path first)
-			 ,(emtm:test-form-data->explanation first)))))))
+			 (emtt:testral:report-false
+			    nil
+			    ,(emtm:test-form-data->explanation first))))))))
       
       core))
 ;;;_  . emtm:sort-bindings
