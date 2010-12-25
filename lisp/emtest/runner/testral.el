@@ -179,9 +179,9 @@ circumstances, but that still want scoping."
 	   (emtt:testral:update-prestn-path ,name)))
        ,@body))
 
-;;;_  . emtt:testral:get-interposing-id
-(defun emtt:testral:get-interposing-id (data)
-   "Return the id of an interposing note, according to DATA.
+;;;_  . emtt:testral:get-anchor-id
+(defun emtt:testral:get-anchor-id (data)
+   "Return the id of an anchor note, according to DATA.
 Make one if neccessary, setting DATA accordingly.
 DATA must the head of a presentation-path."
    (if
@@ -261,7 +261,7 @@ GOVERNOR is a symbol indicating a specific formatter for the output."
 	       (prestn-path
 		  (cdr prestn-data))
 	       (parent-id
-		  (emtt:testral:get-interposing-id head)))
+		  (emtt:testral:get-anchor-id head)))
 	    
 	    (apply
 	       #'emtt:testral:add-note-aux
