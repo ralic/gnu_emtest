@@ -36,7 +36,6 @@
 (declare
    (special 
       emt:testral:*events-seen*
-      emt:testral:*path-prefix*
       emt:testral:*id-counter*
       emt:testral:*parent-id*))
 ;;;_ , Support
@@ -105,7 +104,6 @@ received in."
       (
 	 (emt:testral:*id-counter*  (emtt:testral:create-counter))
 	 (emt:testral:*events-seen* (emtt:testral:create))
-	 (emt:testral:*path-prefix* ())  ;;$$OBSOLESCENT
 	 (emt:testral:*parent-id*   (emtt:testral:create-parent-id nil)))
        ,@body))
 
@@ -135,7 +133,6 @@ This continues any previous invocations of
 	     (,obj-sym ,obj)
 	     (emt:testral:*id-counter*  (first ,obj-sym))
 	     (emt:testral:*events-seen* (second ,obj-sym))
-	     (emt:testral:*path-prefix* ())  ;;$$OBSOLESCENT
 	     (emt:testral:*parent-id*   (third ,obj-sym)))
 	  ,@body)))
 

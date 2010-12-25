@@ -617,15 +617,6 @@ Intended for testing governor functions in isolation."
 	    '(testhelp-483s) 
 	    (funcall func 'testhelp-483s pattern) 
 	    't))))
-;;;_  . emtt:path-prefix-form
-;;$$MOVE ME  to testral.el
-;;This doesn't provide a special declaration.
-;;$$RETHINK ME:  Instead, this is done when notes are inserted.
-(defconst emtt:path-prefix-form
-   '(when 
-       (boundp 'emt:testral:*path-prefix*) 
-       emt:testral:*path-prefix*)
-   "" )
 ;;;_  . emtm
 ;;Does this order of arguments make sense?  Or should it be vv?
 (defmacro emtm (object-form pattern)
