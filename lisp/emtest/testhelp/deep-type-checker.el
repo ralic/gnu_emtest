@@ -135,12 +135,7 @@
 	 (typep obj spec)
 	 t
 	 (ignore
-	    ;;$$TRANSITIONAL - the "magic" path parameter will go away
-	    (emtt:testral:report-false 
-	       emt:testral:*prestn-path*
-	       "Wrong type")))))
-
-
+	    (emtt:testral:report-false "Wrong type")))))
 
 ;;;_ , Entry point emty:check-f
 ;;;###autoload

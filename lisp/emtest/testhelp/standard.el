@@ -69,43 +69,19 @@
    (emtt:testral:add-note "doc" nil 'doc str))
 
 ;;;_  . emtt:testral:report-false
-;;$$IMPROVE ME Remove unused prestn-path arg
-(defun emtt:testral:report-false (prestn-path str)
+;;$$IMPROVE ME take args, str can be a format string
+(defun emtt:testral:report-false (str)
    "Report that a compare leaf was false.
 STR should be a string"
    (when (emtt:testral:p)
       (emtt:testral:add-note "trace" nil 'failed str)))
 
 ;;;_  . emt:stage
-;;$$RETHINK ME
-;;See  [[id:47ad9e14-9a38-40e2-a5ea-91cbc4dfb97f][redesign]]: Now this
-;;just stores a note 
-
-;;This is a scoped form that stores a pop note when it's done.  
+;;$$WRITE ME
 (defmacro emt:stage (stage-args &rest body)
    "Run BODY in an Emtest stage"
-   
-   `(progn ,@body))
-
-;;Usage will be something like:
-'
-(emtg:narrow-f
-   `(list (list ',tag ,name))
-   `(emt:stage 
-       ("Iteration" ;;Name
-	  (emtt:testral:add-note
-	     "parameters"
-	     nil
-	     'parameter
-	     tag
-	     name
-	     (emt:testral:make-doc 
-		:str 
-		(concat 
-		   (prin1-to-string ',tag)
-		   " = " 
-		   (prin1-to-string ,name)))))
-       ,@body))
+   ;;Make a `scope' note and run body in 
+   `(emtt:testral:with-parent-id id ,@body))
 
 ;;;_ , Error / retry management
 ;;;_  . emth:abortscope
