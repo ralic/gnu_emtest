@@ -167,15 +167,15 @@ could be, such as when a note-list hasn't been expanded."
 		   (emt:testral:base->prestn-path 
 		      (emt:view:TESTRAL-2->contents child))))
 	       (if path
-		  ;;This makes bare viewable intermediate notes.
+		  ;;This makes intermediate notes, of type
+		  ;;`emt:view:presentable'
 		  (emtvp:add/replace-node-recurse
-		     tree (second cell) path 
+		     tree (second cell) 
+		     (append path '("Dummy")) ;;
 		     `(note-2 ,child))
 		  (emtvp:add-child
-		     tree (second cell) (first cell) child t)
-		  )
-	       )
-	    ))))
+		     tree (second cell) (first cell) child t)))))))
+
 
 ;;;_  . emtvr:collect-testral-2
 (defun emtvr:collect-testral-2  (node tree)

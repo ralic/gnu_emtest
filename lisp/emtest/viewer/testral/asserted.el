@@ -39,7 +39,14 @@
    "Formatter for TESTRAL note governed by `failed'"
    ;;$$IMPROVE ME  Take assert args as params, print them.
    (emtvf:outline-item
-      "Failed assertion"
+      (list
+	 ;;$$IMPROVE ME This should be more generally available.
+	 (apply #'append
+	       (mapcar
+		  #'(lambda (x)
+		       (list x " "))
+		  emtvf:*hdln-path*))
+	 "Failed assertion")
       (list
 	 (emtvf:obj-or-string form)
 	 (emtvf:TESTRAL:all-children note))

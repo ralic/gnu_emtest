@@ -294,7 +294,7 @@ Must be called in a `emtv2:dynamic:top' context."
 		  (= (length children) 1))
 	       ;;Shortcut any singletons.
 	       (let
-		  ((emtvf:*hdln-path* (list name)))
+		  ((emtvf:*hdln-path* (cons name emtvf:*hdln-path*)))
 		  (emtvf:make-dynamic 
 		     (car children)
 		     #'emtvf:node))
