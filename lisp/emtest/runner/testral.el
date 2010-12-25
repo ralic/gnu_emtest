@@ -37,6 +37,7 @@
    (special 
       emt:testral:*events-seen*
       emt:testral:*id-counter*
+      emt:testral:*prestn-path*
       emt:testral:*parent-id*))
 ;;;_ , Support
 ;;;_  . Predicates
@@ -69,7 +70,7 @@ This uses a TESTRAL counter."
    (car emt:testral:*parent-id*))
 ;;;_   , emtt:testral:with-parent-id
 (defmacro emtt:testral:with-parent-id (id &rest body)
-   "Evaluate BODY with ID as the current TESTRAL parent-id"
+   "Evaluate BODY with ID as the current TESTRAL parent-id."
    
    `(let
        ((emt:testral:*parent-id*
@@ -137,6 +138,32 @@ This continues any previous invocations of
 	  ,@body)))
 
 ;;;_ , Entry points for test code and its support
+;;;_  . emtt:testral:make-prestn-path
+(defun emtt:testral:make-prestn-path ()
+   "Return a presentation path with no components"
+   
+   '())
+;;;_  . emtt:testral:add-to-prestn-path
+(defun emtt:testral:add-to-prestn-path (name path)
+   "Add NAME as a component to PATH.
+NAME is added at the most leafward position."
+   (append path (list name)))
+;;;_  . emtt:testral:with-prestn-path
+(defmacro emtt:testral:with-prestn-path (name &rest body)
+   "Evaluate BODY with a presentation-path defined.
+
+This is intended for notes that should only be made when there is a
+problem, but that still want scoping."
+   
+   `(let
+       ((emt:testral:*prestn-path*
+	   (if (boundp 'emt:testral:*prestn-path*)
+	      (emtt:testral:add-to-prestn-path
+		 name
+		 emt:testral:*prestn-path*)
+	      (emtt:testral:make-prestn-path))))
+       ,@body))
+
 ;;;_  .  emtt:testral:add-note-aux
 (defun emtt:testral:add-note-aux 
    (id parent-id prestn-path relation grade governor &rest args)

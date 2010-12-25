@@ -134,7 +134,7 @@
 (defun emty:typep-annoted (obj spec name)
    ""
    (let
-      ((emty:*path* (append emty:*path* (list name))))
+      ((emty:*path* (emtt:testral:add-to-prestn-path name emty:*path*)))
       (if
 	 (typep obj spec)
 	 t
@@ -160,7 +160,7 @@ Here the args are values, not forms."
    "Return non-nil if FORM evaluates to a value of type TYPE."
    `(let
        ((emty:*use* t)
-	  (emty:*path* '()))
+	  (emty:*path* (emtt:testral:make-prestn-path)))
        (check-type ,form ,type ,string)))
 ;;;_ , emty:get-type-pred-sym
 ;;Excerpted from cl-macs.  Don't need the other branches.
