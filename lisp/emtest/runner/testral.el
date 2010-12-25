@@ -66,7 +66,7 @@ This uses a TESTRAL counter."
 
 ;;;_   , emtt:testral:get-parent-id
 (defsubst emtt:testral:get-parent-id ()
-   "Return the current TESTRAL parent-id"
+   "Return the current TESTRAL parent-id or `nil' if none."
    (car emt:testral:*parent-id*))
 ;;;_   , emtt:testral:with-parent-id
 (defmacro emtt:testral:with-parent-id (id &rest body)
@@ -142,21 +142,28 @@ This continues any previous invocations of
 (defun emtt:testral:make-prestn-path ()
    "Return a presentation path with no components"
    
-   '())
+   (list 
+      (list
+	 'parent
+	 (emtt:testral:get-parent-id))))
+
 ;;;_  . emtt:testral:add-to-prestn-path
 (defun emtt:testral:add-to-prestn-path (name path)
    "Return PATH with NAME added as its leafward prefix."
-   (append path name))
-;;;_  . emtt:testral:get-prestn-path
-(defun emtt:testral:get-prestn-path (name)
-   ""
-   (if (boundp 'emt:testral:*prestn-path*)
-      (emtt:testral:add-to-prestn-path
-	 (if (listp name)
-	    name
-	    (list name))
-	 emt:testral:*prestn-path*)
-      (emtt:testral:make-prestn-path)))
+   (append name path))
+;;;_  . emtt:testral:update-prestn-path
+(defun emtt:testral:update-prestn-path (name)
+   "Return the current presentation path with NAME added.
+If there is none, create one.  Caller has the responsibility of
+scoping it."
+   (when (emtt:testral:p)
+      (if (boundp 'emt:testral:*prestn-path*)
+	 (emtt:testral:add-to-prestn-path
+	    (if (listp name)
+	       name
+	       (list name))
+	    emt:testral:*prestn-path*)
+	 (emtt:testral:make-prestn-path))))
 
 ;;;_  . emtt:testral:with-prestn-path (Entry point)
 ;;;###autoload
@@ -164,16 +171,17 @@ This continues any previous invocations of
    "Evaluate BODY with a presentation-path defined.
 NAME should be nil, a `emt:testral:id-element' or list of
 `emt:testral:id-element'.
-This is intended for notes that should only be made when there is a
-problem, but that still want scoping."
+This is intended for notes that should only be made in abnormal
+circumstances, but that still want scoping."
   
    `(let
        ((emt:testral:*prestn-path*
-	   (emtt:testral:get-prestn-path ,name)))
+	   (emtt:testral:update-prestn-path ,name)))
        ,@body))
 
 ;;;_ , Entry points for test code and its support
 ;;;_  .  emtt:testral:add-note-aux
+;;$$CLEAN MY CALLERS: This shouldn't be directly used.
 (defun emtt:testral:add-note-aux 
    (id parent-id prestn-path relation grade governor &rest args)
    "Add a TESTRAL note.
@@ -227,16 +235,28 @@ GOVERNOR is a symbol indicating a specific formatter for the output."
 	    (id (emtt:testral:new-id))
 	    (prestn-p (boundp 'emt:testral:*prestn-path*))
 	    (prestn-path
-	       (if prestn-p emt:testral:*prestn-path* '())))
+	       (if prestn-p 
+		  (reverse emt:testral:*prestn-path*)
+		  '())))
 	 
 	 (when prestn-p
-	    ;;$$IMPROVE ME re-use a parent note if there is one,
-	    ;;otherwise store its id.
-	    (let ()
-	       (emtt:testral:add-note-aux id parent-id 
-		  relation nil 'scope)
-	       (setq parent-id id)
-	       (setq id (emtt:testral:new-id))))
+	    (let ((head (car prestn-path)))
+	       (if
+		  (eq (car head) 'parent)
+		  ;;No note already made.  Make one and store its id.
+		  (progn
+		     (emtt:testral:add-note-aux id parent-id '()
+			relation nil 'scope)
+		     (setf (first head)  'self)
+		     (setf (second head)  id)
+		     (setq parent-id id)
+		     (setq id (emtt:testral:new-id)))
+		  ;;Note already made.  Re-use it.
+		  (progn
+		     (assert (eq (car head) 'self))
+		     (setq parent-id (second head))))
+	       
+	       (setq prestn-path (cdr prestn-path))))
 	 
 	 (apply
 	    #'emtt:testral:add-note-aux
@@ -259,8 +279,9 @@ GOVERNOR is a symbol indicating a specific formatter for the output."
    "Report that a compare leaf was false.
 STR should be a string"
    (when (emtt:testral:p)
-      ;;$$ENCAP ME for adding a note with a parent nest.  For callers
-      ;;that don't want to keep making parent scopes.
+      (emtt:testral:add-note "trace" nil 'failed str)
+
+      '
       (let* 
 	 ((parent-id (emtt:testral:get-parent-id))
 	    (id (emtt:testral:new-id)))
