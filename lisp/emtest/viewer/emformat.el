@@ -270,8 +270,11 @@ Must be called in a `emtv2:dynamic:top' context."
 			      ((direct-contents
 				  (emt:testral:suite->contents object)))
 			      (etypecase direct-contents
+				 ;;$$IMPROVE ME Make and check a flag
+				 ;;whether we tried to insert notes
+				 ;;into pathtree.
 				 (emt:testral:runform-list
-				    "Runforms weren't converted.")
+				    "No children, or notes weren't converted.")
 				 (emt:testral:note-list
 				    (hiformat:map
 				       #'emtvf:TESTRAL
