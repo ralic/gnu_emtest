@@ -218,6 +218,7 @@ there was any error inside a `emth:trap-errors'."
 	    (emtt:testral:add-note-aux
 	       id
 	       parent-id
+	       '()
 	       "trace"
 	       nil
 	       'succeeded
@@ -225,6 +226,7 @@ there was any error inside a `emth:trap-errors'."
 	    (emtt:testral:add-note-aux
 	       id
 	       parent-id
+	       '()
 	       "trace"
 	       (emt:testral:make-grade:fail)
 	       'failed
