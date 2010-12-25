@@ -460,6 +460,9 @@ PATTERN is headed by governor"
 		   ,(emtm:test-form-data->form first)
 		   ,rest
 		   (ignore
+		      ;;$$FIX ME Treat testral presentation-path
+		      ;;properly.  Anchor it in the entry points,
+		      ;;give (add to) path here
 		      (emtt:testral:report-false
 			 ',(emtm:test-form-data->prestn-path first)
 			 ,(emtm:test-form-data->explanation first)))))))

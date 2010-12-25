@@ -138,27 +138,33 @@ This continues any previous invocations of
 	  ,@body)))
 ;;;_ , Presentation-paths
 ;;;_  . emtt:testral:make-prestn-path
+;;$$IMPROVE ME  This should record current parent-id
 (defun emtt:testral:make-prestn-path ()
    "Return a presentation path with no components"
    
    '())
 ;;;_  . emtt:testral:add-to-prestn-path
 (defun emtt:testral:add-to-prestn-path (name path)
-   "Add NAME as a component to PATH.
-NAME is added at the most leafward position."
-   (append path (list name)))
-;;;_  . emtt:testral:with-prestn-path
+   "Return PATH with NAME added as its leafward prefix."
+   (append path name))
+;;;_  . emtt:testral:with-prestn-path (Entry point)
+;;$$IMPROVE ME if NAME is a list, use it as (prefix of) the path.  As
+;;match.el wants. 
+;;;###autoload
 (defmacro emtt:testral:with-prestn-path (name &rest body)
    "Evaluate BODY with a presentation-path defined.
-
+NAME should be nil, a `emt:testral:id-element' or list of
+`emt:testral:id-element'.
 This is intended for notes that should only be made when there is a
 problem, but that still want scoping."
-   
+  
    `(let
        ((emt:testral:*prestn-path*
 	   (if (boundp 'emt:testral:*prestn-path*)
 	      (emtt:testral:add-to-prestn-path
-		 name
+		 (if (listp name)
+		    name
+		    (list name))
 		 emt:testral:*prestn-path*)
 	      (emtt:testral:make-prestn-path))))
        ,@body))
@@ -211,13 +217,30 @@ RELATION gives the relation to the parent note or the suite.  It
 must be a `emtvp:relation-element' - for now, that's a string.
 
 GOVERNOR is a symbol indicating a specific formatter for the output."
+   ;;$$IMPROVE ME This should be protected by the condition-case
    (when (emtt:testral:p)
-      (apply
-	 #'emtt:testral:add-note-aux
-	 (emtt:testral:new-id)
-	 (emtt:testral:get-parent-id)
-	 '()
-	 relation grade governor args)))
+      (let* 
+	 ((parent-id (emtt:testral:get-parent-id))
+	    (id (emtt:testral:new-id))
+	    (prestn-p (boundp 'emt:testral:*prestn-path*))
+	    (prestn-path
+	       (if prestn-p emt:testral:*prestn-path* '())))
+	 
+	 (when prestn-p
+	    ;;$$IMPROVE ME re-use a parent note if there is one,
+	    ;;otherwise store its id.
+	    (let ()
+	       (emtt:testral:add-note-aux id parent-id 
+		  relation nil 'scope)
+	       (setq parent-id id)
+	       (setq id (emtt:testral:new-id))))
+	 
+	 (apply
+	    #'emtt:testral:add-note-aux
+	    id
+	    parent-id
+	    prestn-path
+	    relation grade governor args))))
 
 ;;;_  . emtt:testral:note-list
 (defun emtt:testral:note-list ()

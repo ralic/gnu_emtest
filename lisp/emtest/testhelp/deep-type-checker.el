@@ -38,9 +38,6 @@
 
 (defconst emty:*use* nil 
    "Control variable for deep checking.  Always globally nil." )
-;;;_  . emty:*path*
-(defvar emty:*path* () 
-   "Special variable giving the prefix" )
 
 ;;;_ , Type specs
 ;;;_  . type bool
@@ -133,13 +130,16 @@
 ;;;_ , emty:typep-annoted
 (defun emty:typep-annoted (obj spec name)
    ""
-   (let
-      ((emty:*path* (emtt:testral:add-to-prestn-path name emty:*path*)))
+   (emtt:testral:with-prestn-path name
       (if
 	 (typep obj spec)
 	 t
 	 (ignore
-	    (emtt:testral:report-false emty:*path* "Wrong type")))))
+	    ;;$$TRANSITIONAL - the "magic" path parameter will go away
+	    (emtt:testral:report-false 
+	       emt:testral:*prestn-path*
+	       "Wrong type")))))
+
 
 
 ;;;_ , Entry point emty:check-f
@@ -158,10 +158,10 @@ Here the args are values, not forms."
 ;;;###autoload
 (defmacro emty:check (form type &optional string)
    "Return non-nil if FORM evaluates to a value of type TYPE."
-   `(let
-       ((emty:*use* t)
-	  (emty:*path* (emtt:testral:make-prestn-path)))
-       (check-type ,form ,type ,string)))
+   `(emtt:testral:with-prestn-path nil
+       (let
+	  ((emty:*use* t))
+	  (check-type ,form ,type ,string))))
 ;;;_ , emty:get-type-pred-sym
 ;;Excerpted from cl-macs.  Don't need the other branches.
 (defsubst emty:get-type-pred-sym (type-sym)
