@@ -116,11 +116,11 @@ which may not imply success of an assertion."
 ;;;_   , emtvf:singles-path
 (defun emtvf:singles-path ()
    ""
-   (apply #'append
+   (apply #'nconc
       (mapcar
 	 #'(lambda (x)
 	      (list x " "))
-	 emtvf:*hdln-path*)))
+	 (reverse emtvf:*hdln-path*))))
 ;;;_  . Outlining
 ;;$$MOVE ME later when we have dynamic variable registration sorted out.
 ;;;_   , Special variables

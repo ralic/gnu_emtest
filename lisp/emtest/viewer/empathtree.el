@@ -133,6 +133,8 @@ could be, such as when a note-list hasn't been expanded."
       ;;A parent-id of `nil' means a child of NODE itself.
       ((alist (cons
 		 (list nil node '())
+		 ;;For each note, make a viewable that we will later
+		 ;;insert into pathtree.
 		 (mapcar
 		    #'(lambda (note)
 			 (list 
@@ -147,7 +149,8 @@ could be, such as when a note-list hasn't been expanded."
       ;;itself, the other viewables are new.
       (setf (emtvp:node->children node) nil)
       
-      ;;Record each note's viewable with its parent
+      ;;Record each note's viewable with its parent.  For notes with
+      ;;presentation-paths, this is not quite right.
       (dolist (cell (cdr alist))
 	 (let*
 	    (  (note (emt:view:TESTRAL-2->contents (second cell)))
@@ -167,11 +170,11 @@ could be, such as when a note-list hasn't been expanded."
 		   (emt:testral:base->prestn-path 
 		      (emt:view:TESTRAL-2->contents child))))
 	       (if path
-		  ;;This makes intermediate notes, of type
-		  ;;`emt:view:presentable'
+		  ;;For notes with presentation paths, we may make
+		  ;;intermediate notes.
 		  (emtvp:add/replace-node-recurse
 		     tree (second cell) 
-		     (reverse path) ;;
+		     path
 		     `(note-2 ,child))
 		  (emtvp:add-child
 		     tree (second cell) (first cell) child t)))))))
