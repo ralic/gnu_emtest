@@ -138,32 +138,38 @@ This continues any previous invocations of
 	  ,@body)))
 ;;;_ , Presentation-paths
 ;;;_  . emtt:testral:make-prestn-path
-;;$$IMPROVE ME  This should record current parent-id
-(defun emtt:testral:make-prestn-path ()
+(defun emtt:testral:make-prestn-path (&optional name)
    "Return a presentation path with no components"
-   
-   (list 
-      (list
-	 'parent
-	 (emtt:testral:get-parent-id))))
+   (let
+      ((data (list
+		'parent
+		(emtt:testral:get-parent-id))))
+      (list data)))
+
 
 ;;;_  . emtt:testral:add-to-prestn-path
 (defun emtt:testral:add-to-prestn-path (name path)
    "Return PATH with NAME added as its leafward prefix."
-   (append name path))
+   (append 
+      (reverse
+	 (if (listp name)
+	    name
+	    (list name)))
+      path))
 ;;;_  . emtt:testral:update-prestn-path
 (defun emtt:testral:update-prestn-path (name)
    "Return the current presentation path with NAME added.
 If there is none, create one.  Caller has the responsibility of
 scoping it."
    (when (emtt:testral:p)
-      (if (boundp 'emt:testral:*prestn-path*)
+      (let* 
+	 ((prestn-path
+	     (if (boundp 'emt:testral:*prestn-path*)
+		emt:testral:*prestn-path*
+		(emtt:testral:make-prestn-path))))
 	 (emtt:testral:add-to-prestn-path
-	    (if (listp name)
-	       name
-	       (list name))
-	    emt:testral:*prestn-path*)
-	 (emtt:testral:make-prestn-path))))
+	    name prestn-path))))
+
 
 ;;;_  . emtt:testral:with-prestn-path (Entry point)
 ;;;###autoload
