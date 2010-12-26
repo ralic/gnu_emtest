@@ -171,7 +171,7 @@ could be, such as when a note-list hasn't been expanded."
 		  ;;`emt:view:presentable'
 		  (emtvp:add/replace-node-recurse
 		     tree (second cell) 
-		     (append path '("Dummy")) ;;
+		     (reverse path) ;;
 		     `(note-2 ,child))
 		  (emtvp:add-child
 		     tree (second cell) (first cell) child t)))))))
