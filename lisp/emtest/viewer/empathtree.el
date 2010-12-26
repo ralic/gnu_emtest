@@ -168,16 +168,15 @@ could be, such as when a note-list hasn't been expanded."
 	    (let* 
 	       ((path
 		   (emt:testral:base->prestn-path 
-		      (emt:view:TESTRAL-2->contents child))))
-	       (if path
-		  ;;For notes with presentation paths, we may make
-		  ;;intermediate notes.
-		  (emtvp:add/replace-node-recurse
-		     tree (second cell) 
-		     path
-		     `(note-2 ,child))
-		  (emtvp:add-child
-		     tree (second cell) (first cell) child t)))))))
+		      (emt:view:TESTRAL-2->contents child)))
+		  (ancestor (second cell))
+		  (parent
+		     (if path
+			(emtvp:find-node-under-node
+			   tree path ancestor)
+			ancestor)))
+	       (emtvp:add-child
+		  tree parent (first cell) child t))))))
 
 
 ;;;_  . emtvr:collect-testral-2
