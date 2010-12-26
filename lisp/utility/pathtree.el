@@ -268,16 +268,9 @@ don't otherwise alter it."
       
    ;;Do the actual removal
    (callf2 delq child (emtvp:node->children node))
-
-   ;;$$IMPROVE ME Dirty the parent - its children have changed
-   ;;now.  This is waiting for a suitable flag
-   '(emtvp:set-dirty tree child 'lost-children)
-
-   ;;Could process the old node later, but YAGNI.  It is the
-   ;;`node-dirtied' callback's responsibility to reprocess the
-   ;;node's children when it is dirtied.  
-   ;;$$IMPROVE ME Still set the flag.
-   '(emtvp:set-dirty tree child 'deleted))
+   ;;Indicate what has been done to each node.
+   (emtvp:set-dirty tree child 'lost-children)
+   (emtvp:set-dirty tree child 'deleted))
 
 
 ;;;_  . emtvp:make-pathtree
@@ -345,7 +338,6 @@ FLAG says what type of dirtiness is marked"
 (defmacro emtvp:util:handle-dirty (obj form)
    "Evaluate form with:
  * DIRTY-FLAGS bound to OBJ's dirty flags
- * NEW-DIRTY-NODES bound, but don't play with it
 
 And with the following functions defined:
 
@@ -355,11 +347,13 @@ And with the following functions defined:
  * NEW-DIRTY - add flag to OBJ's dirty flags
  * NEW-DIRTY-NODE - add flag to another object's dirty flags."
    (let
-      ((objsym (make-symbol "objsym")))
+      ((objsym (make-symbol "objsym"))
+	 (new-dirty-nodes (make-symbol "new-dirty-nodes")))
+      
       `(let* 
 	  (  (,objsym ,obj)
 	     (dirty-flags (emtvp:node->dirty-flags ,objsym))
-	     (new-dirty-nodes '()))
+	     (,new-dirty-nodes '()))
 	  (flet
 	     (  (undirty (flag)
 		   (setq dirty-flags
@@ -374,7 +368,7 @@ And with the following functions defined:
 		   (push flag dirty-flags))
 		(new-dirty-node (flag node)
 		   (push flag (emtvp:node->dirty-flags node))
-		   (push node new-dirty-nodes)))
+		   (push node ,new-dirty-nodes)))
 	 
 	     ,form)
       
@@ -385,8 +379,8 @@ And with the following functions defined:
 	  ;;Return the nodes we newly know are dirty.  If dirty-flags is
 	  ;;non-nil, that includes this node.
 	  (if dirty-flags
-	     (cons ,objsym new-dirty-nodes)
-	     new-dirty-nodes))))
+	     (cons ,objsym ,new-dirty-nodes)
+	     ,new-dirty-nodes))))
 
 
 

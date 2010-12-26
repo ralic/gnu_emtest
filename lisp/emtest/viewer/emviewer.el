@@ -123,7 +123,10 @@ An `emtve' or `nil'." )
 	    (undirty 'display)
 	    (wookie:redisplay 
 	       emtve:chewie 
-	       (emtve:vp-node->dlist obj))))))
+	       (emtve:vp-node->dlist obj)))
+	 ;;Other dirty flags are just cleared
+	 (dirty-flags
+	    (setq dirty-flags '())))))
 
 ;;;_ , Setup emtest:viewer:setup-if-needed
 (defun emtest:viewer:setup-if-needed ()

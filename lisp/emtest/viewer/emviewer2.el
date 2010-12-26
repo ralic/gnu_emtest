@@ -95,7 +95,11 @@
 
 	 ((member 'notes dirty-flags)
 	    (emtvr:collect-testral-2 obj tree)
-	    (undirty 'notes)))))
+	    (undirty 'notes))
+	 ;;Other dirty flags are just cleared
+	 (dirty-flags
+	    (setq dirty-flags '())))))
+
 
 
 ;;;_  . emtv2:setup-if-needed
