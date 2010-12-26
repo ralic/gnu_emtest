@@ -154,7 +154,8 @@ ARG must be suitable as a second argument to tree field `make-node'."
 	       tree child (cdr path) arg))
 	 (progn
 	    (when old-child
-	       ;;Remove the old node.  
+	       ;;Remove the old node.  We'll pass the callback its
+	       ;;data to reuse if it wants to.
 	       (callf2 remove old-child
 		  (emtvp:node->children node))
 	       ;;Could process the old node later, but YAGNI.  It is
