@@ -69,6 +69,7 @@ Make a `emt:view:presentable' or its descendant."
 	    (setf
 	       (emt:view:presentable->list suite)
 	       display-data)
+	    ;;Remove any note children from previous iterations.
 	    (setf
 	       (emtvp:node->children suite)
 	       (delq nil
@@ -79,6 +80,11 @@ Make a `emt:view:presentable' or its descendant."
 	    suite))
       ((eq (car arg) 'note-2)
 	 (check-type (second arg) emt:view:presentable)
+	 ;;Adopt all the old version's children
+	 (when old-version
+	    (setf
+	       (emtvp:node->children (second arg))
+	       (emtvp:node->children old-version)))
 	 (setf
 	    (emt:view:presentable->list (second arg))
 	    display-data)
