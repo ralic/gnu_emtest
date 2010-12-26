@@ -39,6 +39,7 @@
 ;;;_   , emtvp->id-element
 ;;$$FIXME These types should be gotten by TESTRAL from here, not vv.
 ;;Or both from a common source.  It is a presentation element anyways.
+;;Or parameterize on this or on a test for this.
 (deftype emtvp->id-element ()
    'emt:testral:id-element)
 ;;;_   , emtvp:node
@@ -245,8 +246,7 @@ don't otherwise alter it."
    
    (setf
       (emtvp:node->name        new-child) name
-      (emtvp:node->parent      new-child) parent
-      (emtvp:node->dirty-flags new-child) '(new))
+      (emtvp:node->parent      new-child) parent)
 
    ;;Don't set NEW-CHILD's children - the callback is allowed to set
    ;;them and expect them to be used.
@@ -257,11 +257,7 @@ don't otherwise alter it."
       (callf append
 	 (emtvp:node->children parent)
 	 (list new-child)))
-   ;;$$CLEANUP use the encapped version.
-   '(emtvp:set-dirty tree 'new new-child)
-   (push
-      new-child
-      (emtvp->dirty tree))
+   (emtvp:set-dirty tree new-child 'new)
    new-child)
 ;;;_  . emtvp:remove-child
 (defun emtvp:remove-child (tree parent child)
@@ -275,12 +271,13 @@ don't otherwise alter it."
 
    ;;$$IMPROVE ME Dirty the parent - its children have changed
    ;;now.  This is waiting for a suitable flag
-   '(emtvp:set-dirty tree 'lost-children child)
+   '(emtvp:set-dirty tree child 'lost-children)
 
    ;;Could process the old node later, but YAGNI.  It is the
    ;;`node-dirtied' callback's responsibility to reprocess the
-   ;;node's children when it is dirtied.
-   '(emtvp:set-dirty tree 'deleted child))
+   ;;node's children when it is dirtied.  
+   ;;$$IMPROVE ME Still set the flag.
+   '(emtvp:set-dirty tree child 'deleted))
 
 
 ;;;_  . emtvp:make-pathtree
