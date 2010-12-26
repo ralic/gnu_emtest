@@ -286,9 +286,10 @@ GOVERNOR is a symbol indicating a specific formatter for the output."
 ;;;_   , emtt:testral:add-note
 (defun emtt:testral:add-note (&rest args)
    ""
-   (apply #'emtt:testral:add-note-w/id
-      (emtt:testral:new-id)
-      args))
+   (when (emtt:testral:p)
+      (apply #'emtt:testral:add-note-w/id
+	 (emtt:testral:new-id)
+	 args)))
 
 ;;;_   , emtt:testral:note-list
 (defun emtt:testral:note-list ()
