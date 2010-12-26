@@ -328,8 +328,7 @@ Must be called in a `emtv2:dynamic:top' context."
 	 ;;Base type, appears for the root node.
 	 (emt:view:presentable
 	    (if
-	       (and
-		  (= (length children) 1))
+	       (= (length children) 1)
 	       ;;Shortcut any singletons.
 	       (emtvf:with-more-singles-path name
 		  (emtvf:make-dynamic 
