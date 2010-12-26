@@ -37,10 +37,10 @@
 ;;;###autoload
 (defun emtvf:TESTRAL-gov:not-in-db (value id backend)
    "Formatter for TESTRAL note governed by `not-in-db'"
-   (emtvf:outline-item
+   (emtvf:outline-item-emformat
       "ID not in database "
       `(
-	  ,(emtvf:outline-item
+	  ,(emtvf:outline-item-emformat
 	      (list
 		 "Value "
 		 (emtvf:button "[Accept]"

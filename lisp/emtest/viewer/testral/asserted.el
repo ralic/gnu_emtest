@@ -38,15 +38,8 @@
 (defun emtvf:TESTRAL-gov:failed (note form)
    "Formatter for TESTRAL note governed by `failed'"
    ;;$$IMPROVE ME  Take assert args as params, print them.
-   (emtvf:outline-item
-      (list
-	 ;;$$IMPROVE ME This should be more generally available.
-	 (apply #'append
-	       (mapcar
-		  #'(lambda (x)
-		       (list x " "))
-		  emtvf:*hdln-path*))
-	 "Failed assertion")
+   (emtvf:outline-item-emformat
+      "Failed assertion"
       (list
 	 (emtvf:obj-or-string form)
 	 (emtvf:TESTRAL:all-children note))
@@ -57,7 +50,7 @@
 (defun emtvf:TESTRAL-gov:succeeded (note form)
    "Formatter for TESTRAL note governed by `succeeded'"
    ;;$$IMPROVE ME  Take assert args as params, print them.
-   (emtvf:outline-item
+   (emtvf:outline-item-emformat
       "Assertion succeeded"
       (list
 	 (emtvf:obj-or-string form)

@@ -97,6 +97,30 @@ which may not imply success of an assertion."
 
 ;;;_ , Lower format functions
 ;;;_ , Helper functions
+;;;_  . Singles-Path
+;;;_   , Special variables
+(declare (special emtvf:*hdln-path*))
+;;;_   , emtvf:with-blank-singles-path
+(defmacro emtvf:with-blank-singles-path (&rest body)
+   "Eval BODY in a blank singles-path."
+   
+   `(let ((emtvf:*hdln-path* '()))
+       ,@body))
+;;;_   , emtvf:with-more-singles-path
+(defmacro emtvf:with-more-singles-path (name &rest body)
+   ""
+   
+   `(let ((emtvf:*hdln-path* (cons name emtvf:*hdln-path*)))
+       ,@body))
+
+;;;_   , emtvf:singles-path
+(defun emtvf:singles-path ()
+   ""
+   (apply #'append
+      (mapcar
+	 #'(lambda (x)
+	      (list x " "))
+	 emtvf:*hdln-path*)))
 ;;;_  . Outlining
 ;;$$MOVE ME later when we have dynamic variable registration sorted out.
 ;;;_   , Special variables
@@ -142,9 +166,20 @@ If FOLD is non-nil, fold that contents."
 		   ,contents)))
 	  (emtvf:outline-item-f ,new-depth ,face ,headtext
 	     ,contents-sym ,fold-now))))
+;;;_   , emtvf:outline-item-emformat
+(defmacro emtvf:outline-item-emformat (headtext contents &optional face fold)
+   ""
+   
+   `(emtvf:outline-item
+       (list (emtvf:singles-path) ,headtext)
+       (emtvf:with-blank-singles-path ,contents)
+       ,face
+       ,fold))
 
 ;;;_  . Buttons
 ;;;_   , emtvf:button-to-explore
+;;$$IMPROVE ME Make and use a loformatter that makes real widget
+;;buttons. 
 (defun emtvf:button-to-explore (explorable text)
    "Make a button to explore EXPLORABLE.
 Hack: We add a space after the button."
@@ -233,8 +268,8 @@ Must be called in a `emtv2:dynamic:top' context."
 	       (etypecase object
 		  (null "A null viewable")
 		  (emt:testral:test-runner-info
-		     (emtvf:outline-item
-			`(  ,name-prefix
+		     (emtvf:outline-item-emformat
+			`(  
 			    (w/face ,name emtvf:face:suitename)
 			    " "
 			    ,grades-sum)
@@ -249,8 +284,8 @@ Must be called in a `emtv2:dynamic:top' context."
 		  
 		  
 		  (emt:testral:suite
-		     (emtvf:outline-item 
-			`(  ,name-prefix
+		     (emtvf:outline-item-emformat
+			`(  
 			    (w/face ,name emtvf:face:suitename)
 			    " "
 			    ,(emtvf:button-to-explore explorable "[RUN]")
@@ -296,17 +331,14 @@ Must be called in a `emtv2:dynamic:top' context."
 	       (and
 		  (= (length children) 1))
 	       ;;Shortcut any singletons.
-	       (let
-		  ((emtvf:*hdln-path* (cons name emtvf:*hdln-path*)))
+	       (emtvf:with-more-singles-path name
 		  (emtvf:make-dynamic 
 		     (car children)
 		     #'emtvf:node))
 	       
-	       (let
-		  ((emtvf:*hdln-path* '()))
-
-		  (emtvf:outline-item 
-		     `(  ,name-prefix
+	       (emtvf:with-blank-singles-path
+		  (emtvf:outline-item-emformat
+		     `(  
 			 (w/face ,name emtvf:face:suitename)
 			 " "
 			 ,grades-sum)

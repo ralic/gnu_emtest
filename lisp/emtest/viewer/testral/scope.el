@@ -37,7 +37,7 @@
 ;;;###autoload
 (defun emtvf:TESTRAL-gov:scope (obj)
    "Formatter for TESTRAL viewable governed by `scope'"
-   (emtvf:outline-item
+   (emtvf:outline-item-emformat
       (emt:testral:newstyle->relation 
 	 (emt:view:TESTRAL-2->contents obj))
       (emtvf:TESTRAL:all-children obj)
