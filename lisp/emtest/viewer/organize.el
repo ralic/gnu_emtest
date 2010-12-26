@@ -43,16 +43,39 @@
 ;;;_ , Callbacks
 ;;;_  . emtvo:receive-cb
 
+;;$$PARAMETERIZE MY on make-display-data and tree object.
 (defun emtvo:receive-cb (presentation-path cell)
    "Emviewer callback that `receive' gets.
 It just tells a pathtree to add this node."
+   '
    (emtvp:add/replace-node
       ;;The pathtree root
       emtvo:pathtree 
       ;;The path
       presentation-path
       ;;The data
-      (list 'suite cell)))
+      (list 'suite cell))
+   (let
+      ((old-node (emtvp:find-node emtvo:pathtree presentation-path)))
+      ;;$$MAKE ME ACCURATE
+      ;;$$PUNT Call the make-display-data callback.
+
+      (setf
+	 (emtvp:node->name cell)
+	 (car (last presentation-path)))
+      ;;Adopt suite children but not note children
+      (setf
+	 (emtvp:node->children cell)
+	 (delq nil
+	    (mapcar
+	       #'(lambda (child)
+		    (unless (emt:view:TESTRAL-2-p child) child))
+	       (emtvp:node->children old-node))))
+       
+      ;;$$IMPROVE ME if (eq old-node cell)
+      ;;just dirty it for resummary/redisplay.  As `new'?  `updated'?
+      (emtvp:replace-node
+	 emtvo:pathtree old-node cell)))
 ;;;_  . emtvo:pathtree-cb-aux
 (defun emtvo:pathtree-cb-aux (old-version arg display-data)
    "Worker for the pathtree callback.
@@ -91,6 +114,7 @@ Make a `emt:view:presentable' or its descendant."
 	 (second arg))
       ;;$$OBSOLETE
       ((eq (car arg) 'note)
+	 (error "Don't call with arg `note'")
 	 (check-type (second arg) (repeat emt:testral:newstyle))
 	 ;;Aside from content, it's all set in pathtree or pathtree's
 	 ;;dirty-handler callback.  `:children' is mixed-initiative,

@@ -267,7 +267,7 @@ don't otherwise alter it."
    (check-type child  emtvp:node)
       
    ;;Do the actual removal
-   (callf2 delq child (emtvp:node->children node))
+   (callf2 delq child (emtvp:node->children parent))
    ;;Indicate what has been done to each node.
    (emtvp:set-dirty tree child 'lost-children)
    (emtvp:set-dirty tree child 'deleted))
