@@ -42,7 +42,7 @@
       "Failed assertion"
       (list
 	 (emtvf:obj-or-string form)
-	 (emtvf:TESTRAL:all-children note))
+	 (emtvf:TESTRAL:all-children note '()))
       'emtvf:face:failed))
 
 ;;;_ , emtvf:TESTRAL-gov:succeeded
@@ -54,7 +54,7 @@
       "Assertion succeeded"
       (list
 	 (emtvf:obj-or-string form)
-	 (emtvf:TESTRAL:all-children note)) 
+	 (emtvf:TESTRAL:all-children note '())) 
       'emtvf:face:ok
       t))
 

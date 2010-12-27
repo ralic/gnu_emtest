@@ -355,7 +355,7 @@ Must be called in a `emtv2:dynamic:top' context."
 ;;The basic difference from the others is that it assumes notes, not
 ;;suites, and it figures out children.  There's plenty of room for
 ;;future variation in all of that.
-(defun emtvf:TESTRAL:all-children (note &optional filter)
+(defun emtvf:TESTRAL:all-children (note &optional els=0 filter)
    "Format the children of NOTE.
 NOTE must be a `emt:view:TESTRAL-2'"
    ;;$$IMPROVE ME Filter what is displayed, by parameter.
@@ -365,7 +365,7 @@ NOTE must be a `emt:view:TESTRAL-2'"
 	   (emtvf:node view-node))
       (emtvp:node->children note)
       :separator '("\n")
-      :els=0 '((sep 2) "No notes")))
+      :els=0 els=0))
 
 ;;;_  . emtvf:TESTRAL (TESTRAL note formatter)
 (defun emtvf:TESTRAL (obj &rest d)
