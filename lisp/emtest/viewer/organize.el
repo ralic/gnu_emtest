@@ -47,7 +47,7 @@
 (defun emtvo:receive-cb (presentation-path cell)
    "Emviewer callback that `receive' gets.
 It just tells a pathtree to add this node."
-   '
+   '  ;;$$OBSOLETE
    (emtvp:add/replace-node
       ;;The pathtree root
       emtvo:pathtree 
@@ -56,8 +56,10 @@ It just tells a pathtree to add this node."
       ;;The data
       (list 'suite cell))
    (let
-      ((old-node (emtvp:find-node emtvo:pathtree presentation-path)))
-      ;;$$MAKE ME ACCURATE
+      ((old-node 
+	  (emtvp:find-node emtvo:pathtree presentation-path
+	     #'emt:view:make-presentable)))
+      
       ;;$$PUNT Call the make-display-data callback.
 
       (setf
@@ -72,11 +74,13 @@ It just tells a pathtree to add this node."
 		    (unless (emt:view:TESTRAL-2-p child) child))
 	       (emtvp:node->children old-node))))
        
-      ;;$$IMPROVE ME if (eq old-node cell)
-      ;;just dirty it for resummary/redisplay.  As `new'?  `updated'?
+      ;;$$IMPROVE ME if (eq old-node cell) just dirty it for
+      ;;resummary/redisplay as `updated', and handle that.
       (emtvp:replace-node
 	 emtvo:pathtree old-node cell)))
 ;;;_  . emtvo:pathtree-cb-aux
+;;$$RETHINK ME When we set up display-data.  Perhaps better in the
+;;freshener, getting foreign data stored in the pathtree.
 (defun emtvo:pathtree-cb-aux (old-version arg display-data)
    "Worker for the pathtree callback.
 Make a `emt:view:presentable' or its descendant."

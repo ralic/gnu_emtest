@@ -88,7 +88,7 @@
 
 
 ;;;_  . TESTRAL in viewable form.
-;;$$OBSOLESCENT
+;;$$OBSOLETE
 (defstruct (emt:view:TESTRAL
 	    (:constructor nil)
 	    (:conc-name emt:view:TESTRAL->)

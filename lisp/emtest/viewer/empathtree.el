@@ -173,7 +173,9 @@ could be, such as when a note-list hasn't been expanded."
 		  (parent
 		     (if path
 			(emtvp:find-node-under-node
-			   tree path ancestor)
+			   tree path ancestor
+			   #'(lambda (&rest d)
+				(emt:view:make-TESTRAL-2)))
 			ancestor)))
 	       (emtvp:add-child
 		  tree parent (first cell) child t))))))

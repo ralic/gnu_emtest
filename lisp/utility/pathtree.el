@@ -81,6 +81,10 @@
 This function should not directly modify parent or children nodes,
 other than by setting dirty flags in them and pushing them onto the
 dirty list.")
+
+   ;;$$ADD TO ME A foreign field, for `node-dirtied' to see.
+
+   ;;$$OBSOLESCENT
    (make-node
       :type function
       :doc "Function to make a node.  It takes:
@@ -175,7 +179,7 @@ ARG must be suitable as a second argument to tree field `make-node'."
 	       name 
 	       (funcall (emtvp->make-node tree) old-child arg))))))
 ;;;_  . emtvp:find-node
-(defun emtvp:find-node (tree path)
+(defun emtvp:find-node (tree path make-empty-node)
    "Find a node at path PATH in TREE.
 Make intervening nodes if they don't exist.
 TREE must be a `emtvp'.
@@ -184,12 +188,12 @@ PATH must be a list of `emtvp->id-element'."
    (check-type tree emtvp)
    (check-type path (repeat emtvp->id-element))
    (emtvp:find-node-under-node
-      tree path (emtvp->root tree)))
+      tree path (emtvp->root tree) make-empty-node))
 
 ;;;_  . emtvp:find-node-under-node
 ;;$$NB different args and order than `emtvp:add/replace-node-recurse'
 
-(defun emtvp:find-node-under-node (tree path node)
+(defun emtvp:find-node-under-node (tree path node make-empty-node)
    "Return a node at path PATH under node NODE.
 The return value is suitable as a parent
 Make intervening nodes if they don't exist.  
@@ -216,10 +220,10 @@ PATH must be a list of `emtvp->id-element'."
 		  tree 
 		  node 
 		  name 
-		  (funcall (emtvp->make-node tree) nil nil)))))
+		  (funcall make-empty-node)))))
       (if
 	 tail
-	 (emtvp:find-node-under-node tree tail child)
+	 (emtvp:find-node-under-node tree tail child make-empty-node)
 	 child)))
 ;;;_  . emtvp:replace-node
 (defun emtvp:replace-node (tree old-node new-node)
