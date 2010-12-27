@@ -37,6 +37,8 @@
 ;;;###autoload
 (defun emtvf:TESTRAL-gov:doc (note doc)
    "Formatter for TESTRAL note governed by `doc'"
+   ;;$$IMPROVE ME Don't let headlines grow too long.  Long strings and
+   ;;long singles-paths are major culprits.
    (cond
       ((not (string-match "\n" doc))
 	 (emtvf:outline-item-emformat
