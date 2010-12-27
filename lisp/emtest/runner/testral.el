@@ -200,7 +200,7 @@ DATA must the head of a presentation-path."
 	    '()
 	    relation nil 'scope)
 	 (setf (first data)  'self)
-	 (setf (second data)  id)
+	 (setf (second data)  parent-id)
 	 parent-id)
       ;;Parent note already made.  Re-use it.
       (progn
@@ -242,7 +242,6 @@ RELATION gives the relation to the parent note or the suite.  It
 must be a `emtvp:relation-element' - for now, that's a string.
 
 GOVERNOR is a symbol indicating a specific formatter for the output."
-   ;;$$IMPROVE ME This should be protected by the condition-case.
    (when (emtt:testral:p)
       (condition-case err
 	 (if (boundp 'emt:testral:*prestn-path*)
