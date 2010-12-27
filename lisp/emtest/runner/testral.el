@@ -96,7 +96,7 @@ This uses a TESTRAL counter."
    "Return a list of the notes received in the same order they were
 received in."
    (nreverse (cdr emt:testral:*events-seen*)))
-;;;_ , Entry points primarily for Emtest itself
+;;;_ , Support primarily for running complete test-cases
 ;;;_  . emtt:testral:with
 (defmacro emtt:testral:with (&rest body)
    "Evaluate BODY with TESTRAL facilities available"
@@ -219,33 +219,20 @@ must be a `emt:testral:id-element'.
 GOVERNOR is a symbol indicating a specific formatter for the output."
    (assert (emtt:testral:p))
    (emtt:testral:push-note
-      (condition-case err
-	 (progn
-	    (check-type relation emt:testral:id-element)
-	    (check-type governor symbol)
-	    (check-type grade    emt:testral:grade-aux)
-	    (emt:testral:make-newstyle
-	       :id          id
-	       :parent-id   parent-id
-	       :prestn-path prestn-path
-	       :relation    relation
-	       :governor    governor
-	       :value       args
-	       ;;Failing the comparison does not neccessarily imply
-	       ;;a bad grade, that's for emt:assert to decide.
-	       :badnesses   grade))
-	 (error
-	    (emt:testral:make-newstyle
-	       :id          id
-	       :parent-id   parent-id
-	       :prestn-path '()
-	       :relation    'problem
-	       :governor    'error-raised
-	       :value       err
-	       :badnesses 
-	       (emt:testral:make-grade:ungraded
-		  :contents
-		  "An error was seen while storing a note"))))))
+      (progn
+	 (check-type relation emt:testral:id-element)
+	 (check-type governor symbol)
+	 (check-type grade    emt:testral:grade-aux)
+	 (emt:testral:make-newstyle
+	    :id          id
+	    :parent-id   parent-id
+	    :prestn-path prestn-path
+	    :relation    relation
+	    :governor    governor
+	    :value       args
+	    ;;Failing the comparison does not neccessarily imply
+	    ;;a bad grade, that's for emt:assert to decide.
+	    :badnesses   grade))))
 ;;;_  . Entry points
 ;;;_   , emtt:testral:add-note-w/id
 (defun emtt:testral:add-note-w/id (id relation grade governor &rest args)
@@ -257,31 +244,43 @@ must be a `emtvp:relation-element' - for now, that's a string.
 GOVERNOR is a symbol indicating a specific formatter for the output."
    ;;$$IMPROVE ME This should be protected by the condition-case.
    (when (emtt:testral:p)
-      (if (boundp 'emt:testral:*prestn-path*)
-	 (let* 
-	    (
-	       (prestn-data
-		  (reverse emt:testral:*prestn-path*))
-	       (head
-		  (car prestn-data))
-	       (prestn-path
-		  (cdr prestn-data))
-	       (parent-id
-		  (emtt:testral:get-anchor-id head)))
+      (condition-case err
+	 (if (boundp 'emt:testral:*prestn-path*)
+	    (let* 
+	       (
+		  (prestn-data
+		     (reverse emt:testral:*prestn-path*))
+		  (head
+		     (car prestn-data))
+		  (prestn-path
+		     (cdr prestn-data))
+		  (parent-id
+		     (emtt:testral:get-anchor-id head)))
+	    
+	       (apply
+		  #'emtt:testral:add-note-aux
+		  id
+		  parent-id
+		  prestn-path
+		  relation grade governor args))
 	    
 	    (apply
 	       #'emtt:testral:add-note-aux
 	       id
-	       parent-id
-	       prestn-path
+	       (emtt:testral:get-parent-id)
+	       '()
 	       relation grade governor args))
-	    
-	 (apply
-	    #'emtt:testral:add-note-aux
-	    id
-	    (emtt:testral:get-parent-id)
-	    '()
-	    relation grade governor args))))
+	 (error
+	    (emtt:testral:add-note-aux 
+	       id 
+	       parent-id 
+	       '() 
+	       'problem
+	       (emt:testral:make-grade:ungraded
+		  :contents
+		  "An error was seen while storing a note")
+	       'error-raised err)))))
+
 
 ;;;_   , emtt:testral:add-note
 (defun emtt:testral:add-note (&rest args)
