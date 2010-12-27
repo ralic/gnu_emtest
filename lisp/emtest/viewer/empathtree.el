@@ -174,9 +174,10 @@ could be, such as when a note-list hasn't been expanded."
 		     (if path
 			(emtvp:find-node-under-node
 			   tree path ancestor
-			   #'(lambda (&rest d)
-				(emt:view:make-TESTRAL-2)))
+			   #'emt:view:make-no-note)
 			ancestor)))
+	       ;;$$IMPROVE ME If there's a `emt:view:no-note', replace
+	       ;;it with this one.
 	       (emtvp:add-child
 		  tree parent (first cell) child t))))))
 

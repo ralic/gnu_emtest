@@ -321,6 +321,16 @@ Must be called in a `emtv2:dynamic:top' context."
 				    '("No known contents")))))
 			grade-face
 			boring-p)))))
+;; 	 (emt:view:no-note
+;; 	    ;;$$ENCAP ME encap this idiom.
+;; 	    (if
+;; 	       (= (length children) 1)
+;; 	       ;;Shortcut any singletons.
+;; 	       (emtvf:with-more-singles-path name
+;; 		  (emtvf:make-dynamic 
+;; 		     (car children)
+;; 		     #'emtvf:node))
+;; 	       "[Placeholder with no children]"))
 	 
 	 (emt:view:TESTRAL-2
 	    (emtvf:TESTRAL view-node))
@@ -340,7 +350,11 @@ Must be called in a `emtv2:dynamic:top' context."
 		     `(  
 			 (w/face ,name emtvf:face:suitename)
 			 " "
-			 ,grades-sum)
+			 ;;$$IMPROVE ME - this was quick and dirty.
+			 ;;Keep types more separate than this.
+			 ,(if (emt:view:no-note-p view-node)
+			     '()
+			     grades-sum))
 		     (hiformat:map 
 			;;Formatting for each child
 			#'(lambda (obj &rest d)

@@ -105,6 +105,12 @@
    ""
    (contents () :type emt:testral:newstyle))
 
+;;;_  . Blank note
+(defstruct (emt:view:no-note
+	    (:constructor emt:view:make-no-note)
+	    (:conc-name emt:view:no-note->)
+	      (:include emt:view:presentable))
+   "A blank note-like placeholder, not associated with a TESTRAL note")
 
 ;;;_  . TESTRAL unexpanded leaf
 '  ;;$$OBSOLETE
