@@ -74,7 +74,7 @@
    "Report that a compare leaf was false.
 STR should be a string"
    (when (emtt:testral:p)
-      (emtt:testral:add-note "trace" nil 'failed str)))
+      (emtt:testral:add-note "trace" nil 'matched str)))
 
 ;;;_  . emt:stage
 (defmacro emt:stage (stage-args &rest body)

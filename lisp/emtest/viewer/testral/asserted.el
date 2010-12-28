@@ -34,6 +34,7 @@
 
 ;;;_. Body
 ;;;_ , emtvf:TESTRAL-gov:failed
+;;$$IMPROVE ME Factor these functions.
 ;;;###autoload
 (defun emtvf:TESTRAL-gov:failed (note form)
    "Formatter for TESTRAL note governed by `failed'"
@@ -57,6 +58,30 @@
 	 (emtvf:TESTRAL:all-children note '())) 
       'emtvf:face:ok
       t))
+;;;_ , emtvf:TESTRAL-gov:mismatched
+;;;###autoload
+(defun emtvf:TESTRAL-gov:mismatched (note form)
+   "Formatter for TESTRAL note governed by `mismatched'"
+   (emtvf:outline-item-emformat
+      "Mismatched"
+      (list
+	 (emtvf:obj-or-string form)
+	 (emtvf:TESTRAL:all-children note '())) 
+      'emtvf:face:mismatch))
+
+
+;;;_ , emtvf:TESTRAL-gov:matched
+;;;###autoload
+(defun emtvf:TESTRAL-gov:matched (note form)
+   "Formatter for TESTRAL note governed by `matched'"
+   (emtvf:outline-item-emformat
+      "Matched"
+      (list
+	 (emtvf:obj-or-string form)
+	 (emtvf:TESTRAL:all-children note '())) 
+      'emtvf:face:ok-match
+      t))
+
 
 ;;;_. Footers
 ;;;_ , Register then
@@ -67,6 +92,16 @@
 ;;;###autoload (emtvf:TESTRAL:add-gov
 ;;;###autoload    'succeeded
 ;;;###autoload    #'emtvf:TESTRAL-gov:succeeded)
+
+;;;_ , Register it
+;;;###autoload (emtvf:TESTRAL:add-gov
+;;;###autoload    'mismatched 
+;;;###autoload    #'emtvf:TESTRAL-gov:mismatched)
+
+;;;_ , Register it
+;;;###autoload (emtvf:TESTRAL:add-gov
+;;;###autoload    'matched 
+;;;###autoload    #'emtvf:TESTRAL-gov:matched)
 
 ;;;_ , Provides
 
