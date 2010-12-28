@@ -321,19 +321,10 @@ Must be called in a `emtv2:dynamic:top' context."
 				    '("No known contents")))))
 			grade-face
 			boring-p)))))
-;; 	 (emt:view:no-note
-;; 	    ;;$$ENCAP ME encap this idiom.
-;; 	    (if
-;; 	       (= (length children) 1)
-;; 	       ;;Shortcut any singletons.
-;; 	       (emtvf:with-more-singles-path name
-;; 		  (emtvf:make-dynamic 
-;; 		     (car children)
-;; 		     #'emtvf:node))
-;; 	       "[Placeholder with no children]"))
 	 
 	 (emt:view:TESTRAL-2
 	    (emtvf:TESTRAL view-node))
+
 	 (emt:view:no-note
 	    (emtvf:shortcut-single 
 	       view-node
@@ -355,20 +346,22 @@ Must be called in a `emtv2:dynamic:top' context."
 (defmacro emtvf:shortcut-single (obj rest-headline face format-no-child)
    "Display an item and its children, or display its single child.
 Intended for items that are basically just containers."
-   
-   `(let
-       ((name (emtvp:node->name ,obj))
-	  (children (emtvp:node->children ,obj)))
-       (if
-	  (= (length children) 1)
-	  (emtvf:with-more-singles-path name
-	     (emtvf:make-dynamic 
-		(car children)
-		#'emtvf:node))
-	  (emtvf:outline-item-emformat
-	     (list name ,rest-headline)
-	     (emtvf:TESTRAL:all-children ,obj ,format-no-child)
-	     ,face))))
+   (let
+      ((name (make-symbol "name"))
+	 (children (make-symbol "children")))
+      `(let
+	  ((,name (emtvp:node->name ,obj))
+	     (,children (emtvp:node->children ,obj)))
+	  (if
+	     (= (length ,children) 1)
+	     (emtvf:with-more-singles-path ,name
+		(emtvf:make-dynamic 
+		   (car ,children)
+		   #'emtvf:node))
+	     (emtvf:outline-item-emformat
+		(list ,name ,rest-headline)
+		(emtvf:TESTRAL:all-children ,obj ,format-no-child)
+		,face)))))
 
 
 ;;;_  . emtvf:TESTRAL:all-children
