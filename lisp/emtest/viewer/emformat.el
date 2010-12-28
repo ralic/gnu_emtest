@@ -120,7 +120,7 @@ which may not imply success of an assertion."
       (mapcar
 	 #'(lambda (x)
 	      (list x " "))
-	 (reverse emtvf:*hdln-path*))))
+	 (nreverse (remq nil emtvf:*hdln-path*)))))
 ;;;_  . Outlining
 ;;$$MOVE ME later when we have dynamic variable registration sorted out.
 ;;;_   , Special variables
@@ -250,6 +250,7 @@ Must be called in a `emtv2:dynamic:top' context."
 	    (emtvf:grade-boring grades))
 	 ;;This gives us the prefix of the headline if we have skipped
 	 ;;one or more plys of the tree because they were singletons.
+	 ;;$$REMOVE ME This has migrated.
 	 (name-prefix
 	    (apply #'append
 	       (mapcar
