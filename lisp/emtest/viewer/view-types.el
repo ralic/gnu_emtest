@@ -105,7 +105,8 @@
    ""
    (contents () :type emt:testral:newstyle))
 
-;;;_  . Blank note
+;;;_  . Note placeholder
+;;$$RENAME ME emt:view:TESTRAL-placeholder
 (defstruct (emt:view:no-note
 	    (:constructor emt:view:make-no-note)
 	    (:conc-name emt:view:no-note->)
