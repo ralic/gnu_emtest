@@ -345,25 +345,26 @@ Must be called in a `emtv2:dynamic:top' context."
 		     (car children)
 		     #'emtvf:node))
 	       
-	       (emtvf:with-blank-singles-path
-		  (emtvf:outline-item-emformat
-		     `(  
-			 (w/face ,name emtvf:face:suitename)
-			 " "
-			 ;;$$IMPROVE ME - this was quick and dirty.
-			 ;;Keep types more separate than this.
-			 ,(if (emt:view:no-note-p view-node)
-			     '()
-			     grades-sum))
-		     (hiformat:map 
-			;;Formatting for each child
-			#'(lambda (obj &rest d)
-			     (emtvf:make-dynamic
-				obj 
-				#'emtvf:node))
-			children
-			:separator '("\n")) 
-		     grade-face)))))))
+	       
+	       (emtvf:outline-item-emformat
+		  `(  
+		      (w/face ,name emtvf:face:suitename)
+		      " "
+		      ;;$$IMPROVE ME - this was quick and dirty.
+		      ;;Keep types more separate than this.
+		      ,(if (emt:view:no-note-p view-node)
+			  '()
+			  grades-sum))
+		  (emtvf:with-blank-singles-path
+		      (hiformat:map 
+			 ;;Formatting for each child
+			 #'(lambda (obj &rest d)
+			      (emtvf:make-dynamic
+				 obj 
+				 #'emtvf:node))
+			 children
+			 :separator '("\n"))) 
+		     grade-face))))))
 
 ;;;_  . emtvf:TESTRAL:all-children
 ;;The basic difference from the others is that it assumes notes, not
