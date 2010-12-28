@@ -183,8 +183,8 @@ If FOLD is non-nil, fold that contents."
 (defun emtvf:button-to-explore (explorable text)
    "Make a button to explore EXPLORABLE.
 Hack: We add a space after the button."
-   ;;$$IMPROVE ME - instead of always making a space let's wrap these
-   ;;in something that alternates items with separators, a la
+   ;;$$IMPROVE ME - instead of always making a space let's wrap calls
+   ;;to this in something that alternates items with separators, a la
    ;;hiformat:map
    (when explorable
       (list
@@ -251,12 +251,13 @@ Must be called in a `emtv2:dynamic:top' context."
 	 ;;This gives us the prefix of the headline if we have skipped
 	 ;;one or more plys of the tree because they were singletons.
 	 ;;$$REMOVE ME This has migrated.
-	 (name-prefix
-	    (apply #'append
-	       (mapcar
-		  #'(lambda (x)
-		       (list x " "))
-		  emtvf:*hdln-path*))))
+;; 	 (name-prefix
+;; 	    (apply #'append
+;; 	       (mapcar
+;; 		  #'(lambda (x)
+;; 		       (list x " "))
+;; 		  emtvf:*hdln-path*)))
+	 )
       
       (etypecase suite
 	 (emt:view:suite-newstyle
@@ -339,10 +340,8 @@ Must be called in a `emtv2:dynamic:top' context."
 	       view-node
 	       grades-sum
 	       grade-face
-	       "[Suite placeholder with no children]")
-	    
+	       "[Suite placeholder with no children]")))))
 
-	    ))))
 ;;;_  . emtvf:shortcut-single
 (defmacro emtvf:shortcut-single (obj rest-headline face format-no-child)
    "Display an item and its children, or display its single child.
