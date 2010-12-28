@@ -334,36 +334,23 @@ Must be called in a `emtv2:dynamic:top' context."
 	 
 	 (emt:view:TESTRAL-2
 	    (emtvf:TESTRAL view-node))
-
+	 (emt:view:no-note
+	    (emtvf:shortcut-single 
+	       view-node
+	       '()
+	       nil
+	       "[Note placeholder with no children]"))
+	 
 	 ;;Base type, appears for the root node.
 	 (emt:view:presentable
-	    (if
-	       (= (length children) 1)
-	       ;;Shortcut any singletons.
-	       (emtvf:with-more-singles-path name
-		  (emtvf:make-dynamic 
-		     (car children)
-		     #'emtvf:node))
-	       
-	       (emtvf:outline-item-emformat
-		  `(  
-		      (w/face ,name emtvf:face:suitename)
-		      " "
-		      ;;$$IMPROVE ME - this was quick and dirty.
-		      ;;Keep types more separate than this.
-		      ,(if (emt:view:no-note-p view-node)
-			  '()
-			  grades-sum))
+	    (emtvf:shortcut-single 
+	       view-node
+	       grades-sum
+	       grade-face
+	       "[Suite placeholder with no children]")
+	    
 
-		  (hiformat:map 
-		     ;;Formatting for each child
-		     #'(lambda (obj &rest d)
-			  (emtvf:make-dynamic
-			     obj 
-			     #'emtvf:node))
-		     children
-		     :separator '("\n")) 
-		     grade-face))))))
+	    ))))
 ;;;_  . emtvf:shortcut-single
 (defmacro emtvf:shortcut-single (obj rest-headline face format-no-child)
    "Display an item and its children, or display its single child.
