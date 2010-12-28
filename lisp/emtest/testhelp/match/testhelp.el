@@ -75,9 +75,7 @@
 
 
 ;;;_  . Literal version, to validate against
-;;$$MOVE ME MAYBE - This may belong in testhelp
-
-(defun rtest-struct:gov-literal (sym pattern &optional other-deps prestn-prefix)
+(defun emths:struct:gov-literal (sym pattern &optional other-deps prestn-prefix)
    ""
 
    (destructuring-bind (&key (my-field () sv-my-field))
@@ -85,13 +83,13 @@
 
       (let* 
 	 (
-	    ;;Object must be of type rtest-struct.
+	    ;;Object must be of type emths:struct.
 	    (check-type
 	       (emtm:make-typecheck-form
-		  sym #'rtest-struct-p ()))
+		  sym #'emths:struct-p ()))
 
 	    (my-field-sym (gensym))
-	    ;;Get the my-field accessor `rtest-struct->my-field'
+	    ;;Get the my-field accessor `emths:struct->my-field'
 	    ;;Make a binding that accesses field
 	    (bind-field-my-field
 	       (emtm:make-binding-form-data
@@ -99,7 +97,7 @@
 		  (emtm:parse-dependencies
 		     (list sym) (list check-type))
 		  :bind my-field-sym
-		  :form `(rtest-struct->my-field ,sym)))
+		  :form `(emths:struct->my-field ,sym)))
 	    ;;Match the given `my-field' pattern to that object.
 	    (child-formdata
 	       (emtm:parse-pattern
@@ -123,8 +121,8 @@
 	    'emtm:formdata))))
 
 ;;And make it a governor.
-(put 'rtest-struct-literal-gov 'emtm:makepattern
-   #'rtest-struct:gov-literal)
+(put 'emths:struct:literal-gov 'emtm:makepattern
+   #'emths:struct:gov-literal)
 
 ;;;_. Footers
 ;;;_ , Provides
