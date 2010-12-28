@@ -627,7 +627,6 @@ Intended for testing governor functions in isolation."
 	       (funcall func 'testhelp-483s pattern) 
 	       't)))))
 ;;;_  . emtm
-;;Does this order of arguments make sense?  Or should it be vv?
 (defmacro emtm (object-form pattern)
    ""
    (let
