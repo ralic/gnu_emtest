@@ -839,8 +839,7 @@ When successful, returns the expected list of values.")
 
 ;;;_ , emtm:define-struct-governor
 ;;;_  . Test strategy
-;;Test this on the usual test structure type `emths:struct-AxB'.  In
-;;rtest-tools.
+;;Test this on the usual test structure type `emths:struct-AxB'.
 
 ;;We want to use the same tests (and more) on the general function
 ;;that worked for the particular one.
