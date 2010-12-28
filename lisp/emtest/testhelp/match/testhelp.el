@@ -31,6 +31,7 @@
 
 (require 'emtest/testhelp/match)
 (require 'emtest/testhelp/tagnames)
+(require 'emtest/testhelp/structs)
 
 ;;;_. Body
 

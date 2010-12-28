@@ -841,27 +841,9 @@ When successful, returns the expected list of values.")
 ;;;_  . Test strategy
 ;;Test this on the usual test structure type `emths:struct-AxB'.
 
-;;We want to use the same tests (and more) on the general function
-;;that worked for the particular one.
-
-;;Could rebuild them with the same data.  But without emtest yet, then
-;;it's tough to see what parts failed.  For now, I am just
-;;rebuilding the function both ways, to test it.
-
-
 ;;;_  . Test data
-;;$$MOVE ME  Move data to new file testhelp/structs, prefix emths:
 ;;For now, no examples are defined, we just repeat all the data for
 ;;every test.
-
-;;The structure definitions, and some aliases to be conformant.
-(defstruct (emths:struct-AxB
-	      (:constructor emths:item-struct-AxB)
-	      (:conc-name emths:struct-AxB->))
-   "An example structure with two untyped fields"
-   field-A
-   field-B)
-
 
 ;;;_   , Setup
 (emt:keep-up-to-date 
@@ -899,7 +881,7 @@ When successful, returns the expected list of values.")
 	 (emt:doc "Response: Match succeeds.")
 	 (emt:assert
 	    (emtm
-	       (emths:item-struct-AxB :field-A 12)
+	       (emths:make-struct-AxB :field-A 12)
 	       (emths:struct-AxB-high-gov :field-A 12)))))
    (nil
       (progn
@@ -908,7 +890,7 @@ When successful, returns the expected list of values.")
 	 (emt:assert
 	    (not
 	       (emtm
-		  (emths:item-struct-AxB :field-A 13)
+		  (emths:make-struct-AxB :field-A 13)
 		  (emths:struct-AxB-high-gov :field-A 12))))))
    (nil
       (progn
@@ -916,7 +898,7 @@ When successful, returns the expected list of values.")
 	 (emt:doc "Response: Match succeeds.")
 	 (emt:assert
 	    (emtm
-	       (emths:item-struct-AxB :field-A 12)
+	       (emths:make-struct-AxB :field-A 12)
 	       (emths:struct-AxB-high-gov)))))
    (nil
       (progn
@@ -930,7 +912,7 @@ Field-A field is given, matches.")
 		   t)))
 	    (emt:assert
 	       (emtm
-		  (emths:item-struct-AxB :field-A 12)
+		  (emths:make-struct-AxB :field-A 12)
 		  (satisfies comparand-f))))))
    (nil
       (progn
@@ -945,7 +927,7 @@ Field-A field is given, mismatches.")
 			 (emths:struct-AxB-high-gov :field-A 12)
 			 t)))
 		  (emtm
-		     (emths:item-struct-AxB :field-A 13)
+		     (emths:make-struct-AxB :field-A 13)
 		     (satisfies comparand-f)))))))
    (nil
       (progn
@@ -959,7 +941,7 @@ Field-A field is not given.")
 		   t)))
 	    (emt:assert
 	       (emtm
-		  (emths:item-struct-AxB :field-A 12)
+		  (emths:make-struct-AxB :field-A 12)
 		  (satisfies comparand-f))))))
    (nil
       (progn
@@ -968,7 +950,7 @@ Field-A field is not given.")
 	 (emt:assert
 	    (not
 	       (emtm
-		  (emths:item-struct-AxB :field-B 13)
+		  (emths:make-struct-AxB :field-B 13)
 		  (emths:struct-AxB-high-gov :field-B 12))))))
    (nil
       (progn
@@ -976,7 +958,7 @@ Field-A field is not given.")
 	 (emt:doc "Response: Match succeeds.")
 	 (emt:assert
 	    (emtm
-	       (emths:item-struct-AxB :field-A 12 :field-B 144)
+	       (emths:make-struct-AxB :field-A 12 :field-B 144)
 	       (emths:struct-AxB-high-gov :field-A 12 :field-B 144)))))
    (nil
       (progn
@@ -992,12 +974,12 @@ emtm-f param: An object of that type.")
 		   (emths:struct-AxB-high-gov :field-A 12))))
 	    (emt:assert
 	       (emtm-f
-		  (emths:item-struct-AxB :field-A 12)
+		  (emths:make-struct-AxB :field-A 12)
 		  pat))
 	    (emt:assert
 	       (not
 		  (emtm-f
-		     (emths:item-struct-AxB :field-A 13)
+		     (emths:make-struct-AxB :field-A 13)
 		     pat)))
 	    t))))
 
@@ -1011,7 +993,7 @@ emtm-f param: An object of that type.")
 	 (emt:doc "Response: Match succeeds.")
 	 (emt:assert
 	    (emtm
-	       (emths:item-struct-AxB :field-A 12)
+	       (emths:make-struct-AxB :field-A 12)
 	       (emths:struct-AxB-literal-gov :field-A 12)))))
    (nil
       (progn
@@ -1020,7 +1002,7 @@ emtm-f param: An object of that type.")
 	 (emt:assert
 	    (not
 	       (emtm
-		  (emths:item-struct-AxB :field-A 13)
+		  (emths:make-struct-AxB :field-A 13)
 		  (emths:struct-AxB-literal-gov :field-A 12))))))
    (nil
       (progn
@@ -1028,7 +1010,7 @@ emtm-f param: An object of that type.")
 	 (emt:doc "Response: Match succeeds.")
 	 (emt:assert
 	    (emtm
-	       (emths:item-struct-AxB :field-A 12)
+	       (emths:make-struct-AxB :field-A 12)
 	       (emths:struct-AxB-literal-gov)))))
    (nil
       (progn
@@ -1051,7 +1033,7 @@ Field-A field is given, matches.")
 		   t)))
 	    (emt:assert
 	       (emtm
-		  (emths:item-struct-AxB :field-A 12)
+		  (emths:make-struct-AxB :field-A 12)
 		  (satisfies comparand-f))))))
    (nil
       (progn
@@ -1066,7 +1048,7 @@ Field-A field is given, mismatches.")
 			 (emths:struct-AxB-literal-gov :field-A 12)
 			 t)))
 		  (emtm
-		     (emths:item-struct-AxB :field-A 13)
+		     (emths:make-struct-AxB :field-A 13)
 		     (satisfies comparand-f)))))))
    (nil
       (progn
@@ -1080,7 +1062,7 @@ Field-A field is not given.")
 		   t)))
 	    (emt:assert
 	       (emtm
-		  (emths:item-struct-AxB :field-A 12)
+		  (emths:make-struct-AxB :field-A 12)
 		  (satisfies comparand-f))))))
    (nil
       (progn
@@ -1096,12 +1078,12 @@ emtm-f param: An object of that type.")
 		   (emths:struct-AxB-literal-gov :field-A 12))))
 	    (emt:assert
 	       (emtm-f
-		  (emths:item-struct-AxB :field-A 12)
+		  (emths:make-struct-AxB :field-A 12)
 		  pat))
 	    (emt:assert
 	       (not
 		  (emtm-f
-		     (emths:item-struct-AxB :field-A 13)
+		     (emths:make-struct-AxB :field-A 13)
 		     pat)))
 	    t))))
 
