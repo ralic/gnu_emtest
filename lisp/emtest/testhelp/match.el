@@ -136,7 +136,10 @@ TESTS, if given, must be a list of emtm:test-form-data."
    (emtm:make-formdata
       :form-SINGLE 
       (emtm:make-test-form-data
-	 :explanation `(concat "Not equal: " ,sym " and " ,pattern)
+	 :explanation `(concat "Not equal: " 
+			  (prin1-to-string ,sym)
+			  " and " 
+			  (prin1-to-string ,pattern))
 	 :uses (list* sym other-deps)
 	 :form `(equal ,sym ,pattern)
 	 :prestn-path prestn-prefix)))
