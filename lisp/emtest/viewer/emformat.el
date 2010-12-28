@@ -345,7 +345,6 @@ Must be called in a `emtv2:dynamic:top' context."
 		     (car children)
 		     #'emtvf:node))
 	       
-	       
 	       (emtvf:outline-item-emformat
 		  `(  
 		      (w/face ,name emtvf:face:suitename)
@@ -355,16 +354,35 @@ Must be called in a `emtv2:dynamic:top' context."
 		      ,(if (emt:view:no-note-p view-node)
 			  '()
 			  grades-sum))
-		  (emtvf:with-blank-singles-path
-		      (hiformat:map 
-			 ;;Formatting for each child
-			 #'(lambda (obj &rest d)
-			      (emtvf:make-dynamic
-				 obj 
-				 #'emtvf:node))
-			 children
-			 :separator '("\n"))) 
+
+		  (hiformat:map 
+		     ;;Formatting for each child
+		     #'(lambda (obj &rest d)
+			  (emtvf:make-dynamic
+			     obj 
+			     #'emtvf:node))
+		     children
+		     :separator '("\n")) 
 		     grade-face))))))
+;;;_  . emtvf:shortcut-single
+(defmacro emtvf:shortcut-single (obj rest-headline face format-no-child)
+   "Display an item and its children, or display its single child.
+Intended for items that are basically just containers."
+   
+   `(let
+       ((name (emtvp:node->name ,obj))
+	  (children (emtvp:node->children ,obj)))
+       (if
+	  (= (length children) 1)
+	  (emtvf:with-more-singles-path name
+	     (emtvf:make-dynamic 
+		(car children)
+		#'emtvf:node))
+	  (emtvf:outline-item-emformat
+	     (list name ,rest-headline)
+	     (emtvf:TESTRAL:all-children ,obj ,format-no-child)
+	     ,face))))
+
 
 ;;;_  . emtvf:TESTRAL:all-children
 ;;The basic difference from the others is that it assumes notes, not

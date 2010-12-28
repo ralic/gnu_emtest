@@ -37,23 +37,12 @@
 ;;;###autoload
 (defun emtvf:TESTRAL-gov:scope (obj)
    "Formatter for TESTRAL viewable governed by `scope'"
-   ;;$$ENCAP ME this idiom
-   (let* 
-      ((children
-	  (emtvp:node->children view-node)))
-      (if
-	 (= (length children) 1)
-	 (emtvf:with-more-singles-path name
-	    (emtvf:make-dynamic 
-	       (car children)
-	       #'emtvf:node))
-	 ;;$$RECONSIDER ME Should this use relation or its name?
-	 (emtvf:outline-item-emformat
-	    (emt:testral:newstyle->relation 
-	       (emt:view:TESTRAL-2->contents obj))
-	    (emtvf:TESTRAL:all-children obj '((sep 2) "No nested notes"))
-	    (emtvf:grade-overall-face
-	       (emt:view:presentable->sum-badnesses obj))))))
+   (emtvf:shortcut-single
+      obj
+      '()
+      (emtvf:grade-overall-face
+	 (emt:view:presentable->sum-badnesses obj))
+      '((sep 2) "No nested notes")))
 
 ;;;_. Footers
 ;;;_ , Register it
