@@ -1,4 +1,4 @@
-;;;_ emtest/testhelp/match/tests.el --- Rtest tests for match
+;;;_ emtest/testhelp/match/tests.el --- Tests for match
 
 ;;;_. Headers
 ;;;_ , License
@@ -46,10 +46,11 @@ Two items in the pattern list.
 One item in the list object.
 Forcing emtm:govs:list.")
 	 (emt:doc "Response: Mismatch.")
-	 (not
-	    (emtm:ts:single-gov #'emtm:govs:list
-	       '(list 12 144)
-	       '13))))
+	 (emt:assert
+	    (not
+	       (emtm:ts:single-gov #'emtm:govs:list
+		  '(list 12 144)
+		  '13)))))
    (nil
       (progn
 	 (emt:doc "Situation: List object is shorter:
@@ -876,13 +877,11 @@ When successful, returns the expected list of values.")
 	    t))))
 
 ;;;_ , emtm:define-struct-governor*
-(put 'emtm:define-struct-governor* 'emt:test-thru 'rtest-struct:gov-high-level)
+(put 'emtm:define-struct-governor* 'emt:test-thru 'emths:struct-AxB:gov-high-level)
 
 ;;;_ , emtm:define-struct-governor
 ;;;_  . Test strategy
-;; $$CONVERT THEM the rtest structure definitions, to emtest ones.
-
-;;Test this on the usual test structure type `rtest-struct'.  In
+;;Test this on the usual test structure type `emths:struct-AxB'.  In
 ;;rtest-tools.
 
 ;;We want to use the same tests (and more) on the general function
@@ -899,10 +898,13 @@ When successful, returns the expected list of values.")
 ;;every test.
 
 ;;The structure definitions, and some aliases to be conformant.
-(require 'rtest-tools)
-(defalias 'rtest-struct->my-field 'rtest-struct-my-field)
-(defalias 'rtest-struct->my-second-field 'rtest-struct-my-second-field)
-(defalias 'rtest-struct-make-item 'make-rtest-struct)
+(defstruct (emths:struct-AxB
+	      (:constructor emths:item-struct-AxB)
+	      (:conc-name emths:struct-AxB->))
+   "An example structure with two untyped fields"
+   field-A
+   field-B)
+
 
 ;;;_   , Setup
 (emt:keep-up-to-date 
@@ -910,21 +912,21 @@ When successful, returns the expected list of values.")
       emtm:make-struct-governor 
       emtm:time2:make-struct-governor)
    (emtm:define-struct-governor
-      (rtest-struct
-	 (:constructor rtest-struct-high-gov)
-	 (:predicate rtest-struct-p)
-	 (:conc-name rtest-struct->))
+      (emths:struct-AxB
+	 (:constructor emths:struct-AxB-high-gov)
+	 (:predicate emths:struct-AxB-p)
+	 (:conc-name emths:struct-AxB->))
     
-      my-field 
-      my-second-field))
+      field-A 
+      field-B))
 
 ;;;_  . Tests
 
-(put 'emtm:make-struct-governor 'emt:test-thru 'rtest-struct:gov-high-level)
-(put 'emtm:define-struct-governor 'emt:test-thru 'rtest-struct:gov-high-level)
+(put 'emtm:make-struct-governor 'emt:test-thru 'emths:struct-AxB:gov-high-level)
+(put 'emtm:define-struct-governor 'emt:test-thru 'emths:struct-AxB:gov-high-level)
 
 
-(emt:deftest-3 rtest-struct:gov-high-level
+(emt:deftest-3 emths:struct-AxB:gov-high-level
    (nil
       (progn
 	 (emt:doc "Situation: Wrong type of object is given.")
@@ -932,84 +934,84 @@ When successful, returns the expected list of values.")
 	 (not
 	    (emtm
 	       (list 13)
-	       (rtest-struct-high-gov :my-field 12)))))
+	       (emths:struct-AxB-high-gov :field-A 12)))))
    (nil
       (progn
-	 (emt:doc "Situation: My-Field field is given, matches.")
+	 (emt:doc "Situation: Field-A field is given, matches.")
 	 (emt:doc "Response: Match succeeds.")
 	 (emtm
-	    (rtest-struct-make-item :my-field 12)
-	    (rtest-struct-high-gov :my-field 12))))
+	    (emths:item-struct-AxB :field-A 12)
+	    (emths:struct-AxB-high-gov :field-A 12))))
    (nil
       (progn
-	 (emt:doc "Situation: My-Field field is given, mismatches.")
+	 (emt:doc "Situation: Field-A field is given, mismatches.")
 	 (emt:doc "Response: Match fails.")
 	 (not
 	    (emtm
-	       (rtest-struct-make-item :my-field 13)
-	       (rtest-struct-high-gov :my-field 12)))))
+	       (emths:item-struct-AxB :field-A 13)
+	       (emths:struct-AxB-high-gov :field-A 12)))))
    (nil
       (progn
-	 (emt:doc "Situation: My-Field field is not given.")
+	 (emt:doc "Situation: Field-A field is not given.")
 	 (emt:doc "Response: Match succeeds.")
 	 (emtm
-	    (rtest-struct-make-item :my-field 12)
-	    (rtest-struct-high-gov))))
+	    (emths:item-struct-AxB :field-A 12)
+	    (emths:struct-AxB-high-gov))))
    (nil
       (progn
 	 (emt:doc "Situation: lambda-ized and used as lambda arg to `satisfies'.
-My-Field field is given, matches.")
+Field-A field is given, matches.")
 	 (emt:doc "Response: Match succeeds.")
 	 (let
 	    ((comparand-f
 		(emtm:lambda
-		   (rtest-struct-high-gov :my-field 12)
+		   (emths:struct-AxB-high-gov :field-A 12)
 		   t)))
 	    (emtm
-	       (rtest-struct-make-item :my-field 12)
+	       (emths:item-struct-AxB :field-A 12)
 	       (satisfies comparand-f)))))
    (nil
       (progn
 	 (emt:doc "Situation: lambda-ized and used as lambda arg to `satisfies'.
-My-Field field is given, mismatches.")
+Field-A field is given, mismatches.")
 	 (emt:doc "Response: Match fails.")
 	 (not
 	    (let
 	       ((comparand-f
 		   (emtm:lambda
-		      (rtest-struct-high-gov :my-field 12)
+		      (emths:struct-AxB-high-gov :field-A 12)
 		      t)))
 	       (emtm
-		  (rtest-struct-make-item :my-field 13)
+		  (emths:item-struct-AxB :field-A 13)
 		  (satisfies comparand-f))))))
    (nil
       (progn
 	 (emt:doc "Situation: lambda-ized and used as lambda arg to `satisfies'.
-My-Field field is not given.")
+Field-A field is not given.")
 	 (emt:doc "Response: Match succeeds.")
 	 (let
 	    ((comparand-f
 		(emtm:lambda
-		   (rtest-struct-high-gov)
+		   (emths:struct-AxB-high-gov)
 		   t)))
 	    (emtm
-	       (rtest-struct-make-item :my-field 12)
+	       (emths:item-struct-AxB :field-A 12)
 	       (satisfies comparand-f)))))
    (nil
       (progn
-	 (emt:doc "Situation: my-second-field is given, mismatches.")
+	 (emt:doc "Situation: field-B is given, mismatches.")
 	 (emt:doc "Response: Match fails.")
 	 (not
 	    (emtm
-	       (rtest-struct-make-item :my-second-field 13)
-	       (rtest-struct-high-gov :my-second-field 12)))))
+	       (emths:item-struct-AxB :field-B 13)
+	       (emths:struct-AxB-high-gov :field-B 12)))))
    (nil
       (progn
 	 (emt:doc "Situation: Both fields are given, match.")
 	 (emt:doc "Response: Match succeeds.")
 	 (emtm
-	    (rtest-struct-make-item :my-field 12 :my-second-field 144)
-	    (rtest-struct-high-gov :my-field 12 :my-second-field 144))))
+	    (emths:item-struct-AxB :field-A 12 :field-B 144)
+	    (emths:struct-AxB-high-gov :field-A 12 :field-B 144))))
    (nil
       (progn
 	 (emt:doc "Proves: pattern-ctor works with `emtm-f' and
@@ -1021,44 +1023,44 @@ emtm-f param: An object of that type.")
 	 (let
 	    ((pat
 		(emtm:make-pattern
-		   (rtest-struct-high-gov :my-field 12))))
+		   (emths:struct-AxB-high-gov :field-A 12))))
 	    (emt:assert
 	       (emtm-f
-		  (rtest-struct-make-item :my-field 12)
+		  (emths:item-struct-AxB :field-A 12)
 		  pat))
 	    (emt:assert
 	       (not
 		  (emtm-f
-		     (rtest-struct-make-item :my-field 13)
+		     (emths:item-struct-AxB :field-A 13)
 		     pat)))
 	    t))))
 
 
-;;;_ , rtest-struct:gov-literal
+;;;_ , emths:struct-AxB:gov-literal
 
-(emt:deftest-3 rtest-struct:gov-literal
+(emt:deftest-3 emths:struct-AxB:gov-literal
    (nil
       (progn
-	 (emt:doc "Situation: My-Field field is given, matches.")
+	 (emt:doc "Situation: Field-A field is given, matches.")
 	 (emt:doc "Response: Match succeeds.")
 	 (emtm
-	    (rtest-struct-make-item :my-field 12)
-	    (rtest-struct-literal-gov :my-field 12))))
+	    (emths:item-struct-AxB :field-A 12)
+	    (emths:struct-AxB-literal-gov :field-A 12))))
    (nil
       (progn
-	 (emt:doc "Situation: My-Field field is given, mismatches.")
+	 (emt:doc "Situation: Field-A field is given, mismatches.")
 	 (emt:doc "Response: Match fails.")
 	 (not
 	    (emtm
-	       (rtest-struct-make-item :my-field 13)
-	       (rtest-struct-literal-gov :my-field 12)))))
+	       (emths:item-struct-AxB :field-A 13)
+	       (emths:struct-AxB-literal-gov :field-A 12)))))
    (nil
       (progn
-	 (emt:doc "Situation: My-Field field is not given.")
+	 (emt:doc "Situation: Field-A field is not given.")
 	 (emt:doc "Response: Match succeeds.")
 	 (emtm
-	    (rtest-struct-make-item :my-field 12)
-	    (rtest-struct-literal-gov))))
+	    (emths:item-struct-AxB :field-A 12)
+	    (emths:struct-AxB-literal-gov))))
    (nil
       (progn
 	 (emt:doc "Situation: Wrong type of object is given.")
@@ -1066,46 +1068,46 @@ emtm-f param: An object of that type.")
 	 (not
 	    (emtm
 	       (list 13)
-	       (rtest-struct-literal-gov :my-field 12)))))
+	       (emths:struct-AxB-literal-gov :field-A 12)))))
    (nil
       (progn
 	 (emt:doc "Situation: lambda-ized and used as lambda arg to `satisfies'.
-My-Field field is given, matches.")
+Field-A field is given, matches.")
 	 (emt:doc "Response: Match succeeds.")
 	 (let
 	    ((comparand-f
 		(emtm:lambda
-		   (rtest-struct-literal-gov :my-field 12)
+		   (emths:struct-AxB-literal-gov :field-A 12)
 		   t)))
 	    (emtm
-	       (rtest-struct-make-item :my-field 12)
+	       (emths:item-struct-AxB :field-A 12)
 	       (satisfies comparand-f)))))
    (nil
       (progn
 	 (emt:doc "Situation: lambda-ized and used as lambda arg to `satisfies'.
-My-Field field is given, mismatches.")
+Field-A field is given, mismatches.")
 	 (emt:doc "Response: Match fails.")
 	 (not
 	    (let
 	       ((comparand-f
 		   (emtm:lambda
-		      (rtest-struct-literal-gov :my-field 12)
+		      (emths:struct-AxB-literal-gov :field-A 12)
 		      t)))
 	       (emtm
-		  (rtest-struct-make-item :my-field 13)
+		  (emths:item-struct-AxB :field-A 13)
 		  (satisfies comparand-f))))))
    (nil
       (progn
 	 (emt:doc "Situation: lambda-ized and used as lambda arg to `satisfies'.
-My-Field field is not given.")
+Field-A field is not given.")
 	 (emt:doc "Response: Match succeeds.")
 	 (let
 	    ((comparand-f
 		(emtm:lambda
-		   (rtest-struct-literal-gov)
+		   (emths:struct-AxB-literal-gov)
 		   t)))
 	    (emtm
-	       (rtest-struct-make-item :my-field 12)
+	       (emths:item-struct-AxB :field-A 12)
 	       (satisfies comparand-f)))))
    (nil
       (progn
@@ -1118,15 +1120,15 @@ emtm-f param: An object of that type.")
 	 (let
 	    ((pat
 		(emtm:make-pattern
-		   (rtest-struct-literal-gov :my-field 12))))
+		   (emths:struct-AxB-literal-gov :field-A 12))))
 	    (emt:assert
 	       (emtm-f
-		  (rtest-struct-make-item :my-field 12)
+		  (emths:item-struct-AxB :field-A 12)
 		  pat))
 	    (emt:assert
 	       (not
 		  (emtm-f
-		     (rtest-struct-make-item :my-field 13)
+		     (emths:item-struct-AxB :field-A 13)
 		     pat)))
 	    t))))
 
