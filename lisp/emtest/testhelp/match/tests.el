@@ -674,35 +674,85 @@ Only one of the pattern arguments matches the object.")
 		   (equal a 13))))))
    (nil
       (progn
-	 (emt:doc "Situation: Pattern has the same variable occuring twice")
-	 (emt:doc "Response: Works.")
+	 (emt:doc "Situation: Pattern has the same variable occuring
+   twice, bound to equal objects")
+	 (emt:doc "Response: Matches.")
 	 (emt:assert
 	    (emtm
 	       '(12 12)
 	       (list a a)))))
    (nil
       (progn
-	 (emt:doc "Situation: Pattern has the same variable occuring twice")
-	 (emt:doc "Response: Works.")
+	 (emt:doc "Situation: Pattern has the same variable occuring
+   twice, bound to equal objects")
+	 (emt:doc "Response: Matches.")
 	 (emt:assert
 	    (emtm
 	       '(144 144)
 	       (list a a)))))
    (nil
       (progn
-	 (emt:doc "Situation: Pattern has the same variable occuring twice")
-	 (emt:doc "Response: Works.")
+	 (emt:doc "Situation: Pattern has the same variable occuring
+   twice, but bound to different things.")
+	 (emt:doc "Response: Mismatches.")
 	 (emt:assert
-	    (and
-	       (funcall func
-		  '(12 144))
-	       (equal
-		  (funcall func
-		     '(12 144))
-		  '(144 1728))
-	       (not
-		  (funcall func
-		     '(13 13))))))))
+	    (not
+	       (emtm
+		  '(12 13)
+		  (list a a))))))
+
+   (nil
+      (let
+	 ((pat-f
+	     (emtm:make-general-lambda 
+		;;Pattern
+		(list a)
+		;;Bindings
+		(a)
+		;;Body
+		t)))
+	 
+	 (emt:doc 
+	    "Situation: Pattern is made by a general lambda, 1 extra arg.
+Then it's instantiated, with the extra binding being an object.")
+	 (emt:doc "Behavior: Succeeds if `a' is equal to that object.")
+
+	 (emt:assert
+	    (funcall pat-f '(12) 12))
+	 (emt:assert
+	    (funcall pat-f '(144) 144))
+	 (emt:assert
+	    (not (funcall pat-f '(13) 12)))))
+   (nil
+      (let* 
+	 ((pat-f
+	     (emtm:make-general-lambda 
+		;;Pattern
+		(list a)
+		;;Bindings
+		(a)
+		;;Body
+		t))
+	    
+	    ;;Boxed pattern 1
+	    (boxed-pat-1 (emtm:make-pattern 12))
+	    ;;Boxed pattern 2
+	    (boxed-pat-2 (emtm:make-pattern 144)))
+	 (emt:doc 
+	    "Situation: Pattern is made by a general lambda, 1 extra arg.
+Then it's instantiated, with the extra binding being an object.")
+	 (emt:doc 
+	    "Situation: Two boxed patterns are made based on that,
+	    with different args.")
+
+	 (emt:assert
+	    (funcall pat-f '(12) boxed-pat-1))
+	 (emt:assert
+	    (funcall pat-f '(144) boxed-pat-2))
+	 (emt:assert
+	    (not (funcall pat-f '(13) boxed-pat-1)))))
+   
+   )
 
 ;;;_ , emtm:lambda-binds
 (emt:deftest-3 emtm:lambda-binds
