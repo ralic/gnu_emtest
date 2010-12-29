@@ -39,7 +39,7 @@
 
 ;;$$OBSOLETE
 (emtm:define-struct-governor emt:view:suite
-   name full-id unique-id suite child-type children sum-badnesses )
+   name full-id unique-id suite child-type children sum-grades )
 
 ;;$$OBSOLETE
 (emtm:define-struct-governor emt:view:testral
@@ -65,7 +65,7 @@
 	    (emt:testral:make-note
 	       :id "1"
 	       :parent-id nil
-	       :badnesses 
+	       :grade 
 	       (emt:testral:make-grade:ungraded
 		  :contents nil)
 	       :relation 'trace
@@ -94,7 +94,7 @@
 	       (item ((name pop))
 		  (emt:testral:make-check:pop
 		     :id 100
-		     :badnesses ())))
+		     :grade ())))
 	 
 	    ;;Add other results.  Fail.  Error.
 	 
@@ -136,7 +136,7 @@
 	       (list
 		  (emtg (type note)(subtype alone)(name error-1))))))
 
-      ;;Suites' intrinsic badnesses
+      ;;Suites' intrinsic grade
       (group
 	 ((type suite-own-badness-list))
 	 (type-must-be () emt:testral:grade-aux)
@@ -175,7 +175,7 @@
 	    ((what-test test-2))
 	    (emtg (type suite-own-badness-list)(name test-passes))))
 
-      ;;Suites' badnesses, including that of their TESTRAL notes.
+      ;;Suites' grade, including that of their TESTRAL notes.
       (group
 	 ((type suite-own+notes-badness-list))
 	 (type-must-be () emt:testral:grade-aux)
@@ -242,7 +242,7 @@
 			    (type testral-note-list)
 			    (subtype unconformed)
 			    (name one-node))
-	       :badnesses 
+	       :grade 
 	       (emtg (type suite-own-badness-list)(name test-bad))))
 	 
       
@@ -253,7 +253,7 @@
 			    (type testral-note-list)
 			    (subtype unconformed)
 			    (name empty))
-	       :badnesses 
+	       :grade 
 	       (emtg (type suite-own-badness-list)(name
 						     test-passes))))
 	 
@@ -268,7 +268,7 @@
 		  :els
 		  (list 
 		     (emtg (type explorable)(what-test index-1))))
-	       :badnesses 
+	       :grade 
 	       (emtg (type suite-own-badness-list)(name has-children-1))))
 	 (item
 	    ((name gone))
@@ -277,7 +277,7 @@
 			    (type testral-note-list)
 			    (subtype unconformed)
 			    (name empty))
-	       :badnesses 
+	       :grade 
 	       (emtg (type suite-own-badness-list)
 		  (what-test test-1)
 		  (role remove-previous)))))

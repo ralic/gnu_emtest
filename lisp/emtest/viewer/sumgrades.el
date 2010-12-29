@@ -43,11 +43,11 @@ OBJ must be a emt:testral:grade-aux and may already be a summary."
       (t
 	 (let
 	    ((obj-aux (emt:testral:make-grade:summary)))
-	    (emtvr:add-badnesses obj-aux obj)
+	    (emtvr:add-grades obj-aux obj)
 	    obj-aux))))
 
-;;;_  . emtvr:add-badnesses
-(defun emtvr:add-badnesses (sums a)
+;;;_  . emtvr:add-grades
+(defun emtvr:add-grades (sums a)
    ""
    (typecase a
       (emt:testral:grade:summary
@@ -83,8 +83,8 @@ OBJ must be a emt:testral:grade-aux and may already be a summary."
 	    (emt:testral:grade:summary->blowouts   sums)))      
       (t nil)))
 
-;;;_  . emtvr:combine-badnesses
-(defun emtvr:combine-badnesses (bads)
+;;;_  . emtvr:combine-grade
+(defun emtvr:combine-grade (bads)
    "Combine the list BADS into one entry"
    (let
       ((all
@@ -100,8 +100,8 @@ OBJ must be a emt:testral:grade-aux and may already be a summary."
 			 (emt:testral:grade-p b))
 			(let
 			   ((sums (emt:testral:make-grade:summary)))
-			   (emtvr:add-badnesses sums a)
-			   (emtvr:add-badnesses sums b)
+			   (emtvr:add-grades sums a)
+			   (emtvr:add-grades sums b)
 			   sums))
 		     (t
 			(error "Shouldn't get here"))))

@@ -107,7 +107,7 @@ An `emtve' or `nil'." )
 			  (emtvp:node->dirty-flags child)))
 		  (emtvp:node->children obj))
 	       ;;Do summarization
-	       (emtvr:cache-subtree-badnesses obj)
+	       (emtvr:cache-subtree-grade obj)
 	       (undirty 'summary)
 	       (new-dirty 'display) ;;Now we can display it
 	       ;;Parent (if any) now needs to be resummarized.

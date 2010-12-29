@@ -85,7 +85,7 @@
 			  (emtvp:node->dirty-flags child)))
 		  (emtvp:node->children obj))
 	       ;;Do summarization
-	       (emtvr:cache-subtree-badnesses obj)
+	       (emtvr:cache-subtree-grade obj)
 	       (undirty 'summary)
 	       ;;Parent (if any) now needs to be resummarized.
 	       (let

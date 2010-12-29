@@ -106,7 +106,7 @@ Behavior: `utim:get-properties' returns the relevant property."
 ;;;_ , emtt:explore-clause
 (rtest:deftest emtt:explore-clause
    
-   ;;Check that it stores top-level badnesses.
+   ;;Check that it stores top-level grade.
    ;;Check that it stores top-level info.
 
    )

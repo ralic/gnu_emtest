@@ -36,13 +36,13 @@
 (require 'emtest/viewer/view-types/testhelp)
 
 ;;;_. Body
-;;;_ , emtvr:badnesses:get-own
-(emt:deftest-3 emtvr:badnesses:get-own
+;;;_ , emtvr:grade:get-own
+(emt:deftest-3 emtvr:grade:get-own
    (nil
       (emtg:with emtvr:thd ()
 	 (emtg:map result-name result-name
 	    (emt:doc "Param: A known view-node.")
-	    (emt:doc "Operation: Get own badnesses.")
+	    (emt:doc "Operation: Get own grade.")
 	    (emt:doc "Response: The result matches what's expected.")
 	    (let
 	       ((role&test-tags
@@ -50,31 +50,31 @@
 	       (when (emtg (type has-viewnode-p))
 		  (emt:assert
 		     (equal
-			(emtvr:get-subtree-badnesses
+			(emtvr:get-subtree-grade
 			   (emtg:value+
 			      `((type emtvr:alist-item) ,@role&test-tags)))
 			(emtg:value+
 			   `((type suite-own+notes-badness-list)
 			       (name ,result-name)))))))))))
 
-;;;_ , emtvr:combine-badnesses
+;;;_ , emtvr:combine-grade
 ;;$$WRITE MY EXAMPLES
 
-;;;_ , emtvr:get-subtree-badnesses
-(emt:deftest-3 emtvr:get-subtree-badnesses
+;;;_ , emtvr:get-subtree-grade
+(emt:deftest-3 emtvr:get-subtree-grade
    (nil
       (emtg:with emtvr:thd ()
 	 (emtg:map result-name result-name
 	    (emt:doc "Param: A known view-node.")
-	    (emt:doc "Operation: Get subtree badnesses.")
-	    (emt:doc "Response: The sum of badnesses is as expected.")
+	    (emt:doc "Operation: Get subtree grade.")
+	    (emt:doc "Response: The sum of grade is as expected.")
 	    (let
 	       ((role&test-tags
 		   (car (emtg (type map:name->role&test-list)))))
 	       (when (emtg (type has-viewnode-p))
 		  (emt:assert
 		     (equal
-			(emtvr:get-subtree-badnesses
+			(emtvr:get-subtree-grade
 			   (emtg:value+
 			      `((type emtvr:alist-item) ,@role&test-tags)))
 			(emtg:value+

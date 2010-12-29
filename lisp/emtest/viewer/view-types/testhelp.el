@@ -52,7 +52,7 @@
       (:conc-name emt:view:presentable->)
       (:include emtvp:node))
    children ;;Included
-   sum-badnesses list)
+   sum-grades list)
 
 
 ;;;_  . emt:view:suite-newstyle

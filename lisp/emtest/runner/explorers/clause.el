@@ -68,7 +68,7 @@
    (funcall report-f
       (emt:testral:make-suite
 	 :contents '()
-	 :badnesses (emt:testral:make-grade:dormant))))
+	 :grade (emt:testral:make-grade:dormant))))
 
 
 ;;;_  . emtr:vanilla
@@ -94,7 +94,7 @@
 	       (emt:testral:make-suite
 		  :contents
 		  (emtt:testral:note-list)
-		  :badnesses 
+		  :grade 
 		  (if aborted-p 
 		     (emt:testral:make-grade:ungraded
 			:contents
@@ -117,7 +117,7 @@ This is the heart of Emtest exploration: A test itself."
 	    (funcall report-f
 	       (emt:testral:make-suite
 		  :contents '()
-		  :badnesses
+		  :grade
 		  (emt:testral:make-grade:ungraded
 		     :contents
 		     (list

@@ -159,7 +159,7 @@ LIB-PATH must be a path to a library that is already loaded."
 	    :contents
 	    (emt:testral:make-runform-list
 	       :els list-to-run)
-	    :badnesses '() ;;Punt - only if it crapped
+	    :grade '() ;;Punt - only if it crapped
 	    ;;out right here.
 	    )
 	 list-to-run)))

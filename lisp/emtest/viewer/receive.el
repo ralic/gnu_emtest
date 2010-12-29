@@ -80,7 +80,7 @@
       (find
 	 '(bad-before-test not-found)
 	 ;;$$ADD ME Type can also be test-runner info.
-	 (emt:testral:suite->badnesses suite)
+	 (emt:testral:suite->grade suite)
 	 :test #'equal)))
 
 ;;;_  . emtvr:one-newstyle

@@ -227,11 +227,11 @@ Must be called in a `utidyv:top' context."
 	 (children
 	    (emtvp:node->children view-node))
 	 (grades
-	    (emt:view:presentable->sum-badnesses suite))
+	    (emt:view:presentable->sum-grades suite))
 	 (grade-face
 	    (emtvf:grade-overall-face grades))
 	 (grades-sum
-	    (emtvf:sum-badnesses-short grades))
+	    (emtvf:sum-grades-short grades))
 	 (boring-p 
 	    (emtvf:grade-boring grades)))
       
@@ -337,8 +337,8 @@ OBJ must be a `emt:testral:grade:summary'"
 	 ((> test-cases 0) 'emtvf:face:ok)
 	 (t                'emtvf:face:dormant))))
 
-;;;_  . emtvf:sum-badnesses-short
-(defun emtvf:sum-badnesses-short (obj &rest d)
+;;;_  . emtvf:sum-grades-short
+(defun emtvf:sum-grades-short (obj &rest d)
    "Give a summary of grades for this object."
    (let*
       (
@@ -380,8 +380,8 @@ OBJ must be a `emt:testral:grade:summary'"
 	    "."))))
 
 
-;;;_  . emtvf:sum-badnesses-long
-(defun emtvf:sum-badnesses-long (obj &rest d)
+;;;_  . emtvf:sum-grades-long
+(defun emtvf:sum-grades-long (obj &rest d)
    "Give a summary of grades for this object."
    (let*
       (

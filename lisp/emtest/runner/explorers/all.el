@@ -112,7 +112,7 @@ HOW must be of a subtype of emthow"
       (emt:testral:make-suite
 	 :contents nil
 	 ;;Actual form is TBD.
-	 :badnesses 
+	 :grade 
 	 (emt:testral:make-grade:ungraded
 	    :contents
 	    "Unrecognized internal explore type"))))

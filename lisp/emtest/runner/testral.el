@@ -232,7 +232,7 @@ GOVERNOR is a symbol indicating a specific formatter for the output."
 	    :value       args
 	    ;;Failing the comparison does not neccessarily imply
 	    ;;a bad grade, that's for emt:assert to decide.
-	    :badnesses   grade))))
+	    :grade   grade))))
 ;;;_  . Entry points
 ;;;_   , emtt:testral:add-note-w/id
 (defun emtt:testral:add-note-w/id (id relation grade governor &rest args)

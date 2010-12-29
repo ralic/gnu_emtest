@@ -55,7 +55,7 @@
    ;;Reflects only the note's's intrinsic problems.  Even push/pops
    ;;need it in case (say) a whole stage is dormantized or aborted.
    ;;$$RENAME ME badnesses -> grades
-   (badnesses () :type emt:testral:grade-aux)
+   (grade () :type emt:testral:grade-aux)
    (relation () :type symbol
       :doc "The note's relation to its parent")
    (governor () :type symbol
@@ -122,7 +122,7 @@
 	     emt:testral:note-list
 	     emt:testral:runform-list
 	     null)) 
-  (badnesses () :type emt:testral:grade-aux)
+  (grade () :type emt:testral:grade-aux)
    ;;$$OBSOLESCENT
   info)
 
@@ -131,7 +131,7 @@
 ;;Suggested for when tester tries to launch a suite and can't.  This
 ;;would have or inherit a testral notelist about the problem
 ;;(emt:testral:note-list).  This would mean that `emt:testral:suite'
-;;need have no `badnesses' of its own.
+;;need have no `grade' of its own.
 
 ;;;_. Footers
 ;;;_ , Provides

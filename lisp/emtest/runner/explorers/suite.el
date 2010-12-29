@@ -83,7 +83,7 @@
 		  :contents 
 		  (emt:testral:make-runform-list
 		     :els (reverse rv-list-to-run))
-		  :badnesses '())
+		  :grade '())
 	       (reverse rv-list-to-run))))))
 ;;;_ , Getting test suites indirectly.
 

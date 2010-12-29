@@ -38,18 +38,18 @@
 ;;;_. Body
 ;;;_ , Getting summed grades
 
-;;;_  . emtvr:notelist-raw-badnesses
-(defun emtvr:notelist-raw-badnesses (note-list)
+;;;_  . emtvr:notelist-raw-grade
+(defun emtvr:notelist-raw-grade (note-list)
    ""
    (mapcar
-      #'emt:testral:note->badnesses
+      #'emt:testral:note->grade
       (emt:testral:note-list->notes note-list)))
 
-;;;_  . emtvr:badnesses:get-own
-(defun emtvr:badnesses:get-own (node)
-   "Get a node's own badnesses.
+;;;_  . emtvr:grade:get-own
+(defun emtvr:grade:get-own (node)
+   "Get a node's own grade.
 
-This includes badnesses that are not expressed in its children but
+This includes grade that are not expressed in its children but
 could be, such as when a note-list hasn't been expanded."
    (check-type node emt:view:presentable)
    (etypecase node
@@ -61,12 +61,12 @@ could be, such as when a note-list hasn't been expanded."
 	       (null) 
 	       (emt:testral:suite
 		  (let
-		     ((own-badnesses (emt:testral:suite->badnesses s)))
+		     ((own-grade (emt:testral:suite->grade s)))
 		     ;;If NODE is an inner node (wrt pathtree), it
 		     ;;contributes only its intrinsic grading.
 		     (if
 			(emtvp:node->children node)
-			own-badnesses
+			own-grade
 			;;But if NODE is a leaf node, it contributes
 			;;all its contents' grading.
 			(let
@@ -74,11 +74,11 @@ could be, such as when a note-list hasn't been expanded."
 			       (emt:testral:suite->contents s)))
 			   (typecase contents
 			      (emt:testral:note-list
-				 (emtvr:combine-badnesses
+				 (emtvr:combine-grade
 				    (cons
-				       own-badnesses
-				       (emtvr:notelist-raw-badnesses contents))))
-			      (t own-badnesses))))))
+				       own-grade
+				       (emtvr:notelist-raw-grade contents))))
+			      (t own-grade))))))
 	       (emt:testral:test-runner-info
 		  '()))))
       ;;$$IMPROVE ME Treat this.
@@ -87,35 +87,35 @@ could be, such as when a note-list hasn't been expanded."
       (emt:view:presentable '())))
 
 
-;;;_  . emtvr:get-subtree-badnesses
-(defun emtvr:get-subtree-badnesses (node)
+;;;_  . emtvr:get-subtree-grade
+(defun emtvr:get-subtree-grade (node)
    ""
    (check-type node emt:view:presentable)
    (let*
       (
-	 (childrens-badnesses
+	 (childrens-grade
 	    (mapcar
 	       #'(lambda (child)
-		    (emt:view:presentable->sum-badnesses
+		    (emt:view:presentable->sum-grades
 		       child))
 	       (emtvp:node->children node)))
 
 	 ;;Accessor
-	 (own-badnesses
-	    (emtvr:badnesses:get-own node)))
-      (emtvr:combine-badnesses
+	 (own-grade
+	    (emtvr:grade:get-own node)))
+      (emtvr:combine-grade
 	 (cons
-	    own-badnesses
-	    childrens-badnesses))))
+	    own-grade
+	    childrens-grade))))
 
-;;;_  . emtvr:cache-subtree-badnesses
-(defun emtvr:cache-subtree-badnesses (node)
+;;;_  . emtvr:cache-subtree-grade
+(defun emtvr:cache-subtree-grade (node)
    ""
    (check-type node emtvp:node)
    (when (typep node 'emt:view:presentable)
       (setf
-	 (emt:view:presentable->sum-badnesses node)
-	 (emtvr:get-subtree-badnesses node))))
+	 (emt:view:presentable->sum-grades node)
+	 (emtvr:get-subtree-grade node))))
 
 ;;;_ , Collecting TESTRAL notes
 ;;;_  . emtvr:alist-cell-t

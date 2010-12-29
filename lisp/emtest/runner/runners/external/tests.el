@@ -58,7 +58,7 @@
 	    (equal answer "hello\r\n% ")))))
 
 ;;;_ , To meta-test
-;;Receive and test that fail/no fail was found, and no other badnesses.
+;;Receive and test that fail/no fail was found, and no other grade.
 ;;Check the notes in the order they come in.
 
 ;;Use emtt:th:explore-one with the bare form and the callback of

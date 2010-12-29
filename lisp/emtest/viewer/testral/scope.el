@@ -42,7 +42,7 @@
       (emtvp:node->children obj)
       '()
       (emtvf:grade-overall-face
-	 (emt:view:presentable->sum-badnesses obj))
+	 (emt:view:presentable->sum-grades obj))
       '((sep 2) "No nested notes")))
 
 ;;;_. Footers
