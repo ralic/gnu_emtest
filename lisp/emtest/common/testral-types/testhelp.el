@@ -184,42 +184,6 @@
 	    ((name gone))
 	    (emtg (type suite-own-badness-list)(name gone))))
 
-;;       (group
-;; 	 ;;$$RETHINK ME  Suites should only have own badnesses
-;; 	 ((type suite-badness-list))
-;; 	 (type-must-be () emt:testral:grade-aux)
-
-;; 	 (item
-;; 	    ((name test-bad)(tagged-by name))
-;; 	    '(ungraded))
-;; 	 (item
-;; 	    ((name test-passes)(tagged-by name))
-;; 	    '())
-      
-;; 	 (item
-;; 	    ((name has-children-1)(tagged-by name))
-;; 	    '(ungraded))
-;; 	 (item
-;; 	    ((name gone)(tagged-by name))
-;; 	    (emtg (type suite-own-badness-list)(name gone)))
-
-;; 	 ;;For the sequence-of-reports tests (These alias other suite items)
-;; 	 ;;$$OBSOLESCENT in favor of mapping
-;; 	 (item
-;; 	    ((what-test test-1)(role original-add))
-;; 	    (emtg (type suite-badness-list)(name test-bad)))
-;; 	 (item
-;; 	    ((what-test test-1)(role replace))
-;; 	    (emtg (type suite-badness-list)(name test-passes)))
-
-;; 	 (item
-;; 	    ((what-test test-1)(role remove-previous))
-;; 	    (emtg (type suite-own-badness-list)(name gone)))
-      
-;; 	 (item
-;; 	    ((what-test test-2))
-;; 	    (emtg (type suite-badness-list)(name test-passes))))
-
       (group
 	 ;; Suites
 	 ((type suite)(tagged-by name))
