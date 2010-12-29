@@ -153,12 +153,9 @@ Hack: We add a space after the button."
 			 explorable)
 		    ',(emtt:explorable->prestn-path 
 			 explorable)))))
-	 
-	 (list
-	    `(button ,text 
-		action ,func
-		help-echo "Rerun this test")
-	    " "))))
+	 `(button ,text 
+	     action ,func
+	     help-echo "Rerun this test"))))
 ;;;_  . Objects
 ;;;_   , emtvf:obj-or-string
 (defun emtvf:obj-or-string (value)
@@ -190,7 +187,7 @@ VIEW-NODE must be at least an `emtvp:node'."
 (defun emtvf:node (view-node)
    "Make a format form for VIEW-NODE.
 VIEW-NODE must be an `emt:view:presentable'.
-Must be called in a `emtv2:dynamic:top' context."
+Must be called in a `utidyv:top' context."
 
    (check-type view-node emtvp:node)
 
@@ -207,17 +204,7 @@ Must be called in a `emtv2:dynamic:top' context."
 	 (grades-sum
 	    (emtvf:sum-badnesses-short grades))
 	 (boring-p 
-	    (emtvf:grade-boring grades))
-	 ;;This gives us the prefix of the headline if we have skipped
-	 ;;one or more plys of the tree because they were singletons.
-	 ;;$$REMOVE ME This has migrated.
-;; 	 (name-prefix
-;; 	    (apply #'append
-;; 	       (mapcar
-;; 		  #'(lambda (x)
-;; 		       (list x " "))
-;; 		  emtvf:*hdln-path*)))
-	 )
+	    (emtvf:grade-boring grades)))
       
       (etypecase suite
 	 (emt:view:suite-newstyle
@@ -231,10 +218,12 @@ Must be called in a `emtv2:dynamic:top' context."
 		  (null "A null viewable")
 		  (emt:testral:test-runner-info
 		     (emtvf:outline-item-emformat
-			`(  
-			    (w/face ,name emtvf:face:suitename)
-			    " "
-			    ,grades-sum)
+			(hiformat:map
+			   #'(lambda (obj &rest r) obj)
+			   (list
+			      `(w/face ,name emtvf:face:suitename)
+			      grades-sum)
+			   :separator " ")
 			(hiformat:map 
 			   ;;Formatting for each child
 			   #'(lambda (obj &rest d)
@@ -247,11 +236,14 @@ Must be called in a `emtv2:dynamic:top' context."
 		  
 		  (emt:testral:suite
 		     (emtvf:outline-item-emformat
-			`(  
-			    (w/face ,name emtvf:face:suitename)
-			    " "
-			    ,(emtvf:button-to-explore explorable "[RUN]")
-			    ,grades-sum)
+			(hiformat:map
+			   #'(lambda (obj &rest r) obj)
+			   (delq nil
+			      (list
+				 `(w/face ,name emtvf:face:suitename)
+				 (emtvf:button-to-explore explorable "[RUN]")
+				 grades-sum))
+			   :separator " ")
 			(if children
 			   ;;$$ENCAP ME, SHARE ME
 			   (hiformat:map 
