@@ -33,6 +33,7 @@
    (require 'cl))
 (require 'emtest/common/grade-types)
 (require 'emtest/common/prestn-path)
+(require 'emtest/common/result-types)
 
 ;;;_. Body
 
@@ -112,16 +113,15 @@
 (defstruct (emt:testral:suite
 	    (:constructor emt:testral:make-suite)
 	    (:conc-name emt:testral:suite->))
-  ""
+  "Info describing a test that has been explored.
+It can be a test-case or group of test-cases."
   (contents () 
 	    :type 
 	    (or 
 	     emt:testral:note-list
 	     emt:testral:runform-list
 	     null)) 
-  (grade () :type emt:testral:grade-aux)
-   ;;$$OBSOLESCENT
-  info)
+  (grade () :type emt:testral:grade-aux))
 
 ;;;_. Footers
 ;;;_ , Provides
