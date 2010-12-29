@@ -30,7 +30,7 @@
 ;;;_ , Requires
 
 (eval-when-compile (require 'cl))
-(require 'emtest/common/testral-types)
+(require 'emtest/common/prestn-path)
 
 ;;;_. Body
 
@@ -65,13 +65,12 @@
       :doc "What to launch for this exploration.")
    
    (prestn-path () 
-      :type emt:testral:partial-suite-id
+      :type emt:testral:prestn-path
       :doc "The presentation path so far")
 
    (properties () 
       :type (repeat (list symbol *))
       :doc "The properties that this explorable has when it's run")
-   ;;Aliases might also allow a string as UUID
    (aliases () 
       :type (repeat emthow) 
       :doc "A possibly empty list of other IDs that would launch the

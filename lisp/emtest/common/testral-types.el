@@ -32,32 +32,9 @@
 (eval-when-compile
    (require 'cl))
 (require 'emtest/common/grade-types)
+(require 'emtest/common/prestn-path)
 
 ;;;_. Body
-;;;_ , IDs
-;;;_  . Suites
-;;Suites are identified by an emtt:explorable they are associated
-;;with. 
-;;;_  . Notes
-;;We'd like to can restrict this.  But it depends on some internal
-;;information about how elements are interpreted, depending on
-;;`method-relaunch'.  Not clear how that can be passed into here.
-(deftype emt:testral:id-element () 
-   "Id elements are strings."
-   '(or string symbol integer))
-
-;;;_  . emt:testral:id=
-(defun emt:testral:id= (a b)
-   ""
-   (equal a b))
-
-;;$$OBSOLESCENT
-(deftype emt:testral:prefix-suite-id () '(repeat emt:testral:id-element))
-(deftype emt:testral:partial-suite-id () 'emt:testral:prefix-suite-id)
-;;;_  . Others
-(defalias 'emt:testral:testrun-id-p 'stringp)
-(defalias 'emt:testral:tester-id-p 'stringp) ;;$$OBSOLESCENT
-
 
 ;;;_ , TESTRAL types
 ;;;_  . Base class
@@ -75,7 +52,7 @@
    info
 
    (prestn-path () 
-      :type emt:testral:partial-suite-id
+      :type emt:testral:prestn-path
       :doc "Extra presentation path for this note.  Used to report
    some deeply-nested checks such as type checking.")
    ;;Reflects only the note's's intrinsic problems.  Even push/pops
@@ -117,7 +94,7 @@
   (testrun-id     () :type emt:testral:testrun-id)
   (newly-pending  () :type integer)
   ;;This is really presentation-path prefix.
-  (test-id-prefix () :type emt:testral:prefix-suite-id)
+  (test-id-prefix () :type emt:testral:prestn-path)
   (suites () :type 
 	  (repeat
 	   ;;$$IMPROVE ME Move emtt:explorable into a common ancestor
