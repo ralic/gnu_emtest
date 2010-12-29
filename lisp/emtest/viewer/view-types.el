@@ -85,20 +85,10 @@
       :doc "The result data itself"))
 
 
-;;;_  . TESTRAL in viewable form.
-;;$$OBSOLETE
+;;;_  . Notes in viewable form.
 (defstruct (emt:view:TESTRAL
-	    (:constructor nil)
+	    (:constructor emt:view:make-TESTRAL)
 	    (:conc-name emt:view:TESTRAL->)
-	      (:include emt:view:presentable))
-   ""
-   (content () :type (repeat emt:testral:newstyle)))
-(defun emt:view:make-TESTRAL (&rest args)
-   (error "Obsolete emt:view:make-TESTRAL"))
-;;;_  . TESTRAL in viewable form.
-(defstruct (emt:view:TESTRAL-2
-	    (:constructor emt:view:make-TESTRAL-2)
-	    (:conc-name emt:view:TESTRAL-2->)
 	      (:include emt:view:presentable))
    ""
    (contents () :type emt:testral:newstyle))
@@ -110,20 +100,6 @@
 	    (:conc-name emt:view:no-note->)
 	      (:include emt:view:presentable))
    "A blank note-like placeholder, not associated with a TESTRAL note")
-
-;;;_  . TESTRAL unexpanded leaf
-'  ;;$$OBSOLETE
-(defstruct (emt:view:TESTRAL-unexpanded
-	    (:constructor emt:view:make-TESTRAL-unexpanded)
-	    (:conc-name emt:view:TESTRAL-unexpanded->)
-	      (:include emt:view:presentable))
-   ""
-   ;;The list of applicable nodes (generally in another list)
-   (start () :type (repeat emt:testral:note))
-   ;;The inapplicable tail of that list.
-   (past-end ()  :type (repeat emt:testral:note)))
-
-
 
 
 ;;;_. Footers

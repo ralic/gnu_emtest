@@ -63,7 +63,7 @@ It just tells a pathtree to add this node."
 	 (delq nil
 	    (mapcar
 	       #'(lambda (child)
-		    (unless (emt:view:TESTRAL-2-p child) child))
+		    (unless (emt:view:TESTRAL-p child) child))
 	       (emtvp:node->children old-node))))
        
       ;;$$IMPROVE ME if (eq old-node cell) just dirty it for
@@ -94,7 +94,7 @@ Make a `emt:view:presentable' or its descendant."
 	       (delq nil
 		  (mapcar
 		     #'(lambda (child)
-			  (unless (emt:view:TESTRAL-2-p child) child))
+			  (unless (emt:view:TESTRAL-p child) child))
 		     (emtvp:node->children suite))))
 	    suite))
       ((eq (car arg) 'note-2)
