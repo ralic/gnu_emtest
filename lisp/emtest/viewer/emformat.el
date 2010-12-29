@@ -124,56 +124,7 @@ which may not imply success of an assertion."
 	 #'(lambda (x)
 	      (list x " "))
 	 (nreverse (remq nil emtvf:*hdln-path*)))))
-;;;_  . Outlining
-;;$$MOVE ME later when we have dynamic variable registration sorted out.
-;;;_   , Special variables
-(declare (special emtvf:*outline-depth* emtvf:*folded*))
-(eval-after-load 'utility/dynvars
-   '(progn
-      (utidyv:register-var 'emtvf:*outline-depth* 0)
-      (utidyv:register-var 'emtvf:*folded* nil)))
-
-;;;_   , emtvf:outline-item-f
-(defun emtvf:outline-item-f (depth face headtext contents &optional fold)
-   "Make an outline item of DEPTH."
-   `(
-       (sep 3)
-       (w/face ,(make-string depth ?*) ,face)
-       " " 
-       ,headtext
-       ;;The heading terminator is made part of contents in order to
-       ;;accord with outline-cycle's understanding of folded items.
-       ,(cond
-	   ((null contents) nil)
-	   (fold
-	      `(overlay (invisible outline) (sep 2) ,contents))
-	   (t
-	      `((sep 2) ,contents)))
-       (sep 2)))
-
-(defmacro emtvf:outline-item (headtext contents &optional face fold)
-   "Make an outline item.
-HEADTEXT gives the heading and CONTENTS as contents.
-FACE is the face to display the heading in.
-If FOLD is non-nil, fold that contents."
-   (let
-      (  (contents-sym  (make-symbol "contents"))
-	 (fold-now      (make-symbol "fold-now"))
-	 (new-depth     (make-symbol "new-depth")))
-      
-      `(let*
-	  (  (,new-depth (1+ emtvf:*outline-depth*))
-	     ;;Don't overlay if this item is already in a folded
-	     ;;thing.
-	     (,fold-now (and ,fold (not emtvf:*folded*)))
-	     (,contents-sym
-		(let
-		   (  (emtvf:*outline-depth* ,new-depth)
-		      (emtvf:*folded* (or emtvf:*folded* ,fold-now)))
-		   (declare (special emtvf:*outline-depth* emtvf:*folded*))
-		   ,contents)))
-	  (emtvf:outline-item-f ,new-depth ,face ,headtext
-	     ,contents-sym ,fold-now))))
+;;;_  . Our outlining
 ;;;_   , emtvf:outline-item-emformat
 (defmacro emtvf:outline-item-emformat (headtext contents &optional face fold)
    ""
