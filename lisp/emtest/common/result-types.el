@@ -42,8 +42,7 @@
 	      (:copier nil)
 	      (:constructor emthow:make)
 	      (:conc-name emthow->))
-   ""
-   ;;Abstract.
+   "Base class for methods of exploring test-cases."
    )
 ;;;_  . emthow:hello
 (defstruct (emthow:hello
@@ -51,7 +50,7 @@
 	      (:constructor emthow:make-hello)
 	      (:conc-name emthow:hello->)
 	      (:include emthow))
-   "")
+   "Pseudo-explore method used to tell about the tester")
 
 ;;;_  . emthow:invalid
 (defstruct (emthow:invalid
@@ -59,7 +58,7 @@
 	      (:constructor emthow:make-invalid)
 	      (:conc-name emthow:invalid->)
 	      (:include emthow))
-   "")
+   "Pseudo-explore method used when something crucial is invalid")
 
 ;;;_  . emthow:suite
 (defstruct (emthow:suite
@@ -68,10 +67,7 @@
 	      (:conc-name emthow:suite->)
 	      (:include emthow))
    ""
-   ;;Type not expressed.  Co-varies with tester.
-   ;;$$IMPROVE ME Type me (as a symbol)
-   ;;$$This is NOT emt:testral:suite-id, which is just a name.
-   suite-ID)
+   (suite-ID () :type symbol))
 
 ;;;_  . emthow:form
 (defstruct (emthow:form
@@ -125,69 +121,6 @@
    lib-sym
    )
 
-;;;_  . emthow:project
-;;Not settled yet
-(defstruct (emthow:project
-	    (:constructor emthow:make-project)
-	    (:conc-name emthow:project->)
-	    (:include emthow))
-  ""
-  name
-  )
-
-;;;_  . emthow:all-projects
-(defstruct (emthow:all-projects
-	    (:constructor emthow:make-all-projects)
-	    (:conc-name emthow:all-projects->)
-	    (:include emthow))
-   ""
-   ;;No fields
-   )
-
-;;;_  . emthow:all-libraries
-(defstruct (emthow:all-libraries
-	    (:constructor emthow:make-all-libraries)
-	    (:conc-name emthow:all-libraries->)
-	    (:include emthow))
-   ""
-   ;;No fields
-   )
-
-;;;_  . emthow:all-testers
-(defstruct (emthow:all-testers
-	    (:constructor emthow:make-all-testers)
-	    (:conc-name emthow:all-testers->)
-	    (:include emthow))
-   ""
-   )
-
-;;;_  . emthow:from-t-dir
-(defstruct (emthow:from-t-dir
-	      (:copier nil)
-	      (:constructor emthow:make-from-t-dir)
-	      (:conc-name emthow:from-t-dir->)
-	      (:include emthow))
-   ""
-   (dir-name () :type string))
-
-
-;;;_  . emthow:from-dir
-(defstruct (emthow:from-dir
-	      (:copier nil)
-	      (:constructor emthow:make-from-dir)
-	      (:conc-name emthow:from-dir->)
-	      (:include emthow))
-   ""
-   (dir-name () :type string))
-;;;_  . emthow:dynamic
-(defstruct (emthow:dynamic
-	      (:copier nil)
-	      (:constructor emthow:make-dynamic)
-	      (:conc-name emthow:dynamic->)
-	      (:include emthow))
-   "Special method to make explorables at runtime."
-   name
-   params)
 
 
 ;;;_  . emtt:explorable (Full runnable)

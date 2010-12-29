@@ -123,22 +123,14 @@
 		     (list
 			;;Tester info
 			(emt:view:make-presentable
-			   ;;$$REFINE ME
-			   ;;emt:view:make-suite-newstyle
-			   ;;:how-to-run
-			   ;;(satisfies emthow:hello-p)
 			   :children
 			   (list
 			      ;;Library report
 			      (emt:view:make-suite-newstyle
-				 ;;:how-to-run
-				 ;;(satisfies emthow:library-p)
 				 :children
 				 (list
 				    ;;Suite report
 				    (emt:view:make-suite-newstyle
-				       ;; :how-to-run
-				       ;;(satisfies emthow:suite-p)
 				       :children
 				       ()))))))))))))
    
@@ -172,16 +164,10 @@
 		     (list
 			;;Tester info
 			(emt:view:make-presentable
-			   ;;$$REFINE ME
-			   ;;emt:view:make-suite-newstyle
-			   ;;:how-to-run
-			   ;;(satisfies emthow:hello-p)
 			   :children
 			   (list
 			      ;;Library report
 			      (emt:view:make-suite-newstyle
-				 ;;:how-to-run
-				 ;;(satisfies emthow:library-p)
 				 :children
 				 (list)))))))))))
    
