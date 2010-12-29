@@ -31,7 +31,7 @@
 ;;;_ , Requires
 
 (require 'emtest/common/run-types)
-(require 'emtest/common/persist-2)
+(require 'emtest/common/persist)
 
 
 ;;;_. Body
