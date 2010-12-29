@@ -34,6 +34,15 @@
 (require 'emtest/common/testral-types)
 
 ;;;_. Body
+;;;_ , Types
+;;;_  . emthow:hello
+(defstruct (emthow:hello
+	      (:copier nil)
+	      (:constructor emthow:make-hello)
+	      (:conc-name emthow:hello->)
+	      (:include emthow))
+   "Pseudo-explore method used to tell about the tester")
+
 ;;;_ , Collecting explorers
 ;;;_  . List of explorers
 (defvar emtt:test-finder:method-list 

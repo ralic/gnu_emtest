@@ -44,75 +44,15 @@
 	      (:conc-name emthow->))
    "Base class for methods of exploring test-cases."
    )
-;;;_  . emthow:hello
-(defstruct (emthow:hello
-	      (:copier nil)
-	      (:constructor emthow:make-hello)
-	      (:conc-name emthow:hello->)
-	      (:include emthow))
-   "Pseudo-explore method used to tell about the tester")
 
 ;;;_  . emthow:invalid
+;;Unused
 (defstruct (emthow:invalid
 	      (:copier nil)
 	      (:constructor emthow:make-invalid)
 	      (:conc-name emthow:invalid->)
 	      (:include emthow))
    "Pseudo-explore method used when something crucial is invalid")
-
-;;;_  . emthow:form
-(defstruct (emthow:form
-	      (:copier nil)
-	      (:constructor emthow:make-form)
-	      (:conc-name emthow:form->)
-	      (:include emthow))
-   ""
-   ;;A test form.
-   test-form
-   )
-;;;_  . emthow:indexed-clause
-(defstruct (emthow:indexed-clause
-	      (:copier nil)
-	      (:constructor emthow:make-indexed-clause)
-	      (:conc-name emthow:indexed-clause->)
-	      (:include emthow))
-   ""
-   (suite-sym () :type symbol)
-   ;;Formerly index was considered part of context.
-   (clause-index 0 :type integer))
-
-
-;;;_  . emthow:library
-(defstruct (emthow:library
-	      (:copier nil)
-	      (:constructor nil)
-	      (:conc-name emthow:library->)
-	      (:include emthow))
-   ""
-   ;;Abstract.
-   )
-;;Not settled yet
-
-
-(defstruct (emthow:library:elisp-load
-	      (:copier nil)
-	      (:constructor emthow:make-library:elisp-load)
-	      (:conc-name emthow:library:elisp-load->)
-	      (:include emthow:library))
-   ""
-   load-name
-   lib-sym
-   )
-(defstruct (emthow:library:elisp-file
-	      (:constructor emthow:make-library:elisp-file)
-	      (:conc-name emthow:library:elisp-file->)
-	      (:include emthow:library))
-   ""
-   file-name
-   lib-sym
-   )
-
-
 
 ;;;_  . emtt:explorable (Full runnable)
 (defstruct (emtt:explorable

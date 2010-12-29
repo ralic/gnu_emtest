@@ -31,7 +31,8 @@
 (require 'emtest/runner/tester)
 (require 'emtest/viewer/emviewer2)
 (require 'emtest/runner/explorers/suite)
-(require 'emtest/runner/explorers/library) ;;Just for the library launching.
+(require 'emtest/runner/explorers/library)
+(require 'emtest/runner/explorers/clause)
 (require 'emtest/common/result-types)
 (require 'emtest/common/config)  ;;Just for receiver configuration
 (require 'emtest/editing/lisp)

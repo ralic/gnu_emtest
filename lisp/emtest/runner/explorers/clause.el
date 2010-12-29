@@ -39,8 +39,27 @@
 
 ;;;_. Body
 ;;;_ , Structures
-;;Maybe define `emthow:form' here, since it need not be
-;;exposed. 
+;;;_  . emthow:form
+(defstruct (emthow:form
+	      (:copier nil)
+	      (:constructor emthow:make-form)
+	      (:conc-name emthow:form->)
+	      (:include emthow))
+   ""
+   ;;A test form.
+   test-form
+   )
+;;;_  . emthow:indexed-clause
+(defstruct (emthow:indexed-clause
+	      (:copier nil)
+	      (:constructor emthow:make-indexed-clause)
+	      (:conc-name emthow:indexed-clause->)
+	      (:include emthow))
+   ""
+   (suite-sym () :type symbol)
+   ;;Formerly index was considered part of context.
+   (clause-index 0 :type integer))
+
 ;;;_ , Runners (emtr prefix)
 ;;;_  . nil runner emtr:quoted
 (defun emtr:quoted (props form report-f)

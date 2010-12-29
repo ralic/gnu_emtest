@@ -33,8 +33,17 @@
 (require 'emtest/common/result-types)
 
 ;;;_. Body
-
-;;;_ , emtl:ldhst-el->symbol
+;;;_ , Types
+(defstruct (emthow:library:elisp-load
+	      (:copier nil)
+	      (:constructor emthow:make-library:elisp-load)
+	      (:conc-name emthow:library:elisp-load->)
+	      (:include emthow))
+   "Explorer class for exploring library"
+   load-name
+   lib-sym)
+;;;_ , Support functions
+;;;_  . emtl:ldhst-el->symbol
 
 (defun emtl:ldhst-el->symbol (x)
    ""
@@ -46,7 +55,7 @@
 	    '(autoload defun provide))
 	 (cdr x))))
 
-;;;_ , Helper emtt:lib-sym->suites
+;;;_  . Helper emtt:lib-sym->suites
 
 (defun emtt:lib-sym->suites (lib-sym)
    ""
@@ -54,7 +63,7 @@
       (locate-library
 	 (symbol-name lib-sym))))
 
-;;;_ , emtt:lib-suites
+;;;_  . emtt:lib-suites
 (defun emtt:lib-suites (lib-path)
    "Return a list of test suites for LIB-PATH.
 
@@ -74,7 +83,7 @@ LIB-PATH must be a path to a library that is already loaded."
 			  (when (get sym 'emt:suite) sym)))
 		  (cdr lib-data)))))
       suites))
-;;;_ , emtt:lib-path->lib-sym
+;;;_  . emtt:lib-path->lib-sym
 (defun emtt:lib-path->lib-sym (lib-path)
    ""
 
@@ -84,13 +93,13 @@ LIB-PATH must be a path to a library that is already loaded."
 	 (provide-cell
 	    (assq 'provide lib-data)))
       (cdr provide-cell)))
-;;;_ , utim:setf-new
+;;;_  . utim:setf-new
 (defmacro utim:setf-new (place value)
    ""
    `(unless 
       ,place
       (setf ,place ,value)))
-;;;_ , emtt:conform-howto
+;;;_  . emtt:conform-howto
 ;;$$RENAME ME This actually just pertains to the library howto.
 (defun emtt:conform-howto (howto)
    ""
