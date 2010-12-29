@@ -259,8 +259,9 @@ Must be called in a `utidyv:top' context."
 	    (emtvf:TESTRAL view-node))
 
 	 (emt:view:no-note
-	    (emtvf:shortcut-single 
-	       view-node
+	    (emtvf:shortcut-single
+	       nil
+	       (emtvp:node->children view-node)
 	       '()
 	       nil
 	       "[Note placeholder with no children]"))
@@ -268,30 +269,31 @@ Must be called in a `utidyv:top' context."
 	 ;;Base type, appears for the root node.
 	 (emt:view:presentable
 	    (emtvf:shortcut-single 
-	       view-node
+	       nil
+	       (emtvp:node->children view-node)
 	       grades-sum
 	       grade-face
 	       "[Suite placeholder with no children]")))))
 
 ;;;_  . emtvf:shortcut-single
-(defmacro emtvf:shortcut-single (obj rest-headline face format-no-child)
+(defmacro emtvf:shortcut-single (name children rest-headline face format-no-child)
    "Display an item and its children, or display its single child.
 Intended for items that are basically just containers."
    (let
-      ((name (make-symbol "name"))
-	 (children (make-symbol "children")))
+      ((name-sym (make-symbol "name"))
+	 (children-sym (make-symbol "children")))
       `(let
-	  ((,name (emtvp:node->name ,obj))
-	     (,children (emtvp:node->children ,obj)))
+	  ((,name-sym ,name)
+	     (,children-sym ,children))
 	  (if
-	     (= (length ,children) 1)
-	     (emtvf:with-more-singles-path ,name
+	     (= (length ,children-sym) 1)
+	     (emtvf:with-more-singles-path ,name-sym
 		(emtvf:make-dynamic 
-		   (car ,children)
+		   (car ,children-sym)
 		   #'emtvf:node))
 	     (emtvf:outline-item-emformat
-		(list ,name ,rest-headline)
-		(emtvf:mapnodes ,children ,format-no-child)
+		(list ,name-sym ,rest-headline)
+		(emtvf:mapnodes ,children-sym ,format-no-child)
 		,face)))))
 
 

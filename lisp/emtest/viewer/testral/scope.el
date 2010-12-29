@@ -38,7 +38,8 @@
 (defun emtvf:TESTRAL-gov:scope (obj)
    "Formatter for TESTRAL viewable governed by `scope'"
    (emtvf:shortcut-single
-      obj
+      nil
+      (emtvp:node->children obj)
       '()
       (emtvf:grade-overall-face
 	 (emt:view:presentable->sum-badnesses obj))
