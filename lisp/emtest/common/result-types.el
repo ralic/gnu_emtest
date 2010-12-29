@@ -60,15 +60,6 @@
 	      (:include emthow))
    "Pseudo-explore method used when something crucial is invalid")
 
-;;;_  . emthow:suite
-(defstruct (emthow:suite
-	      (:copier nil)
-	      (:constructor emthow:make-suite)
-	      (:conc-name emthow:suite->)
-	      (:include emthow))
-   ""
-   (suite-ID () :type symbol))
-
 ;;;_  . emthow:form
 (defstruct (emthow:form
 	      (:copier nil)

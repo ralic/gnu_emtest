@@ -29,13 +29,23 @@
 
 ;;;_ , Requires
 
-(require 'emtest/common/testral-types)
 (require 'emtest/runner/define)
 (require 'emtest/runner/keepup)
+(require 'emtest/common/testral-types)
 (require 'emtest/common/result-types)
 
 
 ;;;_. Body
+;;;_ , Types
+;;;_  . emthow:suite
+(defstruct (emthow:suite
+	      (:copier nil)
+	      (:constructor emthow:make-suite)
+	      (:conc-name emthow:suite->)
+	      (:include emthow))
+   ""
+   (suite-ID () :type symbol))
+
 
 ;;;_ , emtt:explore-suite
 ;;;###autoload
@@ -73,10 +83,7 @@
 		  :contents 
 		  (emt:testral:make-runform-list
 		     :els (reverse rv-list-to-run))
-		  :badnesses '() ;;Punt - anyways, only
-		  ;;meaningful if it crapped out right
-		  ;;here.
-		  )
+		  :badnesses '())
 	       (reverse rv-list-to-run))))))
 ;;;_ , Getting test suites indirectly.
 
