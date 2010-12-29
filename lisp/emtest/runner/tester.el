@@ -38,28 +38,11 @@
 (require 'emtest/runner/define)
 (require 'emtest/runner/explorers/all)
 
-;;$$OBSOLETE 
-;;(require 'emtest/runner/explorers/clause)
-;;(require 'emtest/runner/explorers/suite)
-;;(require 'emtest/runner/explorers/library)
-
 ;;;_. Body
-
-;;;_ , Info available to tests (Not used yet)
-;;;_  . Type `emtt:top-data'
-;;$$RETHINK ME
-(defstruct (emtt:top-data
-	    (:constructor emtt:make-top-data)
-	    (:conc-name emtt:top-data->))
-   ""
-   (report-func () :type (satisfies #'functionp)))
-
-
 ;;;_ , Run tests
 ;;;_  . emtt:explore-one
 (defun emtt:explore-one (explorable func report-f)
    ""
-   ;;(check-type test-id emthow)
    (let*
       (
 	 (test-id
@@ -85,48 +68,8 @@
       (emtp tp:a084136e-8f02-49a5-ac0d-9f65509cedf2
 	 (test-id)
 	 (funcall (emtt:get-explore-func test-id)
-	    test-id props path local-report-f)
-	 
-	 '
-	 (typecase test-id
-	    (emthow:form
-	       (emtt:explore-literal-clause
-		  test-id props path local-report-f))
+	    test-id props path local-report-f))))
 
-	    (emthow:indexed-clause
-	       (emtt:explore-indexed-clause
-		  test-id props path local-report-f))
-		  
-	    (emthow:suite
-	       (emtt:explore-suite 
-		  test-id props path local-report-f))
-		  
-	    (emthow:library:elisp-load
-	       (emtt:explore-library 
-		  test-id props path local-report-f))
-		  
-	    ;;Tell receiver about this tester
-	    (emthow:hello
-	       (funcall local-report-f
-		  (emt:testral:make-test-runner-info
-		     :name "Emtest"
-		     :version emtt:version
-		     :explore-methods-supported
-		     (mapcar #'car emtt:test-finder:method-list))))
-
-	    ;;Fallback case - encap me.
-	    (t
-	       ;;Not clear that this answers at a sufficiently
-	       ;;high level.  It must indicate that there's no
-	       ;;such method.
-	       (funcall local-report-f
-		  (emt:testral:make-suite
-		     :contents nil
-		     ;;Actual form is TBD.
-		     :grade 
-		     (emt:testral:make-grade:ungraded
-			:contents
-			"Unrecognized internal explore type"))))))))
 
 ;;;_  . emtt:test-finder:top
 
