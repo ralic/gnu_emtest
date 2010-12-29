@@ -60,7 +60,7 @@
       (group
 	 ;; Notes alone
 	 ((type note)(subtype alone))
-	 (type-must-be () emt:testral:newstyle)
+	 (type-must-be () emt:testral:note)
 	 (item ((name error-1))
 	    (emt:testral:make-note
 	       :id "1"

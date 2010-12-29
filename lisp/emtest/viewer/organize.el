@@ -111,7 +111,7 @@ Make a `emt:view:presentable' or its descendant."
       ;;$$OBSOLETE
       ((eq (car arg) 'note)
 	 (error "Don't call with arg `note'")
-	 (check-type (second arg) (repeat emt:testral:newstyle))
+	 (check-type (second arg) (repeat emt:testral:note))
 	 ;;Aside from content, it's all set in pathtree or pathtree's
 	 ;;dirty-handler callback.  `:children' is mixed-initiative,
 	 ;;but we don't set TESTRAL children.

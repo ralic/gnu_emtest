@@ -91,7 +91,7 @@ pathtree nodes."
 	    (:conc-name emt:view:note->)
 	      (:include emt:view:presentable))
    ""
-   (contents () :type emt:testral:newstyle))
+   (contents () :type emt:testral:note))
 
 ;;;_  . Note placeholder
 (defstruct (emt:view:note-placeholder
