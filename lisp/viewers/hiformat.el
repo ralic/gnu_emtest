@@ -89,6 +89,13 @@ ELS=1 must be a function taking 1 arg, the singleton object."
 			(if sep-form
 			   (list nil sep-form sub-list)
 			   sub-list)))))))))
+;;;_  . hiformat:separate
+(defun hiformat:separate (list &optional separator)
+   ""
+   (hiformat:map
+      #'(lambda (obj &rest r) obj)
+      list
+      :separator (or separator " ")))
 
 ;;;_ , Slightly touching on grammar
 ;;;_  . hiformat:grammar:number-agreement

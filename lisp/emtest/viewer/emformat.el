@@ -218,12 +218,11 @@ Must be called in a `utidyv:top' context."
 		  (null "A null viewable")
 		  (emt:testral:test-runner-info
 		     (emtvf:outline-item-emformat
-			(hiformat:map
-			   #'(lambda (obj &rest r) obj)
+			(hiformat:separate
 			   (list
 			      `(w/face ,name emtvf:face:suitename)
 			      grades-sum)
-			   :separator " ")
+			   " ")
 			(hiformat:map 
 			   ;;Formatting for each child
 			   #'(lambda (obj &rest d)
@@ -236,14 +235,13 @@ Must be called in a `utidyv:top' context."
 		  
 		  (emt:testral:suite
 		     (emtvf:outline-item-emformat
-			(hiformat:map
-			   #'(lambda (obj &rest r) obj)
+			(hiformat:separate
 			   (delq nil
 			      (list
 				 `(w/face ,name emtvf:face:suitename)
 				 (emtvf:button-to-explore explorable "[RUN]")
 				 grades-sum))
-			   :separator " ")
+			   " ")
 			(if children
 			   ;;$$ENCAP ME, SHARE ME
 			   (hiformat:map 
@@ -405,8 +403,7 @@ OBJ must be a `emt:testral:grade:summary'"
 	    '(w/face "Nothing was tested" emtvf:face:dormant))
 	 (list
 	    '(w/face "Problems: " emtvf:face:failed)
-	    (hiformat:map 
-	       #'(lambda (obj &rest r) obj)
+	    (hiformat:separate
 	       (delq nil
 		  (mapcar
 		     #'(lambda (data)
@@ -418,8 +415,7 @@ OBJ must be a `emt:testral:grade:summary'"
 			(list ungradeds "Ungraded tests" 'emtvf:face:ungraded)
 			(list fails     "Failures" 	 'emtvf:face:failed)
 			(list dormants  "Dormant tests"  'emtvf:face:dormant))))
-	       
-	       :separator '(", "))
+	       '(", "))
 	    "."))))
 
 
@@ -451,9 +447,7 @@ OBJ must be a `emt:testral:grade:summary'"
 	    (list "Nothing was tested" "\n"))
 	 (list
 	    "Problems: \n"
-	    (hiformat:map 
-	       #'(lambda (obj &rest r)
-		    obj)
+	    (hiformat:separate
 	       (delq nil
 		  (list
 		     (when (> blowouts  0) 
@@ -472,7 +466,7 @@ OBJ must be a `emt:testral:grade:summary'"
 			(hiformat:grammar:num-and-noun 
 			   dormants
 			   "Dormant test" "Dormant tests"))))
-	       :separator '(".\n"))
+	       '(".\n"))
 	    "\n"
 	    (if (> test-cases 0)
 	       (list
