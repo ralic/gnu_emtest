@@ -75,7 +75,6 @@ With `cl' loaded, use it as (incf emtl:testrun-counter)." )
 (defun emtl:run-suite (suite-sym)
    "Run the test suite associated with SUITE-SYM."
    
-   ;;$$UPDATE ME - will need to change what it makes
    (emtl:dispatch-normal 
       (emthow:make-suite
 	 :suite-ID suite-sym)
