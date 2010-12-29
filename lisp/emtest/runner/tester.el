@@ -32,7 +32,7 @@
    (emtp:require))
 (eval-when-compile
    (require 'cl))
-(require 'emtest/common/result-types)
+(require 'emtest/common/run-types)
 (require 'emtest/common/testral-types)
 (require 'emtest/runner/testral)
 (require 'emtest/runner/define)

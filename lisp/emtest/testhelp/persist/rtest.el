@@ -31,7 +31,7 @@
 
 (require 'rtest-define)
 (require 'emtest/runner/define)
-(require 'emtest/common/result-types)
+(require 'emtest/common/run-types)
 (require 'emtest/testhelp/misc)
 (require 'emtest/testhelp/persist)
 

@@ -83,7 +83,6 @@
 
 ;;;_. Footers
 ;;;_ , Provides
-;; 'emtest/common/result-types -> emtest/common/run-types
 (provide 'emtest/common/result-types)
 
 ;;;_ * Local emacs vars.

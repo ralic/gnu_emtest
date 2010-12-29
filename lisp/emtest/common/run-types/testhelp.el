@@ -1,4 +1,4 @@
-;;;_ emtest/common/result-types/testhelp.el --- Examples of emtest result types
+;;;_ emtest/common/run-types/testhelp.el --- Examples of emtest result types
 
 ;;;_. Headers
 ;;;_ , License
@@ -29,7 +29,7 @@
 
 ;;;_ , Requires
 
-(require 'emtest/common/result-types)
+(require 'emtest/common/run-types)
 (require 'emtest/testhelp/tagnames)
 
 ;;;_. Body
@@ -41,7 +41,7 @@
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'emtest/common/result-types/testhelp)
+(provide 'emtest/common/run-types/testhelp)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -49,4 +49,4 @@
 ;;;_  + End:
 
 ;;;_ , End
-;;; emtest/common/result-types/testhelp.el ends here
+;;; emtest/common/run-types/testhelp.el ends here

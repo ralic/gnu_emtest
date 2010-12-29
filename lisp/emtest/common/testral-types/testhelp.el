@@ -28,7 +28,7 @@
 
 ;;;_ , Requires
 
-(require 'emtest/common/result-types)
+(require 'emtest/common/run-types)
 (require 'emtest/testhelp/tagnames)
 (require 'emtest/testhelp/match)
 (require 'emtest/runner/testral)

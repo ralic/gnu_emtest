@@ -33,7 +33,7 @@
    (require 'cl))
 (require 'emtest/common/grade-types)
 (require 'emtest/common/prestn-path)
-(require 'emtest/common/result-types)
+(require 'emtest/common/run-types)
 
 ;;;_. Body
 

@@ -30,7 +30,7 @@
 
 ;;;_ , Requires
 
-(require 'emtest/common/result-types)
+(require 'emtest/common/run-types)
 (require 'emtest/common/persist-2)
 
 

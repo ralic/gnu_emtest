@@ -30,7 +30,7 @@
 ;;;_ , Requires
 
 (require 'emtest/common/config)
-(require 'emtest/common/result-types)
+(require 'emtest/common/run-types)
 (require 'emtest/common/testral-types)
 
 ;;;_. Body

@@ -33,7 +33,7 @@
 (require 'emtest/runner/tester)
 (require 'emtest/testhelp/misc)
 (require 'emtest/testhelp/tagnames)
-(require 'emtest/common/result-types)
+(require 'emtest/common/run-types)
 
 ;;;_. Body
 ;;;_  . Functions

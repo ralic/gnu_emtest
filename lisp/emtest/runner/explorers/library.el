@@ -30,7 +30,7 @@
 ;;;_ , Requires
 
 (require 'emtest/common/testral-types)
-(require 'emtest/common/result-types)
+(require 'emtest/common/run-types)
 
 ;;;_. Body
 ;;;_ , Types
