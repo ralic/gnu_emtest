@@ -1,7 +1,7 @@
 # Lines starting with '#' are considered comments.
 # Ignore byte-compiled files
 *.elc
-*.*~
+*~
 /lisp/emtest/TAGS
 /lisp/.nosearch
 /lisp/emtest/runner/loadexplorers.el
