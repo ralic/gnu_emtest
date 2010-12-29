@@ -270,10 +270,10 @@ Must be called in a `utidyv:top' context."
 			grade-face
 			boring-p)))))
 	 
-	 (emt:view:TESTRAL
+	 (emt:view:note
 	    (emtvf:TESTRAL view-node))
 
-	 (emt:view:no-note
+	 (emt:view:note-placeholder
 	    (emtvf:shortcut-single
 	       nil
 	       (emtvp:node->children view-node)
@@ -294,11 +294,11 @@ Must be called in a `utidyv:top' context."
 ;;;_  . emtvf:TESTRAL (TESTRAL note formatter)
 (defun emtvf:TESTRAL (obj &rest d)
    "Make a format form for OBJ.
-OBJ must be a TESTRAL viewable (`emt:view:TESTRAL')."
-   (check-type obj emt:view:TESTRAL)
+OBJ must be a TESTRAL viewable (`emt:view:note')."
+   (check-type obj emt:view:note)
    (condition-case err
       (let
-	 ((note (emt:view:TESTRAL->contents obj)))
+	 ((note (emt:view:note->contents obj)))
 	 (apply 
 	    (emtvf:get-TESTRAL-formatter 
 	       (emt:testral:note->governor note))

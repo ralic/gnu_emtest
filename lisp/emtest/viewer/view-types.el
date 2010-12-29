@@ -86,18 +86,17 @@
 
 
 ;;;_  . Notes in viewable form.
-(defstruct (emt:view:TESTRAL
-	    (:constructor emt:view:make-TESTRAL)
-	    (:conc-name emt:view:TESTRAL->)
+(defstruct (emt:view:note
+	    (:constructor emt:view:make-note)
+	    (:conc-name emt:view:note->)
 	      (:include emt:view:presentable))
    ""
    (contents () :type emt:testral:newstyle))
 
 ;;;_  . Note placeholder
-;;$$RENAME ME emt:view:TESTRAL-placeholder
-(defstruct (emt:view:no-note
-	    (:constructor emt:view:make-no-note)
-	    (:conc-name emt:view:no-note->)
+(defstruct (emt:view:note-placeholder
+	    (:constructor emt:view:make-note-placeholder)
+	    (:conc-name emt:view:note-placeholder->)
 	      (:include emt:view:presentable))
    "A blank note-like placeholder, not associated with a TESTRAL note")
 

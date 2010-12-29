@@ -82,7 +82,7 @@ could be, such as when a note-list hasn't been expanded."
 	       (emt:testral:test-runner-info
 		  '()))))
       ;;$$IMPROVE ME Treat this.
-      (emt:view:TESTRAL '())
+      (emt:view:note '())
       ;;Only the root will have this type.
       (emt:view:presentable '())))
 
@@ -139,7 +139,7 @@ could be, such as when a note-list hasn't been expanded."
 		    #'(lambda (note)
 			 (list 
 			    (emt:testral:note->id note)
-			    (emt:view:make-TESTRAL
+			    (emt:view:make-note
 			       :contents note)
 			    '()))
 		    list-of-notes))))
@@ -153,7 +153,7 @@ could be, such as when a note-list hasn't been expanded."
       ;;presentation-paths, this is not quite right.
       (dolist (cell (cdr alist))
 	 (let*
-	    (  (note (emt:view:TESTRAL->contents (second cell)))
+	    (  (note (emt:view:note->contents (second cell)))
 	       (parent-id (emt:testral:note->parent-id note))
 	       (parent-cell (assoc parent-id alist)))
 	    (check-type parent-id   emt:testral:id-element)
@@ -168,7 +168,7 @@ could be, such as when a note-list hasn't been expanded."
 	    (let* 
 	       ((path
 		   (emt:testral:note->prestn-path 
-		      (emt:view:TESTRAL->contents child)))
+		      (emt:view:note->contents child)))
 		  (ancestor (second cell))
 		  (parent
 		     (if path
@@ -176,9 +176,9 @@ could be, such as when a note-list hasn't been expanded."
 			   tree 
 			   (emt:testral:map-id->emtvp:name path) 
 			   ancestor
-			   #'emt:view:make-no-note)
+			   #'emt:view:make-note-placeholder)
 			ancestor)))
-	       ;;$$IMPROVE ME If there's a `emt:view:no-note', replace
+	       ;;$$IMPROVE ME If there's a `emt:view:note-placeholder', replace
 	       ;;it with this one.
 	       (emtvp:add-child
 		  tree parent nil child t))))))
