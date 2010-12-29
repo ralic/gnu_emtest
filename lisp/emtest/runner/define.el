@@ -124,19 +124,6 @@ SUITE must be a symbol naming a test suite.
        
        ,@body))
 
-;;;_  . emtd:destructure-clause-3
-;;$$OBSOLESCENT
-(defmacro emtd:destructure-clause-3 (clause &rest body)
-   "Run BODY with the contents of CLAUSE bound as indicated.
-
-CLAUSE must be a clause as in a test suite, for instance any element
-of `clause-list' as bound by `emtt:destructure-suite'.
-
- * form - the test form 
- * (Used to be doc - GONE)"
-   (declare (debug (sexp body)))
-   `(destructuring-bind (governor &optional form) ,clause
-       ,@body))
 ;;;_  . emtd:clause->governor
 (defalias 'emtd:clause->governor 'car)
 ;;;_  . emtd:clause->form
