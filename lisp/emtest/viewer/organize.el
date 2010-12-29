@@ -150,7 +150,7 @@ Make a `emt:view:presentable' or its descendant."
 ;;;_  . emtvo:receive
 (defun emtvo:receive (report)
    "Receive REPORT"
-   (emtvr:newstyle emtvo:receiver report)
+   (emtvr:receive emtvo:receiver report)
    (emtvp:freshen emtvo:pathtree))
 
 ;;;_ , Command entry points

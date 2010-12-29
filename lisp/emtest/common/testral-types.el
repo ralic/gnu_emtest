@@ -92,7 +92,7 @@
 	  (repeat
 	   ;;$$IMPROVE ME Move emtt:explorable into a common ancestor
 	     ;;of emt:testral:test-runner-info and emt:testral:suite.
-	     ;;Adjust `emtvr:one-newstyle' accordingly.
+	     ;;Adjust `emtvr:receive-one' accordingly.
 	   (list 
 	    emtt:explorable
 	    null ;;let's leave that an empty list for now

@@ -36,12 +36,12 @@
 (require 'emtest/testhelp/match)
 
 ;;;_. Body
-;;;_  . emtvr:one-newstyle
-(put 'emtvr:one-newstyle 'emt:test-thru 'emtvr:newstyle)
+;;;_  . emtvr:receive-one
+(put 'emtvr:receive-one 'emt:test-thru 'emtvr:receive)
 
 ;;;_  . Tests
 
-(emt:deftest-3 emtvr:newstyle
+(emt:deftest-3 emtvr:receive
    (nil
       (progn
 	 (emt:doc "Situation: Empty report.")
@@ -64,7 +64,7 @@
 			(library types)
 			(type report)
 			(name empty))))
-	       (emtvr:newstyle receiver report)
+	       (emtvr:receive receiver report)
 	       (emt:assert
 		  (equal
 		     (emtvr:data->alist receiver)
@@ -95,7 +95,7 @@
 			(type report)
 			(role original-add)
 			(what-test test-1))))
-	       (emtvr:newstyle receiver report)
+	       (emtvr:receive receiver report)
 	       (emt:assert
 		  (emtm
 		     (emtvr:data->alist receiver)
@@ -131,7 +131,7 @@
 			     nodes-freshened)))
 		  (receiver
 		     (emtvr:make-empty-alist remember-freshened-node #'ignore)))
-	       (emtvr:newstyle receiver
+	       (emtvr:receive receiver
 		  (emtg
 		     (project emtest)
 		     (sub-project testral)
@@ -141,7 +141,7 @@
 		     (role original-add)))
 	       (emt:doc "Situation: Callback list is emptied")
 	       (setq nodes-freshened 'nil)
-	       (emtvr:newstyle receiver
+	       (emtvr:receive receiver
 		  (emtg
 		     (project emtest)
 		     (sub-project testral)
@@ -187,12 +187,12 @@
 			     nodes-freshened)))
 		  (receiver
 		     (emtvr:make-empty-alist remember-freshened-node #'ignore)))
-	       (emtvr:newstyle receiver
+	       (emtvr:receive receiver
 		  (emtg
 		     (type report)
 		     (role original-add)
 		     (what-test test-1)))
-	       (emtvr:newstyle receiver
+	       (emtvr:receive receiver
 		  (emtg
 		     (type report)
 		     (role remove-previous)
@@ -221,14 +221,14 @@
 			     nodes-freshened)))
 		  (receiver
 		     (emtvr:make-empty-alist remember-freshened-node #'ignore)))
-	       (emtvr:newstyle receiver
+	       (emtvr:receive receiver
 		  (emtg
 		     (type report)
 		     (role original-add)
 		     (what-test test-1)))
 	       (emt:doc "Situation: Callback list is emptied")
 	       (setq nodes-freshened 'nil)
-	       (emtvr:newstyle receiver
+	       (emtvr:receive receiver
 		  (emtg
 		     (type report)
 		     (what-test test-2)))

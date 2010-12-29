@@ -36,9 +36,9 @@
 (require 'emtest/testhelp/match)
 
 ;;;_. Body
-;;;_  . emtvr:one-newstyle
-(put 'emtvr:one-newstyle 'rtest:test-thru
-   'emtvr:newstyle)
+;;;_  . emtvr:receive-one
+(put 'emtvr:receive-one 'rtest:test-thru
+   'emtvr:receive)
 ;;;_  . emtvr:suite test helpers
 '  ;;$$OBSOLETE
 (emtm:define-struct-governor
@@ -47,7 +47,7 @@
 
 ;;;_  . Tests
 
-(rtest:deftest emtvr:newstyle
+(rtest:deftest emtvr:receive
 
    ;;Add reports.  Lists should contain what's expected.
    (  "Situation: Empty report.
@@ -65,7 +65,7 @@ Response: List still contains nothing."
 			  (library types)
 			  (type report)
 			  (name empty))))
-	    (emtvr:newstyle receiver report)
+	    (emtvr:receive receiver report)
 	    ;;Still an empty list
 	    (assert
 	       (equal
@@ -98,7 +98,7 @@ Response: List contains that one entry."
 			  (type report)
 			  (role original-add)
 			  (what-test test-1))))
-	    (emtvr:newstyle receiver report)
+	    (emtvr:receive receiver report)
 
 	    ;;A list with just that entry
 	    (assert
@@ -132,7 +132,7 @@ Response: List contains just that one entry, not duplicated."
 		  #'(lambda (x y)
 		       (push (list x y) nodes-freshened)))
 	       (receiver (emtvr:make-empty-alist remember-freshened-node #'ignore)))
-	    (emtvr:newstyle receiver 
+	    (emtvr:receive receiver 
 	       (emtg
 		  (project emtest)
 		  (sub-project testral)
@@ -143,7 +143,7 @@ Response: List contains just that one entry, not duplicated."
 	 
 	    (setq nodes-freshened '())
 	    ;;Add a report that just overrides the original
-	    (emtvr:newstyle receiver 
+	    (emtvr:receive receiver 
 	       (emtg
 		  (project emtest)
 		  (sub-project testral)
@@ -186,13 +186,13 @@ Response: List no longer contains that entry; it is empty."
 		       (push (list x y) nodes-freshened)))
 	       (receiver 
 		  (emtvr:make-empty-alist remember-freshened-node #'ignore)))
-	    (emtvr:newstyle receiver 
+	    (emtvr:receive receiver 
 	       (emtg
 		  (type report)
 		  (role original-add)
 		  (what-test test-1)))
 
-	    (emtvr:newstyle receiver 
+	    (emtvr:receive receiver 
 	       (emtg
 		  (type report)
 		  (role remove-previous)
@@ -221,7 +221,7 @@ Response: List contains both entries."
 		       (push (list x y) nodes-freshened)))
 	       (receiver 
 		  (emtvr:make-empty-alist remember-freshened-node #'ignore)))
-	    (emtvr:newstyle receiver 
+	    (emtvr:receive receiver 
 	       (emtg
 		  (type report)
 		  (role original-add)
@@ -229,7 +229,7 @@ Response: List contains both entries."
 
 	    ;;Empty the callback list
 	    (setq nodes-freshened '())
-	    (emtvr:newstyle receiver 
+	    (emtvr:receive receiver 
 	       (emtg (type report)(what-test test-2)))
 
 	    ;;Test that we have the right contents.  Skip for now

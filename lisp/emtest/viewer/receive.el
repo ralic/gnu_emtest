@@ -55,9 +55,9 @@
       :tree-remove-cb remove))
 
 
-;;;_  . emtvr:newstyle
+;;;_  . emtvr:receive
 ;;$$RENAME ME
-(defun emtvr:newstyle (receiver report)
+(defun emtvr:receive (receiver report)
    ""
    (check-type receiver emtvr:data)
    (check-type report emt:testral:report)
@@ -69,7 +69,7 @@
       
       ;;For each suite in the report, 
       (dolist (entry (emt:testral:report->suites report))
-	 (emtvr:one-newstyle receiver entry testrun-id prefix))))
+	 (emtvr:receive-one receiver entry testrun-id prefix))))
 
 ;;;_  . emtvr:test-gone-p
 (defun emtvr:test-gone-p (suite)
@@ -83,7 +83,7 @@
 	 (emt:testral:suite->grade suite)
 	 :test #'equal)))
 
-;;;_  . emtvr:one-newstyle
+;;;_  . emtvr:receive-one
 
 ;;$$IMPROVE ME Become smarter about aliases.  Pick the "best" one as
 ;;the id, favoring UUIDs (recognized as strings), allowing viewer's
@@ -94,7 +94,7 @@
 ;;are.  If other children are recorded, they no longer exist so remove
 ;;them.  Perhaps suite reports flag whether they have exhaustively
 ;;listed their children.
-(defun emtvr:one-newstyle (receiver entry testrun-id prefix)
+(defun emtvr:receive-one (receiver entry testrun-id prefix)
    "Receive and store a single test report."
    (check-type receiver emtvr:data)
    (destructuring-bind (how-to-run dummy suite) entry
