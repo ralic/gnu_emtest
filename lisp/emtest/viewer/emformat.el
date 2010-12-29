@@ -125,17 +125,6 @@ which may not imply success of an assertion."
 	 #'(lambda (x)
 	      (list x " "))
 	 (nreverse (remq nil emtvf:*hdln-path*)))))
-;;;_  . Our outlining
-;;;_   , emtvf:outline-item-emformat
-(defmacro emtvf:outline-item-emformat (headtext contents &optional face fold)
-   ""
-   
-   `(emtvf:outline-item
-       (list (emtvf:singles-path) ,headtext)
-       (emtvf:with-blank-singles-path ,contents)
-       ,face
-       ,fold))
-
 ;;;_  . Buttons
 ;;;_   , emtvf:button-to-explore
 (defun emtvf:button-to-explore (explorable text)
@@ -165,8 +154,18 @@ If VALUE is a string, display it literally, otherwise pretty-print it."
       ;;structure. 
       `(indent 4 ,value)
       `(object ,value nil)))
+;;;_  . Direct emformat support
+;;;_   , emtvf:outline-item-emformat
+(defmacro emtvf:outline-item-emformat (headtext contents &optional face fold)
+   ""
+   
+   `(emtvf:outline-item
+       (list (emtvf:singles-path) ,headtext)
+       (emtvf:with-blank-singles-path ,contents)
+       ,face
+       ,fold))
 
-;;;_  . emtvf:mapnodes 
+;;;_   , emtvf:mapnodes 
 (defun emtvf:mapnodes (list els=0)
    "Map emtvf:node over LIST, making dynamic entries"
    (hiformat:map 
@@ -177,6 +176,27 @@ If VALUE is a string, display it literally, otherwise pretty-print it."
       list
       :separator "\n"
       :els=0 (or els=0 '("[No child nodes]"))))
+
+;;;_  . emtvf:shortcut-single
+(defmacro emtvf:shortcut-single (name children rest-headline face format-no-child)
+   "Display an item and its children, or display its single child.
+Intended for items that are basically just containers."
+   (let
+      ((name-sym (make-symbol "name"))
+	 (children-sym (make-symbol "children")))
+      `(let
+	  ((,name-sym ,name)
+	     (,children-sym ,children))
+	  (if
+	     (= (length ,children-sym) 1)
+	     (emtvf:with-more-singles-path ,name-sym
+		(emtvf:make-dynamic 
+		   (car ,children-sym)
+		   #'emtvf:node))
+	     (emtvf:outline-item-emformat
+		(list ,name-sym ,rest-headline)
+		(emtvf:mapnodes ,children-sym ,format-no-child)
+		,face)))))
 
 ;;;_ , Format functions
 ;;;_  . emtvf:top
@@ -274,27 +294,6 @@ Must be called in a `utidyv:top' context."
 	       grades-sum
 	       grade-face
 	       "[Suite placeholder with no children]")))))
-
-;;;_  . emtvf:shortcut-single
-(defmacro emtvf:shortcut-single (name children rest-headline face format-no-child)
-   "Display an item and its children, or display its single child.
-Intended for items that are basically just containers."
-   (let
-      ((name-sym (make-symbol "name"))
-	 (children-sym (make-symbol "children")))
-      `(let
-	  ((,name-sym ,name)
-	     (,children-sym ,children))
-	  (if
-	     (= (length ,children-sym) 1)
-	     (emtvf:with-more-singles-path ,name-sym
-		(emtvf:make-dynamic 
-		   (car ,children-sym)
-		   #'emtvf:node))
-	     (emtvf:outline-item-emformat
-		(list ,name-sym ,rest-headline)
-		(emtvf:mapnodes ,children-sym ,format-no-child)
-		,face)))))
 
 
 ;;;_  . emtvf:TESTRAL (TESTRAL note formatter)
