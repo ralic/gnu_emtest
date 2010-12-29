@@ -52,9 +52,9 @@
       :type emt:testral:prestn-path
       :doc "Extra presentation path for this note.  Used to report
    some deeply-nested checks such as type checking.")
-   ;;Reflects only the note's's intrinsic problems.  Even push/pops
-   ;;need it in case (say) a whole stage is dormantized or aborted.
-   ;;$$RENAME ME badnesses -> grades
+
+   ;;Reflects only the note's's intrinsic problems.  Even stages need
+   ;;this field in case (say) a whole stage is dormantized or aborted.
    (grade () :type emt:testral:grade-aux)
    (relation () :type symbol
       :doc "The note's relation to its parent")
@@ -86,7 +86,6 @@
   "A report sent by test-runner to viewer"
   (testrun-id     () :type emt:testral:testrun-id)
   (newly-pending  () :type integer)
-  ;;This is really presentation-path prefix.
   (test-id-prefix () :type emt:testral:prestn-path)
   (suites () :type 
 	  (repeat
@@ -106,9 +105,7 @@
   (name    ()  :type string)
   (version "0" :type string)
   ;;See [[id:b4sjlt20mze0][Test-runner info]]
-   ;;$$CHANGE ME
-  ;;Type should become (repeat emtt:method)
-  (explore-methods-supported () :type (repeat emt:testral:explore-method-id)))
+  (explore-methods-supported () :type (repeat emtt:method)))
 
 
 ;;;_  . suite info
@@ -125,13 +122,6 @@
   (grade () :type emt:testral:grade-aux)
    ;;$$OBSOLESCENT
   info)
-
-;;;_  . (Suggested) emt:testral:problem
-;;Name?  emt:testral:bad-launch
-;;Suggested for when tester tries to launch a suite and can't.  This
-;;would have or inherit a testral notelist about the problem
-;;(emt:testral:note-list).  This would mean that `emt:testral:suite'
-;;need have no `grade' of its own.
 
 ;;;_. Footers
 ;;;_ , Provides
