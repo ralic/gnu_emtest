@@ -122,7 +122,7 @@ could be, such as when a note-list hasn't been expanded."
 (deftype emtvr:alist-cell-t ()
    "Alist items have this type"
    '(list
-       emtvp->id-element
+       emt:testral:id-element
        emt:view:presentable
        (repeat emt:view:presentable)))
 
@@ -156,7 +156,7 @@ could be, such as when a note-list hasn't been expanded."
 	    (  (note (emt:view:TESTRAL-2->contents (second cell)))
 	       (parent-id (emt:testral:base->parent-id note))
 	       (parent-cell (assoc parent-id alist)))
-	    (check-type parent-id   emtvp->id-element)
+	    (check-type parent-id   emt:testral:id-element)
 	    (check-type parent-cell emtvr:alist-cell-t)
 	    (push (second cell) (third parent-cell))))
 
@@ -173,7 +173,9 @@ could be, such as when a note-list hasn't been expanded."
 		  (parent
 		     (if path
 			(emtvp:find-node-under-node
-			   tree path ancestor
+			   tree 
+			   (emt:testral:map-id->emtvp:name path) 
+			   ancestor
 			   #'emt:view:make-no-note)
 			ancestor)))
 	       ;;$$IMPROVE ME If there's a `emt:view:no-note', replace
