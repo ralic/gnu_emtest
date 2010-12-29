@@ -291,18 +291,9 @@ Intended for items that are basically just containers."
 		   #'emtvf:node))
 	     (emtvf:outline-item-emformat
 		(list ,name ,rest-headline)
-		(emtvf:mapnodes
-		   (emtvp:node->children ,obj) ,format-no-child)
+		(emtvf:mapnodes ,children ,format-no-child)
 		,face)))))
 
-
-;;;_  . emtvf:TESTRAL:all-children
-;;$$OBSOLESCENT
-(defun emtvf:TESTRAL:all-children (note &optional els=0 filter)
-   "Format the children of NOTE.
-NOTE must be a `emt:view:TESTRAL-2'"
-   (emtvf:mapnodes
-      (emtvp:node->children note) els=0))
 
 ;;;_  . emtvf:TESTRAL (TESTRAL note formatter)
 (defun emtvf:TESTRAL (obj &rest d)
