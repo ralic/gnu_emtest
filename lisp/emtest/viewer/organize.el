@@ -47,14 +47,6 @@
 (defun emtvo:receive-cb (presentation-path cell)
    "Emviewer callback that `receive' gets.
 It just tells a pathtree to add this node."
-   '  ;;$$OBSOLETE
-   (emtvp:add/replace-node
-      ;;The pathtree root
-      emtvo:pathtree 
-      ;;The path
-      presentation-path
-      ;;The data
-      (list 'suite cell))
    (let
       ((old-node 
 	  (emtvp:find-node emtvo:pathtree presentation-path

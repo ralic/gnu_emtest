@@ -39,11 +39,12 @@
 ;;;_. Body
 ;;;_ , Helper
 ;;;_   , emtvp:add/replace-node
+'  ;;$$OBSOLETE
 (put 'emtvp:add/replace-node 'emt:test-thru 'emtvp:add/replace-node-recurse)
 
 
 ;;;_ , emtvp:add/replace-node-recurse
-
+'  ;;$$OBSOLETE
 (emt:deftest-3 emtvp:add/replace-node-recurse
    (nil
       (progn

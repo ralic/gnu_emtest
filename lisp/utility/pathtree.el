@@ -109,76 +109,23 @@ Must be derived from `emtvp:node'.")
       :type (repeat emtvp:node)
       :doc "Dirty-list of nodes that want updating via NODE-DIRTIED"))
 
-
-
-;;;_  . emtvp:add/replace-node
-;;$$OBSOLESCENT
-(defun  emtvp:add/replace-node (tree path arg)
-   "Add a node to TREE at PATH.
-TREE must be a `emtvp'.
-PATH must be a list of `emtvp->id-element'.
-ARG must be suitable as a second argument to tree field `make-node'."
-   (check-type tree emtvp)
-   (check-type path (repeat emtvp->id-element))
-   (emtvp:add/replace-node-recurse 
-      tree (emtvp->root tree) path arg))
-
-;;;_  . emtvp:add/replace-node-recurse
-;;$$OBSOLESCENT
-(defun emtvp:add/replace-node-recurse (tree node path arg)
-   "Add node ARG to the subtree NODE of TREE.
-Create any ancestor nodes that don't already exist.
-
-TREE must be a `emtvp'.
-NODE must be a `emtvp:node' or descendant.
-PATH must be a list of `emtvp->id-element'.
-ARG must be suitable as a second argument to tree field `make-node'."
-
-   (let*
-      (
-	 (name (car path))
-	 (tail (cdr path))
-	 (old-child
-	    (find name
-	       (emtvp:node->children node)
-	       :key #'emtvp:node->name
-	       :test #'equal)))
-
-      (if
-	 tail
-	 (let
-	    ((child
-		(or 
-		   old-child
-		   (emtvp:add-child 
-		      tree 
-		      node 
-		      name 
-		      (funcall (emtvp->make-node tree) nil nil)))))
-	    
-	    ;;Recurse.  Keep looking.
-	    (emtvp:add/replace-node-recurse 
-	       tree child (cdr path) arg))
-	 (progn
-	    (when old-child
-	       ;;Remove the old node.  We'll pass the callback its
-	       ;;data to reuse if it wants to.
-	       (callf2 remove old-child
-		  (emtvp:node->children node))
-	       ;;Could process the old node later, but YAGNI.  It is
-	       ;;`node-dirtied' callback's responsibility to process
-	       ;;the node's children.
-	       '(progn
-		   (push 'deleted
-		      (emtvp:node->dirty-flags old-child))
-		   (push old-child
-		      (emtvp->dirty tree))))
-	    (emtvp:add-child 
-	       tree 
-	       node 
-	       name 
-	       (funcall (emtvp->make-node tree) old-child arg))))))
-;;;_  . emtvp:find-node
+;;;_  . Functions
+;;;_   , emtvp:make-pathtree
+(defun emtvp:make-pathtree (node-dirtied make-node type &optional root-name)
+   "Make an empty tree"
+   (let
+      ((root (funcall make-node nil nil)))
+      (setf
+	 (emtvp:node->name        root) (or root-name "")
+	 (emtvp:node->parent      root) nil
+	 (emtvp:node->dirty-flags root) '(new))
+      (emtvp:make
+	 :root         root
+	 :node-dirtied node-dirtied
+	 :make-node    make-node
+	 :type         type)))
+;;;_   , Find nodes
+;;;_    . emtvp:find-node
 (defun emtvp:find-node (tree path make-empty-node)
    "Find a node at path PATH in TREE.
 Make intervening nodes if they don't exist.
@@ -190,7 +137,7 @@ PATH must be a list of `emtvp->id-element'."
    (emtvp:find-node-under-node
       tree path (emtvp->root tree) make-empty-node))
 
-;;;_  . emtvp:find-node-under-node
+;;;_    . emtvp:find-node-under-node
 ;;$$NB different args and order than `emtvp:add/replace-node-recurse'
 
 (defun emtvp:find-node-under-node (tree path node make-empty-node)
@@ -225,7 +172,8 @@ PATH must be a list of `emtvp->id-element'."
 	 tail
 	 (emtvp:find-node-under-node tree tail child make-empty-node)
 	 child)))
-;;;_  . emtvp:replace-node
+;;;_   , Add/remove nodes
+;;;_    . emtvp:replace-node
 (defun emtvp:replace-node (tree old-node new-node)
    "Replace OLD-NODE with NEW-NODE in TREE.
 Error if OLD-NODE is the root or otherwise unparented."
@@ -237,7 +185,7 @@ Error if OLD-NODE is the root or otherwise unparented."
       (emtvp:remove-child tree parent old-node)
       (emtvp:add-child tree parent (emtvp:node->name new-node) new-node)))
 
-;;;_  . emtvp:add-child
+;;;_    . emtvp:add-child
 ;;$$RETHINK MY ARGLIST don't take `name', caller should set it.
 (defun emtvp:add-child (tree parent name new-child &optional prepend)
    "Add node NEW-CHILD at the end of PARENT's children.
@@ -263,7 +211,7 @@ don't otherwise alter it."
 	 (list new-child)))
    (emtvp:set-dirty tree new-child 'new)
    new-child)
-;;;_  . emtvp:remove-child
+;;;_    . emtvp:remove-child
 (defun emtvp:remove-child (tree parent child)
    "Remove child CHILD of PARENT and return it."
    (check-type tree   emtvp)
@@ -277,20 +225,7 @@ don't otherwise alter it."
    (emtvp:set-dirty tree child 'deleted))
 
 
-;;;_  . emtvp:make-pathtree
-(defun emtvp:make-pathtree (node-dirtied make-node type &optional root-name)
-   "Make an empty tree"
-   (let
-      ((root (funcall make-node nil nil)))
-      (setf
-	 (emtvp:node->name        root) (or root-name "")
-	 (emtvp:node->parent      root) nil
-	 (emtvp:node->dirty-flags root) '(new))
-      (emtvp:make
-	 :root         root
-	 :node-dirtied node-dirtied
-	 :make-node    make-node
-	 :type         type)))
+;;;_ , Dirty flags
 ;;;_  . emtvp:set-dirty
 (defun emtvp:set-dirty (tree node flag)
    "Mark NODE as dirty.  
