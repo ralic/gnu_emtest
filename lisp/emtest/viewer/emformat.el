@@ -140,9 +140,6 @@ which may not imply success of an assertion."
 (defun emtvf:button-to-explore (explorable text)
    "Make a button to explore EXPLORABLE.
 Hack: We add a space after the button."
-   ;;$$IMPROVE ME - instead of always making a space let's wrap calls
-   ;;to this in something that alternates items with separators, a la
-   ;;hiformat:map
    (when explorable
       (let
 	 ((func
@@ -228,7 +225,7 @@ Must be called in a `utidyv:top' context."
 			   #'(lambda (obj &rest d)
 				(emtvf:make-dynamic obj #'emtvf:node))
 			   children
-			   :separator '("\n")) 
+			   :separator "\n") 
 			grade-face
 			boring-p))
 		  
@@ -243,7 +240,6 @@ Must be called in a `utidyv:top' context."
 				 grades-sum))
 			   " ")
 			(if children
-			   ;;$$ENCAP ME, SHARE ME
 			   (hiformat:map 
 			      ;;Formatting for each child
 			      #'(lambda (obj &rest d)
@@ -251,15 +247,12 @@ Must be called in a `utidyv:top' context."
 				      obj 
 				      #'emtvf:node))
 			      children
-			      :separator '("\n")
+			      :separator "\n"
 			      :els=0 '("No child suites"))
 			   (let
 			      ((direct-contents
 				  (emt:testral:suite->contents object)))
 			      (etypecase direct-contents
-				 ;;$$IMPROVE ME Make and check a flag
-				 ;;whether we tried to insert notes
-				 ;;into pathtree.
 				 (emt:testral:runform-list
 				    "No children, or notes weren't converted.")
 				 (emt:testral:note-list
@@ -267,7 +260,7 @@ Must be called in a `utidyv:top' context."
 				       #'emtvf:TESTRAL
 				       (emt:testral:note-list->notes
 					  direct-contents)
-				       :separator '("\n")
+				       :separator "\n"
 				       :els=0 '("No notes")))
 				 (null
 				    '("No known contents")))))
@@ -327,7 +320,7 @@ NOTE must be a `emt:view:TESTRAL-2'"
       #'(lambda (view-node &rest d)
 	   (emtvf:node view-node))
       (emtvp:node->children note)
-      :separator '("\n")
+      :separator "\n"
       :els=0 els=0))
 
 ;;;_  . emtvf:TESTRAL (TESTRAL note formatter)
