@@ -43,7 +43,9 @@
       "Failed assertion"
       (list
 	 (emtvf:obj-or-string form)
-	 (emtvf:TESTRAL:all-children note '()))
+	 (emtvf:mapnodes
+	    (emtvp:node->children note) 
+	    nil))
       'emtvf:face:failed))
 
 ;;;_ , emtvf:TESTRAL-gov:succeeded
@@ -55,7 +57,9 @@
       "Assertion succeeded"
       (list
 	 (emtvf:obj-or-string form)
-	 (emtvf:TESTRAL:all-children note '())) 
+	 (emtvf:mapnodes
+	    (emtvp:node->children note) 
+	    nil)) 
       'emtvf:face:ok
       t))
 ;;;_ , emtvf:TESTRAL-gov:mismatched
@@ -66,7 +70,9 @@
       "Mismatched"
       (list
 	 (emtvf:obj-or-string form)
-	 (emtvf:TESTRAL:all-children note '())) 
+	 (emtvf:mapnodes
+	    (emtvp:node->children note) 
+	    nil)) 
       'emtvf:face:mismatch))
 
 
@@ -78,7 +84,9 @@
       "Matched"
       (list
 	 (emtvf:obj-or-string form)
-	 (emtvf:TESTRAL:all-children note '())) 
+	 (emtvf:mapnodes
+	    (emtvp:node->children note) 
+	    nil)) 
       'emtvf:face:ok-match
       t))
 

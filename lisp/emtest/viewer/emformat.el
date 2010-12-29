@@ -291,7 +291,8 @@ Intended for items that are basically just containers."
 		   #'emtvf:node))
 	     (emtvf:outline-item-emformat
 		(list ,name ,rest-headline)
-		(emtvf:TESTRAL:all-children ,obj ,format-no-child)
+		(emtvf:mapnodes
+		   (emtvp:node->children ,obj) ,format-no-child)
 		,face)))))
 
 
