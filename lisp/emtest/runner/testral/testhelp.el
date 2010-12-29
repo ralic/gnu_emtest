@@ -44,10 +44,10 @@
       (mapcar
 	 #'(lambda (note)
 	      (list 
-		 (emt:testral:newstyle->prestn-path note)
-		 (emt:testral:newstyle->parent-id   note)
-		 (emt:testral:newstyle->id          note)
-		 (emt:testral:newstyle->governor    note)))
+		 (emt:testral:note->prestn-path note)
+		 (emt:testral:note->parent-id   note)
+		 (emt:testral:note->id          note)
+		 (emt:testral:note->governor    note)))
 	 note-list)))
 
 

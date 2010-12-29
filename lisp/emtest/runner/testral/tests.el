@@ -66,7 +66,7 @@
 	 
 	 (emt:assert
 	    (emth:sets= 
-	       (mapcar #'emt:testral:newstyle->value note-list)
+	       (mapcar #'emt:testral:note->value note-list)
 	       (list '(12) '(144)))))))
 
 

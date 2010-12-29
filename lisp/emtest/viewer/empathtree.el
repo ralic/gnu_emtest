@@ -42,7 +42,7 @@
 (defun emtvr:notelist-raw-badnesses (note-list)
    ""
    (mapcar
-      #'emt:testral:base->badnesses
+      #'emt:testral:note->badnesses
       (emt:testral:note-list->notes note-list)))
 
 ;;;_  . emtvr:badnesses:get-own
@@ -138,7 +138,7 @@ could be, such as when a note-list hasn't been expanded."
 		 (mapcar
 		    #'(lambda (note)
 			 (list 
-			    (emt:testral:base->id note)
+			    (emt:testral:note->id note)
 			    (emt:view:make-TESTRAL-2
 			       :contents note)
 			    '()))
@@ -154,7 +154,7 @@ could be, such as when a note-list hasn't been expanded."
       (dolist (cell (cdr alist))
 	 (let*
 	    (  (note (emt:view:TESTRAL-2->contents (second cell)))
-	       (parent-id (emt:testral:base->parent-id note))
+	       (parent-id (emt:testral:note->parent-id note))
 	       (parent-cell (assoc parent-id alist)))
 	    (check-type parent-id   emt:testral:id-element)
 	    (check-type parent-cell emtvr:alist-cell-t)
@@ -167,7 +167,7 @@ could be, such as when a note-list hasn't been expanded."
 	 (dolist (child (third cell))
 	    (let* 
 	       ((path
-		   (emt:testral:base->prestn-path 
+		   (emt:testral:note->prestn-path 
 		      (emt:view:TESTRAL-2->contents child)))
 		  (ancestor (second cell))
 		  (parent

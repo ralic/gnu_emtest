@@ -64,7 +64,7 @@ GOV-SYMBOL must be a symbol."
    ""
    (list "No formatter found for governor "
       (symbol-name 
-	 (emt:testral:newstyle->governor (emt:view:TESTRAL-2->contents obj)))))
+	 (emt:testral:note->governor (emt:view:TESTRAL-2->contents obj)))))
 ;;;_. Footers
 ;;;_ , Provides
 

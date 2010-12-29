@@ -38,18 +38,15 @@
 
 ;;;_ , TESTRAL types
 ;;;_  . Base class
-
-(defstruct (emt:testral:base
-	      (:constructor emt:testral:make-base)
-	      (:conc-name emt:testral:base->))
+(defstruct (emt:testral:note
+	      (:constructor emt:testral:make-note)
+	      (:conc-name emt:testral:note->))
    "The TESTRAL base type"
    
    (id        () :type emt:testral:id-element)
-   (parent-id () :type emt:testral:id-element)
-   ;;`nil' for root events that have no parent.
-
-   ;;$$OBSOLESCENT  Info is becoming just other notes.
-   info
+   (parent-id () 
+      :type emt:testral:id-element
+      :doc "ID of the parent note. `nil' for notes that have no parent.")
 
    (prestn-path () 
       :type emt:testral:prestn-path
@@ -57,16 +54,12 @@
    some deeply-nested checks such as type checking.")
    ;;Reflects only the note's's intrinsic problems.  Even push/pops
    ;;need it in case (say) a whole stage is dormantized or aborted.
-   (badnesses () :type emt:testral:grade-aux))
-;;;_  . emt:testral:newstyle
-;;$$TRANSITIONAL  This will merge with `emt:testral:base' and be renamed.
-(defstruct (emt:testral:newstyle
-	      (:constructor emt:testral:make-newstyle)
-	      (:conc-name emt:testral:newstyle->)
-	      (:include emt:testral:base))
-   "The TESTRAL type."
-   (relation () :type symbol)
-   (governor () :type symbol)
+   ;;$$RENAME ME badnesses -> grades
+   (badnesses () :type emt:testral:grade-aux)
+   (relation () :type symbol
+      :doc "The note's relation to its parent")
+   (governor () :type symbol
+      :doc "A symbol that indicates the note's meaning and its formatting.")
    value)
 
 ;;;_  . Contents discrimination for suite type
@@ -83,7 +76,7 @@
 	    (:constructor emt:testral:make-note-list)
 	    (:conc-name emt:testral:note-list->))
   ""
-  (notes () :type (repeat emt:testral:base)))
+  (notes () :type (repeat emt:testral:note)))
 
 ;;;_  . TESTRAL general report
 

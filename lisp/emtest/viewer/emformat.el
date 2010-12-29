@@ -301,9 +301,9 @@ OBJ must be a TESTRAL viewable (`emt:view:TESTRAL-2')."
 	 ((note (emt:view:TESTRAL-2->contents obj)))
 	 (apply 
 	    (emtvf:get-TESTRAL-formatter 
-	       (emt:testral:newstyle->governor note))
+	       (emt:testral:note->governor note))
 	    obj
-	    (emt:testral:newstyle->value note)))
+	    (emt:testral:note->value note)))
       (error
 	 `((w/face "Error in formatter: " emtvf:face:blowout) 
 	     (object ,err nil)

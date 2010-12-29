@@ -121,9 +121,9 @@
 	      (:include emt:view:presentable))
    ""
    ;;The list of applicable nodes (generally in another list)
-   (start () :type (repeat emt:testral:base))
+   (start () :type (repeat emt:testral:note))
    ;;The inapplicable tail of that list.
-   (past-end ()  :type (repeat emt:testral:base)))
+   (past-end ()  :type (repeat emt:testral:note)))
 
 
 

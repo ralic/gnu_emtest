@@ -62,7 +62,7 @@
 	 ((type note)(subtype alone))
 	 (type-must-be () emt:testral:newstyle)
 	 (item ((name error-1))
-	    (emt:testral:make-newstyle
+	    (emt:testral:make-note
 	       :id "1"
 	       :parent-id nil
 	       :badnesses 
