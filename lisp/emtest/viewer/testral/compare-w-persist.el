@@ -46,19 +46,19 @@
 	 (if matched-p 
 	    "Matched"
 	    "Mismatched")
-	 " persisting object"
+	 " persisting object "
 	 (if matched-p 
 	    '()
-	    (emtvf:button " [Accept]"
-	       `(lambda ()
+	    `(button "[Accept]"
+		action
+		(lambda ()
 		   (interactive)
 		   (emdb:set-value
 		      ',backend
 		      ',id
 		      ',value
 		      'correct-answer))
-	       '(help-echo "Accept the new value"))))
-
+		help-echo "Accept the new value")))
       (list
 	 (emtvf:obj-or-string value)) 
       (if matched-p 
