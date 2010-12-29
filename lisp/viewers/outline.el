@@ -29,11 +29,11 @@
 
 ;;;_ , Requires
 
-
+(require 'utility/dynvars)
+(eval-when-compile (require 'cl))
 
 ;;;_. Body
 ;;;_  . Outlining
-;;$$MOVE ME later when we have dynamic variable registration sorted out.
 ;;;_   , Special variables
 (declare (special emtvf:*outline-depth* emtvf:*folded*))
 (eval-after-load 'utility/dynvars
