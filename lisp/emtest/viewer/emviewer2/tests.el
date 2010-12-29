@@ -38,7 +38,10 @@
 
 ;;;_. Body
 ;;;_ , emtv2:td:dir
-(defconst emtv2:td:dir emtve:td:dir)
+;;$$CHECK ME  This has been moved
+(defconst emtv2:td:dir
+   (emtb:expand-filename-by-load-file "persist")
+   "The file where the database is located" )
 
 ;;;_ , emtest/viewer/emviewer2
 (emt:deftest-3
@@ -51,7 +54,7 @@
    ;;Tests of just the viewer.
    (()
       (emtv2:ts:with-mock-viewer
-	 (emtve:tester-cb
+	 (emtv2:tester-cb
 	    (emtg (type report)(name just-test-runner)))
 
 	 (emt:emviewer:th:check-buffer-string
@@ -60,7 +63,7 @@
    
    (()
       (emtv2:ts:with-mock-viewer
-	 (emtve:tester-cb
+	 (emtv2:tester-cb
 	    (emtg (type report)(role original-add)(what-test test-1)))
 
 	 (emt:emviewer:th:check-buffer-string
@@ -69,7 +72,7 @@
 
    (()
       (emtv2:ts:with-mock-viewer
-	 (emtve:tester-cb
+	 (emtv2:tester-cb
 	    (emtg (type report)(what-test test-2)))
 
 	 (emt:emviewer:th:check-buffer-string
@@ -82,7 +85,7 @@
       ;;basically like above or like rewriting "receive" and also
       ;;testing it with set=.
       (emtv2:ts:with-mock-viewer
-	 (emtve:ts:run-test
+	 (emtv2:ts:run-test
 	    '("Situation: testing an example" 
 		(error "An example error")))
 

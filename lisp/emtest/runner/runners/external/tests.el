@@ -64,7 +64,7 @@
 ;;Use emtt:th:explore-one with the bare form and the callback of
 ;;interest.  Top testhelp doesn't provide such a one, but summarize
 ;;may.  In fact, 'emtest/viewer/emviewer/testhelp' provides something,
-;;but just `emtve:ts:run-test:callback' to check that results are the
+;;but just `emtv2:ts:run-test:callback' to check that results are the
 ;;right type.  Similarly `emtest/viewer/emviewer2/testhelp'.  We'd
 ;;want to summarize them and check the summary.
 
