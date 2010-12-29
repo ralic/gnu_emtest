@@ -50,7 +50,7 @@
 		      :narrow 
 		      ((type presentation-path))
 		      :ignore-tags (role)))
-	       (emt:view:make-suite-newstyle
+	       (emt:view:make-suite
 		  :presentation-path
 		  (eval
 		     '(emtg:value 

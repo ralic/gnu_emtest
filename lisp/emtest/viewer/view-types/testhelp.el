@@ -36,15 +36,6 @@
 ;;;_. Body
 ;;;_ , Match struct governors
 
-;;;_  . emtvr:suite-newstyle
-;;$$OBSOLETE
-'
-(emtm:define-struct-governor
-   (emtvr:suite-newstyle
-      (:constructor emtvr:make-suite-newstyle)
-      (:conc-name emtvr:suite-newstyle->)
-      (:copier nil))
-   id how-to-run presentation-path testrun-id result)
 ;;;_  . emt:view:make-presentable
 (emtm:define-struct-governor
    (emt:view:presentable
@@ -55,14 +46,13 @@
    sum-grades list)
 
 
-;;;_  . emt:view:suite-newstyle
+;;;_  . emt:view:suite
 (emtm:define-struct-governor 
-   (emt:view:suite-newstyle
-      (:constructor emt:view:make-suite-newstyle)
-      (:conc-name emt:view:suite-newstyle->)
+   (emt:view:suite
+      (:constructor emt:view:make-suite)
+      (:conc-name emt:view:suite->)
       (:include emt:view:presentable))
    children ;;Included
-   ;;cell
    how-to-run 
    presentation-path
    testrun-id
@@ -76,7 +66,7 @@
 	 (transparent-tags () (type role what-test))
 	 (group
 	    ((type emtvr:alist-item-pattern))
-	    (type-must-be () (emtm:pattern emt:view:suite-newstyle))
+	    (type-must-be () (emtm:pattern emt:view:suite))
 	    (item
 	       ( (role original-add)
 		  (what-test test-1))
@@ -84,7 +74,7 @@
 		  (append emt:testral:thd:examples emtg:all-examples)
 		  ()
 		  (emtm:make-pattern
-		     (emt:view:make-suite-newstyle
+		     (emt:view:make-suite
 			:result 
 			(eval
 			   '(emtg (type suite)(what-test test-1)(role original-add)))
@@ -108,7 +98,7 @@
 		  (append emt:testral:thd:examples emtg:all-examples)
 		  ()
 		  (emtm:make-pattern
-		     (emt:view:make-suite-newstyle
+		     (emt:view:make-suite
 			:result 
 			(eval
 			   '(emtg (type suite)(what-test test-1)(role replace)))
@@ -127,7 +117,7 @@
 
 	 (group
 	    ((type emtvr:alist-item))
-	    (type-must-be () emt:view:suite-newstyle)
+	    (type-must-be () emt:view:suite)
 	    (item
 	       ( (role original-add)
 		  (what-test test-1))
@@ -135,7 +125,7 @@
 		  (append emt:testral:thd:examples emtg:all-examples)
 		  ()
 
-		  (emt:view:make-suite-newstyle
+		  (emt:view:make-suite
 		     :result 
 		     (eval
 			'(emtg (type suite)(what-test test-1)(role original-add)))
@@ -159,7 +149,7 @@
 		  (append emt:testral:thd:examples emtg:all-examples)
 		  ()
 
-		  (emt:view:make-suite-newstyle
+		  (emt:view:make-suite
 		     :result 
 		     (eval
 			'(emtg (type suite)(what-test test-1)(role replace)))

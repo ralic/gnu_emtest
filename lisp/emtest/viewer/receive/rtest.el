@@ -39,10 +39,10 @@
 ;;;_  . emtvr:one-newstyle
 (put 'emtvr:one-newstyle 'rtest:test-thru
    'emtvr:newstyle)
-;;;_  . emtvr:suite-newstyle test helpers
+;;;_  . emtvr:suite test helpers
 '  ;;$$OBSOLETE
 (emtm:define-struct-governor
-   emtvr:suite-newstyle
+   emtvr:suite
    id how-to-run presentation-path testrun-id suite)
 
 ;;;_  . Tests

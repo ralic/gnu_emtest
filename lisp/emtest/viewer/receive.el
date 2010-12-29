@@ -112,7 +112,7 @@
 		  (emtvr:data->alist receiver)
 		  (delete* key (emtvr:data->alist receiver)
 		     :test #'equal
-		     :key #'emt:view:suite-newstyle->id))
+		     :key #'emt:view:suite->id))
 	       (funcall 
 		  (emtvr:data->tree-remove-cb receiver)
 		  presentation-path))
@@ -122,16 +122,16 @@
 	       ((old-cell
 		   (find key (emtvr:data->alist receiver)
 		      :test #'equal
-		      :key #'emt:view:suite-newstyle->id)))
+		      :key #'emt:view:suite->id)))
 
 	       
 	       (if old-cell
 		  ;;Update old cell.
 		  (progn
 		     (setf
-			(emt:view:suite-newstyle->testrun-id old-cell)
+			(emt:view:suite->testrun-id old-cell)
 			testrun-id
-			(emt:view:suite-newstyle->result old-cell)
+			(emt:view:suite->result old-cell)
 			suite)
 
 		     ;;$$RETHINK ME Maybe should just dirty it in
@@ -144,7 +144,7 @@
 		  ;;It's not present in alist.  Insert it.
 		  (let 
 		     ((cell
-			 (emt:view:make-suite-newstyle
+			 (emt:view:make-suite
 			    :id                key
 			    :how-to-run        how-to-run
 			    :presentation-path presentation-path

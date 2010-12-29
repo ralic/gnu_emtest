@@ -33,36 +33,36 @@
 (eval-when-compile
    (require 'cl))
 ;;;_. Body
-;;;_ , emtvr:suite-newstyle->id
-(deftype emtvr:suite-newstyle->id ()
+;;;_ , emtvr:suite->id
+(deftype emtvr:suite->id ()
    "The ID of a reported suite.  In fact a how-to-run object"
    'emthow)
 
 
 ;;;_ , Presentables
-;;$$RENAME US Use prefix emtvr:
-;;;_  . Base 
+;;;_  . Base viewable
 
-;;Emviewer uses this as the content element in pathtree nodes.
+;;Emviewer 
 (defstruct (emt:view:presentable
 	      (:constructor emt:view:make-presentable)
 	      (:conc-name emt:view:presentable->)
 	      (:include emtvp:node))
-   ""
-   ;;Summarized badnesses from all subtrees.  They are summarized
-   ;;treewise, including any badnesses from this node.
+   "The base viewable type.  We use this as the content element in
+pathtree nodes."
+   ;;Summarized grades from all subtrees.  They are summarized
+   ;;treewise, including any grades from this node.
    (sum-grades () :type (repeat emt:testral:grade))
    ;;This relates to a display
    (list ()))
 
 ;;;_  . Suite in tree (as by emviewer)
-(defstruct (emt:view:suite-newstyle
-	      (:constructor emt:view:make-suite-newstyle)
-	      (:conc-name emt:view:suite-newstyle->)
+(defstruct (emt:view:suite
+	      (:constructor emt:view:make-suite)
+	      (:conc-name emt:view:suite->)
 	      (:include emt:view:presentable))
    ""
    ;;Just for suite nodes.
-   (id () :type emtvr:suite-newstyle->id
+   (id () :type emtvr:suite->id
       :doc "The \"official\" id.")
 
    (how-to-run ():type emtt:explorable

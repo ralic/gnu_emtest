@@ -86,7 +86,7 @@
 		     :children
 		     (list
 			;;Tester info
-			(emt:view:make-suite-newstyle
+			(emt:view:make-suite
 			   ;;:how-to-run
 			   ;;(satisfies emthow:hello-p)
 			   :children '()))))))
@@ -126,11 +126,11 @@
 			   :children
 			   (list
 			      ;;Library report
-			      (emt:view:make-suite-newstyle
+			      (emt:view:make-suite
 				 :children
 				 (list
 				    ;;Suite report
-				    (emt:view:make-suite-newstyle
+				    (emt:view:make-suite
 				       :children
 				       ()))))))))))))
    
@@ -167,7 +167,7 @@
 			   :children
 			   (list
 			      ;;Library report
-			      (emt:view:make-suite-newstyle
+			      (emt:view:make-suite
 				 :children
 				 (list)))))))))))
    

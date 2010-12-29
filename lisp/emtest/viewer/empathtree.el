@@ -53,10 +53,10 @@ This includes grade that are not expressed in its children but
 could be, such as when a note-list hasn't been expanded."
    (check-type node emt:view:presentable)
    (etypecase node
-      (emt:view:suite-newstyle
+      (emt:view:suite
 	 (let
 	    ((s
-		(emt:view:suite-newstyle->result node)))
+		(emt:view:suite->result node)))
 	    (etypecase s 
 	       (null) 
 	       (emt:testral:suite
@@ -189,10 +189,10 @@ could be, such as when a note-list hasn't been expanded."
    "Put NODE's TESTRAL notes under it in pathtree TREE."
    (check-type tree emtvp)
    (check-type node emtvp:node)
-   (when (emt:view:suite-newstyle-p node)
+   (when (emt:view:suite-p node)
       (let
 	 ((result
-	     (emt:view:suite-newstyle->result node)))
+	     (emt:view:suite->result node)))
 	 (when (emt:testral:suite-p result)
 	    (let
 	       ((contents

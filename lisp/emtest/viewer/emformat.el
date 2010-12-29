@@ -236,13 +236,13 @@ Must be called in a `utidyv:top' context."
 	    (emtvf:grade-boring grades)))
       
       (etypecase suite
-	 (emt:view:suite-newstyle
+	 (emt:view:suite
 	    (let*
 	       (
 		  (object
-		     (emt:view:suite-newstyle->result suite))
+		     (emt:view:suite->result suite))
 		  (explorable
-		     (emt:view:suite-newstyle->how-to-run suite)))
+		     (emt:view:suite->how-to-run suite)))
 	       (etypecase object
 		  (null "A null viewable")
 		  (emt:testral:test-runner-info
