@@ -46,33 +46,22 @@
       (type-must-be () emt:result:event:grade)
       (item ((name fail))
 	 (make-emt:result:event:grade
-	    ;;:id ()
 	    :grade 'fail
-	    :info-about ()
 	    :diagnostic-info ()))
       (item ((name pass))
 	 (make-emt:result:event:grade
-	    ;;:id ()
 	    :grade 'pass
-	    :info-about ()
 	    :diagnostic-info ()))
       
       (item ((name ungraded))
 	 (make-emt:result:event:grade
-	    ;;:id ()
 	    :grade 'ungraded
-	    :info-about ()
 	    :diagnostic-info ())))
    
    (group ((type event-list))
       (type-must-be () emt:result:event:group)
       (item ((name simple))
 	 (make-emt:result:event:group
-	    ;; :name "A very simple event-group"
-	    :info-about 
-	    (list 
-	       (make-emt:result:info-about:name
-		  :name "Event-List X"))
 	    :children ()
 	    :aborted-p nil)
    
@@ -81,8 +70,6 @@
 
       (item ((name has-info-about))
 	 (make-emt:result:event:group
-	    ;; :name "An event-group with some information about it"
-	    :info-about () ;;$$ADD ME
 	    :children ()
 	    :aborted-p nil)
    
@@ -91,8 +78,6 @@
 
       (item ((name has-child-events))
 	 (make-emt:result:event:group
-	    ;; :name "An event-group in which some events happened"
-	    :info-about ()
 	    :children 
 	    ;;If `eg' were more advanced, we could just map over names.
 	    (emtg:narrow ((type grade-event))
@@ -107,8 +92,6 @@
 
       (item ((name has-child-event-groups))
 	 (make-emt:result:event:group
-	    ;; :name "An event-group which contained some other event-groups"
-	    :info-about ()
 	    :children 
 	    (emtg:narrow ((type event-list))
 	       (list 
@@ -122,9 +105,6 @@
 
       (item ((name has-mixed-children-1))
 	 (make-emt:result:event:group
-	    ;; :name "An event-group which contained some other event-groups and
-	    ;; some loose events" 
-	    :info-about ()
 	    :children 
 	    (list 
 	       (emtg (type grade-event) (name pass))
@@ -139,8 +119,6 @@
 
       (item ((name has-mixed-children-2))
 	 (make-emt:result:event:group
-	    ;; :name "An event-group which contained some other event-groups and some loose events"
-	    :info-about ()
 	    :children 
 	    (list 
 	       (emtg (type event-list)       (name simple))
@@ -157,8 +135,6 @@
 
       (item ((name aborted-no-events))
 	 (make-emt:result:event:group
-	    ;; :name "An event-group that aborts before any events"
-	    :info-about ()
 	    :children ()
 	    :aborted-p t)
    
@@ -168,8 +144,6 @@
 
       (item ((name aborted-after-events))
 	 (make-emt:result:event:group
-	    ;; :name "An event-group that aborts after some events"
-	    :info-about ()
 	    :children 
 	    (list
 	       (emtg (type grade-event) (name pass))
@@ -190,7 +164,6 @@
 	    (make-emt:test-ID
 	       :explore-next
 	       (emthow:make-unique-clause))
-	    :info ()
 	    :status
 	    (make-emt:result:status:was-run
 	       :events 

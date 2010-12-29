@@ -151,8 +151,7 @@
 	       (emtt:testral:continued-with 
 		  (emtr:external-data->testral-obj data)
 		  (emtt:testral:note-list))
-	       :badnesses (emt:testral:make-grade:test-case)
-	       :info '()))
+	       :badnesses (emt:testral:make-grade:test-case)))
 	 ;;, close tq, and we're done.
 	 (tq-close (emtr:external-data->tq data)))))
 
@@ -216,8 +215,7 @@
 		  (emt:testral:make-grade:ungraded
 		     :contents
 		     (list
-			"emtr:external: no exec+args or no prompt"))
-		  :info '()))
+			"emtr:external: no exec+args or no prompt"))))
 	    ;;Do test
 	    (let* 
 	       ((con

@@ -76,8 +76,7 @@
 		  :badnesses '() ;;Punt - anyways, only
 		  ;;meaningful if it crapped out right
 		  ;;here.
-		  ;;Punt info for now.
-		  :info '())
+		  )
 	       (reverse rv-list-to-run))))))
 ;;;_ , Getting test suites indirectly.
 

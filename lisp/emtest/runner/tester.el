@@ -126,9 +126,7 @@
 		     :badnesses 
 		     (emt:testral:make-grade:ungraded
 			:contents
-			"Unrecognized internal explore type")
-		     ;;$$OBSOLESCENT
-		     :info '())))))))
+			"Unrecognized internal explore type"))))))))
 
 ;;;_  . emtt:test-finder:top
 
@@ -148,10 +146,8 @@
 		      (car ',emtt:pending-list)))
 		(funcall #',report-cb
 		   (emt:testral:make-report
-		      :run-done-p nil ;;$$OBSOLESCENT
 		      :newly-pending (length tests)
 		      :testrun-id ,testrun-id
-		      :tester-id "" ;;$$OBSOLESCENT
 		      :test-id-prefix prefix
 		      :suites suites)))))
 

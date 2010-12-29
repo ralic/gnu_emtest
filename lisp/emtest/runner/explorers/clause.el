@@ -49,8 +49,7 @@
    (funcall report-f
       (emt:testral:make-suite
 	 :contents '()
-	 :badnesses (emt:testral:make-grade:dormant)
-	 :info '())))
+	 :badnesses (emt:testral:make-grade:dormant))))
 
 
 ;;;_  . emtr:vanilla
@@ -81,9 +80,7 @@
 		     (emt:testral:make-grade:ungraded
 			:contents
 			"Evaluation aborted") 
-		     (emt:testral:make-grade:test-case))
-		  ;;$$RETHINK ME Maybe just use notes to capture this info.
-		  :info '()))))))
+		     (emt:testral:make-grade:test-case))))))))
 
 ;;;_ , Functions
 ;;;_  . emtt:explore-clause
@@ -106,9 +103,7 @@ This is the heart of Emtest exploration: A test itself."
 		     :contents
 		     (list
 			"emtt:explore-clause does not recognize that governor"
-			(emtd:clause->governor clause)))
-		  
-		  :info '()))))))
+			(emtd:clause->governor clause)))))))))
 
 
 ;;;_  . emtt:explore-literal-clause

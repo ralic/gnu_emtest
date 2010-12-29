@@ -175,9 +175,7 @@
 	    (emt:testral:report->suites report))))
    
    (when
-      (or
-	 (emt:testral:report->run-done-p report)
-	 (equal emtv2:tests-outstanding 0))
+      (equal emtv2:tests-outstanding 0)
       (emtv2:print-all (emtvo:get-root))
       (pop-to-buffer emtv2:report-buffer)))
 

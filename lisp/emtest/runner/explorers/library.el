@@ -152,8 +152,7 @@ LIB-PATH must be a path to a library that is already loaded."
 	       :els list-to-run)
 	    :badnesses '() ;;Punt - only if it crapped
 	    ;;out right here.
-	    ;;Punt info for now.
-	    :info '())
+	    )
 	 list-to-run)))
 ;;;_ , Insinuate
 ;;;###autoload (emtt:add-explorer #'emthow:library:elisp-load-p #'emtt:explore-library

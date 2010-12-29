@@ -34,10 +34,6 @@
 (require 'emtest/common/grade-types)
 
 ;;;_. Body
-;;;_ , Grades
-
-;;$$OBSOLETE
-'(deftype emt:result-badness () 'emt:testral:grade)
 ;;;_ , IDs
 ;;;_  . Suites
 ;;Suites are identified by an emtt:explorable they are associated
@@ -46,10 +42,6 @@
 ;;We'd like to can restrict this.  But it depends on some internal
 ;;information about how elements are interpreted, depending on
 ;;`method-relaunch'.  Not clear how that can be passed into here.
-;;$$RETHINKING We distinguish conceptual path from how-to-run.
-;;$$IMPROVE ME This should allow symbols as well, and we'd use
-;;string= for comparison.  And numbers, and we'd use `equal' for
-;;that.  Comparisons are by `emt:id='
 (deftype emt:testral:id-element () 
    "Id elements are strings."
    '(or string symbol integer))
@@ -59,7 +51,6 @@
    ""
    (equal a b))
 
-;;(deftype emt:testral:suite-id () '(repeat emt:testral:id-element))
 ;;$$OBSOLESCENT
 (deftype emt:testral:prefix-suite-id () '(repeat emt:testral:id-element))
 (deftype emt:testral:partial-suite-id () 'emt:testral:prefix-suite-id)
@@ -124,8 +115,6 @@
 	    (:conc-name emt:testral:report->))
   "A report sent by test-runner to viewer"
   (testrun-id     () :type emt:testral:testrun-id)
-  (tester-id      () :type emt:testral:tester-id)  ;;$$OBSOLETE
-  (run-done-p     () :type bool)  ;;$$OBSOLETE
   (newly-pending  () :type integer)
   ;;This is really presentation-path prefix.
   (test-id-prefix () :type emt:testral:prefix-suite-id)

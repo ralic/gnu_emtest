@@ -106,9 +106,7 @@ HOW must be of a subtype of emthow"
 	 :badnesses 
 	 (emt:testral:make-grade:ungraded
 	    :contents
-	    "Unrecognized internal explore type")
-	 ;;$$OBSOLESCENT
-	 :info '())))
+	    "Unrecognized internal explore type"))))
 
 ;;;_. Footers
 ;;;_ , Provides

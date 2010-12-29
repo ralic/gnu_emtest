@@ -90,7 +90,6 @@
 		  (emt:testral:make-check:push
 		     :id 100
 		     :parent-id nil
-		     :info ()
 		     :fenceposting nil))
 	       (item ((name pop))
 		  (emt:testral:make-check:pop
@@ -244,8 +243,8 @@
 			    (subtype unconformed)
 			    (name one-node))
 	       :badnesses 
-	       (emtg (type suite-own-badness-list)(name test-bad))
-	       :info ()))
+	       (emtg (type suite-own-badness-list)(name test-bad))))
+	 
       
 	 (item
 	    ((name test-passes))
@@ -255,8 +254,9 @@
 			    (subtype unconformed)
 			    (name empty))
 	       :badnesses 
-	       (emtg (type suite-own-badness-list)(name test-passes))
-	       :info ()))
+	       (emtg (type suite-own-badness-list)(name
+						     test-passes))))
+	 
       
 	 ;;Suite reporting child suites (here, child is just an indexed
 	 ;;clause)
@@ -269,8 +269,7 @@
 		  (list 
 		     (emtg (type explorable)(what-test index-1))))
 	       :badnesses 
-	       (emtg (type suite-own-badness-list)(name has-children-1))
-	       :info ()))
+	       (emtg (type suite-own-badness-list)(name has-children-1))))
 	 (item
 	    ((name gone))
 	    (emt:testral:make-suite
@@ -281,8 +280,7 @@
 	       :badnesses 
 	       (emtg (type suite-own-badness-list)
 		  (what-test test-1)
-		  (role remove-previous))
-	       :info ())))
+		  (role remove-previous)))))
       
       (group
 	 ;;$$OBSOLESCENT in favor of mapping
