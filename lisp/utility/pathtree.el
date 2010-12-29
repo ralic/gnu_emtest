@@ -37,33 +37,22 @@
 ;;;_ , Pathtree
 ;;;_  . Types
 ;;;_   , emtvp->id-element
-;;$$FIXME These types should be gotten by TESTRAL from here, not vv.
-;;Or both from a common source.  It is a presentation element anyways.
-;;Or parameterize on this or on a test for this.
+;;$$RENAME ME emtvp:name-type
 (deftype emtvp->id-element ()
-   'emt:testral:id-element)
+   '(or null string symbol integer))
 ;;;_   , emtvp:node
 (defstruct (emtvp:node
 	      (:constructor emtvp:make-node)
 	      (:conc-name emtvp:node->)
 	      (:copier nil))
    "A node in a pathtree"
-   ;;$$RETHINK ME How callers find their way thru the tree is no
-   ;;longer our business. 
-   (name ()      :type (or null emtvp->id-element))
-   ;;$$REMOVE ME and remove from callers
-   ;;Is this full path ever actually useful?
-   ;;(path ()      :type (repeat emtvp->id-element))
-
+   (name ()      :type emtvp->id-element)
    (parent () :type (or null emtvp:node))
    (children () 
       :type (repeat emtvp:node))
    (dirty-flags ()
-      :type (repeat symbol))
-   ;;$$REMOVE ME and remove from callers.
-   ;;(data () :type t)
+      :type (repeat symbol)))
 
-   )
 ;;;_   , emtvp
 (defstruct (emtvp
 	      (:constructor emtvp:make)
@@ -84,7 +73,7 @@ dirty list.")
 
    ;;$$ADD TO ME A foreign field, for `node-dirtied' to see.
 
-   ;;$$OBSOLESCENT
+   ;;$$OBSOLETE
    (make-node
       :type function
       :doc "Function to make a node.  It takes:
@@ -110,6 +99,8 @@ Must be derived from `emtvp:node'.")
       :doc "Dirty-list of nodes that want updating via NODE-DIRTIED"))
 
 ;;;_  . Functions
+;;;_   , emtvp:name=
+(defalias 'emtvp:name= 'equal)
 ;;;_   , emtvp:make-pathtree
 (defun emtvp:make-pathtree (node-dirtied make-node type &optional root-name)
    "Make an empty tree"
@@ -162,7 +153,7 @@ PATH must be a list of `emtvp->id-element'."
 	       (find name
 		  (emtvp:node->children node)
 		  :key #'emtvp:node->name
-		  :test #'equal)
+		  :test #'emtvp:name=)
 	       (emtvp:add-child 
 		  tree 
 		  node 
