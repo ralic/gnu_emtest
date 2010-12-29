@@ -35,24 +35,12 @@
 ;;;_. Body
 
 ;;;_ , emthow
-;;Most of this could be moved into runner/explorers/ directory.  But
-;;it must be available to launchers too.
 ;;;_  . Base
 (defstruct (emthow
 	      (:copier nil)
 	      (:constructor emthow:make)
 	      (:conc-name emthow->))
-   "Base class for methods of exploring test-cases."
-   )
-
-;;;_  . emthow:invalid
-;;Unused
-(defstruct (emthow:invalid
-	      (:copier nil)
-	      (:constructor emthow:make-invalid)
-	      (:conc-name emthow:invalid->)
-	      (:include emthow))
-   "Pseudo-explore method used when something crucial is invalid")
+   "Base class for methods of exploring test-cases.")
 
 ;;;_  . emtt:explorable (Full runnable)
 (defstruct (emtt:explorable
@@ -62,7 +50,7 @@
    "All the information needed to specify how to run a test or suite/"
    (how-to-run () 
       :type emthow
-      :doc "What to launch for this exploration.")
+      :doc "What explorer to use for this.")
    
    (prestn-path () 
       :type emt:testral:prestn-path
@@ -87,7 +75,6 @@
    keys)
 
 ;;;_  . emtt:method (Union of those types)
-;;$$USE ME
 (deftype emtt:method ()
    "A static or dynamic exploration method, for test-runner-info"
    '(or emtt:dynamic-method emtt:explorable))
@@ -96,7 +83,7 @@
 
 ;;;_. Footers
 ;;;_ , Provides
-
+;; 'emtest/common/result-types -> emtest/common/run-types
 (provide 'emtest/common/result-types)
 
 ;;;_ * Local emacs vars.
