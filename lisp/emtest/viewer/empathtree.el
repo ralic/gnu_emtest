@@ -179,7 +179,7 @@ could be, such as when a note-list hasn't been expanded."
 	       ;;$$IMPROVE ME If there's a `emt:view:no-note', replace
 	       ;;it with this one.
 	       (emtvp:add-child
-		  tree parent (first cell) child t))))))
+		  tree parent nil child t))))))
 
 
 ;;;_  . emtvr:collect-testral-2
