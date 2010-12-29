@@ -31,6 +31,7 @@
 
 (require 'viewers/hiformat)
 (require 'viewers/loformat)
+(require 'viewers/outline)
 (require 'emtest/viewer/view-types)
 (require 'emtest/common/grade-types)
 (require 'custom)
