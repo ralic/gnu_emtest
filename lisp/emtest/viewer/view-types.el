@@ -42,7 +42,6 @@
 ;;;_ , Presentables
 ;;;_  . Base viewable
 
-;;Emviewer 
 (defstruct (emt:view:presentable
 	      (:constructor emt:view:make-presentable)
 	      (:conc-name emt:view:presentable->)
@@ -63,18 +62,16 @@ pathtree nodes."
    ""
    ;;Just for suite nodes.
    (id () :type emtvr:suite->id
-      :doc "The \"official\" id.")
+      :doc "The normative id, often the same as `how-to-run'.")
 
    (how-to-run ():type emtt:explorable
       :doc "How to run this as a test.")
 
-   ;;Where it lives in the pathtree, so that we can put new results in
-   ;;the same place.
+   ;;So that we can put new results in the same place.
    (presentation-path ()   
       :type emt:testral:suite-id
       :doc "The path to the corresponding node in the pathtree.")
 
-   ;;This is becoming more of a datestamp/circumstance info.
    (testrun-id ()
       :type emt:testral:testrun-id
       :doc "The ID of the testrun that created this result.")
