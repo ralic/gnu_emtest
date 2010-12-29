@@ -252,12 +252,7 @@ Must be called in a `utidyv:top' context."
 			      `(w/face ,name emtvf:face:suitename)
 			      grades-sum)
 			   " ")
-			(hiformat:map 
-			   ;;Formatting for each child
-			   #'(lambda (obj &rest d)
-				(emtvf:make-dynamic obj #'emtvf:node))
-			   children
-			   :separator "\n") 
+			(emtvf:mapnodes children "No child suites") 
 			grade-face
 			boring-p))
 		  
