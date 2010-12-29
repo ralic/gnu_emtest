@@ -38,7 +38,7 @@
 (require 'emtest/viewer/view-types)
 (require 'viewers/loformat)
 (require 'emtest/viewer/mode)
-
+(require 'utility/dynvars)
 ;;;_. Body
 ;;;_ , Constants
 ;;;_  . emtv2:report-buffer-name
@@ -112,59 +112,13 @@
 	    emtv2:report-buffer-name)))
    (emtvo:setup-if-needed #'emtv2:pathtree-cb #'ignore))
 
-;;;_ , Pseudo-dynamic
-;;$$MOVE ME later into utility package, after the vars are
-;;a parameter, not a constant.
-;;$$IMPROVE ME Let the list of vars also be a special variable named
-;;by an uninterned symbol so it can't accidentally be captured.
-;;;_  . emtv2:dynamic:vars
-(defconst emtv2:dynamic:vars 
-   '(emtvf:*outline-depth* emtvf:*folded* emtvf:*hdln-path*)
-   "Special variables that the formatters use.
-These variables propagate thru `dynamic' bindings." )
-;;;_  . emtv2:dynamic:init-forms
-(defconst emtv2:dynamic:init-forms 
-   '(0 nil '())
-   "Init forms for the special variables." )
-;;;_  . emtv2:dynamic-register-var
-(defun emtv2:dynamic-register-var (sym init-form)
-   "Register SYM as a special variable for `dynamic'.
-If it's already registered, just change its init form."
-   
-   (let
-      ((pos (position sym emtv2:dynamic:vars :test #'eq)))
-      (if pos
-	 (setf (nth emtv2:dynamic:init-forms init-form))
-	 (progn
-	    (push sym emtv2:dynamic:vars)
-	    (push init-form emtv2:dynamic:init-forms)))))
-
-;;;_  . emtv2:dynamic:top
-(defmacro emtv2:dynamic:top (&rest body)
-   "Eval BODY with the special variables bound to their initial values."
-
-   `(progv ',emtv2:dynamic:vars (list ,@emtv2:dynamic:init-forms)
-       ,@body))
-
-;;;_  . emtv2:dynamic:capture-vars
-(defun emtv2:dynamic:capture-vars ()
-   "Capture the values of the formatter special variables."
-   (eval `(list ',emtv2:dynamic:vars ,@emtv2:dynamic:vars)))
-;;;_  . emtv2:dynamic:with-vars
-(defmacro emtv2:dynamic:with-vars (data &rest body)
-   "Eval BODY with the special variables bound according to DATA.
-DATA should have been created by `emtv2:dynamic:capture-vars'."
-   
-   `(progv (car data) (cdr data)
-       ,@body))
-
 ;;;_ , Pseudo-dynamic printing
 ;;;_  . emtv2:insert:dynamic
 (defun emtv2:insert:dynamic (recurse-f obj func data)
    "Insert (statically) the result of a dynamic spec"
    (let*
       ((fmt-list 
-	  (emtv2:dynamic:with-vars data 
+	  (utidyv:with-vars data 
 	     (funcall func obj))))
       (funcall recurse-f fmt-list)))
 
@@ -174,7 +128,7 @@ DATA should have been created by `emtv2:dynamic:capture-vars'."
    `(dynamic 
        ,obj 
        ,func
-       ,(emtv2:dynamic:capture-vars)))
+       ,(utidyv:capture-vars)))
 ;;;_ , Static printing functions
 ;;;_  . emtv2:print-all
 (defun emtv2:print-all (top-node)

@@ -100,6 +100,9 @@ which may not imply success of an assertion."
 ;;;_  . Singles-Path
 ;;;_   , Special variables
 (declare (special emtvf:*hdln-path*))
+(eval-after-load 'utility/dynvars
+   '(progn
+      (utidyv:register-var 'emtvf:*hdln-path* '())))
 ;;;_   , emtvf:with-blank-singles-path
 (defmacro emtvf:with-blank-singles-path (&rest body)
    "Eval BODY in a blank singles-path."
@@ -125,6 +128,11 @@ which may not imply success of an assertion."
 ;;$$MOVE ME later when we have dynamic variable registration sorted out.
 ;;;_   , Special variables
 (declare (special emtvf:*outline-depth* emtvf:*folded*))
+(eval-after-load 'utility/dynvars
+   '(progn
+      (utidyv:register-var 'emtvf:*outline-depth* 0)
+      (utidyv:register-var 'emtvf:*folded* nil)))
+
 ;;;_   , emtvf:outline-item-f
 (defun emtvf:outline-item-f (depth face headtext contents &optional fold)
    "Make an outline item of DEPTH."
@@ -218,11 +226,10 @@ If VALUE is a string, display it literally, otherwise pretty-print it."
 
 (defun emtvf:top (view-node)
    "Make a format form for VIEW-NODE.
-VIEW-NODE must be at least an `emtvp:node'.
-Must be called in a `emtv2:dynamic:top' context."
+VIEW-NODE must be at least an `emtvp:node'."
 
    (check-type view-node emtvp:node)
-   (emtv2:dynamic:top
+   (utidyv:top
       `(
 	  (w/face "Emtest results" emtvf:face:title)
 	  "\n"
