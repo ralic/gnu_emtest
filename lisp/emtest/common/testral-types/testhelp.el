@@ -35,18 +35,7 @@
 
 ;;;_. Body
 ;;;_ , Preliminary
-;;;_  . Pattern ctors
-
-;;$$OBSOLETE
-(emtm:define-struct-governor emt:view:suite
-   name full-id unique-id suite child-type children sum-grades )
-
-;;$$OBSOLETE
-(emtm:define-struct-governor emt:view:testral
-   ;;We leave out `display-info' since we can't expect to compare
-   ;;against it meaningfully.
-   main end args children child-type)
-
+;;Gone
 ;;;_ , Examples
 (defconst emt:testral:thd:examples
    (emtg:define+ ;;xmp:4c2dde89-a458-4cc7-a148-3725d8e7d692
