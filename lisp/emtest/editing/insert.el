@@ -136,13 +136,12 @@ Prompts for a suite name.  The default suite-name is the previous
 function."
    (interactive
       (list 
-	 ;;$$REFACTOR ME - code is shared
+	 ;;$$REFACTOR ME - code is shared with emt:insert-prop-test-thru
 	 (let
 	    ((default-suite-name
 		(symbol-name (emtel:suite-sym-at-point))))
 	 (read-string "Name of suite: " default-suite-name nil
 	    default-suite-name))))
-   ;;$$REFACTOR ME - code is shared
    (let
       ((pp-escape-newlines nil))
       (pp
