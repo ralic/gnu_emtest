@@ -81,6 +81,7 @@ could be, such as when a note-list hasn't been expanded."
 			      (t own-grade))))))
 	       (emt:testral:test-runner-info
 		  '()))))
+      (emt:view:note-placeholder '())
       ;;$$IMPROVE ME Treat this.
       (emt:view:note '())
       ;;Only the root will have this type.
