@@ -166,6 +166,17 @@ If VALUE is a string, display it literally, otherwise pretty-print it."
       `(indent 4 ,value)
       `(object ,value nil)))
 
+;;;_  . emtvf:mapnodes 
+(defun emtvf:mapnodes (list els=0)
+   "Map emtvf:node over LIST, making dynamic entries"
+   (hiformat:map 
+      #'(lambda (obj &rest d)
+	   (emtvf:make-dynamic 
+	      obj 
+	      #'emtvf:node))
+      list
+      :separator "\n"
+      :els=0 (or els=0 '("[No child nodes]"))))
 
 ;;;_ , Format functions
 ;;;_  . emtvf:top
@@ -240,31 +251,7 @@ Must be called in a `utidyv:top' context."
 				 (emtvf:button-to-explore explorable "[RUN]")
 				 grades-sum))
 			   " ")
-			(if children
-			   (hiformat:map 
-			      ;;Formatting for each child
-			      #'(lambda (obj &rest d)
-				   (emtvf:make-dynamic 
-				      obj 
-				      #'emtvf:node))
-			      children
-			      :separator "\n"
-			      :els=0 '("No child suites"))
-			   (let
-			      ((direct-contents
-				  (emt:testral:suite->contents object)))
-			      (etypecase direct-contents
-				 (emt:testral:runform-list
-				    "No children, or notes weren't converted.")
-				 (emt:testral:note-list
-				    (hiformat:map
-				       #'emtvf:TESTRAL
-				       (emt:testral:note-list->notes
-					  direct-contents)
-				       :separator "\n"
-				       :els=0 '("No notes")))
-				 (null
-				    '("No known contents")))))
+			(emtvf:mapnodes children "No child suites")
 			grade-face
 			boring-p)))))
 	 
@@ -309,20 +296,12 @@ Intended for items that are basically just containers."
 
 
 ;;;_  . emtvf:TESTRAL:all-children
-;;The basic difference from the others is that it assumes notes, not
-;;suites, and it figures out children.  There's plenty of room for
-;;future variation in all of that.
+;;$$OBSOLESCENT
 (defun emtvf:TESTRAL:all-children (note &optional els=0 filter)
    "Format the children of NOTE.
 NOTE must be a `emt:view:TESTRAL-2'"
-   ;;$$IMPROVE ME Filter what is displayed, by parameter.
-   ;;Filter is TBD
-   (hiformat:map
-      #'(lambda (view-node &rest d)
-	   (emtvf:node view-node))
-      (emtvp:node->children note)
-      :separator "\n"
-      :els=0 els=0))
+   (emtvf:mapnodes
+      (emtvp:node->children note) els=0))
 
 ;;;_  . emtvf:TESTRAL (TESTRAL note formatter)
 (defun emtvf:TESTRAL (obj &rest d)
