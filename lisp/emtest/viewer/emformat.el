@@ -178,8 +178,6 @@ If FOLD is non-nil, fold that contents."
 
 ;;;_  . Buttons
 ;;;_   , emtvf:button-to-explore
-;;$$IMPROVE ME Make and use a loformatter that makes real widget
-;;buttons. 
 (defun emtvf:button-to-explore (explorable text)
    "Make a button to explore EXPLORABLE.
 Hack: We add a space after the button."
@@ -187,22 +185,26 @@ Hack: We add a space after the button."
    ;;to this in something that alternates items with separators, a la
    ;;hiformat:map
    (when explorable
-      (list
-	 (hiformat:button text
-	    `(lambda ()
-		(interactive)
-		(emtl:dispatch-normal
-		   ',(emtt:explorable->how-to-run 
-		       explorable)
-		   ',(emtt:explorable->prestn-path 
-			explorable)))
-	    '(help-echo "Rerun this test"))
-	 " ")))
+      (let
+	 ((func
+	     `(lambda (button)
+		 (interactive)
+		 (emtl:dispatch-normal
+		    ',(emtt:explorable->how-to-run 
+			 explorable)
+		    ',(emtt:explorable->prestn-path 
+			 explorable)))))
+	 
+	 (list
+	    `(button ,text 
+		action ,func
+		help-echo "Rerun this test")
+	    " "))))
 ;;;_  . Objects
 ;;;_   , emtvf:obj-or-string
 (defun emtvf:obj-or-string (value)
    "Display VALUE.
-If VALUE is a string, display it lerally, otherwise pretty-print it."
+If VALUE is a string, display it literally, otherwise pretty-print it."
    (if
       (stringp value)
       ;;Indent it so it can't affect outline

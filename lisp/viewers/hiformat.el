@@ -90,18 +90,6 @@ ELS=1 must be a function taking 1 arg, the singleton object."
 			   (list nil sep-form sub-list)
 			   sub-list)))))))))
 
-;;;_  . hiformat:button
-(defun hiformat:button (text func &optional extra-props)
-   ""
-   (let
-      ((map
-	  (make-sparse-keymap)))
-      (define-key map "\r" func)
-      (define-key map [mouse-1] func)
-      `((w/props
-	   ,text
-	   (keymap ,map ,@extra-props)))))
-
 ;;;_ , Slightly touching on grammar
 ;;;_  . hiformat:grammar:number-agreement
 (defun hiformat:grammar:number-agreement (n singular plural)

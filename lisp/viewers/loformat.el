@@ -140,6 +140,12 @@ PROPS is the property-list for the text, if any."
    ;;would add to existing properties.
    (loformat:insert:w/props recurse-f object (list 'face face)))
 
+;;;_  . loformat:button
+(defun loformat:button (recurse-f text &rest button-props)
+   "Insert a button with action FUNC"
+   (require 'button)
+   (apply #'insert-button text button-props))
+
 
 ;;;_ , Defaults
 ;;;_  . loformat:default-alist
@@ -151,7 +157,8 @@ PROPS is the property-list for the text, if any."
        (indent      loformat:insert:indent)
        (sep         loformat:insert:sep)
        (w/face      loformat:insert:w/face)
-       (w/props     loformat:insert:w/props))
+       (w/props     loformat:insert:w/props)
+       (button      loformat:button))
    "The default alist for `loformat:insert'" )
 ;;;_  . The insert function itself
 ;;;_   , loformat:insert
