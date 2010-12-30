@@ -42,6 +42,7 @@
 	     (  "^tests\\.el"
 		"^testhelp\\.el"
 		"^explorers$"
+		"^runners$"
 		"^testral$"
 		"^rtest\\.el"
 		"^vtests\\.el"
