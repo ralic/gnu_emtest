@@ -603,26 +603,6 @@ The factored-out part of emtm and emtm:lambda"
       form))
 
 ;;;_ , Entry points
-;;;_  . Test-supporter emtm:th:single-gov
-;;$$MOVE ME to testhelp
-(defun emtm:ts:single-gov (func pattern obj)
-
-   "Match OBJ vs the pattern PATTERN, forcing FUNC to be the governor
-function when parsing PATTERN.  PATTERN should be quoted and not
-contain the symbol `testhelp-483s'.
-
-Intended for testing governor functions in isolation."
-
-   ;;$$IMPROVE ME: Use a make-symbol instead of testhelp-483s
-   ;;For this, punt: Always use `testhelp-483s' as the symbol.
-   (let
-      ((testhelp-483s obj))
-      (emtt:testral:with-prestn-path ()
-	 (eval
-	    (emtm:build-form 
-	       '(testhelp-483s) 
-	       (funcall func 'testhelp-483s pattern) 
-	       't)))))
 ;;;_  . emtm
 (defmacro emtm (object-form pattern)
    ""
