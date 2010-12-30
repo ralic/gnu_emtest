@@ -110,8 +110,6 @@ PATH must be a list of `emtvp:name-type'."
       tree path (emtvp->root tree) make-empty-node))
 
 ;;;_    . emtvp:find-node-under-node
-;;$$NB different args and order than `emtvp:add/replace-node-recurse'
-
 (defun emtvp:find-node-under-node (tree path node make-empty-node)
    "Return a node at path PATH under node NODE.
 The return value is suitable as a parent

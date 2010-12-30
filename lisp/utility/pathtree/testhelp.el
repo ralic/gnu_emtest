@@ -171,10 +171,9 @@ Store data about X on the list `*nodes-freshened*'.  Then clean up
       (mapcar
 	 #'emtvr:th:skeleton-recurse
       (emtvp:node->children node))))
-;;;_  . emtvp:add/replace-node
+;;;_  . emtvp:th:add/replace-node
 ;;$$NEW, for testing
-;;$$RENAME US These two have become just test-helpers.
-(defun emtvp:add/replace-node (tree path arg)
+(defun emtvp:th:add/replace-node (tree path arg)
    "Add a node"
 
    (let
@@ -188,8 +187,8 @@ Store data about X on the list `*nodes-freshened*'.  Then clean up
 	 (emtvp:th:make-derived-node
 	    :data arg))))
 
-;;;_  . emtvp:add/replace-node-recurse
-(defun emtvp:add/replace-node-recurse (tree node path arg)
+;;;_  . emtvp:th:add/replace-node-recurse
+(defun emtvp:th:add/replace-node-recurse (tree node path arg)
    ""
 
    (let

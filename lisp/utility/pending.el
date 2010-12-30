@@ -103,11 +103,6 @@ Clears the pending list when done."
 	   (format "Didn't terminate.  Remains: %S" unprocessed)))
    t)
 
-;;;_  . Tests
-
-;;$$WRITEME
-;;Maybe borrow from tagnames where this was developed.
-
 ;;;_. Footers
 ;;;_ , Provides
 

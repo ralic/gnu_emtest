@@ -38,14 +38,14 @@
 
 ;;;_. Body
 ;;;_ , Helper
-;;;_   , emtvp:add/replace-node
+;;;_   , emtvp:th:add/replace-node
 '  ;;$$OBSOLETE
-(put 'emtvp:add/replace-node 'emt:test-thru 'emtvp:add/replace-node-recurse)
+(put 'emtvp:th:add/replace-node 'emt:test-thru 'emtvp:th:add/replace-node-recurse)
 
 
-;;;_ , emtvp:add/replace-node-recurse
+;;;_ , emtvp:th:add/replace-node-recurse
 '  ;;$$OBSOLETE
-(emt:deftest-3 emtvp:add/replace-node-recurse
+(emt:deftest-3 emtvp:th:add/replace-node-recurse
    (nil
       (progn
 	 (emt:doc "Proves that `emtvp:th:callback:push' terminates.")
@@ -85,7 +85,7 @@
 	 (emt:doc "Response: That element is in the first ply.")
 	 (emtvp:th:let-usuals
 	    ((cell "cell 1"))
-	    (emtvp:add/replace-node tree
+	    (emtvp:th:add/replace-node tree
 	       '("a")
 	       cell)
 	    (emtvp:freshen tree)
@@ -109,7 +109,7 @@
 	 (emt:doc "Response: That element is in the second ply.")
 	 (emtvp:th:let-usuals
 	    ((cell "cell 1"))
-	    (emtvp:add/replace-node tree
+	    (emtvp:th:add/replace-node tree
 	       '("a" "b")
 	       cell)
 	    (emtvp:freshen tree)
@@ -139,12 +139,12 @@
 	 (emtvp:th:let-usuals
 	    ((cell "cell 1")
 	       (cell-b "cell 2"))
-	    (emtvp:add/replace-node tree
+	    (emtvp:th:add/replace-node tree
 	       '("a")
 	       cell)
 	    (emtvp:freshen tree)
 	    (setq *nodes-freshened* 'nil)
-	    (emtvp:add/replace-node tree
+	    (emtvp:th:add/replace-node tree
 	       '("a" "b")
 	       cell-b)
 	    (emtvp:freshen tree)
@@ -173,12 +173,12 @@
 	 (emtvp:th:let-usuals
 	    ((cell "cell 1")
 	       (cell-a-2 "cell 2"))
-	    (emtvp:add/replace-node tree
+	    (emtvp:th:add/replace-node tree
 	       '("a")
 	       cell)
 	    (emtvp:freshen tree)
 	    (setq *nodes-freshened* 'nil)
-	    (emtvp:add/replace-node tree
+	    (emtvp:th:add/replace-node tree
 	       '("a")
 	       cell-a-2)
 	    (emtvp:freshen tree)
@@ -207,15 +207,15 @@ The other element remains.")
 	    ((cell "cell 1")
 	       (cell-2 "cell 2")
 	       (cell-3 "cell 3"))
-	    (emtvp:add/replace-node tree
+	    (emtvp:th:add/replace-node tree
 	       '("a" "b")
 	       cell)
-	    (emtvp:add/replace-node tree
+	    (emtvp:th:add/replace-node tree
 	       '("a" "c")
 	       cell-3)
 	    (emtvp:freshen tree)
 	    (setq *nodes-freshened* 'nil)
-	    (emtvp:add/replace-node tree
+	    (emtvp:th:add/replace-node tree
 	       '("a" "b")
 	       cell-2)
 	    (emtvp:freshen tree)
@@ -245,7 +245,7 @@ The other element remains.")
 	  (emt:doc "Response: The tree is now empty.")
 	  (emtvp:th:let-usuals
 	     ((cell "cell 1"))
-	     (emtvp:add/replace-node tree
+	     (emtvp:th:add/replace-node tree
 		'("a")
 		cell)
 	     (emtvp:remove-node-recurse
@@ -260,7 +260,7 @@ The other element remains.")
 	  (emt:doc "Response: The element is now gone but its parent remains.")
 	  (emtvp:th:let-usuals
 	     ((cell "cell 1"))
-	     (emtvp:add/replace-node tree
+	     (emtvp:th:add/replace-node tree
 		'("a" "b")
 		cell)
 	     (emtvp:remove-node-recurse
@@ -282,10 +282,10 @@ The other element remains.")
 	  (emtvp:th:let-usuals
 	     ((cell "cell 1")
 		(cell "cell 3"))
-	     (emtvp:add/replace-node tree
+	     (emtvp:th:add/replace-node tree
 		'("a" "b")
 		cell)
-	     (emtvp:add/replace-node tree
+	     (emtvp:th:add/replace-node tree
 		'("a" "c")
 		cell-3)
 	     (emtvp:remove-node-recurse
@@ -315,10 +315,10 @@ Leaning towards
 The element is now gone; only its parent remains.")
 	  (emtvp:th:let-usuals
 	     ((cell "cell 1"))
-	     (emtvp:add/replace-node tree
+	     (emtvp:th:add/replace-node tree
 		'("a" "b")
 		cell)
-	     (emtvp:add/replace-node tree
+	     (emtvp:th:add/replace-node tree
 		'("a" "b" "d")
 		cell)
 	     (emtvp:remove-node-recurse
