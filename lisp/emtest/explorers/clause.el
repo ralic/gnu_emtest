@@ -35,7 +35,7 @@
 (require 'emtest/main/define)
 (require 'emtest/main/notes)
 (require 'emtest/support/keepup)
-(require 'emtest/runners/external)
+(require 'emtest/runners/expect)
 
 ;;;_. Body
 ;;;_ , Structures
@@ -112,7 +112,7 @@ This is the heart of Emtest exploration: A test itself."
       (case (emtd:clause->governor clause)
 	 (quote (emtr:quoted props rest report-f))
 	 ((nil) (emtr:vanilla props (car rest) report-f))
-	 (external (emtr:external props rest report-f))
+	 (expect (emtr:expect props rest report-f))
 	 (t
 	    (funcall report-f
 	       (emt:testral:make-suite

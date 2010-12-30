@@ -3,18 +3,18 @@
 ;;; Code:
 
 
-;;;### (autoloads (emtr:external) "emtest/runners/external"
-;;;;;;  "external.el" (19739 53011))
-;;; Generated autoloads from external.el
+;;;### (autoloads (emtr:expect) "emtest/runners/expect"
+;;;;;;  "expect.el" (19739 53011))
+;;; Generated autoloads from expect.el
 
-(autoload (quote emtr:external) "emtest/runners/external" "\
+(autoload (quote emtr:expect) "emtest/runners/expect" "\
 Run a test-case on external program and report the result.
 
 \(fn PROPS FORM REPORT-F)" nil nil)
  (unless (fboundp 'emtt:add-runner)
   (error "A certain unwritten file must be loaded"))
- (emtt:add-runner 'external #'emtr:external
-  "External runner") 
+ (emtt:add-runner 'expect #'emtr:expect
+  "Expect runner") 
  (provide 'emtest/runners/registrations)
 
 ;;;***

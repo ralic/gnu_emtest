@@ -1,4 +1,4 @@
-;;;_ emtest/editing/external.el --- Help to capture a script for external.el
+;;;_ emtest/editing/expect.el --- Help to capture a script for external.el
 
 ;;;_. Headers
 ;;;_ , License
@@ -33,8 +33,8 @@
 
 ;;;_. Body
 
-;;;_ , emtr:external:buffer->form
-(defun emtr:external:buffer->form (prompt)
+;;;_ , emtr:expect:buffer->form
+(defun emtr:expect:buffer->form (prompt)
    "Return a script form generated from the current buffer.
 Buffer should contain a transcript of a session with the program that
 is to be scripted.  
@@ -65,21 +65,21 @@ This fills the same need as autoexpect."
 		     t)))
 	 (nreverse rv-pieces))))
 
-;;;_ , emtr:external:buffer-capture-form
+;;;_ , emtr:expect:buffer-capture-form
 ;;;###autoload
-(defun emtr:external:buffer-capture-form (prompt)
-   "Push entries for an `emtr:external' script onto the kill ring.
+(defun emtr:expect:buffer-capture-form (prompt)
+   "Push entries for an `emtr:expect' script onto the kill ring.
 Current buffer should contain a transcript of a session."
    
    (interactive "sPrompt: ")
    (kill-new 
       (pp-to-string
-	 (emtr:external:buffer->form prompt))))
+	 (emtr:expect:buffer->form prompt))))
 
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'emtest/editing/external)
+(provide 'emtest/editing/expect)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -87,4 +87,4 @@ Current buffer should contain a transcript of a session."
 ;;;_  + End:
 
 ;;;_ , End
-;;; emtest/editing/external.el ends here
+;;; emtest/editing/expect.el ends here

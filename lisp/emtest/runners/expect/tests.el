@@ -1,4 +1,4 @@
-;;;_ emtest/runners/external/tests.el --- Tests for emtest/runners/external
+;;;_ emtest/runners/expect/tests.el --- Tests for emtest/runners/expect
 
 ;;;_. Headers
 ;;;_ , License
@@ -29,19 +29,19 @@
 
 ;;;_ , Requires
 
-(require 'emtest/runners/external)
+(require 'emtest/runners/expect)
 
 ;;;_. Body
 ;;;_ , Insulation
-(defconst emtest/runners/external:th:surrounders 
+(defconst emtest/runners/expect:th:surrounders 
    '()
-   "The normal surrounders for emtest/runners/external tests" )
-;;;_ , emtr:external
+   "The normal surrounders for emtest/runners/expect tests" )
+;;;_ , emtr:expect
 (emt:deftest-3
-   ((of 'emtr:external))
+   ((of 'emtr:expect))
    ;;A simple test, which should just pass.
 
-   (external ;;The governor.
+   (expect ;;The governor.
       ;;The parameters
       ((exec+args ("/bin/sh" "-i"))
 	 (shell nil)
@@ -71,7 +71,7 @@
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'emtest/runners/external/tests)
+(provide 'emtest/runners/expect/tests)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -79,4 +79,4 @@
 ;;;_  + End:
 
 ;;;_ , End
-;;; emtest/runners/external/tests.el ends here
+;;; emtest/runners/expect/tests.el ends here

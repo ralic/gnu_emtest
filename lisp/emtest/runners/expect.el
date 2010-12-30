@@ -1,4 +1,4 @@
-;;;_ emtest/runners/external.el --- Expect-like testing external programs
+;;;_ emtest/runners/expect.el --- Expect-like testing external programs
 
 ;;;_. Headers
 ;;;_ , License
@@ -42,9 +42,9 @@
 ;;;_ , Structures
 ;;Other data may be added here, such as for variables that cases
 ;;carry around.
-(defstruct (emtr:external-data
-	      (:conc-name emtr:external-data->)
-	      (:constructor emtr:make-external-data))
+(defstruct (emtr:expect-data
+	      (:conc-name emtr:expect-data->)
+	      (:constructor emtr:make-expect-data))
    "Data telling us how to run the interaction sequence"
    tq
    report-f
@@ -62,17 +62,17 @@
    timeout)
 
 ;;;_ , Utility
-;;;_  . emtr:external-1note
-(defun emtr:external-1note (text data)
+;;;_  . emtr:expect-1note
+(defun emtr:expect-1note (text data)
    ""
    ;;$$PUNT For now, as a doc note
    (emtt:testral:continued-with
-      (emtr:external-data->testral-obj data)
+      (emtr:expect-data->testral-obj data)
       (emt:doc text)))
 
 ;;;_ , Support
-;;;_  . emtr:external-cb
-(defun emtr:external-cb (data answer)
+;;;_  . emtr:expect-cb
+(defun emtr:expect-cb (data answer)
    "Callback for tq-enqueue"
    (when (first data)
       (emtt:testral:continued-with (second data)
@@ -84,79 +84,79 @@
 
    (ignore-errors
       (cancel-timer
-	 (emtr:external-data->timer (third data))))
-   (emtr:external-start-next (third data)))
+	 (emtr:expect-data->timer (third data))))
+   (emtr:expect-start-next (third data)))
 
-;;;_  . emtr:external-timer-cb
-(defun emtr:external-timer-cb (data question)
+;;;_  . emtr:expect-timer-cb
+(defun emtr:expect-timer-cb (data question)
    ""
-   (emtr:external-1note 
+   (emtr:expect-1note 
       (concat 
 	 "An interaction failed: " 
 	 question)
       data)
    ;;Pop tq
-   (tq-queue-pop (emtr:external-data->tq data))
+   (tq-queue-pop (emtr:expect-data->tq data))
    ;;Start another.
-   (emtr:external-start-next data))
+   (emtr:expect-start-next data))
 
 
-;;;_  . emtr:external-start-next
-(defun emtr:external-start-next (data)
+;;;_  . emtr:expect-start-next
+(defun emtr:expect-start-next (data)
    ""
    
    (if
-      (emtr:external-data->pending data)
+      (emtr:expect-data->pending data)
       (let
 	 ((next
-	     (pop (emtr:external-data->pending data)))
+	     (pop (emtr:expect-data->pending data)))
 	    timer)
 	 ;;$$REPLACE WITH ME The `emtt:testral:continued-with' section
 	 ;;isn't needed for most of this.
-	 '(emtr:external-1note 
+	 '(emtr:expect-1note 
 	     (emtr:interact-predata->question next)
 	     data)
 	 
 	 (emtt:testral:continued-with 
-	    (emtr:external-data->testral-obj data)
+	    (emtr:expect-data->testral-obj data)
 	    ;;Make a note of what the next thing is expected to send.
 	    ;;$$PUNT For now, as a doc note.
 	    (emt:doc (emtr:interact-predata->question next))
 	    ;;$$ENCAP ME.
 	    (setf
-	       (emtr:external-data->timer data)
+	       (emtr:expect-data->timer data)
 	       (run-at-time 
 		  (emtr:interact-predata->timeout next)
 		  nil
-		  #'emtr:external-timer-cb
+		  #'emtr:expect-timer-cb
 		  data
 		  (emtr:interact-predata->question next)))
 
-	    (tq-enqueue (emtr:external-data->tq data)
+	    (tq-enqueue (emtr:expect-data->tq data)
 	       (emtr:interact-predata->question next)
-	       (emtr:external-data->prompt data)
+	       (emtr:expect-data->prompt data)
 	       (list 
 		  (emtr:interact-predata->form next) 
-		  (emtr:external-data->testral-obj data)
+		  (emtr:expect-data->testral-obj data)
 		  data)
-	       #'emtr:external-cb
+	       #'emtr:expect-cb
 	       nil)))
       
       ;;Otherwise report results
       (progn
-	 (funcall (emtr:external-data->report-f data)
+	 (funcall (emtr:expect-data->report-f data)
 	    (emt:testral:make-suite
 	       :contents
 	       (emtt:testral:continued-with 
-		  (emtr:external-data->testral-obj data)
+		  (emtr:expect-data->testral-obj data)
 		  (emtt:testral:note-list))
 	       :grade (emt:testral:make-grade:test-case)))
 	 ;;, close tq, and we're done.
-	 (tq-close (emtr:external-data->tq data)))))
+	 (tq-close (emtr:expect-data->tq data)))))
 
 
-;;;_  . emtr:external-form->predata Form to predata
-(defun emtr:external-form->predata (form)
+;;;_  . emtr:expect-form->predata Form to predata
+(defun emtr:expect-form->predata (form)
    "Make a `emtr:interact-predata' from FORM."
    (declare (special timeout))
    (case (car form)
@@ -179,9 +179,9 @@
 
 
 ;;;_ , Entry point (for clause explorer)
-;;;_  . emtr:external
+;;;_  . emtr:expect
 ;;;###autoload
-(defun emtr:external (props form report-f)
+(defun emtr:expect (props form report-f)
    "Run a test-case on external program and report the result."
 
    ;;Testpoint to check what we receive.
@@ -214,7 +214,7 @@
 		  (emt:testral:make-grade:ungraded
 		     :contents
 		     (list
-			"emtr:external: no exec+args or no prompt"))))
+			"emtr:expect: no exec+args or no prompt"))))
 	    ;;Do test
 	    (let* 
 	       ((con
@@ -224,15 +224,15 @@
 			(if shell
 			   #'start-process-shell-command
 			   #'start-process)
-			 "external" nil exec+args))
+			 "expect" nil exec+args))
 		  (tq
 		     (tq-create proc))
 		  (pending
 		     (mapcar
-			#'emtr:external-form->predata
+			#'emtr:expect-form->predata
 			(cdr form)))
 		  (data
-		     (emtr:make-external-data
+		     (emtr:make-expect-data
 			:tq tq
 			:report-f report-f
 			;;Timer is not set now, it will be set when we
@@ -243,15 +243,15 @@
 			:testral-obj con)))
 
 	       ;;Start it all.
-	       (emtr:external-start-next data))))))
+	       (emtr:expect-start-next data))))))
 
 ;;;_ , Register it
 ;;$$TRANSITIONAL - belongs at the top of the file
 ;;;###autoload (unless (fboundp 'emtt:add-runner)
 ;;;###autoload   (error "A certain unwritten file must be loaded"))
 ;;;_  . Registration itself
-;;;###autoload (emtt:add-runner 'external #'emtr:external
-;;;###autoload   "External runner") 
+;;;###autoload (emtt:add-runner 'expect #'emtr:expect
+;;;###autoload   "Expect script runner") 
 ;;;_  . Provision
 ;;$$TRANSITIONAL
 ;;;###autoload (provide 'emtest/runners/registrations)
@@ -260,7 +260,7 @@
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'emtest/runners/external)
+(provide 'emtest/runners/expect)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -268,4 +268,4 @@
 ;;;_  + End:
 
 ;;;_ , End
-;;; emtest/runners/external.el ends here
+;;; emtest/runners/expect.el ends here
