@@ -36,9 +36,8 @@
 ;;;_. Body
 ;;;_ , Pathtree
 ;;;_  . Types
-;;;_   , emtvp->id-element
-;;$$RENAME ME emtvp:name-type
-(deftype emtvp->id-element ()
+;;;_   , emtvp:name-type
+(deftype emtvp:name-type ()
    '(or null string symbol integer))
 ;;;_   , emtvp:node
 (defstruct (emtvp:node
@@ -46,7 +45,7 @@
 	      (:conc-name emtvp:node->)
 	      (:copier nil))
    "A node in a pathtree"
-   (name ()      :type emtvp->id-element)
+   (name ()      :type emtvp:name-type)
    (parent () :type (or null emtvp:node))
    (children () 
       :type (repeat emtvp:node))
@@ -121,10 +120,10 @@ Must be derived from `emtvp:node'.")
    "Find a node at path PATH in TREE.
 Make intervening nodes if they don't exist.
 TREE must be a `emtvp'.
-PATH must be a list of `emtvp->id-element'."
+PATH must be a list of `emtvp:name-type'."
    
    (check-type tree emtvp)
-   (check-type path (repeat emtvp->id-element))
+   (check-type path (repeat emtvp:name-type))
    (emtvp:find-node-under-node
       tree path (emtvp->root tree) make-empty-node))
 
@@ -138,10 +137,10 @@ Make intervening nodes if they don't exist.
 
 TREE must be a `emtvp'.
 NODE must be a `emtvp:node' or descendant.
-PATH must be a list of `emtvp->id-element'."
+PATH must be a list of `emtvp:name-type'."
 
    (check-type tree   emtvp)
-   (check-type path   (repeat emtvp->id-element))
+   (check-type path   (repeat emtvp:name-type))
    (check-type node   emtvp:node)
    
    (let*
@@ -185,7 +184,7 @@ To stitch NEW-CHILD in we set name, parent, and dirty-flags, but
 don't otherwise alter it."
    (check-type tree   emtvp)
    (check-type parent emtvp:node)
-   (check-type name   emtvp->id-element)
+   (check-type name   emtvp:name-type)
    
    (setf
       (emtvp:node->name        new-child) name

@@ -56,7 +56,6 @@
 
 
 ;;;_  . emtvr:receive
-;;$$RENAME ME
 (defun emtvr:receive (receiver report)
    ""
    (check-type receiver emtvr:data)

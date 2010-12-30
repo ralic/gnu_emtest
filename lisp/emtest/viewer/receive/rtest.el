@@ -39,12 +39,6 @@
 ;;;_  . emtvr:receive-one
 (put 'emtvr:receive-one 'rtest:test-thru
    'emtvr:receive)
-;;;_  . emtvr:suite test helpers
-'  ;;$$OBSOLETE
-(emtm:define-struct-governor
-   emtvr:suite
-   id how-to-run presentation-path testrun-id suite)
-
 ;;;_  . Tests
 
 (rtest:deftest emtvr:receive

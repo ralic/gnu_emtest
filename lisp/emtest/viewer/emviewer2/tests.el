@@ -38,7 +38,7 @@
 
 ;;;_. Body
 ;;;_ , emtv2:td:dir
-;;$$CHECK ME  This has been moved
+;;$$CHECK ME  This was moved to here, needs rechecking.
 (defconst emtv2:td:dir
    (emtb:expand-filename-by-load-file "persist")
    "The file where the database is located" )
