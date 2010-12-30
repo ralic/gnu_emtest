@@ -1087,18 +1087,6 @@ emtm-f param: An object of that type.")
 		     pat)))
 	    t))))
 
-
-;;$$WRITE ME - tests of reporting informative TESTRAL notes.
-;;Or add those checks where we are already creating failure.
-;;Strategy:
-;;Intercept `emtm:report-false' and check prefix.
-(emt:deftest-3 emtest/testhelp/match/tests
-   (nil
-      (progn
-	 (emt:doc "Situation: WRITEME.")
-	 (emt:doc "Response: WRITEME."))))
-
-
 ;;;_. Footers
 ;;;_ , Provides
 

@@ -24,9 +24,6 @@
 
 ;;;_ , Commentary:
 
-;; $$CONVERT ME
-;; $$CONVERT THEM the rtest structure definitions, to emtest ones.
-
 ;;;_ , Requires
 (require 'rtest-define)
 (require 'emtest/testhelp/match)
