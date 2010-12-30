@@ -99,9 +99,8 @@ LIB-PATH must be a path to a library that is already loaded."
    `(unless 
       ,place
       (setf ,place ,value)))
-;;;_  . emtt:conform-howto
-;;$$RENAME ME This actually just pertains to the library howto.
-(defun emtt:conform-howto (howto)
+;;;_  . emtt:lib-conform
+(defun emtt:lib-conform (howto)
    ""
    ;;If symbol is nil, find it.
    (utim:setf-new
@@ -127,7 +126,7 @@ LIB-PATH must be a path to a library that is already loaded."
 (defun emtt:explore-library (test-id props path report-f)
    ""
 
-   (emtt:conform-howto test-id)
+   (emtt:lib-conform test-id)
    (let* 
       (  
 	 (lib-path

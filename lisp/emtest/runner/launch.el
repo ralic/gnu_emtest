@@ -142,7 +142,7 @@ LIBRARY is the absolute file name of the library"
 	    (emthow:make-library:elisp-load
 	       :load-name library)))
       
-      (emtt:conform-howto test-id)
+      (emtt:lib-conform test-id)
       (let*
 	 ((lib-sym
 	     (emthow:library:elisp-load->lib-sym test-id)))
