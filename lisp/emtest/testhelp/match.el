@@ -463,9 +463,6 @@ PATTERN is headed by governor"
 		   ,(emtm:test-form-data->form first)
 		   ,rest
 		   (ignore
-		      ;;$$IMPROVE ME.  Anchor prestn-path in the entry
-		      ;;points, can use
-		      ;;`emtt:testral:with-prestn-path'
 		      (emtt:testral:with-prestn-path
 			 ',(emtm:test-form-data->prestn-path first)
 			 (emtt:testral:report-false
