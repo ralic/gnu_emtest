@@ -175,7 +175,7 @@ If VALUE is a string, display it literally, otherwise pretty-print it."
 	      #'emtvf:node))
       list
       :separator "\n"
-      :els=0 (or els=0 '("[No child nodes]"))))
+      :els=0 els=0))
 
 ;;;_  . emtvf:shortcut-single
 (defmacro emtvf:shortcut-single (name children rest-headline face format-no-child)
