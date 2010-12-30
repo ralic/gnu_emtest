@@ -118,8 +118,6 @@ Make a `emt:view:presentable' or its descendant."
       (setq emtvo:pathtree
 	 (emtvp:make-pathtree
 	    pathtree-cb
-	    `(lambda (old-version arg)
-		(emtvo:pathtree-cb-aux old-version arg (,make-display-data)))
 	    'emt:view:presentable)))
 
    (unless 

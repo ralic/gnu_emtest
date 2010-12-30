@@ -153,9 +153,6 @@ Store data about X on the list `*nodes-freshened*'.  Then clean up
 	    (tree 
 	       (emtvp:make-pathtree
 		  #'emtvp:th:callback:push
-		  #'(lambda(node data) 
-		       (emtvp:th:make-derived-node
-			  :data (or data "default-data")))
 		  'emtvp:th:derived-node))
 	    ,@other-lets)
        ,@body))
