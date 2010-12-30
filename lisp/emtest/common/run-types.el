@@ -1,4 +1,4 @@
-;;;_ emtest/common/result-types.el --- Result types for emtest
+;;;_ emtest/common/run-types.el --- Result types for emtest
 
 ;;;_. Headers
 ;;;_ , License
@@ -83,7 +83,7 @@
 
 ;;;_. Footers
 ;;;_ , Provides
-(provide 'emtest/common/result-types)
+(provide 'emtest/common/run-types)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -91,4 +91,4 @@
 ;;;_  + End:
 
 ;;;_ , End
-;;; emtest/common/result-types.el ends here
+;;; emtest/common/run-types.el ends here

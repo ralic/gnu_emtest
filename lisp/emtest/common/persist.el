@@ -1,4 +1,4 @@
-;;;_ emtest/common/persist-2.el --- Persistence for testing
+;;;_ emtest/common/persist.el --- Persistence for testing
 
 ;;;_. Headers
 ;;;_ , License
@@ -132,7 +132,7 @@
 ;;;_. Footers
 ;;;_ , Provides
 
-(provide 'emtest/common/persist-2)
+(provide 'emtest/common/persist)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -140,4 +140,4 @@
 ;;;_  + End:
 
 ;;;_ , End
-;;; emtest/common/persist-2.el ends here
+;;; emtest/common/persist.el ends here
