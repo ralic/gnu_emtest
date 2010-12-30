@@ -70,7 +70,7 @@ This function should not directly modify parent or children nodes,
 other than by setting dirty flags in them and pushing them onto the
 dirty list.")
 
-   ;;$$ADD TO ME A foreign field, for `node-dirtied' to see.
+   (foreign-data ())
 
    ;;$$OBSOLETE
    (make-node
