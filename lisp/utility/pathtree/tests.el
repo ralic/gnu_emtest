@@ -38,14 +38,9 @@
 
 ;;;_. Body
 ;;;_ , Helper
-;;;_   , emtvp:th:add/replace-node
-'  ;;$$OBSOLETE
-(put 'emtvp:th:add/replace-node 'emt:test-thru 'emtvp:th:add/replace-node-recurse)
-
-
-;;;_ , emtvp:th:add/replace-node-recurse
-'  ;;$$OBSOLETE
-(emt:deftest-3 emtvp:th:add/replace-node-recurse
+;;;_ , emtvp:find-node
+;;These were tests of a function that's now obsolete.
+(emt:deftest-3 emtvp:find-node
    (nil
       (progn
 	 (emt:doc "Proves that `emtvp:th:callback:push' terminates.")
