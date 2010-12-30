@@ -30,7 +30,7 @@
 ;;;_ , Requires
 
 (require 'emtest/testhelp/standard)
-(require 'emtest/runner/define)
+(require 'emtest/main/define)
 (require 'emtest/editing/versioning)
 
 ;;;_. Body

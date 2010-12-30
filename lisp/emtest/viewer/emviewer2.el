@@ -31,12 +31,12 @@
 ;;;_ , Requires
 
 
-(require 'emtest/common/testral-types)
+(require 'emtest/types/testral-types)
 (require 'emtest/viewer/emformat)
 (require 'emtest/viewer/organize)
 (require 'emtest/viewer/empathtree)
 (require 'emtest/viewer/view-types)
-(require 'viewers/loformat)
+(require 'formatter/loformat)
 (require 'emtest/viewer/mode)
 (require 'utility/dynvars)
 ;;;_. Body

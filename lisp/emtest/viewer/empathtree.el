@@ -31,7 +31,7 @@
 (eval-when-compile (require 'cl))
 (require 'utility/pathtree)
 (require 'utility/pending)
-(require 'emtest/common/testral-types)
+(require 'emtest/types/testral-types)
 (require 'emtest/viewer/view-types)
 (require 'emtest/viewer/sumgrades)
 

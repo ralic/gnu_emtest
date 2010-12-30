@@ -30,15 +30,15 @@
 ;;;_ , Requires
 
 (require 'emtest/viewer/organize)
-(require 'emtest/runner/define)
+(require 'emtest/main/define)
 
 (require 'emtest/viewer/view-types/testhelp)
 (require 'emtest/testhelp/standard)
 (require 'emtest/testhelp/tagnames)
 (require 'emtest/testhelp/match)
-(require 'emtest/runner/explorers/library/testhelp)
-(require 'emtest/runner/launch)
-(require 'emtest/runner/launch/testhelp)
+(require 'emtest/explorers/library/testhelp)
+(require 'emtest/launch/all)
+(require 'emtest/launch/all/testhelp)
 (require 'utility/pathtree)
 (require 'utility/pathtree/testhelp)
 

@@ -28,8 +28,8 @@
 
 
 ;;;_ , Requires
-(require 'emtest/common/testral-types)
-(require 'emtest/common/run-types)
+(require 'emtest/types/testral-types)
+(require 'emtest/types/run-types)
 (require 'emtest/viewer/view-types)
 
 ;;;_. Body

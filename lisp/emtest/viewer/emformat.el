@@ -29,11 +29,11 @@
 
 ;;;_ , Requires
 
-(require 'viewers/hiformat)
-(require 'viewers/loformat)
-(require 'viewers/outline)
+(require 'formatter/hiformat)
+(require 'formatter/loformat)
+(require 'formatter/outline)
 (require 'emtest/viewer/view-types)
-(require 'emtest/common/grade-types)
+(require 'emtest/types/grade-types)
 (require 'custom)
 (require 'emtest/viewer/all-note-formatters)
 

@@ -28,7 +28,7 @@
 
 ;;;_ , Requires
 
-(require 'emtest/runner/define)
+(require 'emtest/main/define)
 (require 'emtest/testhelp/mocks/filebuf)
 (require 'emtest/testhelp/mocks/filebuf/testhelp)
 (require 'emtest/testhelp/tagnames)

@@ -30,8 +30,8 @@
 ;;;_ , Requires
 
 (require 'rtest-define)
-(require 'emtest/runner/define)
-(require 'emtest/common/run-types)
+(require 'emtest/main/define)
+(require 'emtest/types/run-types)
 (require 'emtest/testhelp/misc)
 (require 'emtest/testhelp/persist)
 

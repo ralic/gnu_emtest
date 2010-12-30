@@ -28,7 +28,7 @@
 
 
 ;;;_ , Requires
-(require 'emtest/runner/define)
+(require 'emtest/main/define)
 (require 'utility/pathtree)
 (require 'utility/pathtree/testhelp)
 

@@ -32,7 +32,7 @@
 (require 'emtest/viewer/receive)
 (require 'emtest/viewer/receive/testhelp)
 (require 'emtest/viewer/view-types/testhelp)
-(require 'emtest/common/testral-types/testhelp)
+(require 'emtest/types/testral-types/testhelp)
 (require 'emtest/testhelp/match)
 
 ;;;_. Body

@@ -51,16 +51,16 @@
 	     t) 
 	  ;;Explorer plugins use this to inform top about their
 	  ;;existence
-	  (def-file "emtest/runner/registrations.el" nil
-	     (dir "emtest/runner/explorers"))
+	  (def-file "emtest/explorers/registrations.el" nil
+	     (dir "emtest/explorers"))
 	  ;;Runner plugins use this to inform clause.el about their
 	  ;;existence
-	  (def-file "emtest/runner/runners/def-runners.el" nil
-	     (dir "emtest/runner/runners"))
+	  (def-file "emtest/runners/registrations.el" nil
+	     (dir "emtest/runners"))
 	  ;;TESTRAL formatter plugins use this to inform emformat
 	  ;;about their existence
-	  (def-file "emtest/viewer/testral/registrations.el" nil
-	     (dir "emtest/viewer/testral")))))
+	  (def-file "emtest/formatter/testral/registrations.el" nil
+	     (dir "emtest/formatter/testral")))))
 
 ;;;_. Footers
 ;;;_ , Provides

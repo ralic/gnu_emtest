@@ -33,7 +33,7 @@
 (require 'pp)
 ;;$$FACTOR ME - the code this provides belongs in editing dir, to be
 ;;required by launch.
-(require 'emtest/runner/launch)  
+(require 'emtest/launch/all)  
 ;;;_. Body
 
 ;;;_ , emt:skeletons list of available skeletons

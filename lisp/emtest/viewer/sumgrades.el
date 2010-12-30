@@ -29,7 +29,7 @@
 
 ;;;_ , Requires
 
-(require 'emtest/common/grade-types)
+(require 'emtest/types/grade-types)
 
 ;;;_. Body
 ;;;_ , Functions

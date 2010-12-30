@@ -30,7 +30,7 @@
 ;;;_ , Requires
 
 (require 'emtest/testhelp/tagnames)
-(require 'viewers/formatter)  ;;Just for the browse functionality
+(require 'formatter/formatter)  ;;Just for the browse functionality
 
 
 ;;;_. Body

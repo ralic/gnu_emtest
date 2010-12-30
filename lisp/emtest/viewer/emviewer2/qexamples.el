@@ -29,8 +29,8 @@
 
 ;;;_ , Requires
 
-(require 'emtest/runner/define)
-(require 'emtest/runner/launch/testhelp)
+(require 'emtest/main/define)
+(require 'emtest/launch/all/testhelp)
 (require 'emtest/testhelp/standard)
 (require 'emtest/viewer/emviewer2)
 (require 'emtest/viewer/emviewer2/testhelp)

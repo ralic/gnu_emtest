@@ -30,7 +30,7 @@
 ;;;_ , Requires
 
 (require 'emtest/viewer/emviewer2)
-(require 'emtest/runner/launch/testhelp)
+(require 'emtest/launch/all/testhelp)
 
 
 ;;;_. Body

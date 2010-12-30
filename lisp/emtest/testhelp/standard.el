@@ -29,9 +29,9 @@
 
 ;;;_ , Requires
 
-(require 'emtest/common/testral-types)
-(require 'emtest/common/run-types)
-(require 'emtest/runner/testral)
+(require 'emtest/types/testral-types)
+(require 'emtest/types/run-types)
+(require 'emtest/main/notes)
 
 ;;;_ , Customization
 

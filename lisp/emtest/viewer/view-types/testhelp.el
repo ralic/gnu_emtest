@@ -32,7 +32,7 @@
 (require 'emtest/viewer/view-types)
 (require 'emtest/testhelp/match)
 (require 'emtest/testhelp/tagnames)
-(require 'emtest/common/testral-types/testhelp)
+(require 'emtest/types/testral-types/testhelp)
 ;;;_. Body
 ;;;_ , Match struct governors
 

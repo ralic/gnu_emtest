@@ -25,13 +25,13 @@
 ;;;_ , Commentary:
 
 ;; 
-;;This is testhelp, distinct from emtest/common/persist which is
+;;This is testhelp, distinct from emtest/support/persist which is
 ;;implementation.
 
 ;;;_ , Requires
 
-(require 'emtest/common/run-types)
-(require 'emtest/common/persist)
+(require 'emtest/types/run-types)
+(require 'emtest/support/persist)
 
 
 ;;;_. Body

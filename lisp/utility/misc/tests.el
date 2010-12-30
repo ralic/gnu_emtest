@@ -29,7 +29,7 @@
 
 ;;;_ , Requires
 (require 'utility/misc)
-(require 'emtest/runner/define)
+(require 'emtest/main/define)
 (require 'emtest/testhelp/misc)
 (require 'emtest/testhelp/standard)
 

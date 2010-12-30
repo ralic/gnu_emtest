@@ -32,7 +32,7 @@
 (require 'emtest/viewer/empathtree)
 (require 'emtest/testhelp/standard)
 (require 'emtest/testhelp/tagnames)
-(require 'emtest/runner/define)
+(require 'emtest/main/define)
 (require 'emtest/viewer/view-types/testhelp)
 
 ;;;_. Body

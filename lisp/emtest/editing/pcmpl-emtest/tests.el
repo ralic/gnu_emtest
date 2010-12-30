@@ -35,7 +35,7 @@
 (require 'emtest/testhelp/tagnames/testhelp)
 (require 'emtest/testhelp/mocks/filebuf)
 (require 'emtest/testhelp/standard)
-(require 'emtest/runner/define)
+(require 'emtest/main/define)
 
 
 ;;;_. Body

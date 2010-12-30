@@ -28,7 +28,7 @@
 
 
 ;;;_ , Requires
-(require 'emtest/common/run-types)
+(require 'emtest/types/run-types)
 (require 'utility/pathtree)
 (eval-when-compile
    (require 'cl))
