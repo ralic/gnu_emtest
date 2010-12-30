@@ -45,9 +45,6 @@ Reaction: Fill the buffer with exactly STRING"
 	 (equal
 	    (buffer-string)
 	    "abc")))
-   ;;$$The key read-final is obsolete; use emtb:buffer-object
-   ;;directly
-   ;;Removed :dir-root in favor of :dir
 
    ("Param: :sexp OBJECT is given.
 Reaction: Fill the buffer with exactly a printed representation of
