@@ -124,8 +124,7 @@ HOW must be of a subtype of emthow"
 ;;;_ , Include the autoload list of explorers
 ;;Included with our feature already provided, so the load-forms know
 ;;they are supported.
-;;$$RENAME MY STUFF Rename symbol and file emtest/runner/registrations
-(require 'emtest/runner/loadexplorers)
+require 'emtest/runner/registrations)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:

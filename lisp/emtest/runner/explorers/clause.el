@@ -166,7 +166,7 @@ This is the heart of Emtest exploration: A test itself."
 ;;;###autoload "Indexed clause") 
 
 ;;$$TRANSITIONAL
-;;;###autoload (provide 'emtest/runner/loadexplorers)
+;;;###autoload (provide 'emtest/runner/registrations)
 
 ;;;_. Footers
 ;;;_ , Provides

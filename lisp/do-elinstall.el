@@ -50,7 +50,7 @@
 	     t) 
 	  ;;Explorer plugins use this to inform top about their
 	  ;;existence
-	  (def-file "emtest/runner/loadexplorers.el" nil
+	  (def-file "emtest/runner/registrations.el" nil
 	     (dir "emtest/runner/explorers"))
 	  ;;Runner plugins use this to inform clause.el about their
 	  ;;existence
