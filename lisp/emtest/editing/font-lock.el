@@ -69,7 +69,7 @@
 	    emtest/editing/font-lock-data))))
 
 ;;;_ , Insinuate
-;;;###autoload (eval-after-load 'emacs-lisp '(emtest/editing/font-lock-add-keywords))
+;;;###autoload (add-hook 'emacs-lisp-mode-hook 'emtest/editing/font-lock-add-keywords)
 
 ;;;_. Footers
 ;;;_ , Provides
