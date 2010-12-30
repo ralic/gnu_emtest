@@ -945,21 +945,6 @@ KEYS is a list of all field-names."
 		      (list (symbol-name ',name)))))))))
 
 
-;;;_   , emtm:define-struct-governor-oldstyle
-;;$$OBSOLESCENT
-'
-(defmacro emtm:define-struct-governor-oldstyle (gov-name pred-name
-					      conc-name fields)
-   "Define a pattern-ctor as match-governor GOV-NAME.
-PRED-NAME must be the name of the predicate that tests it.
-CONC-NAME must be the structure's conc-name."
-   ;;No type info yet.
-   `(put ',gov-name 'emtm:makepattern
-      (emtm:make-struct-governor
-	 ,gov-name
-	 ,pred-name
-	 ,conc-name
-	 ,fields)))
 ;;;_   , emtm:define-struct-governor-x
 ;;The defaults might be moved out to caller, since all clients should
 ;;have the same defaults. 
