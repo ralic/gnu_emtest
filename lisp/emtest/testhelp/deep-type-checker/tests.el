@@ -581,24 +581,7 @@ Object has the right type for that slot.")
 			(list
 			   (make-struct1 :field1 nil)))))
 	       struct1)
-	    t)))
-   ;;$$WRITE ME A test of creating the right TESTRAL notes.
-   '  ;;OBSOLETE
-   (nil
-      (progn
-	 (emt:doc "Proves: Adds a result of the appropriate type to
-`emt:trace:stored-diag'.")
-	 (let
-	    (emt:trace:stored-diag)
-	    (emth:let-noprops
-	       '(struct1)
-	       (defstruct struct1
-		  (field1 nil :type integer))
-	       (emty:check
-		  (make-struct1 :field1 12)
-		  struct1)
-	       (emt:trace:stored-diag:check-type)
-	       t)))))
+	    t))))
 
 
 ;;;_. Footers
