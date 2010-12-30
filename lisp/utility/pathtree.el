@@ -72,23 +72,6 @@ dirty list.")
 
    (foreign-data ())
 
-   ;;$$OBSOLETE
-   (make-node
-      :type function
-      :doc "Function to make a node.  It takes:
-
- * A node or nil
- * The data argument or nil
-
-It returns a node of type which will be included in the pathtree.
-That node must be compatible with the TYPE field here.  If the
-data argument is nil, the node is to be a placeholder (or nil was
-passed as data)
-
-It is legal to alter old node and return it.  It is this
-function's responsibility to set dirty flags appropriately in old
-node." )
-
    ;;*Misc*
    (type 'emtvp:node
       :doc "The type of nodes.   Used in testing and testhelping.
@@ -101,6 +84,7 @@ Must be derived from `emtvp:node'.")
 ;;;_   , emtvp:name=
 (defalias 'emtvp:name= 'equal)
 ;;;_   , emtvp:make-pathtree
+;;$$CHANGE MY ARGLIST Drop make-node
 (defun emtvp:make-pathtree (node-dirtied make-node type &optional root-name)
    "Make an empty tree"
    (let
@@ -112,7 +96,6 @@ Must be derived from `emtvp:node'.")
       (emtvp:make
 	 :root         root
 	 :node-dirtied node-dirtied
-	 :make-node    make-node
 	 :type         type)))
 ;;;_   , Find nodes
 ;;;_    . emtvp:find-node
