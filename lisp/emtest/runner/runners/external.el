@@ -81,12 +81,11 @@
 	    (emth:trap-errors 
 	       (eval (first data)))
 	    t)))
-   ;;$$TRANSITIONAL The `when' test is just for development.
-   (when (third data)
-      (ignore-errors
-	 (cancel-timer
-	    (emtr:external-data->timer (third data))))
-      (emtr:external-start-next (third data))))
+
+   (ignore-errors
+      (cancel-timer
+	 (emtr:external-data->timer (third data))))
+   (emtr:external-start-next (third data)))
 
 ;;;_  . emtr:external-timer-cb
 (defun emtr:external-timer-cb (data question)
