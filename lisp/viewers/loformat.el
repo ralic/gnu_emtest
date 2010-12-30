@@ -34,8 +34,7 @@
 
 ;;;_. Body
 ;;;_  . Types
-;;$$IMPROVE ME  parameterize on the symbol or on the third element,
-;;which would then be an `and' of which it is now and 
+;;$$IMPROVE ME  parameterize on the symbol or on the third element.
 (deftype loformat:tree ()
      '(or
 	 string
@@ -136,8 +135,6 @@ PROPS is the property-list for the text, if any."
 
 (defun loformat:insert:w/face (recurse-f object face)
    "Insert OBJECT with the given face"
-   ;;$$IMPROVE ME Make and use `loformat:insert:w/more-props' which
-   ;;would add to existing properties.
    (loformat:insert:w/props recurse-f object (list 'face face)))
 
 ;;;_  . loformat:button
