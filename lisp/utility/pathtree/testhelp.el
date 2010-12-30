@@ -157,19 +157,19 @@ Store data about X on the list `*nodes-freshened*'.  Then clean up
 	    ,@other-lets)
        ,@body))
 
-;;;_  . emtvr:th:skeleton
-(defun emtvr:th:skeleton (tree)
+;;;_  . emtvp:th:skeleton
+(defun emtvp:th:skeleton (tree)
    "Return a skeleton of TREE"
    (check-type tree emtvp)
-   (emtvr:th:skeleton-recurse (emtvp->root tree)))
+   (emtvp:th:skeleton-recurse (emtvp->root tree)))
 
-;;;_  . emtvr:th:skeleton-recurse
-(defun emtvr:th:skeleton-recurse (node)
+;;;_  . emtvp:th:skeleton-recurse
+(defun emtvp:th:skeleton-recurse (node)
    "Return a skeleton of NODE"
    (cons
       (emtvp:node->name node)
       (mapcar
-	 #'emtvr:th:skeleton-recurse
+	 #'emtvp:th:skeleton-recurse
       (emtvp:node->children node))))
 ;;;_  . emtvp:th:add/replace-node
 ;;$$NEW, for testing
