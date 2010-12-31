@@ -206,7 +206,11 @@ Intended for items that are basically just containers."
 VIEW-NODE must be at least an `emtvp:node'."
 
    (check-type view-node emtvp:node)
-   (utidyv:top
+   (utidyv:top 
+      ;;$$IMPROVE ME  Make this a var, shared with capturer.
+      '((emtvf:*hdln-path*) 
+	  (emtvf:*folded*) 
+	  (emtvf:*outline-depth* 0))
       `(
 	  (w/face "Emtest results" emtvf:face:title)
 	  "\n"

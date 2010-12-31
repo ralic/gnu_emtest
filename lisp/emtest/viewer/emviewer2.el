@@ -128,7 +128,8 @@
    `(dynamic 
        ,obj 
        ,func
-       ,(utidyv:capture-vars)))
+       ,(utidyv:capture-vars utidyv:vars)))
+
 ;;;_ , Static printing functions
 ;;;_  . emtv2:print-all
 (defun emtv2:print-all (top-node)

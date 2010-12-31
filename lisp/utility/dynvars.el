@@ -35,16 +35,19 @@
 
 ;;;_ , Variables
 ;;;_  . utidyv:vars
-(defconst utidyv:vars 
+;;$$OBSOLETE
+(defconst utidyv:vars
    '()
    "Special variables that the formatters use.
 These variables propagate thru `dynamic' bindings." )
 ;;;_  . utidyv:init-forms
+;;$$OBSOLETE
 (defconst utidyv:init-forms 
    '()
    "Init forms for the special variables." )
 ;;;_ , Variable registration
 ;;;_  . utidyv:register-var
+;;$$OBSOLETE
 (defun utidyv:register-var (sym init-form)
    "Register SYM as a special variable for `dynamic'.
 If it's already registered, just change its init form."
@@ -58,16 +61,22 @@ If it's already registered, just change its init form."
 	    (push init-form utidyv:init-forms)))))
 ;;;_ , Functions
 ;;;_  . utidyv:top
-(defmacro utidyv:top (&rest body)
+(defmacro utidyv:top (sym-list &rest body)
    "Eval BODY with the special variables bound to their initial values."
-
-   `(progv ',utidyv:vars (list ,@utidyv:init-forms)
-       ,@body))
+   (let
+      ((sym-list (eval sym-list)))
+      `(progv 
+	  ',(mapcar #'car sym-list)
+	  (list ,@(mapcar #'second sym-list))
+	  ,@body)))
 
 ;;;_  . utidyv:capture-vars
-(defun utidyv:capture-vars ()
+
+(defmacro utidyv:capture-vars (sym-list)
    "Capture the values of the formatter special variables."
-   (eval `(list ',utidyv:vars ,@utidyv:vars)))
+   (let
+      ((sym-list (eval sym-list)))
+       `(list ',sym-list ,@sym-list)))
 ;;;_  . utidyv:with-vars
 (defmacro utidyv:with-vars (data &rest body)
    "Eval BODY with the special variables bound according to DATA.
