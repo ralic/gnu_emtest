@@ -58,9 +58,12 @@
 (defmacro utidyv:with-vars (data &rest body)
    "Eval BODY with the special variables bound according to DATA.
 DATA should have been created by `utidyv:capture-vars'."
-   
-   `(progv (car data) (cdr data)
-       ,@body))
+   (let
+      ((data-s (make-symbol "data")))
+      `(let
+	  ((,data-s ,data))
+	  (progv (car ,data-s) (cdr ,data-s)
+	     ,@body))))
 
 
 ;;;_. Footers
