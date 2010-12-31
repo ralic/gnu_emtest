@@ -196,13 +196,14 @@ This function is suitable as an ewoc printer."
       (insert data)
 
       ;;Otherwise it is a `fmtdyn:node'
-      (fmtdyn:with (fmtdyn:node->ewoc data)
+      (progn
 	 ;;$$IMPROVE ME If it is indicated as folded, just print a button
 	 ;;to unfold it, whose action will just unflag it and dirty it.
 
 	 ;;Bind the special variables we use to collect data.
 	 (let*
-	    ((fmtdyn:*interstice* nil) 
+	    (  (fmtdyn:*ewoc* (fmtdyn:node->ewoc data))
+	       (fmtdyn:*interstice* nil) 
 	       (fmtdyn:*anchor* nil)
 	       (fmtdyn:*nodes-under* '())
 	       (fmtdyn:*node* (ewoc-locate fmtdyn:*ewoc*)))
