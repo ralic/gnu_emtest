@@ -61,21 +61,21 @@ If it's already registered, just change its init form."
 	    (push init-form utidyv:init-forms)))))
 ;;;_ , Functions
 ;;;_  . utidyv:top
-(defmacro utidyv:top (sym-list &rest body)
+(defmacro utidyv:top (sym-init-list &rest body)
    "Eval BODY with the special variables bound to their initial values."
    (let
-      ((sym-list (eval sym-list)))
+      ((sym-init-list (eval sym-init-list)))
       `(progv 
-	  ',(mapcar #'car sym-list)
-	  (list ,@(mapcar #'second sym-list))
+	  ',(mapcar #'car sym-init-list)
+	  (list ,@(mapcar #'second sym-init-list))
 	  ,@body)))
 
 ;;;_  . utidyv:capture-vars
 
-(defmacro utidyv:capture-vars (sym-list)
+(defmacro utidyv:capture-vars (sym-init-list)
    "Capture the values of the formatter special variables."
    (let
-      ((sym-list (eval sym-list)))
+      ((sym-list (eval sym-init-list)))
        `(list ',sym-list ,@sym-list)))
 ;;;_  . utidyv:with-vars
 (defmacro utidyv:with-vars (data &rest body)
