@@ -35,7 +35,7 @@
 ;;;_. Body
 ;;;_ , emtvf:TESTRAL-gov:not-in-db
 ;;;###autoload
-(defun emtvf:TESTRAL-gov:not-in-db (value id backend)
+(defun emtvf:TESTRAL-gov:not-in-db (note value id backend)
    "Formatter for TESTRAL note governed by `not-in-db'"
    (emtvf:outline-item-emformat
       "ID not in database "
