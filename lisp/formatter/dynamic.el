@@ -139,11 +139,11 @@ exists and doesn't already have data."
 (defalias 'fmtdyn:->ewoc 'identity)
 
 ;;;_  . fmtdyn:with
-(defmacro fmtdyn:with (ewoc &rest body)
+(defmacro fmtdyn:with (fmtdyn &rest body)
    "Evaluate BODY in a fmtdyn scope.
 Bind this around call to loformatter."
    `(let
-       ((fmtdyn:*ewoc* (fmtdyn:->ewoc ewoc)))
+       ((fmtdyn:*ewoc* (fmtdyn:->ewoc ,fmtdyn)))
        ,@body))
 
 ;;;_  . fmtdyn:insert Dynamic formatter
