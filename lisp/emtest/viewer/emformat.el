@@ -98,10 +98,9 @@ which may not imply success of an assertion."
 ;;;_  . Configuration
 ;;;_   , emtvf:dynvars
 (defconst emtvf:dynvars 
-   '((emtvf:*hdln-path*)
-       ;;Get this from outline
-       (emtvf:*folded*) 
-       (emtvf:*outline-depth* 0))
+   (append
+      '((emtvf:*hdln-path*))
+      emtvf:outline:dynvars)
    "Dynamic variables that emformat uses" )
 
 ;;;_ , Lower format functions
@@ -109,9 +108,7 @@ which may not imply success of an assertion."
 ;;;_  . Singles-Path
 ;;;_   , Special variables
 (declare (special emtvf:*hdln-path*))
-(eval-after-load 'utility/dynvars
-   '(progn
-      (utidyv:register-var 'emtvf:*hdln-path* '())))
+
 ;;;_   , emtvf:with-blank-singles-path
 (defmacro emtvf:with-blank-singles-path (&rest body)
    "Eval BODY in a blank singles-path."

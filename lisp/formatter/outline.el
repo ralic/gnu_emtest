@@ -33,14 +33,15 @@
 (eval-when-compile (require 'cl))
 
 ;;;_. Body
-;;;_  . Outlining
-;;;_   , Special variables
+;;;_  . Special variables
 (declare (special emtvf:*outline-depth* emtvf:*folded*))
-(eval-after-load 'utility/dynvars
-   '(progn
-      (utidyv:register-var 'emtvf:*outline-depth* 0)
-      (utidyv:register-var 'emtvf:*folded* nil)))
-
+;;;_   , For dynvars
+(defconst emtvf:outline:dynvars 
+   '(
+       (emtvf:*folded*) 
+       (emtvf:*outline-depth* 0))
+   "Dynamic variables that outline uses" )
+;;;_  . Functions
 ;;;_   , emtvf:outline-item-f
 (defun emtvf:outline-item-f (depth face headtext contents &optional fold)
    "Make an outline item of DEPTH."
