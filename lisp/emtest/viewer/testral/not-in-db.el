@@ -43,15 +43,17 @@
 	  ,(emtvf:outline-item-emformat
 	      (list
 		 "Value "
-		 (emtvf:button "[Accept]"
-		    `(lambda ()
+		 `(button "[Accept]"
+		     action 
+		     (lambda (button)
 			(interactive)
 			(emdb:set-value
 			   ',backend
 			   ',id
 			   ',value
 			   'correct-answer))
-		    '(help-echo "Accept this value")))
+		     help-echo 
+		     "Accept this value"))
 	      (if
 		 (stringp value)
 		 ;;Indent it so it can't affect outline
