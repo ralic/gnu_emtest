@@ -32,6 +32,10 @@
 (require 'formatter/dynamic)
 
 ;;;_. Body
+;;;_ , Config
+(defconst formatter/dynamic:td:db-file
+   (emtb:expand-filename-by-load-file "db")
+   "The file where the database is located" )
 ;;;_ , Insulation
 (defconst formatter/dynamic:th:surrounders 
    '()
@@ -42,7 +46,9 @@
    "" )
 ;;;_ , Tests
 (emt:deftest-3
-   ((of 'fmtdyn:insert))
+   ((of 'fmtdyn:insert)
+      (db-id
+	 `(persist ,formatter/dynamic:td:db-file)))
    (nil
       (with-temp-buffer
 	 (let
@@ -53,8 +59,10 @@
 	       (loformat:insert
 		  "Hello"
 		  formatter/dynamic:th:format-alist))
-	    ;;Compare the buffer string.
-	    ))))
+	    (emt:eq-persist-p #'equal 
+	       (buffer-string)
+	       "dbid:d0ba3fa5-745c-4fcc-a1e8-e3a20fc30d22")))))
+
 
 ;;;_. Footers
 ;;;_ , Provides
