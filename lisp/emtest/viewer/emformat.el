@@ -95,6 +95,14 @@ which may not imply success of an assertion."
    
    "Face for displaying test names"
    :group 'emtest)
+;;;_  . Configuration
+;;;_   , emtvf:dynvars
+(defconst emtvf:dynvars 
+   '((emtvf:*hdln-path*)
+       ;;Get this from outline
+       (emtvf:*folded*) 
+       (emtvf:*outline-depth* 0))
+   "Dynamic variables that emformat uses" )
 
 ;;;_ , Lower format functions
 ;;;_ , Helper functions
@@ -207,10 +215,7 @@ VIEW-NODE must be at least an `emtvp:node'."
 
    (check-type view-node emtvp:node)
    (utidyv:top 
-      ;;$$IMPROVE ME  Make this a var, shared with capturer.
-      '((emtvf:*hdln-path*) 
-	  (emtvf:*folded*) 
-	  (emtvf:*outline-depth* 0))
+      emtvf:dynvars
       `(
 	  (w/face "Emtest results" emtvf:face:title)
 	  "\n"
