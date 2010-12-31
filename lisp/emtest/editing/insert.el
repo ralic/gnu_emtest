@@ -196,8 +196,7 @@ function."
    (let
       ((id (utiuid:generate "dbid")))
       (pp
-	 ;;`(emt:persist ,id)
-	 `(emt:eq-persist-p #'equal _ ,id)
+	 `(emt:assert (emt:eq-persist-p #'equal _ ,id))
 	 (current-buffer))))
 
 ;;;_  . emt:insert-example-def
