@@ -128,7 +128,10 @@
    `(dynamic 
        ,obj 
        ,func
-       ,(utidyv:capture-vars utidyv:vars)))
+       ,(utidyv:capture-vars 
+	   '((emtvf:*hdln-path*) 
+	       (emtvf:*folded*) 
+	       (emtvf:*outline-depth* 0)))))
 
 ;;;_ , Static printing functions
 ;;;_  . emtv2:print-all

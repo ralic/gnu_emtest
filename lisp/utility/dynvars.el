@@ -75,7 +75,7 @@ If it's already registered, just change its init form."
 (defmacro utidyv:capture-vars (sym-init-list)
    "Capture the values of the formatter special variables."
    (let
-      ((sym-list (eval sym-init-list)))
+      ((sym-list (mapcar #'car (eval sym-init-list))))
        `(list ',sym-list ,@sym-list)))
 ;;;_  . utidyv:with-vars
 (defmacro utidyv:with-vars (data &rest body)
