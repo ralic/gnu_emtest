@@ -54,15 +54,32 @@
 	 (let
 	    ((my-fmtdyn (fmtdyn:create)))
 	    (emt:doc "Situation: In an empty temp buffer, with a fmtdyn.")
-	    ;;Insert something trivial.
+	    (emt:doc "Operation: Insert a string")
 	    (fmtdyn:with my-fmtdyn
 	       (loformat:insert
 		  "Hello"
 		  formatter/dynamic:th:format-alist))
 	    (emt:assert
-	       (emt:eq-persist-p #'equal 
+	       (equal
 		  (buffer-string)
-		  "dbid:d0ba3fa5-745c-4fcc-a1e8-e3a20fc30d22"))))))
+		  "Hello")))))
+   
+   (nil
+      (with-temp-buffer
+	 (let
+	    ((my-fmtdyn (fmtdyn:create)))
+	    (emt:doc "Situation: In an empty temp buffer, with a fmtdyn.")
+	    (emt:doc "Operation: Insert a dynamic that is just a string")
+	    (fmtdyn:with my-fmtdyn
+	       (loformat:insert
+		  `(dynamic "Hello" identity ())
+		  formatter/dynamic:th:format-alist))
+
+	    (emt:assert
+	       (equal
+		  (buffer-string)
+		  "Hello")))))
+   )
 
 
 ;;;_. Footers
