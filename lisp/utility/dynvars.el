@@ -32,33 +32,10 @@
 (eval-when-compile (require 'cl))
 
 ;;;_. Body
+;;;_ , Types
+(deftype utidyv:sym-init-list ()
+   '(repeat (list symbol t)))
 
-;;;_ , Variables
-;;;_  . utidyv:vars
-;;$$OBSOLETE
-(defconst utidyv:vars
-   '()
-   "Special variables that the formatters use.
-These variables propagate thru `dynamic' bindings." )
-;;;_  . utidyv:init-forms
-;;$$OBSOLETE
-(defconst utidyv:init-forms 
-   '()
-   "Init forms for the special variables." )
-;;;_ , Variable registration
-;;;_  . utidyv:register-var
-;;$$OBSOLETE
-(defun utidyv:register-var (sym init-form)
-   "Register SYM as a special variable for `dynamic'.
-If it's already registered, just change its init form."
-   
-   (let
-      ((pos (position sym utidyv:vars :test #'eq)))
-      (if pos
-	 (setf (nth pos utidyv:init-forms) init-form)
-	 (progn
-	    (push sym utidyv:vars)
-	    (push init-form utidyv:init-forms)))))
 ;;;_ , Functions
 ;;;_  . utidyv:top
 (defmacro utidyv:top (sym-init-list &rest body)
