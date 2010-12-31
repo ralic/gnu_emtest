@@ -35,14 +35,14 @@
 ;;;_. Body
 ;;;_ , emtvf:TESTRAL-gov:scope
 ;;;###autoload
-(defun emtvf:TESTRAL-gov:scope (obj)
+(defun emtvf:TESTRAL-gov:scope (note)
    "Formatter for TESTRAL viewable governed by `scope'"
    (emtvf:shortcut-single
       nil
-      (emtvp:node->children obj)
+      (emtvp:node->children note)
       '()
       (emtvf:grade-overall-face
-	 (emt:view:presentable->sum-grades obj))
+	 (emt:view:presentable->sum-grades note))
       '((sep 2) "No nested notes")))
 
 ;;;_. Footers
