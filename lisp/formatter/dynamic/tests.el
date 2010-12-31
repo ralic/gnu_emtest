@@ -59,9 +59,10 @@
 	       (loformat:insert
 		  "Hello"
 		  formatter/dynamic:th:format-alist))
-	    (emt:eq-persist-p #'equal 
-	       (buffer-string)
-	       "dbid:d0ba3fa5-745c-4fcc-a1e8-e3a20fc30d22")))))
+	    (emt:assert
+	       (emt:eq-persist-p #'equal 
+		  (buffer-string)
+		  "dbid:d0ba3fa5-745c-4fcc-a1e8-e3a20fc30d22"))))))
 
 
 ;;;_. Footers
