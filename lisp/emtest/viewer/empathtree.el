@@ -150,16 +150,17 @@ could be, such as when a note-list hasn't been expanded."
       ;;itself, the other viewables are new.
       (setf (emtvp:node->children node) nil)
       
-      ;;Record each note's viewable with its parent.  For notes with
-      ;;presentation-paths, this is not quite right.
+      ;;Record each note's viewable with its parent.  This may skip
+      ;;nodes that have no parent.
       (dolist (cell (cdr alist))
 	 (let*
 	    (  (note (emt:view:note->contents (second cell)))
 	       (parent-id (emt:testral:note->parent-id note))
 	       (parent-cell (assoc parent-id alist)))
-	    (check-type parent-id   emt:testral:id-element)
-	    (check-type parent-cell emtvr:alist-cell-t)
-	    (push (second cell) (third parent-cell))))
+	    (when parent-cell
+	       (check-type parent-id   emt:testral:id-element)
+	       (check-type parent-cell emtvr:alist-cell-t)
+	       (push (second cell) (third parent-cell)))))
 
       (check-type alist (repeat emtvr:alist-cell-t))
 
