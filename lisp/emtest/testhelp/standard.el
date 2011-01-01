@@ -196,25 +196,36 @@ there was any error inside a `emth:trap-errors'."
    
    (if 
       (emtt:testral:p)
-      (let*
-	 (  (id (emtt:testral:new-id))
-	    (retval 
-	       (emtt:testral:with-parent-id id
-		  (eval form))))
-	 (if retval
-	    (emtt:testral:add-note-w/id
-	       id
-	       "trace"
-	       nil
-	       'succeeded
-	       form)
-	    (emtt:testral:add-note-w/id
-	       id
-	       "trace"
-	       (emt:testral:make-grade:fail)
-	       'failed
-	       form))
-	 retval)
+      (let
+	 ((id (emtt:testral:new-id)))
+	 (condition-case err
+	    (let*
+	       (  
+		  (retval 
+		     (emtt:testral:with-parent-id id
+			(eval form))))
+	       (if retval
+		  (emtt:testral:add-note-w/id
+		     id
+		     "trace"
+		     nil
+		     'succeeded
+		     form)
+		  (emtt:testral:add-note-w/id
+		     id
+		     "trace"
+		     (emt:testral:make-grade:fail)
+		     'failed
+		     form))
+	       retval)
+	    (error
+	       (emtt:testral:add-note-w/id
+		  id
+		  "trace"
+		  (emt:testral:make-grade:ungraded)
+		  ;;$$IMPROVE ME Make something specific for this.
+		  'failed
+		  form))))
       (eval `(assert ,form t))))
 
 ;;;_  . emt:assert
