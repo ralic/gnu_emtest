@@ -79,6 +79,70 @@
 	       (equal
 		  (buffer-string)
 		  "Hello")))))
+
+   ;;A top-level with multiple interstices.
+   (nil
+      (with-temp-buffer
+	 (let
+	    ((my-fmtdyn (fmtdyn:create)))
+	    (emt:doc "Situation: In an empty temp buffer, with a fmtdyn.")
+	    (emt:doc "Operation: Insert a form with multiple dynamic
+   objects / multiple interstices.")
+	    (fmtdyn:with my-fmtdyn
+	       (loformat:insert
+		  `("He" (dynamic "llo" identity ()) ", "
+		      (dynamic "World" identity ())
+		      "!")
+		  formatter/dynamic:th:format-alist))
+
+	    (emt:assert
+	       (equal
+		  (buffer-string)
+		  "Hello, World!")))))
+
+   (nil
+      (with-temp-buffer
+	 (let
+	    ((my-fmtdyn (fmtdyn:create)))
+	    (emt:doc "Situation: In an empty temp buffer, with a fmtdyn.")
+	    (emt:doc "Operation: Insert a form with multiple dynamic
+      objects, not all at the top level of the tree")
+	    (fmtdyn:with my-fmtdyn
+	       (loformat:insert
+		  `("He" ((dynamic "llo" identity ())) ", "
+		      (((dynamic "World" identity ())))
+		      "!")
+		  formatter/dynamic:th:format-alist))
+
+	    (emt:assert
+	       (equal
+		  (buffer-string)
+		  "Hello, World!")))))
+
+   (nil
+      (with-temp-buffer
+	 (let
+	    ((my-fmtdyn (fmtdyn:create)))
+	    (emt:doc "Situation: In an empty temp buffer, with a fmtdyn.")
+	    (emt:doc "Operation: Insert a nested dynamic")
+	    (fmtdyn:with my-fmtdyn
+	       (loformat:insert
+		  `("He" (dynamic "llo" identity ()) ", "
+		      (dynamic 
+			 (
+			    (dynamic "W" identity ()) 
+			    "or" 
+			    (dynamic "ld" identity ())) 
+			 identity ())
+		      "!")
+		  formatter/dynamic:th:format-alist))
+
+	    (emt:assert
+	       (equal
+		  (buffer-string)
+		  "Hello, World!")))))
+
+   ;;Changing the content, then redisplaying it
    )
 
 
