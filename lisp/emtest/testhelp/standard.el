@@ -88,6 +88,7 @@ STR should be a string"
 ;;;_ , Error / retry management
 ;;;_  . emth:abortscope
 ;;$$IMPROVE ME  Encap emtt:*abort-p* in an uninterned symbol
+;;$$IMPROVE ME: Instead of emtt:*abort-p*, reraise `emt:already-handled'
 (defmacro emth:abortscope (var body after)
    "Eval BODY, which may call `emth:trap-errors'
 Then eval AFTER in a scope where VAR is bound to the boolean whether
@@ -102,6 +103,9 @@ there was any error inside a `emth:trap-errors'."
 ;;;_  . emth:abortscope-other
 ;;Different logic: Set VAR just if there was an error not handled by
 ;;`emth:trap-errors'.  Not sure if this is better or worse.
+;;$$RETHINK ME: Fold `emth:trap-errors' in here, because the purposes
+;;here is just to react differently to normal, caught-error, and
+;;error-to-here.
 '''' ;;$$TEST ME
 (defmacro emth:abortscope-other (var body after)
    "Eval BODY, which may call `emth:trap-errors'
