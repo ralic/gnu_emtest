@@ -87,7 +87,6 @@ STR should be a string"
 
 ;;;_ , Error / retry management
 ;;;_  . emth:abortscope
-;;$$IMPROVE ME  Encap emtt:*abort-p* in an uninterned symbol
 ;;$$IMPROVE ME: Instead of emtt:*abort-p*, reraise `emt:already-handled'
 (defmacro emth:abortscope (var body after)
    "Eval BODY, which may call `emth:trap-errors'
@@ -151,12 +150,11 @@ If the error is `emt:already-handled', just return `nil'."
 
 
 ;;;_  . emth:try-all
+;;$$IMPROVE ME  Encap emtt:*abort-p* in an uninterned symbol
 ;;For now, it only watches for errors.  Doesn't try to logically
 ;;conjoin branches.
-;;Early, I want it to map over the branches, so we can wrap map forms
-;;in this.
 ;;$$TEST ME
-;;$$USE ME  In particular, emtg:map should use emth:map&trap
+;;$$USE ME  
 (defmacro emth:try-all (&rest forms)
    "Error if any branch errors, but try all branches"
    (let
@@ -170,6 +168,7 @@ If the error is `emt:already-handled', just return `nil'."
 	     (signal 'emt:already-handled ())))))
 
 ;;;_  . emth:map&trap
+;;$$IMPROVE ME  Encap emtt:*abort-p* in an uninterned symbol
 ;;$$TEST ME
 ;;$$USE ME  In particular, emtg:map should use emth:map&trap
 (defun emth:map&trap (func list)
