@@ -103,9 +103,9 @@ there was any error inside a `emth:trap-errors'."
 ;;;_  . emth:abortscope-other
 ;;Different logic: Set VAR just if there was an error not handled by
 ;;`emth:trap-errors'.  Not sure if this is better or worse.
-;;$$RETHINK ME: Fold `emth:trap-errors' in here, because the purposes
-;;here is just to react differently to normal, caught-error, and
-;;error-to-here.
+
+;;$$RETHINK ME: The purpose here is just to react differently to
+;;normal, caught-error, and error-to-here.
 '''' ;;$$TEST ME
 (defmacro emth:abortscope-other (var body after)
    "Eval BODY, which may call `emth:trap-errors'
@@ -128,7 +128,8 @@ there was any error inside a `emth:trap-errors'."
 
 ;;;_  . emth:trap-errors
 (defmacro emth:trap-errors (&rest body)
-   ""
+   "Trap errors within the normal evaluation of a test clause.
+If the error is `emt:already-handled', just return `nil'."
    `(progn
        (declare (special emtt:*abort-p*))
        (condition-case err
@@ -225,7 +226,8 @@ there was any error inside a `emth:trap-errors'."
 		  (emt:testral:make-grade:ungraded)
 		  ;;$$IMPROVE ME Make something specific for this.
 		  'failed
-		  form))))
+		  form)
+	       (signal 'emt:already-handled ()))))
       (eval `(assert ,form t))))
 
 ;;;_  . emt:assert
