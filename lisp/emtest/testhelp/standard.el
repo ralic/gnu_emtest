@@ -166,7 +166,7 @@ there was any error inside a `emth:trap-errors'."
 	  (dolist (,form ',forms)
 	     (emth:trap-errors ,form))
 	  (when emtt:*abort-p*
-	     (signal emt:already-handled ())))))
+	     (signal 'emt:already-handled ())))))
 
 ;;;_  . emth:map&trap
 ;;$$TEST ME
