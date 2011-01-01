@@ -98,11 +98,9 @@ BACKEND, if given, describes the database backend."
 	       value
 	       id
 	       backend)
-	    (setq emtt:*abort-p* t)))))
-
-
-
-
+	    (setq emtt:*abort-p* t)
+	    ;;Reraise the error
+	    (signal emt:already-handled ())))))
 
 ;;;_. Footers
 ;;;_ , Provides
