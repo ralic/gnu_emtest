@@ -76,7 +76,7 @@
    "Callback for tq-enqueue"
    (when (first data)
       (emtt:testral:continued-with (second data)
-	 (emth:abortscope-other
+	 (emth:protect&trap
 	    aborted-p
 	    (eval (first data))
 	    (when aborted-p 

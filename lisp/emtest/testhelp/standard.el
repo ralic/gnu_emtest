@@ -86,22 +86,8 @@ STR should be a string"
 	  (emtt:testral:with-parent-id ,id ,@body))))
 
 ;;;_ , Error / retry management
-;;;_  . emth:abortscope
-'  ;;$$OBSOLETE
-(defmacro emth:abortscope (var body after)
-   "Eval BODY, which may call `emth:trap-errors'
-Then eval AFTER in a scope where VAR is bound to the boolean whether
-there was any error inside a `emth:trap-errors'."
-
-   `(let
-       ((emtt:*abort-p* nil))
-       ,body
-       (let
-	  ((,var emtt:*abort-p*))
-	  ,after)))
-;;;_  . emth:abortscope-other
-;;$$RENAME ME emth:protect&trap This is nearly unwind-protect.
-(defmacro emth:abortscope-other (var body after)
+;;;_  . emth:protect&trap
+(defmacro emth:protect&trap (var body after)
    "Eval BODY, then eval AFTER.
 
 Eval AFTER with VAR bound to the boolean whether an error escaped
@@ -123,7 +109,8 @@ BODY, other than an error of type `emt:already-handled'."
 
 ;;;_  . emth:trap-errors-aux
 (defmacro emth:trap-errors-aux (var body form)
-   "Trap errors within the normal evaluation of a test clause.
+   "Eval BODY, trapping errors.
+If an error is seen, eval FORM with VAR bound to the error object.
 If the error is `emt:already-handled', just return `nil'."
    `(progn
        (condition-case ,var
@@ -137,7 +124,8 @@ If the error is `emt:already-handled', just return `nil'."
 
 ;;;_  . emth:trap-errors
 (defmacro emth:trap-errors (&rest body)
-   "Trap errors within the normal evaluation of a test clause.
+   "Eval BODY, trapping errors.
+If an error is seen, make a TESTRAL note of it.
 If the error is `emt:already-handled', just return `nil'."
    `(emth:trap-errors-aux err 
        (progn ,@body)

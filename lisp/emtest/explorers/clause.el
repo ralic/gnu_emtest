@@ -87,7 +87,7 @@
 		  (emtts:get-surrounders props)
 		  props)))
 	 (declare (special emt:trace:properties))
-	 (emth:abortscope-other
+	 (emth:protect&trap
 	    aborted-p
 	    (eval form-1)
 	    (funcall report-f
