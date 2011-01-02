@@ -123,15 +123,15 @@ BODY, other than an error of type `emt:already-handled'."
 
 
 ;;;_  . emth:trap-errors
+;;$$IMPROVE ME Make a version that parameterizes the error action so
+;;that `emth:map&trap' and `emth:try-all' can just use it.
 (defmacro emth:trap-errors (&rest body)
    "Trap errors within the normal evaluation of a test clause.
 If the error is `emt:already-handled', just return `nil'."
    `(progn
-       (declare (special emtt:*abort-p*))
        (condition-case err
 	  (progn ,@body)
-	  ('emt:already-handled
-	     (setq emtt:*abort-p* t))
+	  ('emt:already-handled nil)
 	  ;;$$ADD ME an error case for dormancy pseudo-errors.  It
 	  ;;should push a dormancy note (here, not lower down, which
 	  ;;may be somehow wrong?)
@@ -142,8 +142,7 @@ If the error is `emt:already-handled', just return `nil'."
 		   :contents 
 		   "An error escaped to `emth:trap-errors'")
 		'error-raised
-		err)
-	     (setq emtt:*abort-p* t)))))
+		err)))))
 
 
 ;;;_  . emth:try-all

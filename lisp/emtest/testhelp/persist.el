@@ -49,10 +49,9 @@ includes the value of VALUE.
 
 BACKEND, if given, describes the database backend."
 
-   ;;$$IMPROVE ME This implies it is called in an clause context and
-   ;;an abort-controlled context.  We should check those and act OK
-   ;;even when they're false.
-   (declare (special emt:trace:properties emtt:*abort-p*))
+   ;;$$IMPROVE ME This implies it is called in an clause context.  We
+   ;;should check that and act OK even when it's false.
+   (declare (special emt:trace:properties))
    (let*
       ((backend
 	  (or
@@ -98,7 +97,6 @@ BACKEND, if given, describes the database backend."
 	       value
 	       id
 	       backend)
-	    (setq emtt:*abort-p* t)
 	    ;;Reraise the error
 	    (signal 'emt:already-handled ())))))
 

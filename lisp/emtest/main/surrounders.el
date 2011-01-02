@@ -103,8 +103,7 @@ PROPS is a property list."
 		   surrounder-0)
 		((functionp surrounder-0)
 		   ;;$$MAKE ME SAFE Protect this call.  Use
-		   ;;`emth:trap-errors'?  And examine `emtt:*abort-p*'
-		   ;;afterwards.
+		   ;;`emth:trap-errors'?
 		   (funcall surrounder-0 props))
 		(t
 		   ;;Otherwise complain and stop.  For now, do it cheap.
