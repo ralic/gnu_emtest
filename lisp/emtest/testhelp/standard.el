@@ -221,6 +221,14 @@ If errors are seen, raise a single error instead."
 		  ;;$$IMPROVE ME Make something specific for this.
 		  'failed
 		  form)
+	       (emtt:testral:with-parent-id id
+		  (emtt:testral:add-note
+		     "problem" 
+		     (emt:testral:make-grade:ungraded
+			:contents 
+			"An error invalidated the assertion")
+		     'error-raised
+		     err))
 	       (signal 'emt:already-handled ()))))
       (eval `(assert ,form t))))
 
