@@ -672,7 +672,7 @@ Purpose: For consise use inside test code."
 	     (concat 
 		"TAGNAME operation: Loop over values of "
 		(prin1-to-string ',tag)))
-	  (mapcar
+	  (emth:map&trap
 	     #'(lambda (,name)
 		  ,(emtg:narrow-f
 		      `(list (list ',tag ,name))
