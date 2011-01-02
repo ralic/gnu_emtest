@@ -141,7 +141,6 @@ If the error is `emt:already-handled', just return `nil'."
 
 ;;;_  . emth:try-all
 ;;$$TEST ME
-;;$$USE ME  
 (defmacro emth:try-all (&rest forms)
    "Eval each form.
 When done, if any branch erred, raise a single error"
@@ -159,8 +158,6 @@ When done, if any branch erred, raise a single error"
 	     (signal 'emt:already-handled ())))))
 
 ;;;_  . emth:map&trap
-;;$$TEST ME
-;;$$USE ME  In particular, emtg:map should use emth:map&trap
 (defun emth:map&trap (func list)
    "Map FUNC of LIST, returning a list of the results.
 If errors are seen, raise a single error instead."
