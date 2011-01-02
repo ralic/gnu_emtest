@@ -78,8 +78,7 @@
       (emtt:testral:continued-with (second data)
 	 (emth:abortscope-other
 	    aborted-p
-	    (emth:trap-errors 
-	       (eval (first data)))
+	    (eval (first data))
 	    (when aborted-p 
 	       (emtt:testral:add-note 
 		  "trace"
