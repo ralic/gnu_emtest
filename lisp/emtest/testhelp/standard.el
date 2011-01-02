@@ -70,6 +70,7 @@
 
 ;;;_  . emtt:testral:report-false
 ;;$$IMPROVE ME take args, str can be a format string
+;;;###autoload
 (defun emtt:testral:report-false (str)
    "Report that a compare leaf was false.
 STR should be a string"
@@ -77,6 +78,7 @@ STR should be a string"
       (emtt:testral:add-note "trace" nil 'matched str)))
 
 ;;;_  . emt:stage
+;;;###autoload
 (defmacro emt:stage (stage-args &rest body)
    "Run BODY in an Emtest stage"
    (let
@@ -123,6 +125,7 @@ If the error is `emt:already-handled', just return `nil'."
 	     ,form))))
 
 ;;;_  . emth:trap-errors
+;;;###autoload
 (defmacro emth:trap-errors (&rest body)
    "Eval BODY, trapping errors.
 If an error is seen, make a TESTRAL note of it.
@@ -141,6 +144,7 @@ If the error is `emt:already-handled', just return `nil'."
 
 ;;;_  . emth:try-all
 ;;$$TEST ME
+;;;###autoload
 (defmacro emth:try-all (&rest forms)
    "Eval each form.
 When done, if any branch erred, raise a single error"
@@ -158,6 +162,7 @@ When done, if any branch erred, raise a single error"
 	     (signal 'emt:already-handled ())))))
 
 ;;;_  . emth:map&trap
+;;;###autoload
 (defun emth:map&trap (func list)
    "Map FUNC of LIST, returning a list of the results.
 If errors are seen, raise a single error instead."
