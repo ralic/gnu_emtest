@@ -95,6 +95,8 @@
 
 ;;;_ , The database itself
 ;;;_  . emdb:tinydb:tinydb-alist
+;;$$MOVE ME into `tinydb/persist'
+;;$$IMPROVE ME Detect and restart deleted buffers.
 (defvar emdb:tinydb:tinydb-alist 
    '()
    "Alist from absolute filenames to tinydb objects" )
