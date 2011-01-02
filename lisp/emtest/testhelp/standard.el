@@ -183,6 +183,19 @@ If errors are seen, raise a single error instead."
 
 ;;Usage: On forms, just (emth:map&trap #'eval form-list)
 ;;;_ , Assertions
+;;;_  . emt:assert-react-to-error
+(defun emt:assert-report-error (id form)
+   "React to an error in assert"
+
+   (emtt:testral:add-note-w/id
+      id
+      "trace"
+      (emt:testral:make-grade:ungraded)
+      ;;$$IMPROVE ME Make something specific for this.
+      'failed
+      form)
+   
+   (signal 'emt:already-handled ()))
 ;;;_  . emt:assert-f
 ;;`emt:assert-f' doesn't use `emth:trap-errors'.  If an error would
 ;;escape, the assert wasn't going to be meaningful anyways.
@@ -213,14 +226,9 @@ If errors are seen, raise a single error instead."
 		     'failed
 		     form))
 	       retval)
+	    ('emt:already-handled
+	       (emt:assert-report-error id form))
 	    (error
-	       (emtt:testral:add-note-w/id
-		  id
-		  "trace"
-		  (emt:testral:make-grade:ungraded)
-		  ;;$$IMPROVE ME Make something specific for this.
-		  'failed
-		  form)
 	       (emtt:testral:with-parent-id id
 		  (emtt:testral:add-note
 		     "problem" 
@@ -229,7 +237,7 @@ If errors are seen, raise a single error instead."
 			"An error invalidated the assertion")
 		     'error-raised
 		     err))
-	       (signal 'emt:already-handled ()))))
+	       (emt:assert-report-error id form))))
       (eval `(assert ,form t))))
 
 ;;;_  . emt:assert
