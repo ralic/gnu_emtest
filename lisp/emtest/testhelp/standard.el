@@ -100,7 +100,7 @@ there was any error inside a `emth:trap-errors'."
 	  ((,var emtt:*abort-p*))
 	  ,after)))
 ;;;_  . emth:abortscope-other
-;;$$RENAME ME This is nearly unwind-protect.
+;;$$RENAME ME emth:protect&trap This is nearly unwind-protect.
 (defmacro emth:abortscope-other (var body after)
    "Eval BODY, then eval AFTER.
 
@@ -121,13 +121,25 @@ BODY, other than an error of type `emt:already-handled'."
 		(error t)))
 	  ,after)))
 
+;;;_  . emth:trap-errors-aux
+(defmacro emth:trap-errors-aux (var body form)
+   "Trap errors within the normal evaluation of a test clause.
+If the error is `emt:already-handled', just return `nil'."
+   `(progn
+       (condition-case ,var
+	  (progn ,@body)
+	  ('emt:already-handled nil)
+	  ;;$$IMPROVE ME an error case for dormancy pseudo-errors.  It
+	  ;;should push a dormancy note (here, not lower down, which
+	  ;;may be somehow wrong?)
+	  (error
+	     ,@form))))
 
 ;;;_  . emth:trap-errors
-;;$$IMPROVE ME Make a version that parameterizes the error action so
-;;that `emth:map&trap' and `emth:try-all' can just use it.
 (defmacro emth:trap-errors (&rest body)
    "Trap errors within the normal evaluation of a test clause.
 If the error is `emt:already-handled', just return `nil'."
+   '
    `(progn
        (condition-case err
 	  (progn ,@body)
@@ -142,7 +154,18 @@ If the error is `emt:already-handled', just return `nil'."
 		   :contents 
 		   "An error escaped to `emth:trap-errors'")
 		'error-raised
-		err)))))
+		err))))
+   
+   `(emth:trap-errors-aux err ,body 
+       (
+	  (emtt:testral:add-note
+	     "problem" 
+	     (emt:testral:make-grade:ungraded
+		:contents 
+		"An error escaped to `emth:trap-errors'")
+	     'error-raised
+	     err))))
+
 
 
 ;;;_  . emth:try-all

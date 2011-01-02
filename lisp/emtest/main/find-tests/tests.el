@@ -27,8 +27,17 @@
 ;;;_ , Requires
 (require 'emtest/main/find-tests)
 (require 'emtest/main/find-tests/testhelp)
-(require 'emtest/launch/all/testhelp)
+(require 'utility/misc) ;;For `utim:get-properties', which should be moved
+(require 'emtest/testhelp/standard) ;;For `emth:trap-errors', which
+;;should be moved.
+
+(require 'emtest/main/define)
+(require 'emtest/main/notes)
 (require 'emtest/main/surrounders)
+(require 'emtest/launch/all/testhelp)
+(require 'emtest/testhelp/deep-type-checker)
+(require 'emtest/testhelp/testpoint)
+(require 'emtest/testhelp/misc)
 
 ;;;_. Body
 
