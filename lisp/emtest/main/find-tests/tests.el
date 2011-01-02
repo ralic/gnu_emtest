@@ -59,7 +59,7 @@ Does not signal error.")
 		     ;;Isolate the note(s) it will make
 		     (emtt:testral:with
 			;;...and isolate the *abort-p* flag.
-			(emth:abortscope
+			(emth:abortscope-other
 			   x
 			   (emth:trap-errors
 			      (signal 'emt:already-handled nil))

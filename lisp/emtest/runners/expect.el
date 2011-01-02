@@ -76,11 +76,17 @@
    "Callback for tq-enqueue"
    (when (first data)
       (emtt:testral:continued-with (second data)
-	 (emth:abortscope
+	 (emth:abortscope-other
 	    aborted-p
 	    (emth:trap-errors 
 	       (eval (first data)))
-	    t)))
+	    (when aborted-p 
+	       (emtt:testral:add-note 
+		  "trace"
+		  (emt:testral:make-grade:ungraded
+		     :contents
+		     "Interaction had an error") 
+		  'failed (first data))))))
 
    (ignore-errors
       (cancel-timer

@@ -87,12 +87,12 @@ STR should be a string"
 
 ;;;_ , Error / retry management
 ;;;_  . emth:abortscope
-;;$$IMPROVE ME: Instead of emtt:*abort-p*, reraise `emt:already-handled'
+'  ;;$$OBSOLETE
 (defmacro emth:abortscope (var body after)
    "Eval BODY, which may call `emth:trap-errors'
 Then eval AFTER in a scope where VAR is bound to the boolean whether
 there was any error inside a `emth:trap-errors'."
-   
+
    `(let
        ((emtt:*abort-p* nil))
        ,body
@@ -100,24 +100,21 @@ there was any error inside a `emth:trap-errors'."
 	  ((,var emtt:*abort-p*))
 	  ,after)))
 ;;;_  . emth:abortscope-other
-;;Different logic: Set VAR just if there was an error not handled by
-;;`emth:trap-errors'.  Not sure if this is better or worse.
-
-;;$$RETHINK ME: The purpose here is just to react differently to
-;;normal, caught-error, and error-to-here.
-'''' ;;$$TEST ME
+;;$$RENAME ME This is nearly unwind-protect.
 (defmacro emth:abortscope-other (var body after)
-   "Eval BODY, which may call `emth:trap-errors'
-Then eval AFTER in a scope where VAR is bound to the boolean whether
-there was any error inside a `emth:trap-errors'."
+   "Eval BODY, then eval AFTER.
+
+Eval AFTER with VAR bound to the boolean whether an error escaped
+BODY, other than an error of type `emt:already-handled'."
    
+   ;;$$IMPROVE ME Export the error object, perhaps bind VAR to it, and
+   ;;to `escaped-by-throw' otherwise.
    `(let
        ((,var t))
        (unwind-protect
 	  (setq  ,var
 	     (condition-case nil
-		(let
-		   ((emtt:*abort-p* nil))
+		(progn
 		   ,body
 		   nil)
 		('emt:already-handled nil)

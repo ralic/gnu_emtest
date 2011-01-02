@@ -87,9 +87,9 @@
 		  (emtts:get-surrounders props)
 		  props)))
 	 (declare (special emt:trace:properties))
-	 (emth:abortscope
+	 (emth:abortscope-other
 	    aborted-p
-	    (emth:trap-errors (eval form-1))
+	    (eval form-1)
 	    (funcall report-f
 	       (emt:testral:make-suite
 		  :contents
