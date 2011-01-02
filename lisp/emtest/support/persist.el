@@ -94,33 +94,13 @@
 
 
 ;;;_ , The database itself
-;;;_  . emdb:tinydb:tinydb-alist
-;;$$MOVE ME into `tinydb/persist'
-;;$$IMPROVE ME Detect and restart deleted buffers.
-(defvar emdb:tinydb:tinydb-alist 
-   '()
-   "Alist from absolute filenames to tinydb objects" )
-
-;;;_  . Make the queues - one for each distinct filename
-(defun emdb:tinydb:name->tinydb (filename)
-   "Return a tinydb object"
-   (or
-      (let
-	 ((cell (assoc filename emdb:tinydb:tinydb-alist)))
-	 (second cell))
-      (let 
-	 ((filetq
-	     (tinydb-persist-make-q filename '() nil #'listp)))
-	 (push (list filename filetq) emdb:tinydb:tinydb-alist)
-	 filetq)))
-
 ;;;_  . emdb:tinydb:get-all
 (defun emdb:tinydb:get-all (backend)
    "Return the database object as a whole"
    (let
       ((filename
 	  (second backend)))
-      (tinydb-get-obj (emdb:tinydb:name->tinydb filename))))
+      (tinydb-get-obj (tinydb:filename->tinydb filename))))
 
 ;;;_  . emdb:tinydb:set-all
 (defun emdb:tinydb:set-all (backend value)
@@ -128,7 +108,7 @@
    (let
       ((filename
 	  (second backend)))
-      (tinydb-set-obj (emdb:tinydb:name->tinydb filename) value)))
+      (tinydb-set-obj (tinydb:filename->tinydb filename) value)))
 
 
 ;;;_. Footers
