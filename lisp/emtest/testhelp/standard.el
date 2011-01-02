@@ -127,81 +127,67 @@ BODY, other than an error of type `emt:already-handled'."
 If the error is `emt:already-handled', just return `nil'."
    `(progn
        (condition-case ,var
-	  (progn ,@body)
+	  ,body
 	  ('emt:already-handled nil)
 	  ;;$$IMPROVE ME an error case for dormancy pseudo-errors.  It
 	  ;;should push a dormancy note (here, not lower down, which
 	  ;;may be somehow wrong?)
 	  (error
-	     ,@form))))
+	     ,form))))
 
 ;;;_  . emth:trap-errors
 (defmacro emth:trap-errors (&rest body)
    "Trap errors within the normal evaluation of a test clause.
 If the error is `emt:already-handled', just return `nil'."
-   '
-   `(progn
-       (condition-case err
-	  (progn ,@body)
-	  ('emt:already-handled nil)
-	  ;;$$ADD ME an error case for dormancy pseudo-errors.  It
-	  ;;should push a dormancy note (here, not lower down, which
-	  ;;may be somehow wrong?)
-	  (error
-	     (emtt:testral:add-note
-		"problem" 
-		(emt:testral:make-grade:ungraded
-		   :contents 
-		   "An error escaped to `emth:trap-errors'")
-		'error-raised
-		err))))
-   
-   `(emth:trap-errors-aux err ,body 
-       (
-	  (emtt:testral:add-note
-	     "problem" 
-	     (emt:testral:make-grade:ungraded
-		:contents 
-		"An error escaped to `emth:trap-errors'")
-	     'error-raised
-	     err))))
+   `(emth:trap-errors-aux err 
+       (progn ,@body)
+       (emtt:testral:add-note
+	  "problem" 
+	  (emt:testral:make-grade:ungraded
+	     :contents 
+	     "An error escaped to `emth:trap-errors'")
+	  'error-raised
+	  err)))
 
 
 
 ;;;_  . emth:try-all
-;;$$IMPROVE ME  Encap emtt:*abort-p* in an uninterned symbol
-;;For now, it only watches for errors.  Doesn't try to logically
-;;conjoin branches.
 ;;$$TEST ME
 ;;$$USE ME  
 (defmacro emth:try-all (&rest forms)
-   "Error if any branch errors, but try all branches"
+   "Eval each form.
+When done, if any branch erred, raise a single error"
    (let
-      ((form (make-symbol "form")))
+      ((form (make-symbol "form"))
+	 (aborted-p (make-symbol "aborted-p")))
       `(let
-	  ((emtt:*abort-p* nil))
-	  (declare (special emtt:*abort-p*))
+	  ((,aborted-p nil))
 	  (dolist (,form ',forms)
-	     (emth:trap-errors ,form))
-	  (when emtt:*abort-p*
+	     (emth:trap-errors-aux 
+		nil 
+		,form
+		(setq ,aborted-p t)))
+	  (when ,aborted-p
 	     (signal 'emt:already-handled ())))))
 
 ;;;_  . emth:map&trap
-;;$$IMPROVE ME  Encap emtt:*abort-p* in an uninterned symbol
 ;;$$TEST ME
 ;;$$USE ME  In particular, emtg:map should use emth:map&trap
 (defun emth:map&trap (func list)
-   ""
-   (declare (special emtt:*abort-p*))
+   "Map FUNC of LIST, returning a list of the results.
+If errors are seen, raise a single error instead."
    (let
-      ((emtt:*abort-p* nil)
+      ((emtt:*aborted-p* nil)
 	 (results
 	    (mapcar
 	       #'(lambda (el)
-		    (emth:trap-errors (funcall func el)))
+		    (emth:trap-errors-aux 
+		       nil
+		       (funcall func el)
+		       (setq emtt:*aborted-p* t)))
 	       list)))
       
-      (if emtt:*abort-p*
+      (if emtt:*aborted-p*
 	 (signal 'emt:already-handled ())
 	 results)))
 
