@@ -82,6 +82,7 @@
 	  (remove*
 	     id
 	     (emdb:tinydb:get-all backend)
+	     :test #'equal
 	     :key #'emdb:record->key)))
       (push
 	 (emdb:make-record
