@@ -83,7 +83,7 @@ BACKEND, if given, describes the database backend."
 	       nil
 	       'comparison-w/persist
 	       (if result t nil)
-	       stored-value
+	       value
 	       backend
 	       id)
 	    result)
