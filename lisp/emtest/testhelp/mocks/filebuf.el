@@ -132,38 +132,46 @@ ARGS is a sequence of keys and values:
 (defun* emtb:with-buf-f 
    (body &key printed-object sexp string file dir visited-name
       point-replaces sequence mutable)
-   "Worker for `emtb:with-buf'"
+   "Worker for `emtb:with-buf'.  Builds a form."
    (when (and mutable file (not visited-name))
       (setq visited-name t))
-   
-   `
-   (with-temp-buffer
-      ;;Do all the inserting
-      ,(cond
-	  (sexp
-	     (emtb:build-insertform dir 'sexp sexp))
-	  (file
-	     (emtb:build-insertform dir 'file file))
-	  (sequence
-	     (emtb:build-insertform dir 'sequence sequence))
-	  (string 
-	     (emtb:build-insertform dir 'string string))
-	  (t nil))
 
-      ;;Set up file, if reasonable.
-      ,(when (or visited-name file)
-	  `(emtb:cautious-setup-file 
-	      ,visited-name 
-	      ,(or dir
-		  (if file
-		     `(file-name-directory ,file))
-		  nil)))
+   (let
+      ((buf (make-symbol "buf")))
+      `
+      (with-temp-buffer
+	 (setq ,buf (current-buffer))
+	 ;;Do all the inserting
+	 ,(cond
+	     (sexp
+		(emtb:build-insertform dir 'sexp sexp))
+	     (file
+		(emtb:build-insertform dir 'file file))
+	     (sequence
+		(emtb:build-insertform dir 'sequence sequence))
+	     (string 
+		(emtb:build-insertform dir 'string string))
+	     (t nil))
+
+	 ;;Set up file, if reasonable.
+	 ,(when (or visited-name file)
+	     `(emtb:cautious-setup-file 
+		 ,visited-name 
+		 ,(or dir
+		     (if file
+			`(file-name-directory ,file))
+		     nil)))
       
-      ,(if point-replaces
-	  `(emtb:goto-text ,point-replaces t)
-	  '(goto-char (point-min)))
+	 ,(if point-replaces
+	     `(emtb:goto-text ,point-replaces t)
+	     '(goto-char (point-min)))
       
-      ,@body))
+	 (unwind-protect
+	    (progn ,@body)
+	    ;;Make the buffer not think it needs saving.
+	    (with-current-buffer ,buf
+	       (set-buffer-modified-p nil))))))
+
 ;;;_   , Worker emtb:build-insertform
 ;;DIR may become a general data element.
 (defun emtb:build-insertform (dir governor &rest args)
