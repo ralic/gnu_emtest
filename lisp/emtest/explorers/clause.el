@@ -90,16 +90,25 @@
 	 (emth:protect&trap
 	    aborted-p
 	    (eval form-1)
-	    (funcall report-f
-	       (emt:testral:make-suite
-		  :contents
-		  (emtt:testral:note-list)
-		  :grade 
-		  (if aborted-p 
+	    (progn
+	       (when aborted-p
+		  (emtt:testral:add-note
+		     "problem"
 		     (emt:testral:make-grade:ungraded
 			:contents
 			"Evaluation aborted") 
-		     (emt:testral:make-grade:test-case))))))))
+		     'error-raised
+		     aborted-p))
+	       (funcall report-f
+		  (emt:testral:make-suite
+		     :contents
+		     (emtt:testral:note-list)
+		     :grade 
+		     (if aborted-p 
+			(emt:testral:make-grade:ungraded
+			   :contents
+			   "Evaluation aborted") 
+			(emt:testral:make-grade:test-case)))))))))
 
 ;;;_ , Functions
 ;;;_  . emtt:explore-clause
