@@ -38,8 +38,8 @@
    "Formatter for TESTRAL note governed by `comparison-w/persist'"
 
    ;;$$IMPROVE ME Add buttons & command to act on the persisting
-   ;;object: If rejected, to accept it.  To edit it and save the new
-   ;;version as acceptable.  To diff the value with it.
+   ;;object: If rejected, to accept it (Done).  To edit it and save
+   ;;the new version as acceptable.  To diff the value with it.
 
    (emtvf:outline-item-emformat
       (list
@@ -51,7 +51,7 @@
 	    '()
 	    `(button "[Accept]"
 		action
-		(lambda ()
+		(lambda (button)
 		   (interactive)
 		   (emdb:set-value
 		      ',backend
