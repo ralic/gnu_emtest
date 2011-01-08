@@ -32,6 +32,29 @@
 (require 'emtest/viewer/emformat)
 
 ;;;_. Body
+;;;_ , emtvf:TESTRAL-gov:ediff-string-w/persist
+;;$$MOVE ME, RENAME ME  It's not specific to this formatter.
+(defun emtvf:TESTRAL-gov:ediff-string-w/persist (value backend id)
+   ""
+   (let 
+      ;;Make a buffer for each
+
+      ;;$$IMPROVE ME Give user a means of expiring these buffers,
+      ;;short of manually killing each one.  Perhaps `ediff-quit-hook'
+      ;;or `ediff-cleanup-hook'.
+      ((buf-expected (generate-new-buffer "*Emtest expected*"))
+	 (buf-got    (generate-new-buffer "*Emtest got*")))
+      ;;Put each into its buffer 
+      (with-current-buffer buf-expected
+	 (insert (emdb:get-value backend id 'correct-answer)))
+      (with-current-buffer buf-got
+	 (insert value))
+      ;;Run ediff on those buffers.
+      ;;$$IMPROVE ME Provide a means of setting the comparison value
+      ;;from here.  `ediff-save-buffer' almost does if only it could call
+      ;;an alternative to `save-buffer'
+      (ediff-buffers buf-expected buf-got)))
+
 ;;;_ , emtvf:TESTRAL-gov:comparison-w/persist
 ;;;###autoload
 (defun emtvf:TESTRAL-gov:comparison-w/persist (note matched-p value backend id)
@@ -49,16 +72,27 @@
 	 " persisting object "
 	 (if matched-p 
 	    '()
-	    `(button "[Accept]"
-		action
-		(lambda (button)
-		   (interactive)
-		   (emdb:set-value
-		      ',backend
-		      ',id
-		      ',value
-		      'correct-answer))
-		help-echo "Accept the new value")))
+	    `(
+		(button "[Accept]"
+		   action
+		   (lambda (button)
+		      (interactive)
+		      (emdb:set-value
+			 ',backend
+			 ',id
+			 ',value
+			 'correct-answer))
+		   help-echo "Accept the new value")
+		" "
+		(button "[Compare]"
+		   action
+		   (lambda (button)
+		      (interactive)
+		      (emtvf:TESTRAL-gov:ediff-string-w/persist
+			 ',value
+			 ',backend
+			 ',id))
+		   help-echo "Compare to the accepted value"))))
       (list
 	 (emtvf:obj-or-string value)) 
       (if matched-p 
