@@ -452,7 +452,7 @@ For internal use by filebuf.  Outside callers probably want
 (defvar emtb:last-bad-comparison nil 
    "" )
 ;;;_  . emtb:ediff-last-comparison
-;;Maybe belong in an associated file instead.
+;;$$OBSOLESCENT Adapted into compare-w-persist.el
 ;;;###autoload
 (defun emtb:ediff-last-comparison (comparison)
    ""
