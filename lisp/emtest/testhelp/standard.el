@@ -95,19 +95,21 @@ STR should be a string"
 Eval AFTER with VAR bound to the boolean whether an error escaped
 BODY, other than an error of type `emt:already-handled'."
    
-   ;;$$IMPROVE ME Export the error object, perhaps bind VAR to it, and
-   ;;to `escaped-by-throw' otherwise.
-   `(let
-       ((,var t))
-       (unwind-protect
-	  (setq  ,var
-	     (condition-case nil
-		(progn
-		   ,body
-		   nil)
-		('emt:already-handled nil)
-		(error t)))
-	  ,after)))
+   (let ((err (make-symbol "err")))
+      `(let
+	  ;;Initialize VAR to `escaped-by-throw' because the only way
+	  ;;it can escape being set by the setq below is if code
+	  ;;throws out of the setq call.
+	  ((,var 'escaped-by-throw))
+	  (unwind-protect
+	     (setq  ,var
+		(condition-case ,err
+		   (progn
+		      ,body
+		      nil)
+		   ('emt:already-handled nil)
+		   (error ,err)))
+	     ,after))))
 
 ;;;_  . emth:trap-errors-aux
 (defmacro emth:trap-errors-aux (var body form)
