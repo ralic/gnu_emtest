@@ -81,7 +81,7 @@
 	    (eval (first data))
 	    (when aborted-p 
 	       (emtt:testral:add-note 
-		  "trace"
+		  "problem"
 		  (emt:testral:make-grade:ungraded
 		     :contents
 		     "Interaction had an error") 
