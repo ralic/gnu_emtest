@@ -79,7 +79,9 @@ pathtree nodes."
       :type (or null 
 	       emt:testral:suite 
 	       emt:testral:test-runner-info)
-      :doc "The result data itself"))
+      :doc "The result data itself")
+   (mark () :type bool))
+
 
 
 ;;;_  . Notes in viewable form.
