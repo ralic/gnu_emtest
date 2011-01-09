@@ -198,6 +198,7 @@ If errors are seen, raise a single error instead."
       form)
    
    (signal 'emt:already-handled ()))
+
 ;;;_  . emt:assert-f
 ;;`emt:assert-f' doesn't use `emth:trap-errors'.  If an error would
 ;;escape, the assert wasn't going to be meaningful anyways.
@@ -210,9 +211,37 @@ If errors are seen, raise a single error instead."
 	 ((id (emtt:testral:new-id)))
 	 (condition-case err
 	    (let*
-	       (  
+	       (  (params
+		     (if (listp form)
+			;;$$IMPROVE ME If par is an unbound symbol,
+			;;but fbound, don't include it a param.
+			;;Possibly borrow my old `constantp' function.
+			(delq nil 
+			   (mapcar
+			      #'(lambda (x)
+				   (if (cl-const-expr-p x)
+				      nil
+				      x)) 
+			      form))
+			'()))
 		  (retval 
 		     (emtt:testral:with-parent-id id
+			(dolist (par params)
+
+			   ;;$$IMPROVE ME Make a dedicated param note
+			   ;;formatter.
+			   ;;$$IMPROVE ME Move `concat' formatting
+			   ;;into there.  If par is a form, don't put
+			   ;;it in a headline.
+			   ;;$$IMPROVE ME Omit those for which (eval
+			   ;;par) errs.
+			   (emtt:testral:add-note
+			      "param" nil 'doc
+			      (concat 
+				 (prin1-to-string par)
+				 " = "
+				 (prin1-to-string
+				    (ignore-errors (eval par))))))
 			(eval form))))
 	       (if retval
 		  (emtt:testral:add-note-w/id
