@@ -256,11 +256,8 @@ If errors are seen, raise a single error instead."
 					 ;;par is a form, don't put it
 					 ;;in a headline.
 					 (emtt:testral:add-note
-					    "param" nil 'doc
-					    (concat 
-					       (prin1-to-string arg)
-					       " = "
-					       (prin1-to-string val)))
+					    "param" nil 'parameter
+					    arg val)
 					 val))
 				 (cdr form)))
 			   (eval form)))))
