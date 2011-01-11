@@ -4,6 +4,6 @@
 *~
 /lisp/emtest/TAGS
 /lisp/.nosearch
-/lisp/emtest/runner/registrations.el
+/lisp/emtest/runners/registrations.el
 /lisp/emtest/viewer/testral/registrations.el
-/lisp/emtest/runner/runners/def-runners.el
+/lisp/emtest/explorers/registrations.el
