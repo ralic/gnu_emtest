@@ -31,6 +31,7 @@
 
 
 ;;;_ , emth:gives-error
+;;;###autoload
 (defmacro emth:gives-error (form &optional error-sym)
    "Non-nil just if FORM gives an error.
 If ERROR-SYM is given, the error must be of that type.
