@@ -203,7 +203,7 @@ If errors are seen, raise a single error instead."
    "Evaluate FORM and record analytic notes.
 Only make notes if form calls a true function, not a macro or subr."
    ;;$$IMPROVE ME Don't capture any variables, including `form',
-   ;;`arg', and `val'.
+   ;;`arg', and `val'.  This may not be reasonably possible.
    (if
       ;;If it's a true function call, analyze it.
       (and
@@ -234,9 +234,9 @@ Only make notes if form calls a true function, not a macro or subr."
       (eval form)))
 
 ;;;_  . emt:assert-f
-;;`emt:assert-f' doesn't use `emth:trap-errors'.  If an error would
-;;escape, the assert wasn't going to be meaningful anyways.  Perhaps
-;;use `emth:protect&trap', though.
+;;`emt:assert-f' doesn't use `emth:trap-errors' nor
+;;`emth:protect&trap' because they want to handle control differently
+;;than we need.
 (defun emt:assert-f (form)
    "Worker function for macro `emt:assert'"
    
