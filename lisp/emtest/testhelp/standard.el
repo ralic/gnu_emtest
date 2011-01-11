@@ -222,27 +222,48 @@ If errors are seen, raise a single error instead."
 				   (if (cl-const-expr-p x)
 				      nil
 				      x)) 
-			      form))
+			      (cdr form)))
 			'()))
 		  (retval 
 		     (emtt:testral:with-parent-id id
-			(dolist (par params)
+			;;$$ENCAP ME  
+			;;Just for true functions, make notes for the
+			;;params. 
+			(if
+			   (and
+			      (listp form)
+			      (functionp (car form))
+			      (not (subrp (car form))))
+			   (apply (car form)
+			      (mapcar
+				 #'(lambda (arg)
+				      (let
+					 ((val (eval arg)))
+					 ;;$$IMPROVE ME Only add note
+					 ;;if expression is not
+					 ;;constant.  Not quoted nor
+					 ;;eq to itself
 
-			   ;;$$IMPROVE ME Make a dedicated param note
-			   ;;formatter.
-			   ;;$$IMPROVE ME Move `concat' formatting
-			   ;;into there.  If par is a form, don't put
-			   ;;it in a headline.
-			   ;;$$IMPROVE ME Omit those for which (eval
-			   ;;par) errs.
-			   (emtt:testral:add-note
-			      "param" nil 'doc
-			      (concat 
-				 (prin1-to-string par)
-				 " = "
-				 (prin1-to-string
-				    (ignore-errors (eval par))))))
-			(eval form))))
+					 ;;$$IMPROVE ME  Recurse if
+					 ;;expression is a call.
+
+					 ;;$$IMPROVE ME Make a
+					 ;;dedicated param note
+					 ;;formatter.
+
+					 ;;$$IMPROVE ME Move `concat'
+					 ;;formatting into there.  If
+					 ;;par is a form, don't put it
+					 ;;in a headline.
+					 (emtt:testral:add-note
+					    "param" nil 'doc
+					    (concat 
+					       (prin1-to-string arg)
+					       " = "
+					       (prin1-to-string val)))
+					 val))
+				 (cdr form)))
+			   (eval form)))))
 	       (if retval
 		  (emtt:testral:add-note-w/id
 		     id
