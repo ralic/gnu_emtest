@@ -3,8 +3,8 @@
 ;;; Code:
 
 
-;;;### (autoloads (emtr:expect) "emtest/runners/expect"
-;;;;;;  "expect.el" (19739 53011))
+;;;### (autoloads (emtr:expect) "emtest/runners/expect" "expect.el"
+;;;;;;  (19752 56984))
 ;;; Generated autoloads from expect.el
 
 (autoload (quote emtr:expect) "emtest/runners/expect" "\
@@ -14,7 +14,7 @@ Run a test-case on external program and report the result.
  (unless (fboundp 'emtt:add-runner)
   (error "A certain unwritten file must be loaded"))
  (emtt:add-runner 'expect #'emtr:expect
-  "Expect runner") 
+  "Expect script runner") 
  (provide 'emtest/runners/registrations)
 
 ;;;***

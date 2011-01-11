@@ -4,9 +4,8 @@
 
 
 ;;;### (autoloads (emtt:explore-indexed-clause emtt:explore-literal-clause)
-;;;;;;  "emtest/explorers/clause" "explorers/clause.el" (19739
-;;;;;;  52769))
-;;; Generated autoloads from explorers/clause.el
+;;;;;;  "emtest/explorers/clause" "clause.el" (19752 56538))
+;;; Generated autoloads from clause.el
 
 (autoload (quote emtt:explore-literal-clause) "emtest/explorers/clause" "\
 Explore a literal clause in Emtest.
@@ -28,8 +27,8 @@ Explore an indexed clause in a suite in Emtest.
 ;;;***
 
 ;;;### (autoloads (emtt:explore-library) "emtest/explorers/library"
-;;;;;;  "explorers/library.el" (19739 52843))
-;;; Generated autoloads from explorers/library.el
+;;;;;;  "library.el" (19741 22165))
+;;; Generated autoloads from library.el
 
 (autoload (quote emtt:explore-library) "emtest/explorers/library" "\
 
@@ -40,9 +39,9 @@ Explore an indexed clause in a suite in Emtest.
 
 ;;;***
 
-;;;### (autoloads (emtt:explore-suite) "emtest/explorers/suite"
-;;;;;;  "explorers/suite.el" (19739 44299))
-;;; Generated autoloads from explorers/suite.el
+;;;### (autoloads (emtt:explore-suite) "emtest/explorers/suite" "suite.el"
+;;;;;;  (19741 22165))
+;;; Generated autoloads from suite.el
 
 (autoload (quote emtt:explore-suite) "emtest/explorers/suite" "\
 
@@ -53,8 +52,7 @@ Explore an indexed clause in a suite in Emtest.
 
 ;;;***
 
-;;;### (autoloads nil nil ("emtest/explorers/all") (19739
-;;;;;;  62693 690894))
+;;;### (autoloads nil nil ("emtest/explorers/all") (19756 48260 384386))
 
 ;;;***
 
