@@ -239,25 +239,21 @@ If errors are seen, raise a single error instead."
 				 #'(lambda (arg)
 				      (let
 					 ((val (eval arg)))
-					 ;;$$IMPROVE ME Only add note
-					 ;;if expression is not
-					 ;;constant.  Not quoted nor
-					 ;;eq to itself
-
 					 ;;$$IMPROVE ME  Recurse if
 					 ;;expression is a call.
-
-					 ;;$$IMPROVE ME Make a
-					 ;;dedicated param note
-					 ;;formatter.
-
-					 ;;$$IMPROVE ME Move `concat'
-					 ;;formatting into there.  If
-					 ;;par is a form, don't put it
-					 ;;in a headline.
+					 (unless
+					    ;;Don't make notes for
+					    ;;constant args, they are
+					    ;;not useful.
+					    (or
+					       (eq val arg)
+					       (and
+						  (consp arg)
+						  (memq (car arg)
+						     '(quote function function*))))
 					 (emtt:testral:add-note
 					    "param" nil 'parameter
-					    arg val)
+					    arg val))
 					 val))
 				 (cdr form)))
 			   (eval form)))))
