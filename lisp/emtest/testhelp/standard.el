@@ -198,65 +198,60 @@ If errors are seen, raise a single error instead."
       form)
    
    (signal 'emt:already-handled ()))
+;;;_  . emt:analytic-eval
+(defun emt:analytic-eval (form)
+   "Evaluate FORM and record analytic notes.
+Only make notes if form calls a true function, not a macro or subr."
+   ;;$$IMPROVE ME Don't capture any variables, including `form',
+   ;;`arg', and `val'.
+   (if
+      ;;If it's a true function call, analyze it.
+      (and
+	 (listp form)
+	 (functionp (car form))
+	 (not (subrp (car form))))
+      (apply (car form)
+	 (mapcar
+	    #'(lambda (arg)
+		 (let
+		    ((val (eval arg)))
+		    ;;$$IMPROVE ME Recurse if expression is a call.
+		    (unless
+		       ;;Don't make notes for constant args, they are
+		       ;;not useful.
+		       (or
+			  (eq val arg)
+			  (and
+			     (consp arg)
+			     (memq (car arg)
+				'(quote function function*))))
+		       (emtt:testral:add-note
+			  "param" nil 'parameter
+			  arg val))
+		    val))
+	    (cdr form)))
+      ;;Otherwise just eval it.
+      (eval form)))
 
 ;;;_  . emt:assert-f
 ;;`emt:assert-f' doesn't use `emth:trap-errors'.  If an error would
-;;escape, the assert wasn't going to be meaningful anyways.
+;;escape, the assert wasn't going to be meaningful anyways.  Perhaps
+;;use `emth:protect&trap', though.
 (defun emt:assert-f (form)
    "Worker function for macro `emt:assert'"
    
    (if 
       (emtt:testral:p)
       (let
+	 ;;In every case, make a note with this id so that notes
+	 ;;inside our scope are not orphaned.
 	 ((id (emtt:testral:new-id)))
 	 (condition-case err
 	    (let*
-	       (  (params
-		     (if (listp form)
-			;;$$IMPROVE ME If par is an unbound symbol,
-			;;but fbound, don't include it a param.
-			;;Possibly borrow my old `constantp' function.
-			(delq nil 
-			   (mapcar
-			      #'(lambda (x)
-				   (if (cl-const-expr-p x)
-				      nil
-				      x)) 
-			      (cdr form)))
-			'()))
+	       (  
 		  (retval 
 		     (emtt:testral:with-parent-id id
-			;;$$ENCAP ME  
-			;;Just for true functions, make notes for the
-			;;params. 
-			(if
-			   (and
-			      (listp form)
-			      (functionp (car form))
-			      (not (subrp (car form))))
-			   (apply (car form)
-			      (mapcar
-				 #'(lambda (arg)
-				      (let
-					 ((val (eval arg)))
-					 ;;$$IMPROVE ME  Recurse if
-					 ;;expression is a call.
-					 (unless
-					    ;;Don't make notes for
-					    ;;constant args, they are
-					    ;;not useful.
-					    (or
-					       (eq val arg)
-					       (and
-						  (consp arg)
-						  (memq (car arg)
-						     '(quote function function*))))
-					 (emtt:testral:add-note
-					    "param" nil 'parameter
-					    arg val))
-					 val))
-				 (cdr form)))
-			   (eval form)))))
+			(emt:analytic-eval form))))
 	       (if retval
 		  (emtt:testral:add-note-w/id
 		     id
