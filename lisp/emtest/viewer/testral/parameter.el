@@ -39,17 +39,24 @@
    "Formatter for TESTRAL note governed by `parameter'"
    
    (cond
-      (t ;;(not (stringp arg))
+      ((and (emtvf:short-obj-p arg) (emtvf:short-obj-p val))
+	 (emtvf:outline-item-emformat
+	    `((small-object ,arg nil)
+		" => "
+		(small-object ,val nil))
+	    nil))
+      ((emtvf:short-obj-p arg)
+	 (emtvf:outline-item-emformat
+	    `(small-object ,arg nil)
+	    (emtvf:obj-or-string val)))
+      
+      (t
 	 (emtvf:outline-item-emformat
 	    "Param"
 	    `((object ,arg nil)
 		" => "
-		,(emtvf:obj-or-string val))))
+		,(emtvf:obj-or-string val))))))
 
-      ;;$$IMPROVE ME
-      ;;If arg is more lightweight, let it be part of the headline.  A
-      ;;short string or a symbol.
-      ))
 
 ;;;_. Footers
 ;;;_ , Register it
