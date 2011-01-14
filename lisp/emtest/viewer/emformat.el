@@ -105,6 +105,16 @@ which may not imply success of an assertion."
 
 ;;;_ , Lower format functions
 ;;;_ , Helper functions
+;;;_  . Characterizing object representation
+;;;_   , emtvf:short-obj-p 
+(defun emtvf:short-obj-p (obj)
+   "Return t is object's printed representation is fairly short"
+   (or
+      (symbolp obj)
+      (and
+	 (stringp obj)
+	 (< (length obj) 40))))
+
 ;;;_  . Singles-Path
 ;;;_   , Special variables
 (declare (special emtvf:*hdln-path*))
