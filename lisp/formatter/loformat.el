@@ -106,6 +106,11 @@ STRENGTH ranges from 0 to 6."
 (defun loformat:insert:nl-if-none (recurse-f)
    "Insert a newline just if there is none at point."
    (unless (bolp) (insert "\n")))
+;;;_  . loformat:insert:bare-object
+(defun loformat:insert:bare-object (recurse-f object props)
+   ""
+   (loformat:insert:w/props recurse-f (pp-to-string object) props))
+
 ;;;_  . loformat:insert:object
 (defun loformat:insert:object (recurse-f object props)
    "Insert printed representation of OBJECT, suitably demarcated.
@@ -148,14 +153,15 @@ PROPS is the property-list for the text, if any."
 ;;;_  . loformat:default-alist
 (defconst loformat:default-alist 
    '(
-       (nl-if-none  loformat:insert:nl-if-none)
-       (object      loformat:insert:object)
-       (overlay     loformat:insert:overlay)
-       (indent      loformat:insert:indent)
-       (sep         loformat:insert:sep)
-       (w/face      loformat:insert:w/face)
-       (w/props     loformat:insert:w/props)
-       (button      loformat:button))
+       (nl-if-none   loformat:insert:nl-if-none)
+       (small-object loformat:insert:bare-object)
+       (object       loformat:insert:object)
+       (overlay      loformat:insert:overlay)
+       (indent       loformat:insert:indent)
+       (sep          loformat:insert:sep)
+       (w/face       loformat:insert:w/face)
+       (w/props      loformat:insert:w/props)
+       (button       loformat:button))
    "The default alist for `loformat:insert'" )
 ;;;_  . The insert function itself
 ;;;_   , loformat:insert
