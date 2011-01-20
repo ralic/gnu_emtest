@@ -62,6 +62,15 @@
    timeout)
 
 ;;;_ , Utility
+;;;_  . emtr:with-testral
+(defmacro emtr:with-testral (obj &rest body)
+   "Evaluate BODY in a testral context defined by OBJ.
+OBJ must evaluate to an `emtr:expect-data'."
+   
+   `(emtt:testral:continued-with
+      (emtr:expect-data->testral-obj ,obj)
+      ,@body))
+
 ;;;_  . emtr:expect-1note
 (defun emtr:expect-1note (text data)
    ""
