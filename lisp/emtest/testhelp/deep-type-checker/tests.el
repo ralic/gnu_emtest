@@ -28,6 +28,9 @@
 
 
 ;;;_ , Requires
+(require 'emtest/main/define)
+(require 'emtest/testhelp/standard)
+(require 'emtest/testhelp/deep-type-checker)
 
 ;;;_. Body
 
