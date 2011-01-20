@@ -301,8 +301,8 @@ See `emtt:testral:add-note-w/id'."
 	  (emtt:testral:add-note-w/id id ,@note-args)
 	  (emtt:testral:with-parent-id ,id ,@body))))
 
-;;;_  . Getting notes
-;;;_   , emtt:testral:note-list
+;;;_ , Getting notes
+;;;_  . emtt:testral:note-list
 (defun emtt:testral:note-list ()
    ""
    (unless 
@@ -310,8 +310,8 @@ See `emtt:testral:add-note-w/id'."
       (error "Not in a TESTRAL collection scope"))
    (emt:testral:make-note-list
       :notes (emtt:testral:get-notes)))
-
-;;;_ , emtt:testral:set-object-origin
+;;;_ , Tracked objects (not implemented)
+;;;_  . emtt:testral:set-object-origin
 (defun emtt:testral:set-object-origin (object origin)
    ""
 
