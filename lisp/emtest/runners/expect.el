@@ -72,11 +72,11 @@ OBJ must evaluate to an `emtr:expect-data'."
       ,@body))
 
 ;;;_  . emtr:expect-1note
+;;$$OBSOLETE
+'
 (defun emtr:expect-1note (text data)
    ""
-   ;;$$PUNT For now, as a doc note
-   (emtt:testral:continued-with
-      (emtr:expect-data->testral-obj data)
+   (emtr:with-testral data
       (emt:doc text)))
 
 ;;;_ , Support
@@ -104,11 +104,23 @@ OBJ must evaluate to an `emtr:expect-data'."
 ;;;_  . emtr:expect-timer-cb
 (defun emtr:expect-timer-cb (data question)
    ""
-   (emtr:expect-1note 
-      (concat 
-	 "An interaction failed: " 
-	 question)
-      data)
+
+   (emtr:with-testral data
+      (emt:testral:with-parent-note
+	 (
+	    "trace"
+	    (emt:testral:make-grade:ungraded
+	       :contents
+	       "Interaction timed out")
+	    ;;$$MAKE BETTER SUPPORT Make a better formatter for this, or
+	    ;;a better error.
+	    'error-raised
+	    '(timeout))
+	 (emtt:testral:add-note "param" nil
+	    'param
+	    'question
+	    question)))
+   
    ;;Pop tq
    (tq-queue-pop (emtr:expect-data->tq data))
    ;;Start another.
