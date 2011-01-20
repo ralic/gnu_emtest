@@ -51,7 +51,10 @@
    timer
    pending
    prompt
-   testral-obj)
+   testral-obj
+   (parent-id () :doc
+      "The parent note id of the current interaction"))
+
 ;;;_  . emtr:interact-predata
 (defstruct (emtr:interact-predata
 	      (:conc-name emtr:interact-predata->)
@@ -98,20 +101,13 @@ OBJ must evaluate to an `emtr:expect-data'."
    ""
    (ignore-errors
       (emtr:with-testral data
-	 (emt:testral:with-parent-note
-	    (
-	       "trace"
-	       (emt:testral:make-grade:ungraded
-		  :contents
-		  "Interaction timed out")
-	       ;;$$MAKE BETTER SUPPORT Make a better formatter for this, or
-	       ;;a better error.
-	       'error-raised
-	       '(timeout))
-	    (emtt:testral:add-note "param" nil
-	       'parameter
-	       'question
-	       question))))
+	 (emtt:testral:add-note
+	    "problem"
+	    (emt:testral:make-grade:ungraded
+	       :contents
+	       "Interaction timed out")
+	    'error-raised
+	    '(timeout))))
    
    ;;Pop tq
    (tq-queue-pop (emtr:expect-data->tq data))
