@@ -77,7 +77,9 @@
 ;;;_   , Helper emty:list-f
 
 (defun emty:list-f (obj el-type-list index)
-   ""
+   "Return non-nil if OBJ is a list of the types listed in EL-TYPE-LIST"
+   '
+
    (if
       (null el-type-list)
       (null obj)
@@ -89,7 +91,22 @@
 	       (concat "Element " (int-to-string index))))
 	 (let
 	    ((max-lisp-eval-depth 800))
-	    (emty:list-f (cdr obj) (cdr el-type-list) (1+ index))))))
+	    (emty:list-f (cdr obj) (cdr el-type-list) (1+ index)))))
+
+   (catch 'emty:tag
+      (while (and (consp obj) (consp el-type-list))
+	 (if
+	    (emty:typep-annoted (car obj) (car el-type-list) 
+	       (concat "Element " (int-to-string index)))
+	    (setq
+	       el-type-list (cdr el-type-list)
+	       obj (cdr obj)
+	       index (1+ index))
+	    (throw 'emty:tag nil)))
+      
+      ;;Either obj or el-type-list is non-nil just if they didn't
+      ;;match in length.
+      (if (or obj el-type-list) nil t)))
 
 ;;;_  . type repeat
 
@@ -104,16 +121,22 @@
 ;;;_   , Helper emty:repeat-f
 
 (defun emty:repeat-f (obj el-type index)
-   ""
+   "Return non-nil if OBJ is a list of zero or more EL-TYPE"
    (or
       (null obj)
-      (and
-	 (consp obj)
-	 (emty:typep-annoted (car obj) el-type 
-	    (concat "Element " (int-to-string index)))
-	 (let 
-	    ((max-lisp-eval-depth 800))
-	    (emty:repeat-f (cdr obj) el-type (1+ index))))))
+      (catch 'emty:tag
+	 (while (consp obj)
+	    (if
+	       (emty:typep-annoted (car obj) el-type 
+		  (concat "Element " (int-to-string index)))
+	       (setq
+		  obj (cdr obj)
+		  index (1+ index))
+	       (throw 'emty:tag nil)))
+	 ;;Obj is non-nil just if we got an improper list
+	 (if obj nil t))))
+
+
 
 ;;;_  . type list*
 (deftype list* (&rest r)
@@ -122,14 +145,28 @@
 	  (emty:list*-f obj ',r 0))))
 
 ;;;_  . Helper emty:list*-f
+;;$$FACTOR ME  This and list could share code.
 (defun emty:list*-f (obj r index)
-   ""
-   (if (cdr r)
-      (and
-	 (emty:typep-annoted (car obj) (car r) 
-	    (concat "Element " (int-to-string index)))
-	 (emty:list*-f (cdr obj) (cdr r) (1+ index)))
-      (emty:typep-annoted obj (car r) "dotted-tail")))
+   "Return non-nil if OBJ matches R, a dotted list of types.
+
+So OBJ must begin with the types listed in R, except that the
+last element of R matches the tail of OBJ."
+   (let
+      ((el-type-list (butlast r))
+	 (dotted-type (car (last r))))
+      (catch 'emty:tag
+	 (while (and (consp obj) (consp el-type-list))
+	    (if
+	       (emty:typep-annoted (car obj) (car el-type-list) 
+		  (concat "Element " (int-to-string index)))
+	       (setq
+		  el-type-list (cdr el-type-list)
+		  obj (cdr obj)
+		  index (1+ index))
+	       (throw 'emty:tag nil)))
+	 ;;OBJ must have something left
+	 (unless obj (throw 'emty:tag nil))
+	 (emty:typep-annoted obj dotted-type "dotted-tail"))))
 
 ;;;_ , emty:typep-annoted
 (defun emty:typep-annoted (obj spec name)
