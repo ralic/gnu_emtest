@@ -71,14 +71,6 @@ OBJ must evaluate to an `emtr:expect-data'."
       (emtr:expect-data->testral-obj ,obj)
       ,@body))
 
-;;;_  . emtr:expect-1note
-;;$$OBSOLETE
-'
-(defun emtr:expect-1note (text data)
-   ""
-   (emtr:with-testral data
-      (emt:doc text)))
-
 ;;;_ , Support
 ;;;_  . emtr:expect-cb
 (defun emtr:expect-cb (data answer)
@@ -171,17 +163,17 @@ OBJ must evaluate to an `emtr:expect-data'."
 	 (funcall (emtr:expect-data->report-f data)
 	    (emt:testral:make-suite
 	       :contents
-	       (emtt:testral:continued-with 
-		  (emtr:expect-data->testral-obj data)
+	       (emtr:with-testral data
 		  (emtt:testral:note-list))
 	       :grade (emt:testral:make-grade:test-case)))
 	 ;;Close tq
 	 (tq-close (emtr:expect-data->tq data)))))
 
 
-;;;_  . emtr:expect-form->predata Form to predata
+;;;_  . emtr:expect-form->predata
 (defun emtr:expect-form->predata (form)
-   "Make a `emtr:interact-predata' from FORM."
+   "Return an `emtr:interact-predata' made from FORM.
+If impossible, return nil instead"
    (declare (special timeout))
    (case (car form)
       ((t)
@@ -193,13 +185,23 @@ OBJ must evaluate to an `emtr:expect-data'."
 	       (if forms `(progn ,@forms) nil))
 	    ;;$$PUNT Take a timeout nicely.
 	    :timeout timeout))
-      ;;It will complain about the unknown governor when it's run.
+      ;;Dormant tests
+      (quote
+	 ;;Record what we did
+	 (emtt:testral:add-note "problem" 
+	    (emt:testral:make-grade:dormant)
+	    'doc
+	    "Dormant test")
+	 ;;No interaction for it.
+	 nil)
+
       (t
-	 (emtr:make-interact-predata
-	    :question ""
-	    ;;$$PUNT  Show what the governor is.
-	    :form     '(emt:doc "unknown governor")
-	    :timeout 0.0000001))))
+	 (emtt:testral:add-note "problem" 
+	    (emt:testral:make-grade:ungraded)
+	    'error-raised
+	    `(unknown-governor ,(car form)))
+	 nil)))
+
 
 
 ;;;_ , Entry point (for clause explorer)
@@ -252,9 +254,11 @@ OBJ must evaluate to an `emtr:expect-data'."
 		  (tq
 		     (tq-create proc))
 		  (pending
-		     (mapcar
-			#'emtr:expect-form->predata
-			(cdr form)))
+		     (emtt:testral:continued-with con
+			(delq nil
+			   (mapcar
+			      #'emtr:expect-form->predata
+			      (cdr form)))))
 		  (data
 		     (emtr:make-expect-data
 			:tq tq
