@@ -87,7 +87,9 @@
 	    t
 	    (emty:typep-annoted (car obj) (car el-type-list) 
 	       (concat "Element " (int-to-string index))))
-	 (emty:list-f (cdr obj) (cdr el-type-list) (1+ index)))))
+	 (let
+	    ((max-lisp-eval-depth 800))
+	    (emty:list-f (cdr obj) (cdr el-type-list) (1+ index))))))
 
 ;;;_  . type repeat
 
@@ -109,7 +111,9 @@
 	 (consp obj)
 	 (emty:typep-annoted (car obj) el-type 
 	    (concat "Element " (int-to-string index)))
-	 (emty:repeat-f (cdr obj) el-type (1+ index)))))
+	 (let 
+	    ((max-lisp-eval-depth 800))
+	    (emty:repeat-f (cdr obj) el-type (1+ index))))))
 
 ;;;_  . type list*
 (deftype list* (&rest r)
