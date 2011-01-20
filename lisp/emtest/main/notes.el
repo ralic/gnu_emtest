@@ -298,7 +298,7 @@ See `emtt:testral:add-note-w/id'."
    (let
       ((id (make-symbol "id")))
       `(let ((,id (emtt:testral:new-id)))
-	  (emtt:testral:add-note-w/id id ,@note-args)
+	  (emtt:testral:add-note-w/id ,id ,@note-args)
 	  (emtt:testral:with-parent-id ,id ,@body))))
 
 ;;;_ , Getting notes
