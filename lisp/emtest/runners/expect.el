@@ -104,22 +104,22 @@ OBJ must evaluate to an `emtr:expect-data'."
 ;;;_  . emtr:expect-timer-cb
 (defun emtr:expect-timer-cb (data question)
    ""
-
-   (emtr:with-testral data
-      (emt:testral:with-parent-note
-	 (
-	    "trace"
-	    (emt:testral:make-grade:ungraded
-	       :contents
-	       "Interaction timed out")
-	    ;;$$MAKE BETTER SUPPORT Make a better formatter for this, or
-	    ;;a better error.
-	    'error-raised
-	    '(timeout))
-	 (emtt:testral:add-note "param" nil
-	    'param
-	    'question
-	    question)))
+   (ignore-errors
+      (emtr:with-testral data
+	 (emt:testral:with-parent-note
+	    (
+	       "trace"
+	       (emt:testral:make-grade:ungraded
+		  :contents
+		  "Interaction timed out")
+	       ;;$$MAKE BETTER SUPPORT Make a better formatter for this, or
+	       ;;a better error.
+	       'error-raised
+	       '(timeout))
+	    (emtt:testral:add-note "param" nil
+	       'parameter
+	       'question
+	       question))))
    
    ;;Pop tq
    (tq-queue-pop (emtr:expect-data->tq data))
@@ -137,39 +137,37 @@ OBJ must evaluate to an `emtr:expect-data'."
 	 ((next
 	     (pop (emtr:expect-data->pending data)))
 	    timer)
-	 ;;$$REPLACE WITH ME The `emtt:testral:continued-with' section
-	 ;;isn't needed for most of this.
-	 '(emtr:expect-1note 
-	     (emtr:interact-predata->question next)
-	     data)
-	 
-	 (emtt:testral:continued-with 
-	    (emtr:expect-data->testral-obj data)
-	    ;;Make a note of what the next thing is expected to send.
-	    ;;$$PUNT For now, as a doc note.
-	    (emt:doc (emtr:interact-predata->question next))
-	    ;;$$ENCAP ME.
-	    (setf
-	       (emtr:expect-data->timer data)
-	       (run-at-time 
-		  (emtr:interact-predata->timeout next)
-		  nil
-		  #'emtr:expect-timer-cb
-		  data
-		  (emtr:interact-predata->question next)))
+	 ;;Make a note of what the next interaction will send
+	 (ignore-errors
+	    (emtr:with-testral data
+	       (emtt:testral:add-note "param" nil
+		  'parameter
+		  'question
+		  (emtr:interact-predata->question next))))
 
-	    (tq-enqueue (emtr:expect-data->tq data)
-	       (emtr:interact-predata->question next)
-	       (emtr:expect-data->prompt data)
-	       (list 
-		  (emtr:interact-predata->form next) 
-		  (emtr:expect-data->testral-obj data)
-		  data)
-	       #'emtr:expect-cb
-	       nil)))
+	 ;;$$ENCAP ME.
+	 (setf
+	    (emtr:expect-data->timer data)
+	    (run-at-time 
+	       (emtr:interact-predata->timeout next)
+	       nil
+	       #'emtr:expect-timer-cb
+	       data
+	       (emtr:interact-predata->question next)))
+
+	 (tq-enqueue (emtr:expect-data->tq data)
+	    (emtr:interact-predata->question next)
+	    (emtr:expect-data->prompt data)
+	    (list 
+	       (emtr:interact-predata->form next) 
+	       (emtr:expect-data->testral-obj data)
+	       data)
+	    #'emtr:expect-cb
+	    nil))
       
-      ;;Otherwise report results
+      ;;Otherwise we're done.
       (progn
+	 ;;Report results
 	 (funcall (emtr:expect-data->report-f data)
 	    (emt:testral:make-suite
 	       :contents
@@ -177,7 +175,7 @@ OBJ must evaluate to an `emtr:expect-data'."
 		  (emtr:expect-data->testral-obj data)
 		  (emtt:testral:note-list))
 	       :grade (emt:testral:make-grade:test-case)))
-	 ;;, close tq, and we're done.
+	 ;;Close tq
 	 (tq-close (emtr:expect-data->tq data)))))
 
 
