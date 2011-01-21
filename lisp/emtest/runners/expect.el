@@ -215,82 +215,72 @@ If impossible, return nil instead"
 (defun emtr:expect (props form report-f)
    "Run a test-case on external program and report the result."
 
-   ;;$$IMPROVE ME  Catch errors and make a suite report anyways.
-   
-   ;;Testpoint to check what we receive.
    (let
       ((con
 	  (emtt:testral:make-continuing)))
+      ;;Testpoint to check what we receive.
       (emth:protect&trap err
-	 (emtp tp:96304f8f-2edc-4ac9-8ecb-9c6ad9ce0415
-	    (form)
-
+	 (emtp tp:96304f8f-2edc-4ac9-8ecb-9c6ad9ce0415 (form)
 	    (let*
 	       (  (form-parms (car form))
+		  (emt:trace:properties props)
 		  (exec+args
 		     (second (assq 'exec+args form-parms)))
+		  (dummy
+		     (when (null exec+args)
+			(error "emtr:expect: no exec+args given")))
 		  (prompt
 		     (second (assq 'prompt    form-parms)))
+		  (dummy
+		     (when (null prompt)
+			(error "emtr:expect: no prompt set")))
 		  (shell
+		     ;;Defaults to nil
 		     (second (assq 'shell     form-parms)))
 		  (timeout
+		     ;;Defaults to 30
 		     (or
-			(second (assq 'timeout   form-parms))
+			(second (assq 'timeout form-parms))
 			30))
-		  (emt:trace:properties props))
-	       (declare (special emt:trace:properties))
-	       (if
-		  (or
-		     (null exec+args)
-		     (null prompt))
-		  ;;Report bad test and why
-		  (funcall report-f
-		     (emt:testral:make-suite
-			:contents '() ;;$$PUNT:  No notes yet
-			:grade 
-			(emt:testral:make-grade:ungraded
-			   :contents
-			   (list
-			      "emtr:expect: no exec+args or no prompt"))))
-		  ;;Do test
-		  (let* 
-		     (
-			(proc
-			   (apply 
-			      (if shell
-				 #'start-process-shell-command
-				 #'start-process)
-			      "expect" nil exec+args))
-			(tq
-			   (tq-create proc))
-			(pending
-			   (emtt:testral:continued-with con
-			      (delq nil
-				 (mapcar
-				    #'emtr:expect-form->predata
-				    (cdr form)))))
-			(data
-			   (emtr:make-expect-data
-			      :tq tq
-			      :report-f report-f
-			      ;;Timer is not set now, it will be set when we
-			      ;;start
-			      :timer nil 
-			      ;;Will be set when we start.
-			      :interaction-id nil 
-			      :pending pending
-			      :prompt prompt
-			      :testral-obj con)))
-
-		     (if
-			;;Sanity-check: We have a live process.
+		  (proc
+		     (apply 
+			(if shell
+			   #'start-process-shell-command
+			   #'start-process)
+			"expect" nil exec+args))
+		  (dummy
+		     (unless
 			(equal
-			   (process-exit-status (tq-process tq))
+			   (process-exit-status proc)
 			   0)
-			;;Start it
-			(emtr:expect-start-next data)
 			(error
-			   "emtr:expect: Don't have a live process"))))))
+			   "emtr:expect: No live process")))
+		  (tq
+		     (tq-create proc))
+		     
+		  (pending
+		     (emtt:testral:continued-with con
+			(delq nil
+			   (mapcar
+			      #'emtr:expect-form->predata
+			      (cdr form)))))
+		  (data
+		     (emtr:make-expect-data
+			:tq tq
+			:report-f report-f
+			;;Timer is not set now, it will be set when we
+			;;start
+			:timer nil 
+			;;Will be set when we start.
+			:interaction-id nil 
+			:pending pending
+			:prompt prompt
+			:testral-obj con)))
+	       
+	       (declare (special emt:trace:properties))
+		  
+	       ;;Start the testing
+	       (emtr:expect-start-next data)))
 	 
 	 (when err
 	    (funcall report-f
