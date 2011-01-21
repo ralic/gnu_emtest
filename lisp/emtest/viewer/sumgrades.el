@@ -48,7 +48,7 @@ OBJ must be a emt:testral:grade-aux and may already be a summary."
 
 ;;;_  . emtvr:add-grades
 (defun emtvr:add-grades (sums a)
-   ""
+   "Add grade A to grade summary SUMS"
    (typecase a
       (emt:testral:grade:summary
 	 (incf 
@@ -80,12 +80,35 @@ OBJ must be a emt:testral:grade-aux and may already be a summary."
 	    (emt:testral:grade:summary->dormants   sums)))
       (emt:testral:grade:blowout
 	 (incf 
-	    (emt:testral:grade:summary->blowouts   sums)))      
+	    (emt:testral:grade:summary->blowouts   sums)))
+      (symbol
+	 (case a
+	    (failed
+	       (incf 
+		  (emt:testral:grade:summary->fails      sums)))
+	    (ungraded
+	       (incf 
+		  (emt:testral:grade:summary->ungradeds  sums)))
+	    (dormant
+	       (incf 
+		  (emt:testral:grade:summary->dormants   sums)))
+	    (blowout
+	       (incf 
+		  (emt:testral:grade:summary->blowouts   sums)))
+	    (test-case
+	       (incf 
+		  (emt:testral:grade:summary->test-cases sums)))
+	    (t
+	       ;;$$PUNT  Handle `suite', `assertion', etc.  But we'll
+	       ;;move to another method before that becomes reasonable.
+	       )
+	    ))
+      
       (t nil)))
 
 ;;;_  . emtvr:combine-grade
-(defun emtvr:combine-grade (bads)
-   "Combine the list BADS into one entry"
+(defun emtvr:combine-grade (grades)
+   "Combine the list GRADES into one entry"
    (let
       ((all
 	  (reduce
@@ -95,9 +118,15 @@ OBJ must be a emt:testral:grade-aux and may already be a summary."
 		  (cond
 		     ((null a) b)
 		     ((null b) a)
+		     ;;$$IMPROVE ME  If one is already a summary, just
+		     ;;use it.
 		     ((and
-			 (emt:testral:grade-p a)
-			 (emt:testral:grade-p b))
+			 (or
+			    (emt:testral:grade-p a)
+			    (symbolp a))
+			 (or
+			    (emt:testral:grade-p b)
+			    (symbolp b)))
 			(let
 			   ((sums (emt:testral:make-grade:summary)))
 			   (emtvr:add-grades sums a)
@@ -105,7 +134,8 @@ OBJ must be a emt:testral:grade-aux and may already be a summary."
 			   sums))
 		     (t
 			(error "Shouldn't get here"))))
-	     bads)))
+	     grades)))
+      
       (check-type all emt:testral:grade-aux)
       all))
 

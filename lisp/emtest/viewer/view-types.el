@@ -50,6 +50,8 @@
 pathtree nodes."
    ;;Summarized grades from all subtrees.  They are summarized
    ;;treewise, including any grades from this node.
+   ;;$$RETHINK ME Make this always an `emt:testral:grade:summary', and
+   ;;move that's definition into here.
    (sum-grades () :type (repeat emt:testral:grade))
    ;;This relates to a display
    (list ()))
