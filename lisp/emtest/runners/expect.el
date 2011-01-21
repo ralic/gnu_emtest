@@ -225,22 +225,26 @@ If impossible, return nil instead"
 	       (  (form-parms (car form))
 		  (emt:trace:properties props)
 		  (exec+args
-		     (second (assq 'exec+args form-parms)))
+		     (eval
+			(second (assq 'exec+args form-parms))))
 		  (dummy
 		     (when (null exec+args)
 			(error "emtr:expect: no exec+args given")))
 		  (prompt
-		     (second (assq 'prompt    form-parms)))
+		     (eval
+			(second (assq 'prompt    form-parms))))
 		  (dummy
 		     (when (null prompt)
 			(error "emtr:expect: no prompt set")))
 		  (shell
 		     ;;Defaults to nil
-		     (second (assq 'shell     form-parms)))
+		     (eval
+			(second (assq 'shell     form-parms))))
 		  (timeout
 		     ;;Defaults to 30
 		     (or
-			(second (assq 'timeout form-parms))
+			(eval
+			   (second (assq 'timeout form-parms)))
 			30))
 		  (proc
 		     (apply 
@@ -250,6 +254,7 @@ If impossible, return nil instead"
 			"expect" nil exec+args))
 		  (dummy
 		     (unless
+			;;0 status means a live process
 			(equal
 			   (process-exit-status proc)
 			   0)
