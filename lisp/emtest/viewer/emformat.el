@@ -365,41 +365,34 @@ OBJ should be an `emt:grade:summary'."
    (let*
       (
 	 (obj (emtvr:grade->summary obj))
+	 (nobj (emtvr:summary->summary (emtvr:grade->summary obj)))
 	 (test-cases (emt:testral:grade:summary->test-cases obj))
 	 (fails      (emt:testral:grade:summary->fails      obj))
 	 (ungradeds  (emt:testral:grade:summary->ungradeds  obj))
 	 (dormants   (emt:testral:grade:summary->dormants   obj))
 	 (blowouts   (emt:testral:grade:summary->blowouts   obj)))
-      (if
-	 (and
-	    (= fails     0)
-	    (= ungradeds 0)
-	    (= dormants  0)
-	    (= blowouts  0))
-	 (if (> test-cases 0)
-	    (list
-	       '(w/face "All OK" emtvf:face:ok)
-	       " ("
-	       (hiformat:grammar:num-and-noun
-		  test-cases "case" "cases")
-	       ")")
+      (case (emt:grade:summary->worst nobj)
+	 (ok
+	    '(w/face "All OK" emtvf:face:ok))
+	 ((nil)
 	    '(w/face "Nothing was tested" emtvf:face:dormant))
-	 (list
-	    '(w/face "Problems: " emtvf:face:failed)
-	    (hiformat:separate
-	       (delq nil
-		  (mapcar
-		     #'(lambda (data)
-			  (destructuring-bind (n text face) data
-			     (when (> n  0) 
-				`(w/face ,text ,face))))
-		     (list
-			(list blowouts  "Blowouts"	 'emtvf:face:blowout)
-			(list ungradeds "Ungraded tests" 'emtvf:face:ungraded)
-			(list fails     "Failures" 	 'emtvf:face:failed)
-			(list dormants  "Dormant tests"  'emtvf:face:dormant))))
-	       '(", "))
-	    "."))))
+	 (t
+	    (list
+	       '(w/face "Problems: " emtvf:face:failed)
+	       (hiformat:separate
+		  (delq nil
+		     (mapcar
+			#'(lambda (data)
+			     (destructuring-bind (n text face) data
+				(when (> n  0) 
+				   `(w/face ,text ,face))))
+			(list
+			   (list blowouts  "Blowouts"	 'emtvf:face:blowout)
+			   (list ungradeds "Ungraded tests" 'emtvf:face:ungraded)
+			   (list fails     "Failures" 	 'emtvf:face:failed)
+			   (list dormants  "Dormant tests"  'emtvf:face:dormant))))
+		  '(", "))
+	       ".")))))
 
 
 ;;;_  . emtvf:sum-grades-long
@@ -413,52 +406,49 @@ OBJ should be an `emt:grade:summary'."
 	 (ungradeds  (emt:testral:grade:summary->ungradeds  obj))
 	 (dormants   (emt:testral:grade:summary->dormants   obj))
 	 (blowouts   (emt:testral:grade:summary->blowouts   obj)))
-      (if
-	 (and
-	    (= fails     0)
-	    (= ungradeds 0)
-	    (= dormants  0)
-	    (= blowouts  0))
-	 (if (> test-cases 0)
+      (case (emt:grade:summary->worst nobj)
+	 (ok
 	    (list
 	       "All OK ("
 	       (prin1-to-string test-cases)
 	       " "
 	       (hiformat:grammar:number-agreement 
 		  test-cases "case" "cases")
-	       ")" "\n")
-	    (list "Nothing was tested" "\n"))
-	 (list
-	    "Problems: \n"
-	    (hiformat:separate
-	       (delq nil
+	       ")" "\n"))
+	 ((nil)
+	    '(w/face ("Nothing was tested" "\n") emtvf:face:dormant))
+	 (t
+	    (list
+	       "Problems: \n"
+	       (hiformat:separate
+		  (delq nil
+		     (list
+			(when (> blowouts  0) 
+			   (hiformat:grammar:num-and-noun 
+			      blowouts
+			      "Blowout" "Blowouts"))
+			(when (> ungradeds 0) 
+			   (hiformat:grammar:num-and-noun 
+			      ungradeds
+			      "Ungraded test" "Ungraded tests"))
+			(when (> fails     0) 
+			   (hiformat:grammar:num-and-noun 
+			      fails
+			      "Failure" "Failures"))
+			(when (> dormants  0) 
+			   (hiformat:grammar:num-and-noun 
+			      dormants
+			      "Dormant test" "Dormant tests"))))
+		  '(".\n"))
+	       "\n"
+	       (if (> test-cases 0)
 		  (list
-		     (when (> blowouts  0) 
-			(hiformat:grammar:num-and-noun 
-			   blowouts
-			   "Blowout" "Blowouts"))
-		     (when (> ungradeds 0) 
-			(hiformat:grammar:num-and-noun 
-			   ungradeds
-			   "Ungraded test" "Ungraded tests"))
-		     (when (> fails     0) 
-			(hiformat:grammar:num-and-noun 
-			   fails
-			   "Failure" "Failures"))
-		     (when (> dormants  0) 
-			(hiformat:grammar:num-and-noun 
-			   dormants
-			   "Dormant test" "Dormant tests"))))
-	       '(".\n"))
-	    "\n"
-	    (if (> test-cases 0)
-	       (list
-		  (prin1-to-string test-cases)
-		  " successful "
-		  (hiformat:grammar:number-agreement 
-		     test-cases "test case" "test cases"))
-	       (list "No test cases succeeded"))
-	    "\n"))))
+		     (prin1-to-string test-cases)
+		     " successful "
+		     (hiformat:grammar:number-agreement 
+			test-cases "test case" "test cases"))
+		  (list "No test cases succeeded"))
+	       "\n")))))
 
 ;;;_. Footers
 ;;;_ , Provides
