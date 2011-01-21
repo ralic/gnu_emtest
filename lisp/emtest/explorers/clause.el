@@ -68,7 +68,7 @@
    (funcall report-f
       (emt:testral:make-suite
 	 :contents '()
-	 :grade (emt:testral:make-grade:dormant))))
+	 :grade 'dormant)))
 
 
 ;;;_  . emtr:vanilla
@@ -94,9 +94,7 @@
 	       (when aborted-p
 		  (emtt:testral:add-note
 		     "problem"
-		     (emt:testral:make-grade:ungraded
-			:contents
-			"Evaluation aborted") 
+		     'ungraded 
 		     'error-raised
 		     aborted-p))
 	       (funcall report-f
@@ -105,10 +103,8 @@
 		     (emtt:testral:note-list)
 		     :grade 
 		     (if aborted-p 
-			(emt:testral:make-grade:ungraded
-			   :contents
-			   "Evaluation aborted") 
-			(emt:testral:make-grade:test-case)))))))))
+			'ungraded 
+			'test-case))))))))
 
 ;;;_ , Functions
 ;;;_  . emtt:explore-clause
@@ -125,14 +121,19 @@ This is the heart of Emtest exploration: A test itself."
 	 (t
 	    (funcall report-f
 	       (emt:testral:make-suite
-		  :contents '()
-		  :grade
-		  (emt:testral:make-grade:ungraded
-		     :contents
-		     (list
-			"emtt:explore-clause does not recognize that governor"
-			(emtd:clause->governor clause)))))))))
+		  ;;$$IMPROVE ME Add a note here for contents
 
+		  ;;$$SUPPORT ME In notes.el, a means for concisely
+		  ;;making a notelist with just given notes.
+		  :contents '()
+		  :grade 'ungraded))))))
+;;Note would be like
+'(emtt:testral:add-note
+   "problem"
+    'ungraded
+   'error-raised
+    'unrecognized-governor
+    (emtd:clause->governor clause))
 
 ;;;_  . emtt:explore-literal-clause
 ;;;###autoload

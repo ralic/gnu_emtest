@@ -88,9 +88,7 @@ OBJ must evaluate to an `emtr:expect-data'."
 	    (when aborted-p 
 	       (emtt:testral:add-note 
 		  "problem"
-		  (emt:testral:make-grade:ungraded
-		     :contents
-		     "Interaction had an error") 
+		  'ungraded 
 		  'failed (first data))))))
 
    (ignore-errors
@@ -105,9 +103,7 @@ OBJ must evaluate to an `emtr:expect-data'."
       (emtr:with-testral data
 	 (emtt:testral:add-note
 	    "problem"
-	    (emt:testral:make-grade:ungraded
-	       :contents
-	       "Interaction timed out")
+	    'ungraded
 	    'error-raised
 	    '(timeout))))
    
@@ -194,7 +190,7 @@ If impossible, return nil instead"
       (quote
 	 ;;Record what we did
 	 (emtt:testral:add-note "problem" 
-	    (emt:testral:make-grade:dormant)
+	    'dormant
 	    'doc
 	    "Dormant test")
 	 ;;No interaction for it.
@@ -202,7 +198,7 @@ If impossible, return nil instead"
 
       (t
 	 (emtt:testral:add-note "problem" 
-	    (emt:testral:make-grade:ungraded)
+	    'ungraded
 	    'error-raised
 	    `(unknown-governor ,(car form)))
 	 nil)))
@@ -295,9 +291,7 @@ If impossible, return nil instead"
 		     ;;Make a note about the error
 		     (emtt:testral:add-note
 			"problem"
-			(emt:testral:make-grade:ungraded
-			   :contents
-			   "Interaction timed out")
+			'ungraded
 			'error-raised
 			err)
 		     ;;Then give all the notes.
