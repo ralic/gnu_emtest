@@ -360,7 +360,8 @@ OBJ must be a TESTRAL viewable (`emt:view:note')."
       :symbol nil
       :fail-p nil
       :face   'emtvf:face:dormant
-      :plural "(UNUSED: No tests)"
+      :plural   "(UNUSED: No tests)"
+      :singular "(UNUSED: No tests)"
       :priority 0)
    "The default grade formatting info" )
 
@@ -370,28 +371,32 @@ OBJ must be a TESTRAL viewable (`emt:view:note')."
 	 :symbol 'blowout
 	 :fail-p t
 	 :face   'emtvf:face:blowout
-	 :plural "Blowouts"
+	 :plural   "Blowouts"
+	 :singular "Blowout"
 	 :priority 100
 	 )
       (emtvf:make-grade-fmt
 	 :symbol 'ungraded
 	 :fail-p t
 	 :face   'emtvf:face:ungraded
-	 :plural "Ungraded tests"
+	 :plural   "Ungraded tests"
+	 :singular "Ungraded test"
 	 :priority 75
 	 )
       (emtvf:make-grade-fmt
 	 :symbol 'fail
 	 :fail-p t
 	 :face   'emtvf:face:failed
-	 :plural "Failures"
+	 :plural   "Failures"
+	 :singular "Failure"
 	 :priority 50
 	 )
       (emtvf:make-grade-fmt
 	 :symbol 'dormant
 	 :fail-p t
 	 :face   'emtvf:face:dormant
-	 :plural "Dormant tests"
+	 :plural   "Dormant tests"
+	 :singular "Dormant test"
 	 :priority 25
 	 )
       ;;$$IMPROVE ME  Encap making a passing grade type, omitting
@@ -400,14 +405,16 @@ OBJ must be a TESTRAL viewable (`emt:view:note')."
 	 :symbol 'ok
 	 :fail-p nil
 	 :face   'emtvf:face:ok
-	 :plural "(UNUSED: All passes)"
+	 :plural   "(UNUSED: ok)"
+	 :singular "(UNUSED: ok)"
 	 :priority 10
 	 )
       (emtvf:make-grade-fmt
 	 :symbol 'test-case
 	 :fail-p nil
 	 :face   'emtvf:face:ok
-	 :plural "Test cases"
+	 :plural   "Test cases"
+	 :singular "Test case"
 	 :priority 10)
       emtvf:grade-fmt-default)
    
