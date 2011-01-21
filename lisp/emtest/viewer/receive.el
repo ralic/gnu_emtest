@@ -76,14 +76,16 @@
    ;;`emt:testral:test-runner-info' is never test-gone
    ;;This representation is tentative.
    (when (emt:testral:suite-p suite)
-      (find
+      '(find
 	 ;;$$UPDATE ME  This is no longer what we look for.
 	 ;;$$RETHINK ME Find gone-ness in a different way, perhaps by
 	 ;;recognizing an explorable type for invalid.
 	 '(bad-before-test not-found)
 	 ;;$$ADD ME Type can also be test-runner info.
 	 (emt:testral:suite->grade suite)
-	 :test #'equal)))
+	 :test #'equal)
+      nil
+      ))
 
 ;;;_  . emtvr:receive-one
 
