@@ -81,6 +81,7 @@ STR should be a string"
 ;;;###autoload
 (defmacro emt:stage (stage-args &rest body)
    "Run BODY in an Emtest stage"
+   ;;$$IMPROVE ME  Use `emt:testral:with-parent-note'
    (let
       ((id (make-symbol "id")))
       `(let ((,id (emtt:testral:new-id)))
