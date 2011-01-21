@@ -43,7 +43,7 @@
 
    (expect ;;The governor.
       ;;The parameters
-      ((exec+args ("/bin/sh" "-i"))
+      ((exec+args '("/bin/sh" "-i"))
 	 (shell nil)
 	 (prompt "% ")
 	 (timeout 10))
