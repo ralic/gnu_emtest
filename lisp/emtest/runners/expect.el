@@ -166,7 +166,7 @@ OBJ must evaluate to an `emtr:expect-data'."
 	       :contents
 	       (emtr:with-testral data
 		  (emtt:testral:note-list))
-	       :grade (emt:testral:make-grade:test-case)))
+	       :grade 'test-case))
 	 ;;Close tq
 	 (tq-close (emtr:expect-data->tq data)))))
 
@@ -297,8 +297,7 @@ If impossible, return nil instead"
 		     ;;Then give all the notes.
 		     (emtt:testral:note-list))
 		  :grade
-		  (emt:testral:make-grade:ungraded
-		     :contents '())))))))
+		  'ungraded))))))
 
 
 

@@ -55,8 +55,7 @@
 	       :id "1"
 	       :parent-id nil
 	       :grade 
-	       (emt:testral:make-grade:ungraded
-		  :contents nil)
+	       'ungraded
 	       :relation 'trace
 	       :governor 'error-raised
 	       :value
@@ -143,7 +142,7 @@
 
 	 (item
 	    ((name gone))
-	    (emt:testral:make-grade:blowout)))
+	    'blowout))
 
       ;;$$TEMPORARY until mapping can be easily used.
       (group
@@ -170,7 +169,7 @@
 	 (type-must-be () emt:testral:grade-aux)
 	 (item
 	    ((name test-bad))
-	    (emt:testral:make-grade:ungraded))
+	    'ungraded)
       
 	 (item
 	    ((name test-passes))
@@ -178,7 +177,7 @@
       
 	 (item
 	    ((name has-children-1))
-	    (emt:testral:make-grade:ungraded))
+	    'ungraded)
 
 	 (item
 	    ((name gone))

@@ -34,6 +34,7 @@
 ;;;_. Body
 ;;;_ , emt:testral:grade
 ;;;_  . Base type
+'
 (defstruct (emt:testral:grade
 	      (:constructor emt:testral:make-grade)
 	      (:copier nil)
@@ -41,6 +42,7 @@
    "Base class for grades"
    contents)
 ;;;_  . Dormant
+'
 (defstruct (emt:testral:grade:dormant
 	      (:include emt:testral:grade)
 	      (:constructor emt:testral:make-grade:dormant)
@@ -50,7 +52,7 @@
    reason)
 
 ;;;_  . Fail
-(defstruct (emt:testral:grade:fail
+'(defstruct (emt:testral:grade:fail
 	      (:include emt:testral:grade)
 	      (:constructor emt:testral:make-grade:fail)
 	      (:copier nil)
@@ -58,7 +60,7 @@
    "A failure grade")
 
 ;;;_  . Ungraded
-(defstruct (emt:testral:grade:ungraded
+'(defstruct (emt:testral:grade:ungraded
 	      (:include emt:testral:grade)
 	      (:constructor emt:testral:make-grade:ungraded)
 	      (:copier nil)
@@ -66,14 +68,14 @@
    "A lack of grade because of errors in the test")
 
 ;;;_  . Blowout
-(defstruct (emt:testral:grade:blowout
+'(defstruct (emt:testral:grade:blowout
 	      (:include emt:testral:grade)
 	      (:constructor emt:testral:make-grade:blowout)
 	      (:copier nil)
 	      (:conc-name emt:testral:grade:blowout->))
    "A lack of grade because of errors outside the test")
 ;;;_  . Test-case
-(defstruct (emt:testral:grade:test-case
+'(defstruct (emt:testral:grade:test-case
 	      (:include emt:testral:grade)
 	      (:constructor emt:testral:make-grade:test-case)
 	      (:copier nil)

@@ -275,9 +275,7 @@ GOVERNOR is a symbol indicating a specific formatter for the output."
 	       parent-id 
 	       '() 
 	       'problem
-	       (emt:testral:make-grade:ungraded
-		  :contents
-		  "An error was seen while storing a note")
+	       'ungraded
 	       'error-raised err)))))
 
 

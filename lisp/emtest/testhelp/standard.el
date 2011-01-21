@@ -137,9 +137,7 @@ If the error is `emt:already-handled', just return `nil'."
        (progn ,@body)
        (emtt:testral:add-note
 	  "problem" 
-	  (emt:testral:make-grade:ungraded
-	     :contents 
-	     "An error escaped to `emth:trap-errors'")
+	  'ungraded
 	  'error-raised
 	  err)))
 
@@ -193,7 +191,7 @@ If errors are seen, raise a single error instead."
    (emtt:testral:add-note-w/id
       id
       "trace"
-      (emt:testral:make-grade:ungraded)
+      'ungraded
       ;;$$IMPROVE ME Make something specific for this.
       'failed
       form)
@@ -263,7 +261,7 @@ Only make notes if form calls a true function, not a macro or subr."
 		  (emtt:testral:add-note-w/id
 		     id
 		     "trace"
-		     (emt:testral:make-grade:fail)
+		     'fail
 		     'failed
 		     form))
 	       retval)
@@ -273,9 +271,7 @@ Only make notes if form calls a true function, not a macro or subr."
 	       (emtt:testral:with-parent-id id
 		  (emtt:testral:add-note
 		     "problem" 
-		     (emt:testral:make-grade:ungraded
-			:contents 
-			"An error invalidated the assertion")
+		     'ungraded
 		     'error-raised
 		     err))
 	       (emt:assert-report-error id form))))

@@ -113,9 +113,7 @@ HOW must be of a subtype of emthow"
 	 :contents nil
 	 ;;Actual form is TBD.
 	 :grade 
-	 (emt:testral:make-grade:ungraded
-	    :contents
-	    "Unrecognized internal explore type"))))
+	 'ungraded)))
 
 ;;;_. Footers
 ;;;_ , Provides
