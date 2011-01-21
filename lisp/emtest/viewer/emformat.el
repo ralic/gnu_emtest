@@ -330,8 +330,17 @@ OBJ must be a TESTRAL viewable (`emt:view:note')."
 (defun emtvf:grade-boring (obj)
    "Return non-nil if OBJ is all passing grades.
 OBJ must be a `emt:testral:grade:summary'"
-   ;;$$REDESIGN ME  Complete hack here.
-   (eq (emtvf:grade-overall-face obj) 'emtvf:face:ok))
+   (let
+      ((nobj (emtvr:summary->summary (emtvr:grade->summary obj))))
+      (case (emt:grade:summary->worst nobj)
+	 
+	 (blowout   nil)
+	 (ungraded  nil)
+	 (fail      nil)
+	 (dormant   nil)
+	 (ok        t)
+	 ((nil)     t))))
+
 
 ;;;_  . emtvf:grade-overall-face
 (defun emtvf:grade-overall-face (obj)
