@@ -38,6 +38,22 @@
    "The ID of a reported suite.  In fact a how-to-run object"
    'emthow)
 
+;;;_ , Grade summary
+
+(defstruct (emt:grade:summary
+	      (:include emt:testral:grade)
+	      (:constructor emt:make-grade:summary)
+	      (:copier nil)
+	      (:conc-name emt:grade:summary->))
+   "Class for summarized grades"
+   (worst      nil :type symbol
+      :doc "The symbol of the worst result-type in the grades.  
+If there were no failures etc, `ok'.
+But if there were no cases, assertions, etc, `nil'."
+      )
+   (grades     ()  
+      :type
+      (repeat (cons symbol integer))))
 
 ;;;_ , Presentables
 ;;;_  . Base viewable
@@ -48,11 +64,12 @@
 	      (:include emtvp:node))
    "The base viewable type.  We use this as the content element in
 pathtree nodes."
-   ;;Summarized grades from all subtrees.  They are summarized
-   ;;treewise, including any grades from this node.
-   ;;$$RETHINK ME Make this always an `emt:testral:grade:summary', and
-   ;;move that's definition into here.
-   (sum-grades () :type (repeat emt:testral:grade))
+   ;;$$RETHINK ME Make this an `emt:grade:summary'.
+   (sum-grades () :type (repeat emt:testral:grade)
+      :doc
+      "Summarized grades from all subtrees.  They are summarized
+treewise, including any grades from this node."
+      )
    ;;This relates to a display
    (list ()))
 
@@ -100,7 +117,6 @@ pathtree nodes."
 	    (:conc-name emt:view:note-placeholder->)
 	      (:include emt:view:presentable))
    "A blank note-like placeholder, not associated with a TESTRAL note")
-
 
 ;;;_. Footers
 ;;;_ , Provides
