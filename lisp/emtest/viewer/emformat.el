@@ -326,37 +326,118 @@ OBJ must be a TESTRAL viewable (`emt:view:note')."
 	     "\n"))))
 
 ;;;_ , About grades
+;;;_  . Structure emtvf:grade-format-info
+(defstruct (emtvf:grade-format-info
+	      (:type list)
+	      (:constructor emtvf:make-grade-format-info)
+	      (:copier nil)
+	      (:conc-name emtvf:grade-format-info->))
+   "Describes how a given grade is formatter"
+   (symbol () :type symbol
+      :doc "The symbol that represents this grade-type.  Can also be
+`ok' which represents any non-fail grade."
+      )
+   (fail-p () :type boolean
+      :doc "True if grade is a type of bad grade")
+   (face   () :type symbol
+      :doc "The face to display this grade in")
+   (description "NO DESCRIPTION"
+      :type string
+      :doc "A string saying the plural of this cases, eg \"Failures\"")
+   (priority 0
+      :type integer
+      :doc "The priority of this grade type, higher numbers being more
+	      prominent." 
+      ))
+
+;;;_  . Data
+(defconst emtvf:grade-format-default 
+   (emtvf:make-grade-format-info
+      :symbol nil
+      :fail-p nil
+      :face   'emtvf:face:dormant
+      :description "(UNUSED: No tests)"
+      :priority 0)
+   "The default grade formatting info" )
+
+(defconst emtvf:grade-format-data 
+   (list
+      (emtvf:make-grade-format-info
+	 :symbol 'blowout
+	 :fail-p t
+	 :face   'emtvf:face:blowout
+	 :description "Blowouts"
+	 :priority 100
+	 )
+      (emtvf:make-grade-format-info
+	 :symbol 'ungraded
+	 :fail-p t
+	 :face   'emtvf:face:ungraded
+	 :description "Ungraded tests"
+	 :priority 75
+	 )
+      (emtvf:make-grade-format-info
+	 :symbol 'fail
+	 :fail-p t
+	 :face   'emtvf:face:failed
+	 :description "Failures"
+	 :priority 50
+	 )
+      (emtvf:make-grade-format-info
+	 :symbol 'dormant
+	 :fail-p t
+	 :face   'emtvf:face:dormant
+	 :description "Dormant tests"
+	 :priority 25
+	 )
+      ;;$$IMPROVE ME  Encap making a passing grade type, omitting
+      ;;redundant info from arglist
+      (emtvf:make-grade-format-info
+	 :symbol 'ok
+	 :fail-p nil
+	 :face   'emtvf:face:ok
+	 :description "(UNUSED: All passes)"
+	 :priority 10
+	 )
+      (emtvf:make-grade-format-info
+	 :symbol 'test-case
+	 :fail-p nil
+	 :face   'emtvf:face:ok
+	 :description "Test cases"
+	 :priority 10)
+      emtvf:grade-format-default)
+   
+   "Alist of grade formatting info" )
+;;;_  . emtvf:get-grade-info
+(defun emtvf:get-grade-info (sym)
+   "Always return formatting info about SYM.
+SYM should be a grade symbol."
+   (or 
+      (assq sym emtvf:grade-format-data)
+      emtvf:grade-format-default))
+
 ;;;_  . emtvf:grade-boring
 (defun emtvf:grade-boring (obj)
    "Return non-nil if OBJ is all passing grades.
 OBJ must be a `emt:testral:grade:summary'"
-   (let
-      ((nobj (emtvr:summary->summary (emtvr:grade->summary obj))))
-      (case (emt:grade:summary->worst nobj)
-	 
-	 (blowout   nil)
-	 (ungraded  nil)
-	 (fail      nil)
-	 (dormant   nil)
-	 (ok        t)
-	 ((nil)     t))))
-
+   (let*
+      ((nobj (emtvr:summary->summary (emtvr:grade->summary obj)))
+	 (worst (emt:grade:summary->worst nobj))
+	 (info (emtvf:get-grade-info worst)))
+      (not
+	 (emtvf:grade-format-info->fail-p info))))
 
 ;;;_  . emtvf:grade-overall-face
 (defun emtvf:grade-overall-face (obj)
    "Return a face that hints at the overall quality of grades in OBJ.
 OBJ should be an `emt:grade:summary'."
 
-   (let
-      ((nobj (emtvr:summary->summary (emtvr:grade->summary obj))))
-      (case (emt:grade:summary->worst nobj)
-	 
-	 (blowout   'emtvf:face:blowout)
-	 (ungraded  'emtvf:face:ungraded)
-	 (fail      'emtvf:face:failed)
-	 (dormant   'emtvf:face:dormant)
-	 (ok        'emtvf:face:ok)
-	 ((nil)     'emtvf:face:dormant))))
+   (let*
+      ((nobj (emtvr:summary->summary (emtvr:grade->summary obj)))
+	 (worst (emt:grade:summary->worst nobj))
+	 (info (emtvf:get-grade-info worst)))
+      (emtvf:grade-format-info->face info)))
+
 
 
 ;;;_  . emtvf:sum-grades-short
@@ -382,15 +463,20 @@ OBJ should be an `emt:grade:summary'."
 	       (hiformat:separate
 		  (delq nil
 		     (mapcar
-			#'(lambda (data)
-			     (destructuring-bind (n text face) data
-				(when (> n  0) 
-				   `(w/face ,text ,face))))
-			(list
-			   (list blowouts  "Blowouts"	 'emtvf:face:blowout)
-			   (list ungradeds "Ungraded tests" 'emtvf:face:ungraded)
-			   (list fails     "Failures" 	 'emtvf:face:failed)
-			   (list dormants  "Dormant tests"  'emtvf:face:dormant))))
+			#'(lambda (obj)
+			     (destructuring-bind 
+				(sym count) obj
+				(let
+				   ((info (emtvf:get-grade-info sym)))
+				   (if
+				      (emtvf:grade-format-info->fail-p info)
+				      `(w/face 
+					  ,(emtvf:grade-format-info->description
+					      info)
+					  ,(emtvf:grade-format-info->face
+					      info))
+				      '()))))
+			(emt:grade:summary->grades nobj)))
 		  '(", "))
 	       ".")))))
 
