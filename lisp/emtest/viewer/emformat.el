@@ -326,12 +326,12 @@ OBJ must be a TESTRAL viewable (`emt:view:note')."
 	     "\n"))))
 
 ;;;_ , About grades
-;;;_  . Structure emtvf:grade-format-info
-(defstruct (emtvf:grade-format-info
+;;;_  . Structure emtvf:grade-fmt
+(defstruct (emtvf:grade-fmt
 	      (:type list)
-	      (:constructor emtvf:make-grade-format-info)
+	      (:constructor emtvf:make-grade-fmt)
 	      (:copier nil)
-	      (:conc-name emtvf:grade-format-info->))
+	      (:conc-name emtvf:grade-fmt->))
    "Describes how a given grade is formatter"
    (symbol () :type symbol
       :doc "The symbol that represents this grade-type.  Can also be
@@ -351,8 +351,8 @@ OBJ must be a TESTRAL viewable (`emt:view:note')."
       ))
 
 ;;;_  . Data
-(defconst emtvf:grade-format-default 
-   (emtvf:make-grade-format-info
+(defconst emtvf:grade-fmt-default 
+   (emtvf:make-grade-fmt
       :symbol nil
       :fail-p nil
       :face   'emtvf:face:dormant
@@ -360,30 +360,30 @@ OBJ must be a TESTRAL viewable (`emt:view:note')."
       :priority 0)
    "The default grade formatting info" )
 
-(defconst emtvf:grade-format-data 
+(defconst emtvf:grade-fmt-alist 
    (list
-      (emtvf:make-grade-format-info
+      (emtvf:make-grade-fmt
 	 :symbol 'blowout
 	 :fail-p t
 	 :face   'emtvf:face:blowout
 	 :description "Blowouts"
 	 :priority 100
 	 )
-      (emtvf:make-grade-format-info
+      (emtvf:make-grade-fmt
 	 :symbol 'ungraded
 	 :fail-p t
 	 :face   'emtvf:face:ungraded
 	 :description "Ungraded tests"
 	 :priority 75
 	 )
-      (emtvf:make-grade-format-info
+      (emtvf:make-grade-fmt
 	 :symbol 'fail
 	 :fail-p t
 	 :face   'emtvf:face:failed
 	 :description "Failures"
 	 :priority 50
 	 )
-      (emtvf:make-grade-format-info
+      (emtvf:make-grade-fmt
 	 :symbol 'dormant
 	 :fail-p t
 	 :face   'emtvf:face:dormant
@@ -392,20 +392,20 @@ OBJ must be a TESTRAL viewable (`emt:view:note')."
 	 )
       ;;$$IMPROVE ME  Encap making a passing grade type, omitting
       ;;redundant info from arglist
-      (emtvf:make-grade-format-info
+      (emtvf:make-grade-fmt
 	 :symbol 'ok
 	 :fail-p nil
 	 :face   'emtvf:face:ok
 	 :description "(UNUSED: All passes)"
 	 :priority 10
 	 )
-      (emtvf:make-grade-format-info
+      (emtvf:make-grade-fmt
 	 :symbol 'test-case
 	 :fail-p nil
 	 :face   'emtvf:face:ok
 	 :description "Test cases"
 	 :priority 10)
-      emtvf:grade-format-default)
+      emtvf:grade-fmt-default)
    
    "Alist of grade formatting info" )
 ;;;_  . emtvf:get-grade-info
@@ -413,8 +413,8 @@ OBJ must be a TESTRAL viewable (`emt:view:note')."
    "Always return formatting info about SYM.
 SYM should be a grade symbol."
    (or 
-      (assq sym emtvf:grade-format-data)
-      emtvf:grade-format-default))
+      (assq sym emtvf:grade-fmt-alist)
+      emtvf:grade-fmt-default))
 
 ;;;_  . emtvf:grade-boring
 (defun emtvf:grade-boring (obj)
@@ -425,7 +425,7 @@ OBJ must be a `emt:testral:grade:summary'"
 	 (worst (emt:grade:summary->worst nobj))
 	 (info (emtvf:get-grade-info worst)))
       (not
-	 (emtvf:grade-format-info->fail-p info))))
+	 (emtvf:grade-fmt->fail-p info))))
 
 ;;;_  . emtvf:grade-overall-face
 (defun emtvf:grade-overall-face (obj)
@@ -436,7 +436,7 @@ OBJ should be an `emt:grade:summary'."
       ((nobj (emtvr:summary->summary (emtvr:grade->summary obj)))
 	 (worst (emt:grade:summary->worst nobj))
 	 (info (emtvf:get-grade-info worst)))
-      (emtvf:grade-format-info->face info)))
+      (emtvf:grade-fmt->face info)))
 
 
 
@@ -445,13 +445,7 @@ OBJ should be an `emt:grade:summary'."
    "Give a summary of grades for this object."
    (let*
       (
-	 (obj (emtvr:grade->summary obj))
-	 (nobj (emtvr:summary->summary (emtvr:grade->summary obj)))
-	 (test-cases (emt:testral:grade:summary->test-cases obj))
-	 (fails      (emt:testral:grade:summary->fails      obj))
-	 (ungradeds  (emt:testral:grade:summary->ungradeds  obj))
-	 (dormants   (emt:testral:grade:summary->dormants   obj))
-	 (blowouts   (emt:testral:grade:summary->blowouts   obj)))
+	 (nobj (emtvr:summary->summary (emtvr:grade->summary obj))))
       (case (emt:grade:summary->worst nobj)
 	 (ok
 	    '(w/face "All OK" emtvf:face:ok))
@@ -469,11 +463,11 @@ OBJ should be an `emt:grade:summary'."
 				(let
 				   ((info (emtvf:get-grade-info sym)))
 				   (if
-				      (emtvf:grade-format-info->fail-p info)
+				      (emtvf:grade-fmt->fail-p info)
 				      `(w/face 
-					  ,(emtvf:grade-format-info->description
+					  ,(emtvf:grade-fmt->description
 					      info)
-					  ,(emtvf:grade-format-info->face
+					  ,(emtvf:grade-fmt->face
 					      info))
 				      '()))))
 			(emt:grade:summary->grades nobj)))
