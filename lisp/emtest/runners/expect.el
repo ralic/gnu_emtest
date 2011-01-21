@@ -226,6 +226,12 @@ If impossible, return nil instead"
 		  (dummy
 		     (when (null exec+args)
 			(error "emtr:expect: no exec+args given")))
+		  (dummy
+		     (when (not (stringp (car exec+args)))
+			(error "emtr:expect: exec is not a string")))
+		  (dummy
+		     (when (not (file-name-absolute-p (car exec+args)))
+			(error "emtr:expect: path to exec is not absolute")))
 		  (prompt
 		     (eval
 			(second (assq 'prompt    form-parms))))
