@@ -52,7 +52,7 @@
    pending
    prompt
    testral-obj
-   (parent-id () :doc
+   (interaction-id () :doc
       "The parent note id of the current interaction"))
 
 ;;;_  . emtr:interact-predata
@@ -82,7 +82,9 @@ OBJ must evaluate to an `emtr:expect-data'."
       (emtt:testral:continued-with (second data)
 	 (emth:protect&trap
 	    aborted-p
-	    (eval (first data))
+	    (emtt:testral:with-parent-id
+	       (emtr:expect-data->interaction-id (third data))
+	       (eval (first data)))
 	    (when aborted-p 
 	       (emtt:testral:add-note 
 		  "problem"
@@ -125,14 +127,21 @@ OBJ must evaluate to an `emtr:expect-data'."
 	 ((next
 	     (pop (emtr:expect-data->pending data)))
 	    timer)
-	 ;;Make a note of what the next interaction will send
 	 (ignore-errors
 	    (emtr:with-testral data
-	       (emtt:testral:add-note "param" nil
-		  'parameter
-		  'question
-		  (emtr:interact-predata->question next))))
-
+	       (let* 
+		  ((id (emtt:testral:new-id)))
+		  ;;Make a scope note for the next interaction
+		  (emtt:testral:add-note-w/id id "trace" nil 'scope)
+		  ;;Make a note of what we will send
+		  (emtt:testral:with-parent-id id
+		     (emtt:testral:add-note "param" nil
+			'parameter
+			'question
+			(emtr:interact-predata->question next)))
+		  ;;Store its parent note id
+		  (setf (emtr:expect-data->interaction-id data) id))))
+	 
 	 ;;$$ENCAP ME.
 	 (setf
 	    (emtr:expect-data->timer data)
@@ -206,6 +215,8 @@ If impossible, return nil instead"
 (defun emtr:expect (props form report-f)
    "Run a test-case on external program and report the result."
 
+   ;;$$IMPROVE ME  Catch errors and make a suite report anyways.
+
    ;;Testpoint to check what we receive.
    (emtp tp:96304f8f-2edc-4ac9-8ecb-9c6ad9ce0415
       (form)
@@ -262,12 +273,33 @@ If impossible, return nil instead"
 			;;Timer is not set now, it will be set when we
 			;;start
 			:timer nil 
+			;;Will be set when we start.
+			:interaction-id nil 
 			:pending pending
 			:prompt prompt
 			:testral-obj con)))
 
-	       ;;Start it all.
-	       (emtr:expect-start-next data))))))
+	       (if
+		  ;;Sanity-check: We have a live process.
+		  (equal
+		     (process-exit-status (tq-process tq))
+		     0)
+		  ;;Start it
+		  (emtr:expect-start-next data)
+		  ;;Otherwise report on it.
+		  ;;$$IMPROVE ME Make a sensible note
+		  (funcall (emtr:expect-data->report-f data)
+		     (emt:testral:make-suite
+			:contents
+			(emtr:with-testral data
+			   (emtt:testral:note-list))
+			:grade
+			(emt:testral:make-grade:ungraded
+			   :contents
+			   (list
+			      "emtr:expect: Don't have a live process")
+			   )))))))))
+
 
 ;;;_ , Register it
 ;;$$TRANSITIONAL - belongs at the top of the file
