@@ -341,14 +341,18 @@ OBJ must be a TESTRAL viewable (`emt:view:note')."
       :doc "True if grade is a type of bad grade")
    (face   () :type symbol
       :doc "The face to display this grade in")
-   (description "NO DESCRIPTION"
+   (plural "NO DESCRIPTION"
       :type string
-      :doc "A string saying the plural of this cases, eg \"Failures\"")
+      :doc "A string saying the plural of this, eg \"Failures\"")
+   (singular "NO DESCRIPTION"
+      :type string
+      :doc "A string saying the singular of this, eg \"Failure\"")
    (priority 0
       :type integer
       :doc "The priority of this grade type, higher numbers being more
 	      prominent." 
       ))
+
 
 ;;;_  . Data
 (defconst emtvf:grade-fmt-default 
@@ -356,7 +360,7 @@ OBJ must be a TESTRAL viewable (`emt:view:note')."
       :symbol nil
       :fail-p nil
       :face   'emtvf:face:dormant
-      :description "(UNUSED: No tests)"
+      :plural "(UNUSED: No tests)"
       :priority 0)
    "The default grade formatting info" )
 
@@ -366,28 +370,28 @@ OBJ must be a TESTRAL viewable (`emt:view:note')."
 	 :symbol 'blowout
 	 :fail-p t
 	 :face   'emtvf:face:blowout
-	 :description "Blowouts"
+	 :plural "Blowouts"
 	 :priority 100
 	 )
       (emtvf:make-grade-fmt
 	 :symbol 'ungraded
 	 :fail-p t
 	 :face   'emtvf:face:ungraded
-	 :description "Ungraded tests"
+	 :plural "Ungraded tests"
 	 :priority 75
 	 )
       (emtvf:make-grade-fmt
 	 :symbol 'fail
 	 :fail-p t
 	 :face   'emtvf:face:failed
-	 :description "Failures"
+	 :plural "Failures"
 	 :priority 50
 	 )
       (emtvf:make-grade-fmt
 	 :symbol 'dormant
 	 :fail-p t
 	 :face   'emtvf:face:dormant
-	 :description "Dormant tests"
+	 :plural "Dormant tests"
 	 :priority 25
 	 )
       ;;$$IMPROVE ME  Encap making a passing grade type, omitting
@@ -396,14 +400,14 @@ OBJ must be a TESTRAL viewable (`emt:view:note')."
 	 :symbol 'ok
 	 :fail-p nil
 	 :face   'emtvf:face:ok
-	 :description "(UNUSED: All passes)"
+	 :plural "(UNUSED: All passes)"
 	 :priority 10
 	 )
       (emtvf:make-grade-fmt
 	 :symbol 'test-case
 	 :fail-p nil
 	 :face   'emtvf:face:ok
-	 :description "Test cases"
+	 :plural "Test cases"
 	 :priority 10)
       emtvf:grade-fmt-default)
    
@@ -465,7 +469,7 @@ OBJ should be an `emt:grade:summary'."
 				   (if
 				      (emtvf:grade-fmt->fail-p info)
 				      `(w/face 
-					  ,(emtvf:grade-fmt->description
+					  ,(emtvf:grade-fmt->plural
 					      info)
 					  ,(emtvf:grade-fmt->face
 					      info))
@@ -481,6 +485,7 @@ OBJ should be an `emt:grade:summary'."
    (let*
       (
 	 (obj (emtvr:grade->summary obj))
+	 (nobj (emtvr:summary->summary (emtvr:grade->summary obj)))
 	 (test-cases (emt:testral:grade:summary->test-cases obj))
 	 (fails      (emt:testral:grade:summary->fails      obj))
 	 (ungradeds  (emt:testral:grade:summary->ungradeds  obj))
