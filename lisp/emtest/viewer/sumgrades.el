@@ -33,6 +33,35 @@
 
 ;;;_. Body
 ;;;_ , Functions
+;;;_  . emtvr:summary->summary
+(defun emtvr:summary->summary (obj)
+   "Return a new-style grade summary, converted from OBJ"
+   (let*
+      (
+	 (obj (emtvr:grade->summary obj))
+	 (test-cases (emt:testral:grade:summary->test-cases obj))
+	 (fails      (emt:testral:grade:summary->fails      obj))
+	 (ungradeds  (emt:testral:grade:summary->ungradeds  obj))
+	 (dormants   (emt:testral:grade:summary->dormants   obj))
+	 (blowouts   (emt:testral:grade:summary->blowouts   obj)))
+      (emt:make-grade:summary
+	 :grades
+	 `(
+	     ,@(if (> blowouts   0) `(blowout  ,blowouts  ) '())
+	     ,@(if (> ungradeds  0) `(ungraded ,ungradeds ) '())
+	     ,@(if (> fails      0) `(failed   ,fails     ) '())
+	     ,@(if (> dormants   0) `(dormant  ,dormants  ) '())
+	     ,@(if (> test-cases 0) `(ok       ,test-cases) '())
+             
+	     )
+	 :worst
+	 (cond
+	    ((> blowouts   0) 'blowout)
+	    ((> ungradeds  0) 'ungraded)
+	    ((> fails      0) 'failed)
+	    ((> dormants   0) 'dormant)
+	    ((> test-cases 0) 'ok)
+	    (t                nil)))))
 ;;;_  . emtvr:grade->summary
 (defun emtvr:grade->summary (obj)
    "Change OBJ object into a grade summary.
