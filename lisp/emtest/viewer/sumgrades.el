@@ -46,14 +46,14 @@
 	 (blowouts   (emt:testral:grade:summary->blowouts   obj)))
       (emt:make-grade:summary
 	 :grades
-	 `(
-	     ,@(if (> blowouts   0) `(blowout  ,blowouts  ) '())
-	     ,@(if (> ungradeds  0) `(ungraded ,ungradeds ) '())
-	     ,@(if (> fails      0) `(failed   ,fails     ) '())
-	     ,@(if (> dormants   0) `(dormant  ,dormants  ) '())
-	     ,@(if (> test-cases 0) `(ok       ,test-cases) '())
-             
-	     )
+	 (delq nil
+	    (list
+	       (if (> blowouts   0) `(blowout  ,blowouts  ) nil)
+	       (if (> ungradeds  0) `(ungraded ,ungradeds ) nil)
+	       (if (> fails      0) `(failed   ,fails     ) nil)
+	       (if (> dormants   0) `(dormant  ,dormants  ) nil)
+	       (if (> test-cases 0) `(ok       ,test-cases) nil)))
+	 
 	 :worst
 	 (cond
 	    ((> blowouts   0) 'blowout)
