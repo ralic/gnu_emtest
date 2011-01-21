@@ -335,23 +335,20 @@ OBJ must be a `emt:testral:grade:summary'"
 
 ;;;_  . emtvf:grade-overall-face
 (defun emtvf:grade-overall-face (obj)
-   ""
-   
-   (let*
-      (
-	 (obj (emtvr:grade->summary obj))
-	 (test-cases (emt:testral:grade:summary->test-cases obj))
-	 (fails      (emt:testral:grade:summary->fails      obj))
-	 (ungradeds  (emt:testral:grade:summary->ungradeds  obj))
-	 (dormants   (emt:testral:grade:summary->dormants   obj))
-	 (blowouts   (emt:testral:grade:summary->blowouts   obj)))
-      (cond
-	 ((> blowouts   0) 'emtvf:face:blowout)
-	 ((> ungradeds  0) 'emtvf:face:ungraded)
-	 ((> fails      0) 'emtvf:face:failed)
-	 ((> dormants   0) 'emtvf:face:dormant)
-	 ((> test-cases 0) 'emtvf:face:ok)
-	 (t                'emtvf:face:dormant))))
+   "Return a face that hints at the overall quality of grades in OBJ.
+OBJ should be an `emt:grade:summary'."
+
+   (let
+      ((nobj (emtvr:summary->summary (emtvr:grade->summary obj))))
+      (case (emt:grade:summary->worst nobj)
+	 
+	 (blowout   'emtvf:face:blowout)
+	 (ungraded  'emtvf:face:ungraded)
+	 (fail      'emtvf:face:failed)
+	 (dormant   'emtvf:face:dormant)
+	 (ok        'emtvf:face:ok)
+	 ((nil)     'emtvf:face:dormant))))
+
 
 ;;;_  . emtvf:sum-grades-short
 (defun emtvf:sum-grades-short (obj &rest d)
