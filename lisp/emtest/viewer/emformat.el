@@ -474,13 +474,13 @@ SEPARATOR, if non-nil, is what separates the items."
    (let*
       (
 	 (nobj (emtvr:->grade-summary obj))
-	 (worst (emt:grade:summary->worst nobj))
-	 (w-info (emtvf:get-grade-info worst)))
+	 (worst (emt:grade:summary->worst nobj)))
       
       (cond
 	 ((null worst)
 	    '(w/face "Nothing was tested" emtvf:face:dormant))
-	 ((emtvf:grade-fmt->fail-p w-info)
+	 ((emtvf:grade-fmt->fail-p 
+	     (emtvf:get-grade-info worst))
 	    (list
 	       '(w/face "Problems: " emtvf:face:failed)
 	       (emtvf:map-grades
@@ -504,6 +504,7 @@ SEPARATOR, if non-nil, is what separates the items."
    (let*
       (
 	 (nobj  (emtvr:->grade-summary obj))
+	 (worst (emt:grade:summary->worst nobj))
 	 (successes
 	    (emtvf:map-grades
 	       #'(lambda (info count)
@@ -532,16 +533,11 @@ SEPARATOR, if non-nil, is what separates the items."
 		       '()))
 	       nobj
 	       "\n")))
-      (case (emt:grade:summary->worst nobj)
-	 (ok
-	    (list
-	       '(w/face "All OK" emtvf:face:ok)
-	       '(sep 5)
-	       successes
-	       '(sep 4)))
-	 ((nil)
+      (cond
+	 ((null worst)
 	    '(w/face ("Nothing was tested" "\n") emtvf:face:dormant))
-	 (t
+	 ((emtvf:grade-fmt->fail-p 
+	     (emtvf:get-grade-info worst))
 	    (list
 	       "Problems:"
 	       '(sep 5)
@@ -550,7 +546,13 @@ SEPARATOR, if non-nil, is what separates the items."
 	       (if successes 
 		  `("Completions:" (sep 5) ,successes)
 		  '("Nothing succeeded"))
-	       "\n")))))
+	       "\n"))
+	 (t
+	    (list
+	       '(w/face "All OK" emtvf:face:ok)
+	       '(sep 5)
+	       successes
+	       '(sep 4))))))
 
 ;;;_. Footers
 ;;;_ , Provides
