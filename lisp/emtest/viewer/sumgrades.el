@@ -29,6 +29,7 @@
 
 ;;;_ , Requires
 
+(require 'emtest/viewer/view-types)
 (require 'emtest/types/grade-types)
 
 ;;;_. Body
