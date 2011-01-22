@@ -128,7 +128,9 @@ OBJ must evaluate to an `emtr:expect-data'."
 	       (let* 
 		  ((id (emtt:testral:new-id)))
 		  ;;Make a scope note for the next interaction
-		  (emtt:testral:add-note-w/id id "trace" nil 'scope)
+		  (emtt:testral:add-note-w/id id "trace" nil 'scope 
+		     ;;$$IMPROVE ME  Make a nicer name, perhaps indexed.
+		     "Interaction")
 		  ;;Make a note of what we will send
 		  (emtt:testral:with-parent-id id
 		     (emtt:testral:add-note "param" nil
