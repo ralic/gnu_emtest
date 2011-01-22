@@ -45,7 +45,11 @@ OBJ must be a emt:testral:grade-aux and may already be a summary."
 	    ((obj-aux (emt:make-grade:summary)))
 	    (emtvr:add-grades obj-aux obj)
 	    obj-aux))))
-
+;;;_  . emtvr:sym->severity
+(defun emtvr:sym->severity (sym)
+   "Return the severity of SYM, which should be a grade symbol."
+   (emtvf:grade-fmt->priority
+      (emtvf:get-grade-info sym)))
 ;;;_  . emtvr:add-one-grade
 (defun emtvr:add-one-grade (sums sym count)
    "Add the grade represented by SYM to SUMS"
@@ -65,11 +69,8 @@ OBJ must be a emt:testral:grade-aux and may already be a summary."
 
       (when
 	 (>
-	    ;;$$FACTOR ME
-	    (emtvf:grade-fmt->priority
-	       (emtvf:get-grade-info sym))
-	    (emtvf:grade-fmt->priority
-	       (emtvf:get-grade-info (emt:grade:summary->worst sums))))
+	    (emtvr:sym->severity sym)
+	    (emtvr:sym->severity (emt:grade:summary->worst sums)))
 	 (setf 
 	    (emt:grade:summary->worst sums)
 	    sym))))
