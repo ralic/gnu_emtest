@@ -549,7 +549,7 @@ OBJ should be an `emt:grade:summary'."
 	       failures
 	       '(sep 4)
 	       (if successes 
-		  `("Successes:" (sep 5) ,successes)
+		  `("Completions:" (sep 5) ,successes)
 		  '("Nothing succeeded"))
 	       "\n")))))
 
