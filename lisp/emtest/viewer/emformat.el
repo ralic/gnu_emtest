@@ -193,7 +193,8 @@ If VALUE is a string, display it literally, otherwise pretty-print it."
       :els=0 els=0))
 
 ;;;_  . emtvf:shortcut-single
-(defmacro emtvf:shortcut-single (name children rest-headline face format-no-child)
+(defmacro emtvf:shortcut-single (name children rest-headline face
+   format-no-child &optional fold)
    "Display an item and its children, or display its single child.
 Intended for items that are basically just containers."
    (let
@@ -211,7 +212,8 @@ Intended for items that are basically just containers."
 	     (emtvf:outline-item-emformat
 		(list ,name-sym ,rest-headline)
 		(emtvf:mapnodes ,children-sym ,format-no-child)
-		,face)))))
+		,face
+		,fold)))))
 
 ;;;_ , Format functions
 ;;;_  . emtvf:top
