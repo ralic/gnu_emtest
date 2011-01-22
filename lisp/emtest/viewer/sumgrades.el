@@ -66,7 +66,6 @@ OBJ must be a emt:testral:grade-aux and may already be a summary."
 	 (push
 	    (list sym count)
 	    (emt:grade:summary->grades sums)))
-
       (when
 	 (>
 	    (emtvr:sym->severity sym)
@@ -78,76 +77,20 @@ OBJ must be a emt:testral:grade-aux and may already be a summary."
 
 ;;;_  . emtvr:add-grades
 (defun emtvr:add-grades (sums a)
-   "Add A to grade summary SUMS.
-A must be a grade or a grade summary."
-   (typecase sums
+   "Add A to grade summary SUMS and return SUMS
+SUMS must be a `emt:grade:summary'.
+A may be a grade symbol, a grade summary, or nil."
+   (check-type sums emt:grade:summary)
+   (etypecase a
+      (null sums)
+      (symbol
+	 (emtvr:add-one-grade sums a 1))
       (emt:grade:summary
-	 (etypecase a
-	    (symbol
-	       (emtvr:add-one-grade sums a 1))
-	    (emt:grade:summary
-	       (dolist (grade (emt:grade:summary->grades a))
-		  (emtvr:add-one-grade sums 
-		     (first grade) 
-		     (second grade))))))
-      ;;$$OBSOLESCENT
-      (emt:testral:grade:summary
-	 (typecase a
-	    (emt:testral:grade:summary
-	       (incf 
-		  (emt:testral:grade:summary->test-cases sums)
-		  (emt:testral:grade:summary->test-cases a))
-	       (incf 
-		  (emt:testral:grade:summary->fails sums)
-		  (emt:testral:grade:summary->fails a))	 
-	       (incf 
-		  (emt:testral:grade:summary->ungradeds sums)
-		  (emt:testral:grade:summary->ungradeds a))
-	       (incf 
-		  (emt:testral:grade:summary->dormants sums)
-		  (emt:testral:grade:summary->dormants a))
-	       (incf 
-		  (emt:testral:grade:summary->blowouts sums)
-		  (emt:testral:grade:summary->blowouts a)))
-	    (emt:testral:grade:test-case
-	       (incf 
-		  (emt:testral:grade:summary->test-cases sums)))
-	    (emt:testral:grade:fail
-	       (incf 
-		  (emt:testral:grade:summary->fails      sums)))
-	    (emt:testral:grade:ungraded
-	       (incf 
-		  (emt:testral:grade:summary->ungradeds  sums)))
-	    (emt:testral:grade:dormant
-	       (incf 
-		  (emt:testral:grade:summary->dormants   sums)))
-	    (emt:testral:grade:blowout
-	       (incf 
-		  (emt:testral:grade:summary->blowouts   sums)))
-	    (symbol
-	       (case a
-		  (failed
-		     (incf 
-			(emt:testral:grade:summary->fails      sums)))
-		  (ungraded
-		     (incf 
-			(emt:testral:grade:summary->ungradeds  sums)))
-		  (dormant
-		     (incf 
-			(emt:testral:grade:summary->dormants   sums)))
-		  (blowout
-		     (incf 
-			(emt:testral:grade:summary->blowouts   sums)))
-		  (test-case
-		     (incf 
-			(emt:testral:grade:summary->test-cases sums)))
-		  (t
-		     ;;$$PUNT  Handle `suite', `assertion', etc.  But we'll
-		     ;;move to another method before that becomes reasonable.
-		     )
-		  ))
-      
-	    (t nil)))))
+	 (dolist (grade (emt:grade:summary->grades a))
+	    (emtvr:add-one-grade sums 
+	       (first grade) 
+	       (second grade)))))
+   sums)
 
 ;;;_  . emtvr:combine-grade
 (defun emtvr:combine-grade (grades)
@@ -155,31 +98,11 @@ A must be a grade or a grade summary."
    (let
       ((all
 	  (reduce
-	     #'(lambda (a b)
-		  (check-type a emt:testral:grade-aux)
-		  (check-type b emt:testral:grade-aux)
-		  (cond
-		     ((null a) b)
-		     ((null b) a)
-		     ;;$$IMPROVE ME  If one is already a summary, just
-		     ;;use it.  Have to pass one as initial-value.
-		     ((and
-			 (or
-			    (emt:testral:grade-p a)
-			    (symbolp a))
-			 (or
-			    (emt:testral:grade-p b)
-			    (symbolp b)))
-			(let
-			   ((sums (emt:make-grade:summary)))
-			   (emtvr:add-grades sums a)
-			   (emtvr:add-grades sums b)
-			   sums))
-		     (t
-			(error "Shouldn't get here"))))
-	     grades)))
+	     #'emtvr:add-grades
+	     grades
+	     :initial-value (emt:make-grade:summary))))
       
-      (check-type all emt:testral:grade-aux)
+      (check-type all emt:grade:summary)
       all))
 
 
