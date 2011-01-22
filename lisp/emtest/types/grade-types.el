@@ -95,8 +95,8 @@
    (dormants   0 :type integer)
    (blowouts   0 :type integer))
 
-;;;_ , emt:testral:grade-aux
-(deftype emt:testral:grade-aux () 
+;;;_ , emt:testral:grade-type
+(deftype emt:testral:grade-type () 
    "A grade or nothing"
    '(or null symbol))
 

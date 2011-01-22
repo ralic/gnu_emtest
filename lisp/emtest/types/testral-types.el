@@ -56,7 +56,7 @@
 
    ;;Reflects only the note's's intrinsic problems.  Even stages need
    ;;this field in case (say) a whole stage is dormantized or aborted.
-   (grade () :type emt:testral:grade-aux)
+   (grade () :type emt:testral:grade-type)
    (relation () :type symbol
       :doc "The note's relation to its parent")
    (governor () :type symbol
@@ -121,7 +121,7 @@ It can be a test-case or group of test-cases."
 	     emt:testral:note-list
 	     emt:testral:runform-list
 	     null)) 
-  (grade () :type emt:testral:grade-aux))
+  (grade () :type emt:testral:grade-type))
 
 ;;;_. Footers
 ;;;_ , Provides

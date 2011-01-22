@@ -127,7 +127,7 @@
       ;;Suites' intrinsic grade
       (group
 	 ((type suite-own-badness-list))
-	 (type-must-be () emt:testral:grade-aux)
+	 (type-must-be () emt:testral:grade-type)
 	 (item
 	    ((name test-bad))
 	    '())
@@ -147,7 +147,7 @@
       ;;$$TEMPORARY until mapping can be easily used.
       (group
 	 ((type suite-own-badness-list)(tagged-by role&test))
-	 (type-must-be () emt:testral:grade-aux)
+	 (type-must-be () emt:testral:grade-type)
 	 (item
 	    ((what-test test-1)(role original-add))
 	    (emtg (type suite-own-badness-list)(name test-bad)))
@@ -166,7 +166,7 @@
       ;;Suites' grade, including that of their TESTRAL notes.
       (group
 	 ((type suite-own+notes-badness-list))
-	 (type-must-be () emt:testral:grade-aux)
+	 (type-must-be () emt:testral:grade-type)
 	 (item
 	    ((name test-bad))
 	    'ungraded)

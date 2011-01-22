@@ -222,7 +222,7 @@ GOVERNOR is a symbol indicating a specific formatter for the output."
       (progn
 	 (check-type relation emt:testral:id-element)
 	 (check-type governor symbol)
-	 (check-type grade    emt:testral:grade-aux)
+	 (check-type grade    emt:testral:grade-type)
 	 (emt:testral:make-note
 	    :id          id
 	    :parent-id   parent-id

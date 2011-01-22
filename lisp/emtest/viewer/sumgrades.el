@@ -36,11 +36,10 @@
 ;;;_  . emtvr:->grade-summary
 (defun emtvr:->grade-summary (obj)
    "Change OBJ object into a grade summary.
-OBJ must be a emt:testral:grade-aux and may already be a summary."
-   (check-type obj emt:testral:grade-aux)
+OBJ may be a grade symbol or already be a summary."
    (etypecase obj 
       (emt:grade:summary obj)
-      (symbol
+      (emt:testral:grade-type
 	 (let
 	    ((obj-aux (emt:make-grade:summary)))
 	    (emtvr:add-grades obj-aux obj)
