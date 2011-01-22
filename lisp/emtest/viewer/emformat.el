@@ -349,7 +349,7 @@ OBJ must be a TESTRAL viewable (`emt:view:note')."
       :type string
       :doc "A string saying the singular of this, eg \"Failure\"")
    ;;$$RENAME this field "severity"
-   (priority 0
+   (severity 0
       :type integer
       :doc "The severity of this grade type, higher numbers being more \
 severe." 
@@ -366,7 +366,7 @@ severe."
       :face   'emtvf:face:dormant
       :plural   "(UNUSED: No tests)"
       :singular "(UNUSED: No tests)"
-      :priority 0)
+      :severity 0)
    "The default grade formatting info" )
 ;;;_   , emtvf:grade-fmt-alist
 (defconst emtvf:grade-fmt-alist 
@@ -377,7 +377,7 @@ severe."
 	 :face   'emtvf:face:blowout
 	 :plural   "Blowouts"
 	 :singular "Blowout"
-	 :priority 100
+	 :severity 100
 	 )
       (emtvf:make-grade-fmt
 	 :symbol 'ungraded
@@ -385,7 +385,7 @@ severe."
 	 :face   'emtvf:face:ungraded
 	 :plural   "Ungraded tests"
 	 :singular "Ungraded test"
-	 :priority 75
+	 :severity 75
 	 )
       (emtvf:make-grade-fmt
 	 :symbol 'fail
@@ -393,7 +393,7 @@ severe."
 	 :face   'emtvf:face:failed
 	 :plural   "Failures"
 	 :singular "Failure"
-	 :priority 50
+	 :severity 50
 	 )
       (emtvf:make-grade-fmt
 	 :symbol 'dormant
@@ -401,7 +401,7 @@ severe."
 	 :face   'emtvf:face:dormant
 	 :plural   "Dormant tests"
 	 :singular "Dormant test"
-	 :priority 25
+	 :severity 25
 	 )
       ;;$$IMPROVE ME  Encap making a passing grade type, omitting
       ;;redundant info from arglist
@@ -411,7 +411,7 @@ severe."
 	 :face   'emtvf:face:ok
 	 :plural   "(UNUSED: ok)"
 	 :singular "(UNUSED: ok)"
-	 :priority 10
+	 :severity 10
 	 )
       (emtvf:make-grade-fmt
 	 :symbol 'test-case
@@ -419,7 +419,7 @@ severe."
 	 :face   'emtvf:face:ok
 	 :plural   "Test cases"
 	 :singular "Test case"
-	 :priority 10)
+	 :severity 10)
       emtvf:grade-fmt-default)
    
    "Alist of grade formatting info" )

@@ -48,7 +48,7 @@ OBJ must be a emt:testral:grade-aux and may already be a summary."
 ;;;_  . emtvr:sym->severity
 (defun emtvr:sym->severity (sym)
    "Return the severity of SYM, which should be a grade symbol."
-   (emtvf:grade-fmt->priority
+   (emtvf:grade-fmt->severity
       (emtvf:get-grade-info sym)))
 ;;;_  . emtvr:add-one-grade
 (defun emtvr:add-one-grade (sums sym count)
