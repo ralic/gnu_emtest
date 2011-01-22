@@ -91,7 +91,9 @@ ELS=1 must be a function taking 1 arg, the singleton object."
 			   sub-list)))))))))
 ;;;_  . hiformat:separate
 (defun hiformat:separate (list &optional separator)
-   ""
+   "Separate the items in LIST.
+SEPARATOR, if non-nil, separates the items, otherwise a single
+space separates them."
    (hiformat:map
       #'(lambda (obj &rest r) obj)
       list
