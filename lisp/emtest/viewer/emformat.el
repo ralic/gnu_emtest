@@ -348,11 +348,13 @@ OBJ must be a TESTRAL viewable (`emt:view:note')."
    (singular "NO DESCRIPTION"
       :type string
       :doc "A string saying the singular of this, eg \"Failure\"")
+   ;;$$RENAME this field "severity"
    (priority 0
       :type integer
-      :doc "The priority of this grade type, higher numbers being more
-	      prominent." 
+      :doc "The severity of this grade type, higher numbers being more \
+severe." 
       ))
+
 
 
 ;;;_  . Data
@@ -423,8 +425,8 @@ OBJ must be a TESTRAL viewable (`emt:view:note')."
    "Alist of grade formatting info" )
 ;;;_   , emtvf:get-grade-info
 (defun emtvf:get-grade-info (sym)
-   "Always return formatting info about SYM.
-SYM should be a grade symbol."
+   "Return summary & formatting info about SYM.
+SYM should be a grade symbol, but this returns a valid object in any case."
    (or 
       (assq sym emtvf:grade-fmt-alist)
       emtvf:grade-fmt-default))
@@ -434,7 +436,7 @@ SYM should be a grade symbol."
    "Return non-nil if OBJ is all passing grades.
 OBJ must be a `emt:testral:grade:summary'"
    (let*
-      ((nobj (emtvr:summary->summary (emtvr:grade->summary obj)))
+      ((nobj (emtvr:grade->summary-NEW obj))
 	 (worst (emt:grade:summary->worst nobj))
 	 (info (emtvf:get-grade-info worst)))
       (not
@@ -446,7 +448,7 @@ OBJ must be a `emt:testral:grade:summary'"
 OBJ should be an `emt:grade:summary'."
 
    (let*
-      ((nobj (emtvr:summary->summary (emtvr:grade->summary obj)))
+      ((nobj (emtvr:grade->summary-NEW obj))
 	 (worst (emt:grade:summary->worst nobj))
 	 (info (emtvf:get-grade-info worst)))
       (emtvf:grade-fmt->face info)))
@@ -471,13 +473,14 @@ SEPARATOR, if non-nil, is what separates the items."
    "Give a summary of grades for this object."
    (let*
       (
-	 (nobj (emtvr:summary->summary (emtvr:grade->summary obj))))
-      (case (emt:grade:summary->worst nobj)
-	 (ok
-	    '(w/face "All OK" emtvf:face:ok))
-	 ((nil)
+	 (nobj (emtvr:grade->summary-NEW obj))
+	 (worst (emt:grade:summary->worst nobj))
+	 (w-info (emtvf:get-grade-info worst)))
+      
+      (cond
+	 ((null worst)
 	    '(w/face "Nothing was tested" emtvf:face:dormant))
-	 (t
+	 ((emtvf:grade-fmt->fail-p w-info)
 	    (list
 	       '(w/face "Problems: " emtvf:face:failed)
 	       (emtvf:map-grades
@@ -490,7 +493,9 @@ SEPARATOR, if non-nil, is what separates the items."
 			  '()))
 		  nobj
 		  ", ")
-	       ".")))))
+	       "."))
+	 (t
+	    '(w/face "All OK" emtvf:face:ok)))))
 
 
 ;;;_   , emtvf:sum-grades-long
@@ -498,7 +503,7 @@ SEPARATOR, if non-nil, is what separates the items."
    "Give a summary of grades for this object."
    (let*
       (
-	 (nobj (emtvr:summary->summary (emtvr:grade->summary obj)))
+	 (nobj  (emtvr:grade->summary-NEW obj))
 	 (successes
 	    (emtvf:map-grades
 	       #'(lambda (info count)
