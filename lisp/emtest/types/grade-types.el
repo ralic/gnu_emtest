@@ -96,11 +96,9 @@
    (blowouts   0 :type integer))
 
 ;;;_ , emt:testral:grade-aux
-;;$$RETHINK ME  The grade types are going away except for summary,
-;;which will change and possibly move.
 (deftype emt:testral:grade-aux () 
    "A grade or nothing"
-   '(or null symbol emt:testral:grade))
+   '(or null symbol))
 
 ;;;_. Footers
 ;;;_ , Provides

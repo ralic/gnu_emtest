@@ -434,7 +434,7 @@ SYM should be a grade symbol, but this returns a valid object in any case."
 ;;;_   , emtvf:grade-boring
 (defun emtvf:grade-boring (obj)
    "Return non-nil if OBJ is all passing grades.
-OBJ must be a `emt:testral:grade:summary'"
+OBJ must be a `emt:grade:summary'"
    (let*
       ((nobj (emtvr:->grade-summary obj))
 	 (worst (emt:grade:summary->worst nobj))
