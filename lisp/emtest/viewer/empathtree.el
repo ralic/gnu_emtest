@@ -82,8 +82,9 @@ could be, such as when a note-list hasn't been expanded."
 	       (emt:testral:test-runner-info
 		  '()))))
       (emt:view:note-placeholder '())
-      ;;$$IMPROVE ME Treat this.
-      (emt:view:note '())
+      (emt:view:note
+	 (emt:testral:note->grade
+	    (emt:view:note->contents node)))
       ;;Only the root will have this type.
       (emt:view:presentable '())))
 
