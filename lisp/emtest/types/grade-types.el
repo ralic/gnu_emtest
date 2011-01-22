@@ -26,75 +26,11 @@
 
 ;; 
 
-
 ;;;_ , Requires
 
 (eval-when-compile (require 'cl))
 
 ;;;_. Body
-;;;_ , emt:testral:grade
-;;;_  . Base type
-'
-(defstruct (emt:testral:grade
-	      (:constructor emt:testral:make-grade)
-	      (:copier nil)
-	      (:conc-name emt:testral:grade->))
-   "Base class for grades"
-   contents)
-;;;_  . Dormant
-'
-(defstruct (emt:testral:grade:dormant
-	      (:include emt:testral:grade)
-	      (:constructor emt:testral:make-grade:dormant)
-	      (:copier nil)
-	      (:conc-name emt:testral:grade:dormant->))
-   "A dormant grade"
-   reason)
-
-;;;_  . Fail
-'(defstruct (emt:testral:grade:fail
-	      (:include emt:testral:grade)
-	      (:constructor emt:testral:make-grade:fail)
-	      (:copier nil)
-	      (:conc-name emt:testral:grade:fail->))
-   "A failure grade")
-
-;;;_  . Ungraded
-'(defstruct (emt:testral:grade:ungraded
-	      (:include emt:testral:grade)
-	      (:constructor emt:testral:make-grade:ungraded)
-	      (:copier nil)
-	      (:conc-name emt:testral:grade:ungraded->))
-   "A lack of grade because of errors in the test")
-
-;;;_  . Blowout
-'(defstruct (emt:testral:grade:blowout
-	      (:include emt:testral:grade)
-	      (:constructor emt:testral:make-grade:blowout)
-	      (:copier nil)
-	      (:conc-name emt:testral:grade:blowout->))
-   "A lack of grade because of errors outside the test")
-;;;_  . Test-case
-'(defstruct (emt:testral:grade:test-case
-	      (:include emt:testral:grade)
-	      (:constructor emt:testral:make-grade:test-case)
-	      (:copier nil)
-	      (:conc-name emt:testral:grade:test-case->))
-   "A pseudo-grade indicating that a test-case completed")
-
-;;;_  . Summary
-(defstruct (emt:testral:grade:summary
-	      (:include emt:testral:grade)
-	      (:constructor emt:testral:make-grade:summary)
-	      (:copier nil)
-	      (:conc-name emt:testral:grade:summary->))
-   "Class for summarized grades"
-   (test-cases 0 :type integer)
-   (fails      0 :type integer)
-   (ungradeds  0 :type integer)
-   (dormants   0 :type integer)
-   (blowouts   0 :type integer))
-
 ;;;_ , emt:testral:grade-type
 (deftype emt:testral:grade-type () 
    "A grade or nothing"
