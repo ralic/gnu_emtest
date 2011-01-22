@@ -48,11 +48,11 @@
 	 :grades
 	 (delq nil
 	    (list
-	       (if (> blowouts   0) `(blowout  ,blowouts  ) nil)
-	       (if (> ungradeds  0) `(ungraded ,ungradeds ) nil)
-	       (if (> fails      0) `(failed   ,fails     ) nil)
-	       (if (> dormants   0) `(dormant  ,dormants  ) nil)
-	       (if (> test-cases 0) `(ok       ,test-cases) nil)))
+	       (if (> blowouts   0) `(blowout   ,blowouts  ) nil)
+	       (if (> ungradeds  0) `(ungraded  ,ungradeds ) nil)
+	       (if (> fails      0) `(failed    ,fails     ) nil)
+	       (if (> dormants   0) `(dormant   ,dormants  ) nil)
+	       (if (> test-cases 0) `(test-case ,test-cases) nil)))
 	 
 	 :worst
 	 (cond
