@@ -356,6 +356,7 @@ OBJ must be a TESTRAL viewable (`emt:view:note')."
 
 
 ;;;_  . Data
+;;;_   , emtvf:grade-fmt-default
 (defconst emtvf:grade-fmt-default 
    (emtvf:make-grade-fmt
       :symbol nil
@@ -365,7 +366,7 @@ OBJ must be a TESTRAL viewable (`emt:view:note')."
       :singular "(UNUSED: No tests)"
       :priority 0)
    "The default grade formatting info" )
-
+;;;_   , emtvf:grade-fmt-alist
 (defconst emtvf:grade-fmt-alist 
    (list
       (emtvf:make-grade-fmt
@@ -420,15 +421,15 @@ OBJ must be a TESTRAL viewable (`emt:view:note')."
       emtvf:grade-fmt-default)
    
    "Alist of grade formatting info" )
-;;;_  . emtvf:get-grade-info
+;;;_   , emtvf:get-grade-info
 (defun emtvf:get-grade-info (sym)
    "Always return formatting info about SYM.
 SYM should be a grade symbol."
    (or 
       (assq sym emtvf:grade-fmt-alist)
       emtvf:grade-fmt-default))
-;;;_ , 
-;;;_  . emtvf:grade-boring
+;;;_  . Grade helpers
+;;;_   , emtvf:grade-boring
 (defun emtvf:grade-boring (obj)
    "Return non-nil if OBJ is all passing grades.
 OBJ must be a `emt:testral:grade:summary'"
@@ -439,7 +440,7 @@ OBJ must be a `emt:testral:grade:summary'"
       (not
 	 (emtvf:grade-fmt->fail-p info))))
 
-;;;_  . emtvf:grade-overall-face
+;;;_   , emtvf:grade-overall-face
 (defun emtvf:grade-overall-face (obj)
    "Return a face that hints at the overall quality of grades in OBJ.
 OBJ should be an `emt:grade:summary'."
@@ -450,7 +451,7 @@ OBJ should be an `emt:grade:summary'."
 	 (info (emtvf:get-grade-info worst)))
       (emtvf:grade-fmt->face info)))
 
-;;;_  . emtvf:map-grades
+;;;_   , emtvf:map-grades
 (defun emtvf:map-grades (func nobj &optional separator)
    "Map FUNC over the grades seen in NOBJ.
 Any nil items are omitted, which makes a difference in separation.
@@ -459,11 +460,13 @@ SEPARATOR, if non-nil, is what separates the items."
       (delq nil
 	 (mapcar
 	    #'(lambda (grade)
-		 (apply func grade))
+		 (funcall func 
+		    (emtvf:get-grade-info (first grade))
+		    (second grade)))
 	    (emt:grade:summary->grades nobj)))
       separator))
-
-;;;_  . emtvf:sum-grades-short
+;;;_  . Grade formatters
+;;;_   , emtvf:sum-grades-short
 (defun emtvf:sum-grades-short (obj &rest d)
    "Give a summary of grades for this object."
    (let*
@@ -478,21 +481,19 @@ SEPARATOR, if non-nil, is what separates the items."
 	    (list
 	       '(w/face "Problems: " emtvf:face:failed)
 	       (emtvf:map-grades
-		  #'(lambda (sym count)
-		       (let
-			  ((info (emtvf:get-grade-info sym)))
-			  (if
-			     (emtvf:grade-fmt->fail-p info)
-			     `(w/face 
-				 ,(emtvf:grade-fmt->plural info)
-				 ,(emtvf:grade-fmt->face   info))
-			     '())))
+		  #'(lambda (info count)
+		       (if
+			  (emtvf:grade-fmt->fail-p info)
+			  `(w/face 
+			      ,(emtvf:grade-fmt->plural info)
+			      ,(emtvf:grade-fmt->face   info))
+			  '()))
 		  nobj
 		  ", ")
 	       ".")))))
 
 
-;;;_  . emtvf:sum-grades-long
+;;;_   , emtvf:sum-grades-long
 (defun emtvf:sum-grades-long (obj &rest d)
    "Give a summary of grades for this object."
    (let*
@@ -500,34 +501,30 @@ SEPARATOR, if non-nil, is what separates the items."
 	 (nobj (emtvr:summary->summary (emtvr:grade->summary obj)))
 	 (successes
 	    (emtvf:map-grades
-	       #'(lambda (sym count)
-		    (let
-		       ((info (emtvf:get-grade-info sym)))
-		       (if
-			  (not (emtvf:grade-fmt->fail-p info))
-			  (hiformat:grammar:num-and-noun
-			     count 
-			     (emtvf:grade-fmt->singular
-				info)
-			     (emtvf:grade-fmt->plural
-				info))
-			  '())))
+	       #'(lambda (info count)
+		    (if
+		       (not (emtvf:grade-fmt->fail-p info))
+		       (hiformat:grammar:num-and-noun
+			  count 
+			  (emtvf:grade-fmt->singular
+			     info)
+			  (emtvf:grade-fmt->plural
+			     info))
+		       '()))
 	       nobj
 	       "\n"))
 	 (failures
 	    (emtvf:map-grades
-	       #'(lambda (sym count)
-		    (let
-		       ((info (emtvf:get-grade-info sym)))
-		       (if
-			  (emtvf:grade-fmt->fail-p info)
-			  (hiformat:grammar:num-and-noun
-			     count 
-			     (emtvf:grade-fmt->singular
-				info)
-			     (emtvf:grade-fmt->plural
-				info))
-			  '())))
+	       #'(lambda (info count)
+		    (if
+		       (emtvf:grade-fmt->fail-p info)
+		       (hiformat:grammar:num-and-noun
+			  count 
+			  (emtvf:grade-fmt->singular
+			     info)
+			  (emtvf:grade-fmt->plural
+			     info))
+		       '()))
 	       nobj
 	       "\n")))
       (case (emt:grade:summary->worst nobj)
