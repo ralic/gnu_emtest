@@ -226,6 +226,7 @@ VIEW-NODE must be at least an `emtvp:node'."
       `(
 	  (w/face "Emtest results" emtvf:face:title)
 	  "\n"
+	  ,(emtvf:sum-grades-long (emt:view:presentable->sum-grades view-node))
 	  ,(emtvf:node view-node))))
 
 ;;;_  . emtvf:node
@@ -491,55 +492,65 @@ OBJ should be an `emt:grade:summary'."
    "Give a summary of grades for this object."
    (let*
       (
-	 (obj (emtvr:grade->summary obj))
 	 (nobj (emtvr:summary->summary (emtvr:grade->summary obj)))
-	 (test-cases (emt:testral:grade:summary->test-cases obj))
-	 (fails      (emt:testral:grade:summary->fails      obj))
-	 (ungradeds  (emt:testral:grade:summary->ungradeds  obj))
-	 (dormants   (emt:testral:grade:summary->dormants   obj))
-	 (blowouts   (emt:testral:grade:summary->blowouts   obj)))
+	 (successes
+	    (hiformat:separate
+	       (delq nil
+		  (mapcar
+		     #'(lambda (obj)
+			  (destructuring-bind 
+			     (sym count) obj
+			     (let
+				((info (emtvf:get-grade-info sym)))
+				(if
+				   (not (emtvf:grade-fmt->fail-p info))
+				   (hiformat:grammar:num-and-noun
+				      count 
+				      (emtvf:grade-fmt->singular
+					 info)
+				      (emtvf:grade-fmt->plural
+					 info))
+				   '()))))
+		     (emt:grade:summary->grades nobj)))
+	       '("\n")))
+	 (failures
+	    (hiformat:separate
+	       (delq nil
+		  (mapcar
+		     #'(lambda (obj)
+			  (destructuring-bind 
+			     (sym count) obj
+			     (let
+				((info (emtvf:get-grade-info sym)))
+				(if
+				   (emtvf:grade-fmt->fail-p info)
+				   (hiformat:grammar:num-and-noun
+				      count 
+				      (emtvf:grade-fmt->singular
+					 info)
+				      (emtvf:grade-fmt->plural
+					 info))
+				   '()))))
+		     (emt:grade:summary->grades nobj)))
+	       '("\n"))))
       (case (emt:grade:summary->worst nobj)
 	 (ok
 	    (list
-	       "All OK ("
-	       (prin1-to-string test-cases)
-	       " "
-	       (hiformat:grammar:number-agreement 
-		  test-cases "case" "cases")
-	       ")" "\n"))
+	       '(w/face "All OK" emtvf:face:ok)
+	       '(sep 5)
+	       successes
+	       '(sep 4)))
 	 ((nil)
 	    '(w/face ("Nothing was tested" "\n") emtvf:face:dormant))
 	 (t
 	    (list
-	       "Problems: \n"
-	       (hiformat:separate
-		  (delq nil
-		     (list
-			(when (> blowouts  0) 
-			   (hiformat:grammar:num-and-noun 
-			      blowouts
-			      "Blowout" "Blowouts"))
-			(when (> ungradeds 0) 
-			   (hiformat:grammar:num-and-noun 
-			      ungradeds
-			      "Ungraded test" "Ungraded tests"))
-			(when (> fails     0) 
-			   (hiformat:grammar:num-and-noun 
-			      fails
-			      "Failure" "Failures"))
-			(when (> dormants  0) 
-			   (hiformat:grammar:num-and-noun 
-			      dormants
-			      "Dormant test" "Dormant tests"))))
-		  '(".\n"))
-	       "\n"
-	       (if (> test-cases 0)
-		  (list
-		     (prin1-to-string test-cases)
-		     " successful "
-		     (hiformat:grammar:number-agreement 
-			test-cases "test case" "test cases"))
-		  (list "No test cases succeeded"))
+	       "Problems:"
+	       '(sep 5)
+	       failures
+	       '(sep 4)
+	       (if successes 
+		  `("Successes:" (sep 5) ,successes)
+		  '("Nothing succeeded"))
 	       "\n")))))
 
 ;;;_. Footers
