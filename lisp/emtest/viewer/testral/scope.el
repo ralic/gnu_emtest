@@ -35,15 +35,21 @@
 ;;;_. Body
 ;;;_ , emtvf:TESTRAL-gov:scope
 ;;;###autoload
-(defun emtvf:TESTRAL-gov:scope (note)
+(defun emtvf:TESTRAL-gov:scope (note &optional name)
    "Formatter for TESTRAL viewable governed by `scope'"
    (emtvf:shortcut-single
-      nil
+      name
       (emtvp:node->children note)
       '()
       (emtvf:grade-overall-face
 	 (emt:view:presentable->sum-grades note))
-      '((sep 2) "No nested notes")))
+      '((sep 2) "No nested notes")
+      ;;$$FIXME  Can't set folding right because the way we summarize
+      ;;note grades is messed up.
+      nil
+      ;;(emtvf:grade-boring (emt:view:presentable->sum-grades note))
+      ))
+
 
 ;;;_. Footers
 ;;;_ , Register it
