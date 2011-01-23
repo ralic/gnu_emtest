@@ -44,6 +44,23 @@
    (mapcar
       #'emt:testral:note->grade
       (emt:testral:note-list->notes note-list)))
+;;;_  . emtvr:grade:summarize-suite+notes
+;;UNUSED but held ready if we change to dynamic reprinting.
+(defun emtvr:grade:summarize-suite+notes (s)
+   "Return a summary grade for a suite node and its notes
+Intended for suites whose notes haven't been placed on pathtree"
+   
+   (let
+      ((own-grade (emt:testral:suite->grade s))
+	 (contents
+	    (emt:testral:suite->contents s)))
+      (typecase contents
+	 (emt:testral:note-list
+	    (emtvr:combine-grade
+	       (cons
+		  own-grade
+		  (emtvr:notelist-raw-grade contents))))
+	 (t own-grade))))
 
 ;;;_  . emtvr:grade:get-own
 (defun emtvr:grade:get-own (node)
@@ -60,25 +77,7 @@ could be, such as when a note-list hasn't been expanded."
 	    (etypecase s 
 	       (null) 
 	       (emt:testral:suite
-		  (let
-		     ((own-grade (emt:testral:suite->grade s)))
-		     ;;If NODE is an inner node (wrt pathtree), it
-		     ;;contributes only its intrinsic grading.
-		     (if
-			(emtvp:node->children node)
-			own-grade
-			;;But if NODE is a leaf node, it contributes
-			;;all its contents' grading.
-			(let
-			   ((contents
-			       (emt:testral:suite->contents s)))
-			   (typecase contents
-			      (emt:testral:note-list
-				 (emtvr:combine-grade
-				    (cons
-				       own-grade
-				       (emtvr:notelist-raw-grade contents))))
-			      (t own-grade))))))
+		  (emt:testral:suite->grade s))
 	       (emt:testral:test-runner-info
 		  '()))))
       (emt:view:note-placeholder '())
