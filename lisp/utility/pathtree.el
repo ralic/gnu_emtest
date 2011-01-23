@@ -202,7 +202,7 @@ don't otherwise alter it."
    "Mark NODE as dirty.  
 FLAG says what type of dirtiness is marked"
    (progn
-       (push flag
+       (pushnew flag
 	  (emtvp:node->dirty-flags node))
        (push node
 	  (emtvp->dirty tree))))
@@ -275,9 +275,9 @@ And with the following functions defined:
 			 dirty-flags 
 			 :test #'emtvp:util:match-as-car)))
 		(new-dirty (flag)
-		   (push flag dirty-flags))
+		   (pushnew flag dirty-flags))
 		(new-dirty-node (flag node)
-		   (push flag (emtvp:node->dirty-flags node))
+		   (pushnew flag (emtvp:node->dirty-flags node))
 		   (push node ,new-dirty-nodes)))
 	 
 	     ,form)
