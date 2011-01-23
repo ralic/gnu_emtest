@@ -71,6 +71,8 @@ It just tells a pathtree to add this node."
       (emtvp:replace-node
 	 emtvo:pathtree old-node cell)))
 ;;;_  . emtvo:pathtree-cb-aux
+;;$$OBSOLESCENT - Only called to make root.  We might as well just
+;;pass root.  Waiting on changes to `emtvp:make-pathtree'.
 ;;$$RETHINK ME When we set up display-data.  Perhaps better in the
 ;;freshener, getting foreign data stored in the pathtree.
 (defun emtvo:pathtree-cb-aux (old-version arg display-data)

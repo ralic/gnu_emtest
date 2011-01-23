@@ -84,7 +84,7 @@ Must be derived from `emtvp:node'.")
 ;;;_   , emtvp:name=
 (defalias 'emtvp:name= 'equal)
 ;;;_   , emtvp:make-pathtree
-;;$$CHANGE MY ARGLIST Drop make-node
+;;$$CHANGE MY ARGLIST Replace make-node and root-name with ROOT.
 (defun emtvp:make-pathtree (node-dirtied make-node type &optional root-name)
    "Make an empty tree"
    (let
