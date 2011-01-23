@@ -84,12 +84,15 @@ ERROR-ARGS-F is a function that:
 (defmacro pending:do-all (init func args error-args-f &optional expand-p)
    "Forwards to pending:do-all-f.
 Clears the pending list when done."
-   
-   `(progn
-       (pending:do-all-f
-	  ,init ,func ,args ,error-args-f ,expand-p)
+   (let
+      ((init-sym (make-symbol "init")))
+   `(let
+       ((,init-sym ,init))
        ;;Empty the list for the caller.
-       (setf ,init '())))
+       (setf ,init '())
+       (pending:do-all-f
+	  ,init-sym ,func ,args ,error-args-f ,expand-p)
+       )))
 
 ;;;_  . Test support
 ;;;_   , pending:terminates-on-examples
