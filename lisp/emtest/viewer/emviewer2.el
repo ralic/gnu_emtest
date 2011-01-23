@@ -133,7 +133,8 @@
 ;;;_ , Static printing functions
 ;;;_  . emtv2:print-all
 (defun emtv2:print-all (top-node)
-   ""
+   "Format and print the whole report."
+   (emtvp:freshen emtvo:pathtree)
    (with-current-buffer emtv2:report-buffer
       (let
 	 ((inhibit-read-only t))
