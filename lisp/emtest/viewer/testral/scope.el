@@ -44,11 +44,8 @@
       (emtvf:grade-overall-face
 	 (emt:view:presentable->sum-grades note))
       '((sep 2) "No nested notes")
-      ;;$$FIXME  Can't set folding right because the way we summarize
-      ;;note grades is messed up.
-      nil
-      ;;(emtvf:grade-boring (emt:view:presentable->sum-grades note))
-      ))
+      (emtvf:grade-boring (emt:view:presentable->sum-grades note))))
+
 
 
 ;;;_. Footers
