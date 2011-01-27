@@ -74,19 +74,14 @@
 ;;;_  . emtr:vanilla
 (defun emtr:vanilla (props form report-f)
    "Run a vanilla test-case and report the result."
-   (emtt:testral:with
+   (emtt:testral:with-context props
       (let
 	 ( 
-	    ;;Still needed for emt:persist.
-	    ;;$$IMPROVE ME Encap the interface to here, possibly thru
-	    ;;emtt:testral:with. 
-	    (emt:trace:properties props) 
 	    (form-1
 	       (emts:add-surrounders 
 		  form 
 		  (emtts:get-surrounders props)
 		  props)))
-	 (declare (special emt:trace:properties))
 	 (emth:protect&trap
 	    aborted-p
 	    (eval form-1)

@@ -39,8 +39,6 @@
 ;;;_ , Persist functions 
 
 ;;;_  . emt:eq-persist-p
-;;$$NORMALIZE ME  emt:trace:properties should be renamed and set by
-;;runner functionality.
 ;;;###autoload
 (defun emt:eq-persist-p (compare-f value id &optional backend)
    "Compare VALUE to the value of ID in a database, using COMPARE-F.
@@ -51,18 +49,18 @@ BACKEND, if given, describes the database backend."
 
    ;;$$IMPROVE ME This implies it is called in an clause context.  We
    ;;should check that and act OK even when it's false.
-   (declare (special emt:trace:properties))
+   (declare (special emt:testral:*properties*))
    (let*
       ((backend
 	  (or
 	     backend
 	     ;;$$ENCAP ME - this should be a standard property-getter,
-	     ;;and not expose `emt:trace:properties'.
+	     ;;and not expose `emt:testral:*properties*'.
 	     ;;Use utim:get-properties.  But first remove that from
 	     ;;tester.el and give it the right default.
-	     ;;(utim:get-properties 'db-id emt:trace:properties)
+	     ;;(utim:get-properties 'db-id emt:testral:*properties*)
 	     (let
-		((cell (assoc 'db-id emt:trace:properties)))
+		((cell (assoc 'db-id emt:testral:*properties*)))
 		(when cell
 		   (second cell)))
 	     ;;Here add any other ways of learning the backend

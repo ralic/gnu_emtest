@@ -40,7 +40,7 @@
 ;;;_ , emt:persist
 (rtest:deftest emt:persist
 
-   (  "Situation: `emt:trace:properties' has the db-id property bound.
+   (  "Situation: `emt:testral:*properties*' has the db-id property bound.
 Param: The backend param is not given.
 Response: The value of the `db-id' property is used as backend."
       (emth:let-noprops '(dummy-sym)
@@ -49,7 +49,7 @@ Response: The value of the `db-id' property is used as backend."
 	       (db-id "my-db"))
 	    (() (progn ())))
 	 (emtd:destructure-suite-3 'dummy-sym
-	    (let* ((emt:trace:properties props)
+	    (let* ((emt:testral:*properties* props)
 		     (placeholder (emt:persist 'id-0)))
 	       (assert
 		  (equal 

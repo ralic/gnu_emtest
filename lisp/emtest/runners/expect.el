@@ -221,8 +221,6 @@ If impossible, return nil instead"
 	 (emtp tp:96304f8f-2edc-4ac9-8ecb-9c6ad9ce0415 (form)
 	    (let*
 	       (  (form-parms (car form))
-		  ;;$$OBSOLESCENT
-		  (emt:trace:properties props)
 		  (exec+args
 		     (eval
 			(second (assq 'exec+args form-parms))))

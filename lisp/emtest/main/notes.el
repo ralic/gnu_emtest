@@ -39,8 +39,7 @@
       emt:testral:*id-counter*
       emt:testral:*prestn-path*
       emt:testral:*parent-id*
-      ;;$$RENAME ME
-      emt:trace:properties))
+      emt:testral:*properties*))
 
 ;;;_ , Support
 ;;;_  . Predicates
@@ -100,16 +99,16 @@ This uses a TESTRAL counter."
 received in."
    (nreverse (cdr emt:testral:*events-seen*)))
 ;;;_ , Support primarily for running complete test-cases
-;;;_  . emtt:testral:with
-;;$$CONFORM ME  Take props and bind accordingly
-(defmacro emtt:testral:with (&rest body)
+;;;_  . emtt:testral:with-context
+(defmacro emtt:testral:with-context (props &rest body)
    "Evaluate BODY with TESTRAL facilities available"
    
    `(let*
       (
 	 (emt:testral:*id-counter*  (emtt:testral:create-counter))
 	 (emt:testral:*events-seen* (emtt:testral:create))
-	 (emt:testral:*parent-id*   (emtt:testral:create-parent-id nil)))
+	 (emt:testral:*parent-id*   (emtt:testral:create-parent-id nil))
+	 (emt:testral:*properties*  ,props))
        ,@body))
 
 ;;;_  . Continued note-collecting
@@ -140,7 +139,7 @@ This continues any previous invocations of
 	     (emt:testral:*id-counter*  (first  ,obj-sym))
 	     (emt:testral:*events-seen* (second ,obj-sym))
 	     (emt:testral:*parent-id*   (third  ,obj-sym))
-	     (emt:trace:properties      (fourth ,obj-sym)))
+	     (emt:testral:*properties*  (fourth ,obj-sym)))
 	  ,@body)))
 ;;;_ , Presentation-paths
 ;;;_  . emtt:testral:make-prestn-path

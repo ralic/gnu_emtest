@@ -66,7 +66,7 @@ Does not signal error.")
 	       (not
 		  (emth:gives-error
 		     ;;Isolate the note(s) it will make
-		     (emtt:testral:with
+		     (emtt:testral:with-context nil
 			;;...and isolate the *abort-p* flag.
 			(emth:protect&trap
 			   x
