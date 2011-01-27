@@ -52,6 +52,7 @@
 	  emt:insert-clause
 	  emt:insert-prop-test-thru
 	  emt:insert-persister
+	  emt:insert-db-id
 	  emt:insert-example-def
 	  emt:insert-testpoint
 	  emt:insert-testpoint-control
@@ -198,7 +199,13 @@ function."
       (pp
 	 `(emt:assert (emt:eq-persist-p #'equal _ ,id))
 	 (current-buffer))))
-
+;;;_  . emt:insert-db-id
+(defun emt:insert-db-id ()
+   "Insert a database id"
+   
+   (interactive)
+   (insert
+      "(db-id `(persist ,_$$WRITEME))"))
 ;;;_  . emt:insert-example-def
 (defun emt:insert-example-def ()
    ""
