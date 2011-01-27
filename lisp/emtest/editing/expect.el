@@ -61,7 +61,7 @@ This fills the same need as autoexpect."
 	 #'(lambda (piece)
 	      `(t ,(first piece)
 		  (emt:doc "WRITE ME")
-		  (assert 
+		  (emt:assert 
 		     (equal answer 
 			,(concat (second piece) prompt))
 		     t)))
