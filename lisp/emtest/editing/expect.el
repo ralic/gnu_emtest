@@ -63,8 +63,7 @@ This fills the same need as autoexpect."
 		  (emt:doc "WRITE ME")
 		  (emt:assert 
 		     (equal answer 
-			,(concat (second piece) prompt))
-		     t)))
+			,(concat (second piece) prompt)))))
 	 (nreverse rv-pieces))))
 
 ;;;_ , emtr:expect:buffer-capture-form
