@@ -52,12 +52,11 @@
       (let ((a 0))
 	 (emt:doc "Situation: First form errors. Second one increments
       a variable")
-	 (emt:assert
-	    (emth:gives-error
-	       (emth:map&trap
-		  #'eval 
-		  '((error "Example error")
-		      (incf a)))))
+	 (ignore-errors
+	    (emth:map&trap
+	       #'eval 
+	       '((error "Example error")
+		   (incf a))))
 	 
 	 (emt:doc "Response: The error is raised, which shows that the
 	 first clause ran.") 
