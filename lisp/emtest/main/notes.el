@@ -38,7 +38,10 @@
       emt:testral:*events-seen*
       emt:testral:*id-counter*
       emt:testral:*prestn-path*
-      emt:testral:*parent-id*))
+      emt:testral:*parent-id*
+      ;;$$RENAME ME
+      emt:trace:properties))
+
 ;;;_ , Support
 ;;;_  . Predicates
 ;;;_   , emtt:testral:p
@@ -98,6 +101,7 @@ received in."
    (nreverse (cdr emt:testral:*events-seen*)))
 ;;;_ , Support primarily for running complete test-cases
 ;;;_  . emtt:testral:with
+;;$$CONFORM ME  Take props and bind accordingly
 (defmacro emtt:testral:with (&rest body)
    "Evaluate BODY with TESTRAL facilities available"
    
@@ -110,13 +114,14 @@ received in."
 
 ;;;_  . Continued note-collecting
 ;;;_   , emtt:testral:make-continuing
-(defun emtt:testral:make-continuing ()
+(defun emtt:testral:make-continuing (&optional props)
    "Make an object suitable for use in `emtt:testral:continued-with'."
    
    (list 
       (emtt:testral:create-counter) 
       (emtt:testral:create)
-      (emtt:testral:create-parent-id nil)))
+      (emtt:testral:create-parent-id nil)
+      props))
 
 
 ;;;_   , emtt:testral:continued-with
@@ -132,9 +137,10 @@ This continues any previous invocations of
       `(let*
 	  (
 	     (,obj-sym ,obj)
-	     (emt:testral:*id-counter*  (first ,obj-sym))
+	     (emt:testral:*id-counter*  (first  ,obj-sym))
 	     (emt:testral:*events-seen* (second ,obj-sym))
-	     (emt:testral:*parent-id*   (third ,obj-sym)))
+	     (emt:testral:*parent-id*   (third  ,obj-sym))
+	     (emt:trace:properties      (fourth ,obj-sym)))
 	  ,@body)))
 ;;;_ , Presentation-paths
 ;;;_  . emtt:testral:make-prestn-path

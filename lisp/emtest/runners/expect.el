@@ -215,12 +215,13 @@ If impossible, return nil instead"
 
    (let
       ((con
-	  (emtt:testral:make-continuing)))
+	  (emtt:testral:make-continuing props)))
       ;;Testpoint to check what we receive.
       (emth:protect&trap err
 	 (emtp tp:96304f8f-2edc-4ac9-8ecb-9c6ad9ce0415 (form)
 	    (let*
 	       (  (form-parms (car form))
+		  ;;$$OBSOLESCENT
 		  (emt:trace:properties props)
 		  (exec+args
 		     (eval
@@ -286,8 +287,6 @@ If impossible, return nil instead"
 			:prompt prompt
 			:testral-obj con)))
 	       
-	       (declare (special emt:trace:properties))
-		  
 	       ;;Start the testing
 	       (emtr:expect-start-next data)))
 	 
