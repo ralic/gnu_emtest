@@ -51,7 +51,9 @@ This fills the same need as autoexpect."
 		   prompt)
 		nil t)
 	 (push
-	    (list (match-string 1) (match-string 2))
+	    (list 
+	       (match-string-no-properties 1) 
+	       (match-string-no-properties 2))
 	    rv-pieces)
 	 (goto-char (match-end 2)))
 
