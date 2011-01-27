@@ -313,6 +313,10 @@ See `emtt:testral:add-note-w/id'."
       (error "Not in a TESTRAL collection scope"))
    (emt:testral:make-note-list
       :notes (emtt:testral:get-notes)))
+;;;_ , emtt:testral:get-property
+(defun emtt:testral:get-property (key)
+   "Return the value of KEY in current test property list"
+   (utim:get-properties key emt:testral:*properties*))
 ;;;_ , Tracked objects (not implemented)
 ;;;_  . emtt:testral:set-object-origin
 (defun emtt:testral:set-object-origin (object origin)

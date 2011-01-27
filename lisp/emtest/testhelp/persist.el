@@ -54,15 +54,7 @@ BACKEND, if given, describes the database backend."
       ((backend
 	  (or
 	     backend
-	     ;;$$ENCAP ME - this should be a standard property-getter,
-	     ;;and not expose `emt:testral:*properties*'.
-	     ;;Use utim:get-properties.  But first remove that from
-	     ;;tester.el and give it the right default.
-	     ;;(utim:get-properties 'db-id emt:testral:*properties*)
-	     (let
-		((cell (assoc 'db-id emt:testral:*properties*)))
-		(when cell
-		   (second cell)))
+	     (emtt:testral:get-property 'db-id)
 	     ;;Here add any other ways of learning the backend
 
 	     ;;$$IMPROVE ME Make a note as well as erroring.
