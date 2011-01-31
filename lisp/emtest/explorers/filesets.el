@@ -1,0 +1,139 @@
+;;;_ emtest/explorers/filesets.el --- Launch tests via fileset
+
+;;;_. Headers
+;;;_ , License
+;; Copyright (C) 2011  Tom Breton (Tehom)
+
+;; Author: Tom Breton (Tehom) <tehom@panix.com>
+;; Keywords: maint,convenience,lisp
+
+;; This file is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 2, or (at your option)
+;; any later version.
+
+;; This file is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with GNU Emacs; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+;; Boston, MA 02111-1307, USA.
+
+;;;_ , Commentary:
+
+;; 
+
+
+;;;_ , Requires
+
+(require 'fileset-whole)
+(require 'emtest/launch/all)
+
+;;;_. Body
+;;;_ , Structures
+;;;_  . emthow:fileset
+(defstruct (emthow:fileset
+	      (:copier nil)
+	      (:constructor emthow:make-fileset)
+	      (:conc-name emthow:fileset->)
+	      (:include emthow))
+   "How to launch a fileset"
+   name)
+
+
+;;;_ , Launcher emt:fileset
+;;;###autoload
+(defun emt:fileset (fileset-name)
+   "Run the tests defined in FILESET."
+   (interactive
+      (list (fileset-whole-read-fileset)))
+   (emtl:dispatch-normal
+      (emthow:make-fileset
+	 :name fileset-name)
+      (list (concat "fileset " fileset-name))))
+
+;;;_ , Explorer emtt:explore-fileset
+;;;###autoload
+(defun emtt:explore-fileset (test-id props path report-f)
+   "Run the tests defined in fileset."
+
+   (let*
+      (
+	 (name (emthow:fileset->name clause))
+	 (fileset
+	    (filesets-get-fileset-from-name fileset-name))
+	 (test-files
+	    (filesets-get-filelist fileset nil nil))
+	 (test-files
+	    ;;Remove those that aren't elisp source
+	    (remove-if-not
+	       #'(lambda (filename)
+		    (string-match emacs-lisp-file-regexp filename))
+	       test-files))
+	 (dummy
+	    (dolist (filename test-files)
+	       (when (not (assoc filename load-history))
+		  (load filename t nil t))))
+
+	 (suite-list
+	    (let* 
+	       ((suite-syms))
+	       (do-symbols (sym)
+		  (let*
+		     ((props (get sym 'emt:properties))
+			(load-file-name (second (assoc 'load-file-name props))))
+		     (when
+			(and load-file-name
+			   (member load-file-name test-files))
+	       
+			;;Collect that suite by symbol
+			(push sym suite-syms))))
+	       suite-syms))
+	 
+	 ;;$$ENCAP ME Scheduling a list of suite-syms.
+	 (list-to-run
+	    (mapcar
+	       #'(lambda (suite-sym)
+		    (emtt:make-explorable
+		       :how-to-run
+		       (emthow:make-suite
+			  :suite-ID suite-sym)
+		       :prestn-path 
+		       (append 
+			  path
+			  (list (symbol-name suite-sym)))
+		       ;;For now, libraries have no
+		       ;;properties. 
+		       :properties ()
+		       :aliases ()))
+	       suite-list)))
+
+      (funcall report-f 
+	 (emt:testral:make-suite
+	    :contents
+	    (emt:testral:make-runform-list
+	       :els list-to-run)
+	     ;;Punt - only if it crapped out right here.
+	    :grade '())
+	 list-to-run)))
+
+;;;_ , Register
+;;;###autoload (eval-after-load 'emtest/explorers/all
+;;;###autoload (emtt:add-explorer #'emthow:fileset-p #'emtt:explore-fileset
+;;;###autoload "Fileset"))
+
+;;;_. Footers
+;;;_ , Provides
+
+(provide 'emtest/explorers/filesets)
+
+;;;_ * Local emacs vars.
+;;;_  + Local variables:
+;;;_  + mode: allout
+;;;_  + End:
+
+;;;_ , End
+;;; emtest/explorers/filesets.el ends here
