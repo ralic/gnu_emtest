@@ -140,8 +140,9 @@ This is the heart of Emtest exploration: A test itself."
       report-f))
 
 ;;;_   , Insinuate
-;;;###autoload (emtt:add-explorer #'emthow:form-p #'emtt:explore-literal-clause
-;;;###autoload "Literal clause") 
+;;;###autoload (eval-after-load 'emtest/explorers/all
+;;;###autoload  '(emtt:add-explorer #'emthow:form-p #'emtt:explore-literal-clause
+;;;###autoload  "Literal clause"))
 ;;;_  . emtt:explore-indexed-clause
 ;;;###autoload
 (defun emtt:explore-indexed-clause (test-id props path report-f)
@@ -162,13 +163,10 @@ This is the heart of Emtest exploration: A test itself."
 	    report-f))))
 
 
-;;;_   , Insinuate
-;;;###autoload (unless (fboundp 'emtt:add-explorer)
-;;;###autoload   (error "emtest/explorers/all must be loaded"))
-
-;;;_    . 
-;;;###autoload (emtt:add-explorer #'emthow:indexed-clause-p #'emtt:explore-indexed-clause
-;;;###autoload "Indexed clause") 
+;;;_   , Register
+;;;###autoload (eval-after-load 'emtest/explorers/all
+;;;###autoload  '(emtt:add-explorer #'emthow:indexed-clause-p #'emtt:explore-indexed-clause
+;;;###autoload  "Indexed clause"))
 
 ;;$$TRANSITIONAL
 ;;;###autoload (provide 'emtest/explorers/registrations)
