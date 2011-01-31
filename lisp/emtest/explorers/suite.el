@@ -33,6 +33,9 @@
 (require 'emtest/support/keepup)
 (require 'emtest/types/testral-types)
 (require 'emtest/types/run-types)
+(require 'emtest/explorers/clause)
+(require 'emtest/editing/lisp)
+(require 'emtest/launch/all)
 
 
 ;;;_. Body
@@ -45,7 +48,39 @@
 	      (:include emthow))
    ""
    (suite-ID () :type symbol))
+;;;_ , Launchers
+;;;_  . emtl:run-suite
+(defun emtl:run-suite (suite-sym)
+   "Run the test suite associated with SUITE-SYM."
+   
+   (emtl:dispatch-normal 
+      (emthow:make-suite
+	 :suite-ID suite-sym)
+      (list (format "Suite %s" suite-sym))))
 
+;;;_  . emt:defun-at-point
+;;;###autoload
+(defun emt:defun-at-point (arg)
+  "Run tests on the function or suite under point.
+
+If prefix ARG is non-nil, eval it first.
+
+Does nothing if the buffer is not in a known lisp mode."
+
+   (interactive "P")
+   ;;Only proceed if we know how to run tests
+   (when (eq major-mode 'emacs-lisp-mode)
+
+      ;;If `arg', eval that definition first.
+      (when arg (eval-defun nil))
+      (let
+	 ((suite-sym
+	     (emtel:suite-sym-at-point)))
+	 (check-type suite-sym symbol)
+	 (emtl:run-suite suite-sym))))
+
+
+;;;_ , Explorer
 
 ;;;_ , emtt:explore-suite
 ;;;###autoload

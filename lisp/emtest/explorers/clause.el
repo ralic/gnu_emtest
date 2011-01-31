@@ -36,6 +36,8 @@
 (require 'emtest/main/notes)
 (require 'emtest/support/keepup)
 (require 'emtest/runners/expect)
+(require 'emtest/testhelp/standard)
+(require 'emtest/launch/all)
 
 ;;;_. Body
 ;;;_ , Structures
@@ -59,6 +61,52 @@
    (suite-sym () :type symbol)
    ;;Formerly index was considered part of context.
    (clause-index 0 :type integer))
+;;;_ , Launcher
+;;;_  . emt:sexp-at-point
+;;;###autoload
+(defun emt:sexp-at-point (form)
+   ""
+   (interactive 
+      (list 
+	 (save-excursion (read (current-buffer)))))
+   
+   (emtl:dispatch-normal
+      (emthow:make-form
+	 :test-form form)
+      (list "form")))
+;;;_  . emtt:eval
+(defun emtt:eval (expression)
+   ""
+   (emtl:dispatch-normal
+      (emthow:make-form
+	 :test-form (list nil expression))
+      (list "expression")))
+
+;;;_  . emt:eval-last-sexp
+;;;###autoload
+(defun emt:eval-last-sexp (arg)
+   ""
+   
+   (interactive
+      (list (preceding-sexp)))
+   ;;Unlike eval-last-sexp, this does not try to print value in
+   ;;minibuffer, nor in current buffer, nor optionally trigger the
+   ;;debugger.
+   (emtt:eval arg))
+
+;;;_  . emt:eval-expression
+;;;###autoload
+(defun emt:eval-expression (arg &optional insert-value)
+   ""
+   ;;Interactive form borrowed from "simple.el"
+   (interactive
+      (list (let ((minibuffer-completing-symbol t))
+	       (read-from-minibuffer "Eval: "
+		  nil read-expression-map t
+		  'read-expression-history))
+	 current-prefix-arg))
+   ;;Unlike eval-expression, this does not do the extra stuff
+   (emtt:eval arg))
 
 ;;;_ , Runners (emtr prefix)
 ;;;_  . nil runner emtr:quoted

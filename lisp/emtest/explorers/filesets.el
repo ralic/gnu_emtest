@@ -31,6 +31,9 @@
 
 (require 'fileset-whole)
 (require 'emtest/launch/all)
+(require 'emtest/types/testral-types)
+(require 'emtest/types/run-types)
+(require 'emtest/explorers/suite)
 
 ;;;_. Body
 ;;;_ , Structures

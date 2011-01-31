@@ -31,6 +31,8 @@
 
 (require 'emtest/types/testral-types)
 (require 'emtest/types/run-types)
+(require 'emtest/explorers/suite)
+(require 'emtest/launch/all)
 
 ;;;_. Body
 ;;;_ , Types
@@ -120,6 +122,56 @@ LIB-PATH must be a path to a library that is already loaded."
    howto)
 
 ;;$$ADD TESTS for all 3 behaviors.
+;;;_ , Launcher
+;;;_  . emt:lib-at-point
+
+;;Command: Run the library of symbol at point, or failing that, file
+;;at point.  Give a prompt for confirmation.
+;;Can use `symbol-file'
+
+;;;_  . emtel:read-testable-library
+(defun emtel:read-testable-library (prompt)
+   "Interactively read the name of a library containing tests.
+PROMPT is a prompt string"
+   
+   (completing-read 
+      prompt
+      load-history
+      ;;Narrow to just libraries that have tests in them.
+      #'(lambda (lib-data)
+	   (some
+	      #'(lambda (x)
+		   (get (emtl:ldhst-el->symbol x) 'emt:suite))
+	      (cdr lib-data)))
+      t))
+;;$$ADD TESTS There are example loads in emtest/explorers/library/tests
+
+;;;_  . emt:library
+;;;###autoload
+(defun emt:library (library &optional receiver)
+   "Run the test suites of LIBRARY.
+LIBRARY is the absolute file name of the library"
+   
+   (interactive
+      (list
+	 (emtel:read-testable-library 
+	    "Run tests of which library: ")))
+   
+   (let
+      (
+	 (test-id
+	    (emthow:make-library:elisp-load
+	       :load-name library)))
+      
+      (emtt:lib-conform test-id)
+      (let*
+	 ((lib-sym
+	     (emthow:library:elisp-load->lib-sym test-id)))
+	 (emtl:dispatch-normal 
+	    test-id 
+	    (list (concat "library " (symbol-name lib-sym))) 
+	    receiver))))
+
 
 ;;;_ , emtt:explore-library
 ;;;###autoload

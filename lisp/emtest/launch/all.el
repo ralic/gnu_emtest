@@ -50,6 +50,7 @@
 With `cl' loaded, use it as (incf emtl:testrun-counter)." )
 
 ;;;_ , emtl:dispatch-normal
+;;$$MOVE ME into test-finder
 (defun emtl:dispatch-normal (what-to-run &optional prefix receiver)
    ""
    (emtt:test-finder:top 
@@ -58,132 +59,6 @@ With `cl' loaded, use it as (incf emtl:testrun-counter)." )
       (prin1-to-string (incf emtl:testrun-counter))
       (or receiver emtl:receiver-f)))
 
-;;;_ , emt:sexp-at-point
-;;;###autoload
-(defun emt:sexp-at-point (form)
-   ""
-   (interactive 
-      (list 
-	 (save-excursion (read (current-buffer)))))
-   
-   (emtl:dispatch-normal
-      (emthow:make-form
-	 :test-form form)
-      (list "form")))
-
-;;;_ , emtl:run-suite
-(defun emtl:run-suite (suite-sym)
-   "Run the test suite associated with SUITE-SYM."
-   
-   (emtl:dispatch-normal 
-      (emthow:make-suite
-	 :suite-ID suite-sym)
-      (list (format "Suite %s" suite-sym))))
-
-
-;;;_ , emt:defun-at-point
-;;;###autoload
-(defun emt:defun-at-point (arg)
-  "Run tests on the function or suite under point.
-
-If prefix ARG is non-nil, eval it first.
-
-Does nothing if the buffer is not in a known lisp mode."
-
-   (interactive "P")
-   ;;Only proceed if we know how to run tests
-   (when (eq major-mode 'emacs-lisp-mode)
-
-      ;;If `arg', eval that definition first.
-      (when arg (eval-defun nil))
-      (let
-	 ((suite-sym
-	     (emtel:suite-sym-at-point)))
-	 (check-type suite-sym symbol)
-	 (emtl:run-suite suite-sym))))
-
-;;;_ , emt:lib-at-point
-
-;;Command: Run the library of symbol at point, or failing that, file
-;;at point.  Give a prompt for confirmation.
-;;Can use `symbol-file'
-
-;;;_ , emtel:read-testable-library
-(defun emtel:read-testable-library (prompt)
-   "Interactively read the name of a library containing tests.
-PROMPT is a prompt string"
-   
-   (completing-read 
-      prompt
-      load-history
-      ;;Narrow to just libraries that have tests in them.
-      #'(lambda (lib-data)
-	   (some
-	      #'(lambda (x)
-		   (get (emtl:ldhst-el->symbol x) 'emt:suite))
-	      (cdr lib-data)))
-      t))
-;;$$ADD TESTS There are example loads in emtest/explorers/library/tests
-
-;;;_ , emt:library
-;;;###autoload
-(defun emt:library (library &optional receiver)
-   "Run the test suites of LIBRARY.
-LIBRARY is the absolute file name of the library"
-   
-   (interactive
-      (list
-	 (emtel:read-testable-library 
-	    "Run tests of which library: ")))
-   
-   (let
-      (
-	 (test-id
-	    (emthow:make-library:elisp-load
-	       :load-name library)))
-      
-      (emtt:lib-conform test-id)
-      (let*
-	 ((lib-sym
-	     (emthow:library:elisp-load->lib-sym test-id)))
-	 (emtl:dispatch-normal 
-	    test-id 
-	    (list (concat "library " (symbol-name lib-sym))) 
-	    receiver))))
-
-;;;_ , emtt:eval
-(defun emtt:eval (expression)
-   ""
-   (emtl:dispatch-normal
-      (emthow:make-form
-	 :test-form (list nil expression))
-      (list "expression")))
-
-;;;_ , emt:eval-last-sexp
-;;;###autoload
-(defun emt:eval-last-sexp (arg)
-   ""
-   
-   (interactive
-      (list (preceding-sexp)))
-   ;;Unlike eval-last-sexp, this does not try to print value in
-   ;;minibuffer, nor in current buffer, nor optionally trigger the
-   ;;debugger.
-   (emtt:eval arg))
-
-;;;_ , emt:eval-expression
-;;;###autoload
-(defun emt:eval-expression (arg &optional insert-value)
-   ""
-   ;;Interactive form borrowed from "simple.el"
-   (interactive
-      (list (let ((minibuffer-completing-symbol t))
-	       (read-from-minibuffer "Eval: "
-		  nil read-expression-map t
-		  'read-expression-history))
-	 current-prefix-arg))
-   ;;Unlike eval-expression, this does not do the extra stuff
-   (emtt:eval arg))
 
 ;;;_ , emt:debug-on-entry
 ;;$$IMPROVE ME  Make the interface much more specific.
