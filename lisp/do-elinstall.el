@@ -41,7 +41,6 @@
 	  (block-in-subtree 
 	     (  "^tests\\.el"
 		"^testhelp\\.el"
-		"^explorers$"
 		"^runners$"
 		"^testral$"
 		"^rtest\\.el"
@@ -49,10 +48,9 @@
 		"^examples$"
 		"^qexamples\\.el")
 	     t) 
-	  ;;Explorer plugins use this to inform top about their
-	  ;;existence
-	  (def-file "emtest/explorers/registrations.el" nil
-	     (dir "emtest/explorers"))
+	  ;;Explorer plugins now make autoloads into the front autoload
+	  ;;file
+
 	  ;;Runner plugins use this to inform clause.el about their
 	  ;;existence
 	  (def-file "emtest/runners/registrations.el" nil

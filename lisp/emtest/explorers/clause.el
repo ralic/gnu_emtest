@@ -139,7 +139,7 @@ This is the heart of Emtest exploration: A test itself."
       props
       report-f))
 
-;;;_   , Insinuate
+;;;_   , Register
 ;;;###autoload (eval-after-load 'emtest/explorers/all
 ;;;###autoload  '(emtt:add-explorer #'emthow:form-p #'emtt:explore-literal-clause
 ;;;###autoload  "Literal clause"))
@@ -167,9 +167,6 @@ This is the heart of Emtest exploration: A test itself."
 ;;;###autoload (eval-after-load 'emtest/explorers/all
 ;;;###autoload  '(emtt:add-explorer #'emthow:indexed-clause-p #'emtt:explore-indexed-clause
 ;;;###autoload  "Indexed clause"))
-
-;;$$TRANSITIONAL
-;;;###autoload (provide 'emtest/explorers/registrations)
 
 ;;;_. Footers
 ;;;_ , Provides

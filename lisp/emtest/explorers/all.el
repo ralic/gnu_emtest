@@ -119,11 +119,6 @@ HOW must be of a subtype of emthow"
 ;;;_ , Provides
 (provide 'emtest/explorers/all)
 
-;;;_ , Include the autoload list of explorers
-;;Included with our feature already provided, so the load-forms know
-;;they are supported.
-(require 'emtest/explorers/registrations)
-
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
 ;;;_  + mode: allout
