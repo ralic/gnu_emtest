@@ -47,9 +47,10 @@
 ;;;_ , Launcher emt:fileset
 ;;;###autoload
 (defun emt:fileset (fileset-name)
-   "Run the tests defined in FILESET."
+   "Launch the tests defined in FILESET.
+If prefix arg is given, prompt for fileset name in any case."
    (interactive
-      (list (fileset-whole-read-fileset)))
+      (list (fileset-whole-read-fileset current-prefix-arg)))
    (emtl:dispatch-normal
       (emthow:make-fileset
 	 :name fileset-name)
@@ -62,7 +63,7 @@
 
    (let*
       (
-	 (name (emthow:fileset->name clause))
+	 (name (emthow:fileset->name test-id))
 	 (fileset
 	    (filesets-get-fileset-from-name fileset-name))
 	 (test-files
@@ -122,7 +123,7 @@
 
 ;;;_ , Register
 ;;;###autoload (eval-after-load 'emtest/explorers/all
-;;;###autoload (emtt:add-explorer #'emthow:fileset-p #'emtt:explore-fileset
+;;;###autoload '(emtt:add-explorer #'emthow:fileset-p #'emtt:explore-fileset
 ;;;###autoload "Fileset"))
 
 ;;;_. Footers
