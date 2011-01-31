@@ -97,7 +97,7 @@
 	     (list
 		;;Get the name of the file the test lives in.  This
 		;;can be `nil', eg if user used `eval-region'.
-		'(load-file-name ,load-file-name)
+		'(load-file-name ,(or load-file-name buffer-file-name))
 		,@(if props
 		     (mapcar
 			#'emtd:make-prop-eval-form
