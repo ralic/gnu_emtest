@@ -4,7 +4,7 @@
 
 
 ;;;### (autoloads (emtr:expect) "emtest/runners/expect" "expect.el"
-;;;;;;  (19752 56984))
+;;;;;;  (19778 835))
 ;;; Generated autoloads from expect.el
 
 (autoload (quote emtr:expect) "emtest/runners/expect" "\

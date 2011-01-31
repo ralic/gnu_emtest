@@ -4,7 +4,7 @@
 
 
 ;;;### (autoloads (emtt:explore-indexed-clause emtt:explore-literal-clause)
-;;;;;;  "emtest/explorers/clause" "clause.el" (19752 56538))
+;;;;;;  "emtest/explorers/clause" "clause.el" (19778 173))
 ;;; Generated autoloads from clause.el
 
 (autoload (quote emtt:explore-literal-clause) "emtest/explorers/clause" "\
@@ -26,8 +26,27 @@ Explore an indexed clause in a suite in Emtest.
 
 ;;;***
 
+;;;### (autoloads (emtt:explore-fileset emt:fileset) "emtest/explorers/filesets"
+;;;;;;  "filesets.el" (19783 15159))
+;;; Generated autoloads from filesets.el
+
+(autoload (quote emt:fileset) "emtest/explorers/filesets" "\
+Run the tests defined in FILESET.
+
+\(fn FILESET-NAME)" t nil)
+
+(autoload (quote emtt:explore-fileset) "emtest/explorers/filesets" "\
+Run the tests defined in fileset.
+
+\(fn TEST-ID PROPS PATH REPORT-F)" nil nil)
+ (eval-after-load 'emtest/explorers/all
+ '(emtt:add-explorer #'emthow:fileset-p #'emtt:explore-fileset
+ "Fileset"))
+
+;;;***
+
 ;;;### (autoloads (emtt:explore-library) "emtest/explorers/library"
-;;;;;;  "library.el" (19741 22165))
+;;;;;;  "library.el" (19783 14314))
 ;;; Generated autoloads from library.el
 
 (autoload (quote emtt:explore-library) "emtest/explorers/library" "\
@@ -52,7 +71,7 @@ Explore an indexed clause in a suite in Emtest.
 
 ;;;***
 
-;;;### (autoloads nil nil ("emtest/explorers/all") (19756 48260 384386))
+;;;### (autoloads nil nil ("emtest/explorers/all") (19783 15348 978483))
 
 ;;;***
 
