@@ -164,7 +164,7 @@
    "Number of tests currently enqueued that we haven't received
    reports from." )
 ;;;_  . emtv2:tester-cb
-
+;;;###autoload
 (defun emtv2:tester-cb (report)
    ""
    (check-type report emt:testral:report)
