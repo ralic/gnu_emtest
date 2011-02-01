@@ -104,7 +104,7 @@
 	 ( 
 	    (form-1
 	       (emts:add-surrounders 
-		  form 
+		  (car form) 
 		  (emtts:get-surrounders props)
 		  props)))
 	 (emth:protect&trap
@@ -136,7 +136,7 @@ This is the heart of Emtest exploration: A test itself."
       ((rest (emtd:clause->form clause)))
       (case (emtd:clause->governor clause)
 	 (quote (emtr:quoted props rest report-f))
-	 ((nil) (emtr:vanilla props (car rest) report-f))
+	 ((nil) (emtr:vanilla props rest report-f))
 	 (expect (emtr:expect props rest report-f))
 	 (t
 	    (funcall report-f
