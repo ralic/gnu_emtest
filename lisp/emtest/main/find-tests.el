@@ -34,8 +34,6 @@
    (require 'cl))
 (require 'emtest/types/run-types)
 (require 'emtest/types/testral-types)
-(require 'emtest/main/notes)
-(require 'emtest/main/define)
 (require 'emtest/explorers/all)
 
 ;;;_. Body

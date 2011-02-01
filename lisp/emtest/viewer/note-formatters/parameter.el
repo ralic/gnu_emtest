@@ -1,4 +1,4 @@
-;;;_ emtest/viewer/testral/parameter.el --- TESTRAL formatter for parameter
+;;;_ emtest/viewer/note-formatters/parameter.el --- TESTRAL formatter for parameter
 
 ;;;_. Headers
 ;;;_ , License
@@ -33,9 +33,9 @@
 
 
 ;;;_. Body
-;;;_ , emtvf:TESTRAL-gov:parameter
+;;;_ , emt:vw:note:parameter
 ;;;###autoload
-(defun emtvf:TESTRAL-gov:parameter (note arg val)
+(defun emt:vw:note:parameter (note arg val)
    "Formatter for TESTRAL note governed by `parameter'"
    
    (cond
@@ -60,12 +60,13 @@
 
 ;;;_. Footers
 ;;;_ , Register it
-;;;###autoload (emtvf:TESTRAL:add-gov
+;;;###autoload (eval-after-load 'emtest/viewer/all-note-formatters
+;;;###autoload '(emt:vw:note:add-gov
 ;;;###autoload    'parameter 
-;;;###autoload    #'emtvf:TESTRAL-gov:parameter)
+;;;###autoload    #'emt:vw:note:parameter))
 ;;;_ , Provides
 
-(provide 'emtest/viewer/testral/parameter)
+(provide 'emtest/viewer/note-formatters/parameter)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -73,4 +74,4 @@
 ;;;_  + End:
 
 ;;;_ , End
-;;; emtest/viewer/testral/parameter.el ends here
+;;; emtest/viewer/note-formatters/parameter.el ends here

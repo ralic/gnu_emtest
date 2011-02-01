@@ -52,8 +52,8 @@
 
 	  ;;TESTRAL formatter plugins use this to inform emformat
 	  ;;about their existence
-	  (def-file "emtest/viewer/testral/registrations.el" nil
-	     (dir "emtest/viewer/testral")))))
+	  (def-file "emtest/viewer/note-formatters/registrations.el" nil
+	     (dir "emtest/viewer/note-formatters")))))
 
 ;;;_. Footers
 ;;;_ , Provides

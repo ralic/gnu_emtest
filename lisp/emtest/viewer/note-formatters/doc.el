@@ -1,4 +1,4 @@
-;;;_ emtest/viewer/testral/scope.el --- TESTRAL formatter for scope
+;;;_ emtest/viewer/note-formatters/doc.el --- TESTRAL formatter for doc
 
 ;;;_. Headers
 ;;;_ , License
@@ -33,29 +33,33 @@
 
 
 ;;;_. Body
-;;;_ , emtvf:TESTRAL-gov:scope
+;;;_ , emt:vw:note:doc
 ;;;###autoload
-(defun emtvf:TESTRAL-gov:scope (note &optional name)
-   "Formatter for TESTRAL viewable governed by `scope'"
-   (emtvf:shortcut-single
-      name
-      (emtvp:node->children note)
-      '()
-      (emtvf:grade-overall-face
-	 (emt:view:presentable->sum-grades note))
-      '((sep 2) "No nested notes")
-      (emtvf:grade-boring (emt:view:presentable->sum-grades note))))
-
-
+(defun emt:vw:note:doc (note doc)
+   "Formatter for TESTRAL note governed by `doc'"
+   ;;$$IMPROVE ME Don't let headlines grow too long.  Long strings and
+   ;;long singles-paths are major culprits.
+   (cond
+      ((not (string-match "\n" doc))
+	 (emtvf:outline-item-emformat
+	     doc nil))
+      ((string-match ": " doc)
+	 (emtvf:outline-item-emformat
+	     (substring doc 0 (match-end 0))
+	     (substring doc (match-end 0))))
+      (t
+	 (emtvf:outline-item-emformat
+	     "Doc" doc))))
 
 ;;;_. Footers
 ;;;_ , Register it
-;;;###autoload (emtvf:TESTRAL:add-gov
-;;;###autoload    'scope 
-;;;###autoload    #'emtvf:TESTRAL-gov:scope)
+;;;###autoload (eval-after-load 'emtest/viewer/all-note-formatters
+;;;###autoload '(emt:vw:note:add-gov
+;;;###autoload    'doc 
+;;;###autoload    #'emt:vw:note:doc))
 ;;;_ , Provides
 
-(provide 'emtest/viewer/testral/scope)
+(provide 'emtest/viewer/note-formatters/doc)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -63,4 +67,4 @@
 ;;;_  + End:
 
 ;;;_ , End
-;;; emtest/viewer/testral/scope.el ends here
+;;; emtest/viewer/note-formatters/doc.el ends here

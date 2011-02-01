@@ -290,7 +290,7 @@ Must be called in a `utidyv:top' context."
 			boring-p)))))
 	 
 	 (emt:view:note
-	    (emtvf:TESTRAL view-node))
+	    (emt:vw:note view-node))
 
 	 (emt:view:note-placeholder
 	    (emtvf:shortcut-single
@@ -310,8 +310,8 @@ Must be called in a `utidyv:top' context."
 	       "[Suite placeholder with no children]")))))
 
 
-;;;_  . emtvf:TESTRAL (TESTRAL note formatter)
-(defun emtvf:TESTRAL (obj &rest d)
+;;;_  . emt:vw:note (TESTRAL note formatter)
+(defun emt:vw:note (obj &rest d)
    "Make a format form for OBJ.
 OBJ must be a TESTRAL viewable (`emt:view:note')."
    (check-type obj emt:view:note)
@@ -319,7 +319,7 @@ OBJ must be a TESTRAL viewable (`emt:view:note')."
       (let
 	 ((note (emt:view:note->contents obj)))
 	 (apply 
-	    (emtvf:get-TESTRAL-formatter 
+	    (emt:vw:note-get-formatter 
 	       (emt:testral:note->governor note))
 	    obj
 	    (emt:testral:note->value note)))

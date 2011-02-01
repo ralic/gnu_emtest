@@ -1,4 +1,4 @@
-;;;_ emtest/viewer/testral/fail.el --- TESTRAL formatter for failed and succeeded
+;;;_ emtest/viewer/note-formatters/fail.el --- TESTRAL formatter for failed and succeeded
 
 ;;;_. Headers
 ;;;_ , License
@@ -33,10 +33,10 @@
 
 
 ;;;_. Body
-;;;_ , emtvf:TESTRAL-gov:failed
+;;;_ , emt:vw:note:failed
 ;;$$IMPROVE ME Factor these functions.
 ;;;###autoload
-(defun emtvf:TESTRAL-gov:failed (note form)
+(defun emt:vw:note:failed (note form)
    "Formatter for TESTRAL note governed by `failed'"
    ;;$$IMPROVE ME  Take assert args as params, print them.
    (emtvf:outline-item-emformat
@@ -48,9 +48,9 @@
 	    nil))
       'emtvf:face:failed))
 
-;;;_ , emtvf:TESTRAL-gov:succeeded
+;;;_ , emt:vw:note:succeeded
 ;;;###autoload
-(defun emtvf:TESTRAL-gov:succeeded (note form)
+(defun emt:vw:note:succeeded (note form)
    "Formatter for TESTRAL note governed by `succeeded'"
    ;;$$IMPROVE ME  Take assert args as params, print them.
    (emtvf:outline-item-emformat
@@ -62,9 +62,9 @@
 	    nil)) 
       'emtvf:face:ok
       t))
-;;;_ , emtvf:TESTRAL-gov:mismatched
+;;;_ , emt:vw:note:mismatched
 ;;;###autoload
-(defun emtvf:TESTRAL-gov:mismatched (note form)
+(defun emt:vw:note:mismatched (note form)
    "Formatter for TESTRAL note governed by `mismatched'"
    (emtvf:outline-item-emformat
       "Mismatched"
@@ -76,9 +76,9 @@
       'emtvf:face:mismatch))
 
 
-;;;_ , emtvf:TESTRAL-gov:matched
+;;;_ , emt:vw:note:matched
 ;;;###autoload
-(defun emtvf:TESTRAL-gov:matched (note form)
+(defun emt:vw:note:matched (note form)
    "Formatter for TESTRAL note governed by `matched'"
    (emtvf:outline-item-emformat
       "Matched"
@@ -92,28 +92,30 @@
 
 
 ;;;_. Footers
-;;;_ , Register then
-;;;###autoload (emtvf:TESTRAL:add-gov
+;;;_ , Register them
+;;;###autoload (eval-after-load 'emtest/viewer/all-note-formatters
+;;;###autoload '(emt:vw:note:add-gov
 ;;;###autoload    'failed 
-;;;###autoload    #'emtvf:TESTRAL-gov:failed)
+;;;###autoload    #'emt:vw:note:failed))
 
-;;;###autoload (emtvf:TESTRAL:add-gov
+;;;###autoload (eval-after-load 'emtest/viewer/all-note-formatters
+;;;###autoload '(emt:vw:note:add-gov
 ;;;###autoload    'succeeded
-;;;###autoload    #'emtvf:TESTRAL-gov:succeeded)
+;;;###autoload    #'emt:vw:note:succeeded))
 
-;;;_ , Register it
-;;;###autoload (emtvf:TESTRAL:add-gov
+;;;###autoload (eval-after-load 'emtest/viewer/all-note-formatters
+;;;###autoload '(emt:vw:note:add-gov
 ;;;###autoload    'mismatched 
-;;;###autoload    #'emtvf:TESTRAL-gov:mismatched)
+;;;###autoload    #'emt:vw:note:mismatched))
 
-;;;_ , Register it
-;;;###autoload (emtvf:TESTRAL:add-gov
+;;;###autoload (eval-after-load 'emtest/viewer/all-note-formatters
+;;;###autoload '(emt:vw:note:add-gov
 ;;;###autoload    'matched 
-;;;###autoload    #'emtvf:TESTRAL-gov:matched)
+;;;###autoload    #'emt:vw:note:matched))
 
 ;;;_ , Provides
 
-(provide 'emtest/viewer/testral/fail)
+(provide 'emtest/viewer/note-formatters/fail)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -121,5 +123,5 @@
 ;;;_  + End:
 
 ;;;_ , End
-;;; emtest/viewer/testral/fail.el ends here
+;;; emtest/viewer/note-formatters/fail.el ends here
 

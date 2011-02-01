@@ -1,4 +1,4 @@
-;;;_ emtest/viewer/testral/compare-w-persist.el --- TESTRAL formatter for comparison-w/persist
+;;;_ emtest/viewer/note-formatters/compare-w-persist.el --- TESTRAL formatter for comparison-w/persist
 
 ;;;_. Headers
 ;;;_ , License
@@ -32,9 +32,9 @@
 (require 'emtest/viewer/emformat)
 
 ;;;_. Body
-;;;_ , emtvf:TESTRAL-gov:ediff-string-w/persist
+;;;_ , emt:vw:note:ediff-string-w/persist
 ;;$$MOVE ME, RENAME ME  It's not specific to this formatter.
-(defun emtvf:TESTRAL-gov:ediff-string-w/persist (value backend id)
+(defun emt:vw:note:ediff-string-w/persist (value backend id)
    ""
    (let 
       ;;Make a buffer for each
@@ -55,9 +55,9 @@
       ;;an alternative to `save-buffer'
       (ediff-buffers buf-expected buf-got)))
 
-;;;_ , emtvf:TESTRAL-gov:comparison-w/persist
+;;;_ , emt:vw:note:comparison-w/persist
 ;;;###autoload
-(defun emtvf:TESTRAL-gov:comparison-w/persist (note matched-p value backend id)
+(defun emt:vw:note:comparison-w/persist (note matched-p value backend id)
    "Formatter for TESTRAL note governed by `comparison-w/persist'"
 
    ;;$$IMPROVE ME Add buttons & command to act on the persisting
@@ -88,7 +88,7 @@
 		   action
 		   (lambda (button)
 		      (interactive)
-		      (emtvf:TESTRAL-gov:ediff-string-w/persist
+		      (emt:vw:note:ediff-string-w/persist
 			 ',value
 			 ',backend
 			 ',id))
@@ -102,20 +102,16 @@
 
 ;;;_. Footers
 ;;;_ , Register it
-;;;_  . Prelude
-;;;###autoload (unless (fboundp 'emtvf:TESTRAL:add-gov)
-;;;###autoload   (error "emtest/viewer/all-note-formatters must be loaded"))
-
-;;;_  . Registration proper
-;;;###autoload (emtvf:TESTRAL:add-gov
+;;;###autoload (eval-after-load 'emtest/viewer/all-note-formatters
+;;;###autoload '(emt:vw:note:add-gov
 ;;;###autoload    'comparison-w/persist 
-;;;###autoload    #'emtvf:TESTRAL-gov:comparison-w/persist)
-;;;_  . Postlude
-;;;###autoload (provide 'emtest/viewer/testral/registrations)
+;;;###autoload    #'emt:vw:note:comparison-w/persist))
+;;;_ , Postlude (Hack because we `require' the target file)
+;;;###autoload (provide 'emtest/viewer/note-formatters/registrations)
 
 ;;;_ , Provides
 
-(provide 'emtest/viewer/testral/compare-w-persist)
+(provide 'emtest/viewer/note-formatters/compare-w-persist)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -123,4 +119,4 @@
 ;;;_  + End:
 
 ;;;_ , End
-;;; emtest/viewer/testral/compare-w-persist.el ends here
+;;; emtest/viewer/note-formatters/compare-w-persist.el ends here

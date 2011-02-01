@@ -1,4 +1,4 @@
-;;;_ emtest/viewer/testral/error-raised.el --- TESTRAL formatter for error-raised
+;;;_ emtest/viewer/note-formatters/not-in-db.el --- TESTRAL formatter for not-in-db
 
 ;;;_. Headers
 ;;;_ , License
@@ -33,23 +33,51 @@
 
 
 ;;;_. Body
-;;;_ , emtvf:TESTRAL-gov:error-raised
+;;;_ , emt:vw:note:not-in-db
 ;;;###autoload
-(defun emtvf:TESTRAL-gov:error-raised (note &rest err)
-   "Formatter for TESTRAL note governed by `error-raised'"
+(defun emt:vw:note:not-in-db (note value id backend)
+   "Formatter for TESTRAL note governed by `not-in-db'"
    (emtvf:outline-item-emformat
-      "Error raised: "
-      `(object ,err nil) 
+      "ID not in database "
+      `(
+	  ,(emtvf:outline-item-emformat
+	      (list
+		 "Value "
+		 `(button "[Accept]"
+		     action 
+		     (lambda (button)
+			(interactive)
+			(emdb:set-value
+			   ',backend
+			   ',id
+			   ',value
+			   'correct-answer))
+		     help-echo 
+		     "Accept this value"))
+	      (if
+		 (stringp value)
+		 ;;Indent it so it can't affect outline
+		 ;;structure. 
+		 `(indent 4 ,value)
+		 `(object ,value nil))
+	      ;;Sometimes fold it.  Say, if it's not a string or is a
+	      ;;long string.
+	      (or
+		 (not (stringp value))
+		 (> (length value) 100))))
+      
       'emtvf:face:ungraded))
-
 ;;;_. Footers
 ;;;_ , Register it
-;;;###autoload (emtvf:TESTRAL:add-gov
-;;;###autoload    'error-raised 
-;;;###autoload    #'emtvf:TESTRAL-gov:error-raised)
+;;;###autoload (eval-after-load 'emtest/viewer/all-note-formatters
+;;;###autoload '(emt:vw:note:add-gov
+;;;###autoload    'not-in-db 
+;;;###autoload    #'emt:vw:note:not-in-db))
+
+
 ;;;_ , Provides
 
-(provide 'emtest/viewer/testral/error-raised)
+(provide 'emtest/viewer/note-formatters/not-in-db)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -57,4 +85,4 @@
 ;;;_  + End:
 
 ;;;_ , End
-;;; emtest/viewer/testral/error-raised.el ends here
+;;; emtest/viewer/note-formatters/not-in-db.el ends here

@@ -29,33 +29,35 @@
 
 ;;;_ , Requires
 
-;;No extra libraries
+(require 'emtest/viewer/view-types)
+(require 'emtest/types/testral-types)
+(require 'utility/misc)
 
 ;;;_. Body
 ;;;_ , Collecting formatters
 
-;;;_  . emtvf:TESTRAL-gov-alist
-(defvar emtvf:TESTRAL-gov-alist 
+;;;_  . emt:vw:note-alist
+(defvar emt:vw:note-alist 
    '()
    "Alist from governor symbol to format function" )
-;;;_  . emtvf:TESTRAL:add-gov
-(defun emtvf:TESTRAL:add-gov (gov-symbol formatter)
+;;;_  . emt:vw:note:add-gov
+(defun emt:vw:note:add-gov (gov-symbol formatter)
    "Register FORMATTER governed by GOV-SYMBOL."
    (utim:new-apair 
-      gov-symbol formatter emtvf:TESTRAL-gov-alist))
+      gov-symbol formatter emt:vw:note-alist))
 
-;;;_  . emtvf:get-TESTRAL-formatter
-(defun emtvf:get-TESTRAL-formatter (gov-symbol)
+;;;_  . emt:vw:note-get-formatter
+(defun emt:vw:note-get-formatter (gov-symbol)
    "Get a relevant formatter function for GOV-SYMBOL.
 Should not fail.
 GOV-SYMBOL must be a symbol."
    (utim:assq-value
       gov-symbol 
-      emtvf:TESTRAL-gov-alist
-      #'emtvf:TESTRAL-formatter-fallback))
+      emt:vw:note-alist
+      #'emt:vw:note-formatter-fallback))
 ;;;_ , Special formatters
-;;;_  . emtvf:TESTRAL-formatter-fallback
-(defun emtvf:TESTRAL-formatter-fallback (obj &rest r)
+;;;_  . emt:vw:note-formatter-fallback
+(defun emt:vw:note-formatter-fallback (obj &rest r)
    ""
    (list "No formatter found for governor "
       (symbol-name 
@@ -68,7 +70,7 @@ GOV-SYMBOL must be a symbol."
 ;;;_ , Include the autoload list of note formatters
 ;;Included with our feature already provided, so the load-forms know
 ;;they are supported.
-(require 'emtest/viewer/testral/registrations)
+(require 'emtest/viewer/note-formatters/registrations)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
