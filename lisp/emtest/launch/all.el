@@ -34,6 +34,7 @@
 ;;;_ , Borrowed variables
 ;;;_  . Counter
 
+;;$$MOVE ME into test-finder
 ;;Should probably live elsewhere.  Possibly in emtest/viewer/receive.
 ;;But then emtl:dispatch-normal must move there as well.
 (defvar emtl:testrun-counter 0 
