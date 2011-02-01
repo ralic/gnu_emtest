@@ -60,9 +60,6 @@
 
       ;;$$IMPROVE ME condition-case this and report bad test if we
       ;;miss.
-      ;;$$IMPROVE ME Find it in `emtt:test-finder:method-list' - try
-      ;;each predicate.  Only fallback will remain here.  Use
-      ;;`emtt:get-explore-func' in all.el, which is yet to be written.
       (emtp tp:a084136e-8f02-49a5-ac0d-9f65509cedf2
 	 (test-id)
 	 (funcall (emtt:get-explore-func test-id)
