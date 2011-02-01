@@ -27,18 +27,9 @@
 ;; For now, there's only one thing in this file and it's not
 ;; individuated yet, though it will be.
 
-;; $$MOVE ME This may belong with the clause explorer.
-
 ;;;_ , Requires
 
 
-
-;;;_. Body
-
-;;;_ , emti:debug-p
-;;$$IMPROVE ME
-(defvar emti:debug-p nil 
-   "Debug all tests on entry" )
 
 ;;;_. Footers
 ;;;_ , Provides

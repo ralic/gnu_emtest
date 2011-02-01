@@ -125,8 +125,12 @@ PROPS is the property list of the form."
 
 
 ;;;_   , Some surrounders and surrounder-makers
+;;;_    . Allow debugging
+;;;_     , emti:debug-p
+(defvar emti:debug-p nil 
+   "Debug all tests on entry" )
 
-;;;_    . emtts:with-debugging
+;;;_     , emtts:with-debugging
 (defun emtts:with-debugging (props)
    "Surrounder-maker, enable debug in the form if appropriate."
    ;;Will probably use (utim:get-properties :debug props) instead
