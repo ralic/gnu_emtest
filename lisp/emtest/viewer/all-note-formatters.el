@@ -51,13 +51,10 @@
    "Get a relevant formatter function for GOV-SYMBOL.
 Should not fail.
 GOV-SYMBOL must be a symbol."
-   (let* 
-      ((cell
-	  (assq gov-symbol emtvf:TESTRAL-gov-alist)))
-      (if
-	 cell
-	 (second cell)
-	 #'emtvf:TESTRAL-formatter-fallback)))
+   (utim:assq-value
+      gov-symbol 
+      emtvf:TESTRAL-gov-alist
+      #'emtvf:TESTRAL-formatter-fallback))
 ;;;_ , Special formatters
 ;;;_  . emtvf:TESTRAL-formatter-fallback
 (defun emtvf:TESTRAL-formatter-fallback (obj &rest r)

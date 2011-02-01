@@ -120,6 +120,14 @@ return a form."
 	 ,(if make-form-else `(funcall ,make-form-else data)))))
 
 
+;;;_ , utim:assq-value
+(defun utim:assq-value (key list &optional default)
+   "Return the cdr of an element of LIST whose car is eq to KEY.
+If not found, return DEFAULT instead."
+   (let 
+       ((cell
+	   (assq key list)))
+       (if cell (second cell) default)))
 
 
 ;;;_. Footers

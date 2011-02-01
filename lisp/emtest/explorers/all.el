@@ -71,19 +71,16 @@ THIS FORMAT MAY CHANGE." )
 (defsubst emtt:match-explorer (how method)
    "Return non-nil if METHOD is right for HOW"
    (funcall (car method) how))
-
 ;;;_  . emtt:get-explore-func 
 (defun emtt:get-explore-func (how)
    "Get a relevant function for HOW.
 Should not fail.
-HOW must be of a subtype of emthow"
-   (let* 
-       ((cell
-	   (assq (car how) emtt:test-finder:method-list)))
-       (if
-	  cell
-	  (second cell)
-	  #'emtt:explore-fallback)))
+HOW must be a list."
+   (utim:assq-value 
+      (car how) 
+      emtt:test-finder:method-list
+      #'emtt:explore-fallback))
+
 
 ;;;_  . Special explorers
 ;;;_   , emtt:explore-hello
