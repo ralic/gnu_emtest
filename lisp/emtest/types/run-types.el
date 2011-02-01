@@ -36,11 +36,14 @@
 
 ;;;_ , emthow
 ;;;_  . Base
-(defstruct (emthow
+'(defstruct (emthow
 	      (:copier nil)
 	      (:constructor emthow:make)
 	      (:conc-name emthow->))
-   "Base class for methods of exploring test-cases.")
+   "Base class for methods of exploring test-cases."
+   governor
+   args)
+(deftype emthow () '(repeat t))
 
 ;;;_  . emtt:explorable (Full runnable)
 (defstruct (emtt:explorable

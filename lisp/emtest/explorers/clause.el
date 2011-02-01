@@ -42,24 +42,22 @@
 ;;;_. Body
 ;;;_ , Structures
 ;;;_  . emthow:form
-(defstruct (emthow:form
+'(defstruct (emthow:form
 	      (:copier nil)
 	      (:constructor emthow:make-form)
 	      (:conc-name emthow:form->)
 	      (:include emthow))
-   ""
-   ;;A test form.
-   test-form
-   )
+   "A bare test case with no context"
+   test-form)
+
 ;;;_  . emthow:indexed-clause
-(defstruct (emthow:indexed-clause
+'(defstruct (emthow:indexed-clause
 	      (:copier nil)
 	      (:constructor emthow:make-indexed-clause)
 	      (:conc-name emthow:indexed-clause->)
 	      (:include emthow))
    ""
    (suite-sym () :type symbol)
-   ;;Formerly index was considered part of context.
    (clause-index 0 :type integer))
 ;;;_ , Launcher
 ;;;_  . emt:sexp-at-point
@@ -71,15 +69,13 @@
 	 (save-excursion (read (current-buffer)))))
    
    (emtl:dispatch-normal
-      (emthow:make-form
-	 :test-form form)
+      `(form ,form)
       (list "form")))
 ;;;_  . emtt:eval
 (defun emtt:eval (expression)
    ""
    (emtl:dispatch-normal
-      (emthow:make-form
-	 :test-form (list nil expression))
+      `(form (list nil expression))
       (list "expression")))
 
 ;;;_  . emt:eval-last-sexp
@@ -183,37 +179,30 @@ This is the heart of Emtest exploration: A test itself."
 (defun emtt:explore-literal-clause (test-id props path report-f)
    "Explore a literal clause in Emtest."
    (emtt:explore-clause
-      (emthow:form->test-form test-id)
+      (second test-id)
       props
       report-f))
 
 ;;;_   , Register
 ;;;###autoload (eval-after-load 'emtest/explorers/all
-;;;###autoload  '(emtt:add-explorer #'emthow:form-p #'emtt:explore-literal-clause
+;;;###autoload  '(emtt:add-explorer 'form #'emtt:explore-literal-clause
 ;;;###autoload  "Literal clause"))
 ;;;_  . emtt:explore-indexed-clause
 ;;;###autoload
 (defun emtt:explore-indexed-clause (test-id props path report-f)
    "Explore an indexed clause in a suite in Emtest."
-   (let*
-      (
-	 (suite-sym 
-	    (emthow:indexed-clause->suite-sym
-	       test-id))
-	 (index
-	    (emthow:indexed-clause->clause-index
-	       test-id)))
+   (destructuring-bind (suite-sym clause-index) (cdr test-id)
       (emtd:update-for-sym suite-sym)
       (emtd:destructure-suite-3 suite-sym
 	 (emtt:explore-clause 
-	    (nth index clause-list)
+	    (nth clause-index clause-list)
 	    props
 	    report-f))))
 
 
 ;;;_   , Register
 ;;;###autoload (eval-after-load 'emtest/explorers/all
-;;;###autoload  '(emtt:add-explorer #'emthow:indexed-clause-p #'emtt:explore-indexed-clause
+;;;###autoload  '(emtt:add-explorer 'indexed-clause #'emtt:explore-indexed-clause
 ;;;###autoload  "Indexed clause"))
 
 ;;;_. Footers

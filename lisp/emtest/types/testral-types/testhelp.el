@@ -284,15 +284,13 @@
 	 ((type how-to-run))
 	 (item ((name test-1) ;;`name' seems redundant here now.
 		  (what-test test-1))
-	    (emthow:make-suite :suite-ID 'test-1))
+	    '(suite test-1))
 	 (item ((name test-2)
 		  (what-test test-2))
-	    (emthow:make-suite :suite-ID 'test-2))
+	    '(suite test-2))
 	 (item
 	    ((what-test index-1))
-	    (emthow:make-indexed-clause
-	       :suite-sym 'first-suite
-	       :clause-index 0)))
+	    '(indexed-clause first-suite 0)))
 
       (group
 	 ((type explorable))
@@ -300,7 +298,7 @@
 	 (item
 	    ((name just-test-runner))
 	    (emtt:make-explorable
-	       :how-to-run  (emthow:make-hello)
+	       :how-to-run  '(hello)
 	       :prestn-path () 
 	       :properties  ()
 	       :aliases     ()))

@@ -37,11 +37,11 @@
 ;;;_. Body
 ;;;_ , Types
 (defstruct (emthow:library:elisp-load
+	      (:type list)
 	      (:copier nil)
 	      (:constructor emthow:make-library:elisp-load)
-	      (:conc-name emthow:library:elisp-load->)
-	      (:include emthow))
-   "Explorer class for exploring library"
+	      (:conc-name emthow:library:elisp-load->))
+   "Arglist for exploring library"
    load-name
    lib-sym)
 ;;;_ , Support functions
@@ -102,6 +102,7 @@ LIB-PATH must be a path to a library that is already loaded."
       ,place
       (setf ,place ,value)))
 ;;;_  . emtt:lib-conform
+;;$$REFACTOR ME.  Callers will set individual fields after destructuring.
 (defun emtt:lib-conform (howto)
    ""
    ;;If symbol is nil, find it.
@@ -160,30 +161,28 @@ LIBRARY is the absolute file name of the library"
    (let
       (
 	 (test-id
-	    (emthow:make-library:elisp-load
-	       :load-name library)))
+	    `(elisp-load ,library nil)))
       
-      (emtt:lib-conform test-id)
+      (setf (cdr test-id) (emtt:lib-conform (cdr test-id)))
       (let*
 	 ((lib-sym
-	     (emthow:library:elisp-load->lib-sym test-id)))
+	     (third test-id)))
 	 (emtl:dispatch-normal 
 	    test-id 
 	    (list (concat "library " (symbol-name lib-sym))) 
 	    receiver))))
 
-
-;;;_ , emtt:explore-library
+;;;_ , Explorer
+;;;_  . emtt:explore-library
 ;;;###autoload
 (defun emtt:explore-library (test-id props path report-f)
    ""
 
-   (emtt:lib-conform test-id)
+   (setf (cdr test-id) (emtt:lib-conform (cdr test-id)))
    (let* 
       (  
 	 (lib-path
-	    (emthow:library:elisp-load->load-name test-id))
-	 ;;See [[id:li6i8qd0xxe0][Refactoring dispatchers]]
+	    (second test-id))
 	 (lib-sym
 	    (emtt:lib-path->lib-sym lib-path))
 	 (suite-list
@@ -193,14 +192,12 @@ LIBRARY is the absolute file name of the library"
 	       #'(lambda (suite-sym)
 		    (emtt:make-explorable
 		       :how-to-run
-		       (emthow:make-suite
-			  :suite-ID suite-sym)
+		       `(suite ,suite-sym)
 		       :prestn-path 
 		       (append 
 			  path
 			  (list (symbol-name suite-sym)))
-		       ;;For now, libraries have no
-		       ;;properties. 
+		       ;;For now, libraries have no properties.
 		       :properties ()
 		       :aliases ()))
 	       suite-list)))
@@ -210,12 +207,12 @@ LIBRARY is the absolute file name of the library"
 	    :contents
 	    (emt:testral:make-runform-list
 	       :els list-to-run)
-	    :grade '() ;;Punt - only if it crapped out right here.
-	    )
+	    ;;$$IMPROVE ME Set this if it crapped out right here.
+	    :grade '())
 	 list-to-run)))
 ;;;_ , Insinuate
 ;;;###autoload (eval-after-load 'emtest/explorers/all
-;;;###autoload  '(emtt:add-explorer #'emthow:library:elisp-load-p #'emtt:explore-library
+;;;###autoload  '(emtt:add-explorer 'library:elisp-load #'emtt:explore-library
 ;;;###autoload  "Elisp library"))
 
 ;;;_. Footers

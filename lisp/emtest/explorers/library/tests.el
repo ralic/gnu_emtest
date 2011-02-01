@@ -98,9 +98,9 @@ Full exploration is used (Meaningless for now)")
 	       (tp*
 		  (:id tp:a084136e-8f02-49a5-ac0d-9f65509cedf2 :count nil :fallthru t)
 		  (test-id)
-		  (typecase test-id
+		  (case (car test-id)
 		     ;;Intercept suite
-		     (emthow:suite
+		     (suite
 			;;A reached-point for counting invocations.
 			(emtp tp:798212b4-1abe-4779-beb1-baf53ff39a8c nil)
 			;;Don't try to explore its clauses, return
@@ -108,7 +108,7 @@ Full exploration is used (Meaningless for now)")
 			(throw 'emtp:tag-return nil))
 		     ;;Make library itself fall thru to handler, whose
 		     ;;behavior is what we're testing.
-		     (emthow:library:elisp-load t)
+		     (library:elisp-load t)
 		     ;;We don't expect to see any other types of
 		     ;;explores.
 		     (t

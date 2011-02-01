@@ -41,7 +41,7 @@
 ;;;_. Body
 ;;;_ , Types
 ;;;_  . emthow:suite
-(defstruct (emthow:suite
+'(defstruct (emthow:suite
 	      (:copier nil)
 	      (:constructor emthow:make-suite)
 	      (:conc-name emthow:suite->)
@@ -54,8 +54,7 @@
    "Run the test suite associated with SUITE-SYM."
    
    (emtl:dispatch-normal 
-      (emthow:make-suite
-	 :suite-ID suite-sym)
+      `(suite ,suite-sym)
       (list (format "Suite %s" suite-sym))))
 
 ;;;_  . emt:defun-at-point
@@ -89,7 +88,7 @@ Does nothing if the buffer is not in a known lisp mode."
    (let* 
       (
 	 (suite-sym
-	    (emthow:suite->suite-ID test-id)))
+	    (second test-id)))
       
       (emtd:update-for-sym suite-sym)
       (emtd:destructure-suite-3 suite-sym
@@ -100,9 +99,7 @@ Does nothing if the buffer is not in a known lisp mode."
 	       (push  
 		  (emtt:make-explorable
 		     :how-to-run
-		     (emthow:make-indexed-clause
-			:clause-index n
-			:suite-sym suite-sym)
+		     `(indexed-clause ,suite-sym ,n)
 		     :prestn-path 
 		     (append 
 			path
@@ -130,7 +127,7 @@ Does nothing if the buffer is not in a known lisp mode."
 
 ;;;_ , Insinuate
 ;;;###autoload (eval-after-load 'emtest/explorers/all
-;;;###autoload  '(emtt:add-explorer #'emthow:suite-p #'emtt:explore-suite
+;;;###autoload  '(emtt:add-explorer 'suite #'emtt:explore-suite
 ;;;###autoload  "Suite"))
 
 ;;;_. Footers

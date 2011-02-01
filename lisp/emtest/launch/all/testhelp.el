@@ -49,8 +49,7 @@ Results are passed to function CALLBACK."
       ;;$$REFACTOR ME Would like to use `emtl:run-suite'.  Perhaps
       ;;these can process arglist and then apply, and `emtl:run-suite'
       ;;etc can take all the args.
-      (emthow:make-suite
-	 :suite-ID suite-sym) 
+      `(suite ,suite-sym)
       '()
       "0" 
       callback))
@@ -69,8 +68,7 @@ followed by a form."
    (check-type test-form (list t t))
 
    (emtt:test-finder:top 
-      (emthow:make-form
-	 :test-form test-form)
+      `(form ,test-form)
       (or prefix (list "test-form"))
       (or testrun-id "0")
       callback))
@@ -80,7 +78,7 @@ followed by a form."
    ""
    
    (emtt:test-finder:top 
-      (emthow:make-hello)
+      '(hello)
       (or prefix (list ""))
       (or testrun-id "0")
       callback))

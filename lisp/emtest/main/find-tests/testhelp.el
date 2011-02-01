@@ -45,8 +45,7 @@
    ""
    ;;Test thru top call for now.
    (emtt:test-finder:top 
-      (emthow:make-form
-	 :test-form form)
+      `(form ,form)
       (list "form")
       (or testrun-id "0")
       callback))

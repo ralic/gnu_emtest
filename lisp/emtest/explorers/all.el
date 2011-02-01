@@ -36,7 +36,7 @@
 ;;;_. Body
 ;;;_ , Types
 ;;;_  . emthow:hello
-(defstruct (emthow:hello
+'(defstruct (emthow:hello
 	      (:copier nil)
 	      (:constructor emthow:make-hello)
 	      (:conc-name emthow:hello->)
@@ -77,13 +77,13 @@ THIS FORMAT MAY CHANGE." )
    "Get a relevant function for HOW.
 Should not fail.
 HOW must be of a subtype of emthow"
-   
-   (catch 'emtt:explore-func
-      (progn
-	 (dolist (method emtt:test-finder:method-list)
-	    (when (emtt:match-explorer how method)
-	       (throw 'emtt:explore-func (second method))))
-	 #'emtt:explore-fallback)))
+   (let* 
+       ((cell
+	   (assq (car how) emtt:test-finder:method-list)))
+       (if
+	  cell
+	  (second cell)
+	  #'emtt:explore-fallback)))
 
 ;;;_  . Special explorers
 ;;;_   , emtt:explore-hello
@@ -100,7 +100,7 @@ HOW must be of a subtype of emthow"
 
 ;;;_    . Register it
 
-(emtt:add-explorer #'emthow:hello-p #'emtt:explore-hello
+(emtt:add-explorer 'hello #'emtt:explore-hello
    "Tester signature") 
 
 ;;;_   , emtt:explore-fallback
@@ -111,7 +111,6 @@ HOW must be of a subtype of emthow"
    (funcall report-f
       (emt:testral:make-suite
 	 :contents nil
-	 ;;Actual form is TBD.
 	 :grade 
 	 'ungraded)))
 

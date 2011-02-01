@@ -38,7 +38,7 @@
 ;;;_. Body
 ;;;_ , Structures
 ;;;_  . emthow:fileset
-(defstruct (emthow:fileset
+'(defstruct (emthow:fileset
 	      (:copier nil)
 	      (:constructor emthow:make-fileset)
 	      (:conc-name emthow:fileset->)
@@ -55,8 +55,7 @@ If prefix arg is given, prompt for fileset name in any case."
    (interactive
       (list (fileset-whole-read-fileset current-prefix-arg)))
    (emtl:dispatch-normal
-      (emthow:make-fileset
-	 :name fileset-name)
+      `(fileset ,fileset-name)
       (list (concat "fileset " fileset-name))))
 
 ;;;_ , Explorer emtt:explore-fileset
@@ -66,7 +65,7 @@ If prefix arg is given, prompt for fileset name in any case."
 
    (let*
       (
-	 (name (emthow:fileset->name test-id))
+	 (name (second test-id))
 	 (fileset
 	    (filesets-get-fileset-from-name fileset-name))
 	 (test-files
@@ -103,8 +102,7 @@ If prefix arg is given, prompt for fileset name in any case."
 	       #'(lambda (suite-sym)
 		    (emtt:make-explorable
 		       :how-to-run
-		       (emthow:make-suite
-			  :suite-ID suite-sym)
+		       `(suite ,suite-sym)
 		       :prestn-path 
 		       (append 
 			  path
@@ -126,7 +124,7 @@ If prefix arg is given, prompt for fileset name in any case."
 
 ;;;_ , Register
 ;;;###autoload (eval-after-load 'emtest/explorers/all
-;;;###autoload '(emtt:add-explorer #'emthow:fileset-p #'emtt:explore-fileset
+;;;###autoload '(emtt:add-explorer 'fileset #'emtt:explore-fileset
 ;;;###autoload "Fileset"))
 
 ;;;_. Footers
