@@ -29,15 +29,10 @@
 
 ;;;_ , Requires
 
-(require 'emtest/types/run-types)
-(require 'emtest/types/testral-types)
-(require 'emtest/main/surrounders)
-(require 'emtest/main/define)
-(require 'emtest/main/notes)
 (require 'emtest/support/keepup)
-(require 'emtest/runners/expect)
-(require 'emtest/testhelp/standard)
+(require 'emtest/main/define)
 (require 'emtest/launch/all)  ;;$$TRANSITIONAL  It will move
+(require 'emtest/main/all-runners)
 
 ;;;_. Body
 ;;;_ , Launcher
@@ -85,75 +80,17 @@
    ;;Unlike eval-expression, this does not do the extra stuff
    (emtt:eval arg))
 
-;;;_ , Runners (emtr prefix)
-;;;_  . nil runner emtr:quoted
-(defun emtr:quoted (props form report-f)
-   "Report a dormant result.  For quoted test-cases."
-
-   (funcall report-f
-      (emt:testral:make-suite
-	 :contents '()
-	 :grade 'dormant)))
-
-
-;;;_  . emtr:vanilla
-(defun emtr:vanilla (props form report-f)
-   "Run a vanilla test-case and report the result."
-   (emtt:testral:with-context props
-      (let
-	 ( 
-	    (form-1
-	       (emts:add-surrounders 
-		  (car form) 
-		  (emtts:get-surrounders props)
-		  props)))
-	 (emth:protect&trap
-	    aborted-p
-	    (eval form-1)
-	    (progn
-	       (when aborted-p
-		  (emtt:testral:add-note
-		     "problem"
-		     'ungraded 
-		     'error-raised
-		     aborted-p))
-	       (funcall report-f
-		  (emt:testral:make-suite
-		     :contents
-		     (emtt:testral:note-list)
-		     :grade 
-		     (if aborted-p 
-			'ungraded 
-			'test-case))))))))
-
 ;;;_ , Functions
 ;;;_  . emtt:explore-clause
 
 (defun emtt:explore-clause (clause props report-f)
    "Explore one clause in Emtest.
 This is the heart of Emtest exploration: A test itself."
-   (let
-      ((rest (emtd:clause->form clause)))
-      (case (emtd:clause->governor clause)
-	 (quote (emtr:quoted props rest report-f))
-	 ((nil) (emtr:vanilla props rest report-f))
-	 (expect (emtr:expect props rest report-f))
-	 (t
-	    (funcall report-f
-	       (emt:testral:make-suite
-		  ;;$$IMPROVE ME Add a note here for contents
-
-		  ;;$$SUPPORT ME In notes.el, a means for concisely
-		  ;;making a notelist with just given notes.
-		  :contents '()
-		  :grade 'ungraded))))))
-;;Note would be like
-'(emtt:testral:add-note
-   "problem"
-    'ungraded
-   'error-raised
-    'unrecognized-governor
-    (emtd:clause->governor clause))
+   (funcall 
+      (emt:runner:get-func (emtd:clause->governor clause))
+      props 
+      (emtd:clause->form clause)
+      report-f))
 
 ;;;_  . emtt:explore-literal-clause
 ;;;###autoload

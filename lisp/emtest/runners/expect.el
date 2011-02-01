@@ -304,19 +304,10 @@ If impossible, return nil instead"
 		  :grade
 		  'ungraded))))))
 
-
-
 ;;;_ , Register it
-;;$$TRANSITIONAL - belongs at the top of the file
-;;;###autoload (unless (fboundp 'emtt:add-runner)
-;;;###autoload   (error "A certain unwritten file must be loaded"))
-;;;_  . Registration itself
-;;;###autoload (emtt:add-runner 'expect #'emtr:expect
-;;;###autoload   "Expect script runner") 
-;;;_  . Provision
-;;$$TRANSITIONAL
-;;;###autoload (provide 'emtest/runners/registrations)
-
+;;;###autoload (eval-after-load 'emtest/main/all-runners
+;;;###autoload '(emt:runner:add 'expect #'emtr:expect
+;;;###autoload   "Expect script runner"))
 
 ;;;_. Footers
 ;;;_ , Provides

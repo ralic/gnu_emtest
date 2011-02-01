@@ -1,11 +1,11 @@
-;;;_ do-elinstall.el --- Script to do elinstall installation
+;;;_ emtest/runners/quote.el --- Pseudo-runner for quoted-dormant test-cases
 
 ;;;_. Headers
 ;;;_ , License
-;; Copyright (C) 2010  Tom Breton (Tehom)
+;; Copyright (C) 2011  Tom Breton (Tehom)
 
 ;; Author: Tom Breton (Tehom) <tehom@panix.com>
-;; Keywords: maint,convenience
+;; Keywords: lisp,maint,internal
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -29,43 +29,34 @@
 
 ;;;_ , Requires
 
-(require 'elinstall)
+(require 'emtest/types/testral-types)
 
 ;;;_. Body
 
-(elinstall
-   "emtest"
-   (elinstall-directory-true-name)
-   '(load-path 
-       (all 
-	  (block-in-subtree 
-	     (  "^tests\\.el"
-		"^testhelp\\.el"
-		"^testral$"
-		"^rtest\\.el"
-		"^vtests\\.el"
-		"^examples$"
-		"^qexamples\\.el")
-	     t) 
-	  ;;Explorer and runner plugins now make autoloads into the
-	  ;;front autoload file
+;;;_  . nil runner emt:runner:quote
+;;;###autoload
+(defun emt:runner:quote (props form report-f)
+   "Report a dormant result.  For quoted test-cases."
 
-	  ;;TESTRAL formatter plugins use this to inform emformat
-	  ;;about their existence
-	  (def-file "emtest/viewer/testral/registrations.el" nil
-	     (dir "emtest/viewer/testral")))))
+   (funcall report-f
+      (emt:testral:make-suite
+	 :contents '()
+	 :grade 'dormant)))
+
+;;;_ , Register it
+;;;###autoload (eval-after-load 'emtest/main/all-runners
+;;;###autoload '(emt:runner:add 'quote #'emt:runner:quote
+;;;###autoload   "Dormant test-case pseudo-runner"))
 
 ;;;_. Footers
 ;;;_ , Provides
 
-;;Nothing, this is a script.
+(provide 'emtest/runners/quote)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
 ;;;_  + mode: allout
-;;;_  + no-byte-compile: t
-;;;_  + no-update-autoloads: t
 ;;;_  + End:
 
 ;;;_ , End
-;;; elinstall/do-elinstall.el ends here
+;;; emtest/runners/quote.el ends here
