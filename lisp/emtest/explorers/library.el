@@ -96,35 +96,6 @@ LIB-PATH must be a path to a library that is already loaded."
 	 (provide-cell
 	    (assq 'provide lib-data)))
       (cdr provide-cell)))
-;;;_  . utim:setf-new
-(defmacro utim:setf-new (place value)
-   ""
-   `(unless 
-      ,place
-      (setf ,place ,value)))
-;;;_  . emtt:lib-conform
-;;$$OBSOLETE
-'
-(defun emtt:lib-conform (howto)
-   ""
-   ;;If symbol is nil, find it.
-   (utim:setf-new
-      (emthow:library:elisp-load->lib-sym howto)
-      (emtt:lib-path->lib-sym 
-	 (emthow:library:elisp-load->load-name howto)))
-   
-
-   ;;If path is nil, find it.
-   (utim:setf-new
-      (emthow:library:elisp-load->load-name howto)
-      (locate-library
-	 (symbol-name (emthow:library:elisp-load->lib-sym howto))))
-   
-   ;;Possibly try to load foo/tests.el  (Later, controlled by flags)
-   ;;Punt.  They're probably already loaded.
-   howto)
-
-;;$$ADD TESTS for all 3 behaviors.
 ;;;_ , Launcher
 ;;;_  . emt:lib-at-point
 
