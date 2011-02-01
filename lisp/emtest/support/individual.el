@@ -29,7 +29,16 @@
 
 ;;;_ , Requires
 
+;;;_. Body
+;;;_ , Types
+;;It's an alist of (how-to-run . property-alist)
 
+;;;_ , List of individual tests
+(defvar emt:ind:alist 
+   '()
+   "Alist of properties of individual tests" )
+;;;_ , emt:ind:get-prop Get properties of a test
+;;;_ , emt:ind:set-prop Set properties of a test
 
 ;;;_. Footers
 ;;;_ , Provides
