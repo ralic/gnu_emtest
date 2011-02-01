@@ -39,12 +39,16 @@
 (defvar emtt:test-finder:method-list 
    '()
    "List of explorer methods.
-Files that define explorers should call `emtt:add-explorer' to add
-their methods.
+
+Files that define explorers should call `emtt:add-explorer' to
+add their methods.  Recommended: autoload a form like:
+`(eval-after-load 'emtest/main/all-runners (emtt:add-explorer SYM
+FUNCTION NAME))'.
 
 Format: Each entry is (GOV-SYMBOL FUNCTION NAME), where 
  * GOV-SYMBOL is a governor symbol
- * FUNCTION explores the test or suite." )
+ * FUNCTION explores the test or suite.
+ * NAME is the name of the method." )
 
 ;;;_  . emtt:add-explorer
 
