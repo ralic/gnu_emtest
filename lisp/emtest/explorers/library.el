@@ -36,6 +36,7 @@
 
 ;;;_. Body
 ;;;_ , Types
+'
 (defstruct (emthow:library:elisp-load
 	      (:type list)
 	      (:copier nil)
@@ -102,7 +103,8 @@ LIB-PATH must be a path to a library that is already loaded."
       ,place
       (setf ,place ,value)))
 ;;;_  . emtt:lib-conform
-;;$$REFACTOR ME.  Callers will set individual fields after destructuring.
+;;$$OBSOLETE
+'
 (defun emtt:lib-conform (howto)
    ""
    ;;If symbol is nil, find it.
@@ -159,18 +161,12 @@ LIBRARY is the absolute file name of the library"
 	    "Run tests of which library: ")))
    
    (let
-      (
-	 (test-id
-	    `(elisp-load ,library nil)))
-      
-      (setf (cdr test-id) (emtt:lib-conform (cdr test-id)))
-      (let*
-	 ((lib-sym
-	     (third test-id)))
-	 (emtl:dispatch-normal 
-	    test-id 
-	    (list (concat "library " (symbol-name lib-sym))) 
-	    receiver))))
+      ((lib-sym
+	  (emtt:lib-path->lib-sym library)))
+      (emtl:dispatch-normal 
+	 `(library:elisp-load ,library ,lib-sym) 
+	 (list (concat "library " (symbol-name lib-sym))) 
+	 receiver)))
 
 ;;;_ , Explorer
 ;;;_  . emtt:explore-library
@@ -178,13 +174,10 @@ LIBRARY is the absolute file name of the library"
 (defun emtt:explore-library (test-id props path report-f)
    ""
 
-   (setf (cdr test-id) (emtt:lib-conform (cdr test-id)))
+   (destructuring-bind (gov lib-path lib-sym) test-id
    (let* 
       (  
-	 (lib-path
-	    (second test-id))
-	 (lib-sym
-	    (emtt:lib-path->lib-sym lib-path))
+	 (lib-sym (or lib-sym (emtt:lib-path->lib-sym lib-path)))
 	 (suite-list
 	    (emtt:lib-suites lib-path))
 	 (list-to-run
@@ -209,7 +202,7 @@ LIBRARY is the absolute file name of the library"
 	       :els list-to-run)
 	    ;;$$IMPROVE ME Set this if it crapped out right here.
 	    :grade '())
-	 list-to-run)))
+	 list-to-run))))
 ;;;_ , Insinuate
 ;;;###autoload (eval-after-load 'emtest/explorers/all
 ;;;###autoload  '(emtt:add-explorer 'library:elisp-load #'emtt:explore-library
