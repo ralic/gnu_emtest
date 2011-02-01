@@ -27,16 +27,7 @@
 ;; 
 
 ;;;_ , Requires
-
 (require 'emtest/main/find-tests)
-(require 'emtest/viewer/emviewer2)
-(require 'emtest/explorers/suite)
-(require 'emtest/explorers/library)
-(require 'emtest/explorers/clause)
-(require 'emtest/types/run-types)
-(require 'emtest/main/config)  ;;Just for receiver configuration
-(require 'emtest/editing/lisp)
-(require 'emtest/support/individual)
 
 ;;;_. Body
 
