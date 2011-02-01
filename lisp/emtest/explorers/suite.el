@@ -39,15 +39,6 @@
 
 
 ;;;_. Body
-;;;_ , Types
-;;;_  . emthow:suite
-'(defstruct (emthow:suite
-	      (:copier nil)
-	      (:constructor emthow:make-suite)
-	      (:conc-name emthow:suite->)
-	      (:include emthow))
-   ""
-   (suite-ID () :type symbol))
 ;;;_ , Launchers
 ;;;_  . emtl:run-suite
 (defun emtl:run-suite (suite-sym)

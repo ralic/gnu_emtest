@@ -36,16 +36,6 @@
 (require 'emtest/explorers/suite)
 
 ;;;_. Body
-;;;_ , Structures
-;;;_  . emthow:fileset
-'(defstruct (emthow:fileset
-	      (:copier nil)
-	      (:constructor emthow:make-fileset)
-	      (:conc-name emthow:fileset->)
-	      (:include emthow))
-   "How to launch a fileset"
-   name)
-
 
 ;;;_ , Launcher emt:fileset
 ;;;###autoload

@@ -35,22 +35,14 @@
 ;;;_. Body
 
 ;;;_ , emthow
-;;;_  . Base
-'(defstruct (emthow
-	      (:copier nil)
-	      (:constructor emthow:make)
-	      (:conc-name emthow->))
-   "Base class for methods of exploring test-cases."
-   governor
-   args)
 (deftype emthow () '(repeat t))
 
-;;;_  . emtt:explorable (Full runnable)
+;;;_ , emtt:explorable (Full runnable)
 (defstruct (emtt:explorable
 	      (:copier nil)
 	      (:conc-name emtt:explorable->)
 	      (:constructor emtt:make-explorable))
-   "All the information needed to specify how to run a test or suite/"
+   "All the information needed to specify how to run a test or suite."
    (how-to-run () 
       :type emthow
       :doc "What explorer to use for this.")
@@ -67,7 +59,7 @@
       :doc "A possibly empty list of other IDs that would launch the
       same thing")) 
 
-;;;_  . emtt:dynamic-method
+;;;_ , emtt:dynamic-method
 ;;$$USE ME
 (defstruct (emtt:dynamic-method
 	      (:constructor emtt:make-dynamic-method)
@@ -77,7 +69,7 @@
    name
    keys)
 
-;;;_  . emtt:method (Union of those types)
+;;;_ , emtt:method (Union of those types)
 (deftype emtt:method ()
    "A static or dynamic exploration method, for test-runner-info"
    '(or emtt:dynamic-method emtt:explorable))

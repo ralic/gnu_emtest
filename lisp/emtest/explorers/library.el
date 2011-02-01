@@ -35,16 +35,6 @@
 (require 'emtest/launch/all)
 
 ;;;_. Body
-;;;_ , Types
-'
-(defstruct (emthow:library:elisp-load
-	      (:type list)
-	      (:copier nil)
-	      (:constructor emthow:make-library:elisp-load)
-	      (:conc-name emthow:library:elisp-load->))
-   "Arglist for exploring library"
-   load-name
-   lib-sym)
 ;;;_ , Support functions
 ;;;_  . emtl:ldhst-el->symbol
 

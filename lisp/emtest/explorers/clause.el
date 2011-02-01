@@ -37,28 +37,9 @@
 (require 'emtest/support/keepup)
 (require 'emtest/runners/expect)
 (require 'emtest/testhelp/standard)
-(require 'emtest/launch/all)
+(require 'emtest/launch/all)  ;;$$TRANSITIONAL  It will move
 
 ;;;_. Body
-;;;_ , Structures
-;;;_  . emthow:form
-'(defstruct (emthow:form
-	      (:copier nil)
-	      (:constructor emthow:make-form)
-	      (:conc-name emthow:form->)
-	      (:include emthow))
-   "A bare test case with no context"
-   test-form)
-
-;;;_  . emthow:indexed-clause
-'(defstruct (emthow:indexed-clause
-	      (:copier nil)
-	      (:constructor emthow:make-indexed-clause)
-	      (:conc-name emthow:indexed-clause->)
-	      (:include emthow))
-   ""
-   (suite-sym () :type symbol)
-   (clause-index 0 :type integer))
 ;;;_ , Launcher
 ;;;_  . emt:sexp-at-point
 ;;;###autoload
