@@ -31,6 +31,7 @@
 
 (require 'emtest/types/testral-types)
 (require 'utility/misc)
+(require 'emtest/support/individual)
 
 ;;;_. Body
 ;;;_ , test surrounders
