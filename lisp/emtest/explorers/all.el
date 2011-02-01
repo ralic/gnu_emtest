@@ -42,7 +42,7 @@
 
 Files that define explorers should call `emtt:add-explorer' to
 add their methods.  Recommended: autoload a form like:
-`(eval-after-load 'emtest/main/all-runners (emtt:add-explorer SYM
+`(eval-after-load 'emtest/main/all-runners '(emtt:add-explorer SYM
 FUNCTION NAME))'.
 
 Format: Each entry is (GOV-SYMBOL FUNCTION NAME), where 
