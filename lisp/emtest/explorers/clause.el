@@ -29,10 +29,11 @@
 
 ;;;_ , Requires
 
-(require 'emtest/support/keepup)
-(require 'emtest/main/define)
-(require 'emtest/launch/all)  ;;$$TRANSITIONAL  It will move
+(require 'emtest/launch/all)
 (require 'emtest/main/all-runners)
+(require 'emtest/main/define)
+(require 'emtest/main/find-tests)
+(require 'emtest/support/keepup)
 
 ;;;_. Body
 ;;;_ , Launcher
@@ -44,13 +45,13 @@
       (list 
 	 (save-excursion (read (current-buffer)))))
    
-   (emtl:dispatch-normal
+   (emt:lch:run
       `(form ,form)
       (list "form")))
 ;;;_  . emtt:eval
 (defun emtt:eval (expression)
    ""
-   (emtl:dispatch-normal
+   (emt:lch:run
       `(form (list nil expression))
       (list "expression")))
 

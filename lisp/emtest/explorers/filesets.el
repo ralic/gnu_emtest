@@ -29,11 +29,10 @@
 
 ;;;_ , Requires
 
-(require 'fileset-whole)
-(require 'emtest/launch/all)
 (require 'emtest/types/testral-types)
 (require 'emtest/types/run-types)
-(require 'emtest/explorers/suite)
+(require 'emtest/main/find-tests)
+(require 'fileset-whole)
 
 ;;;_. Body
 
@@ -44,7 +43,7 @@
 If prefix arg is given, prompt for fileset name in any case."
    (interactive
       (list (fileset-whole-read-fileset current-prefix-arg)))
-   (emtl:dispatch-normal
+   (emt:lch:run
       `(fileset ,fileset-name)
       (list (concat "fileset " fileset-name))))
 

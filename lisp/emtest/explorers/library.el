@@ -29,10 +29,10 @@
 
 ;;;_ , Requires
 
-(require 'emtest/types/testral-types)
-(require 'emtest/types/run-types)
-(require 'emtest/explorers/suite)
 (require 'emtest/launch/all)
+(require 'emtest/main/find-tests)
+(require 'emtest/types/run-types)
+(require 'emtest/types/testral-types)
 
 ;;;_. Body
 ;;;_ , Support functions
@@ -124,7 +124,7 @@ LIBRARY is the absolute file name of the library"
    (let
       ((lib-sym
 	  (emtt:lib-path->lib-sym library)))
-      (emtl:dispatch-normal 
+      (emt:lch:run 
 	 `(library:elisp-load ,library ,lib-sym) 
 	 (list (concat "library " (symbol-name lib-sym))) 
 	 receiver)))

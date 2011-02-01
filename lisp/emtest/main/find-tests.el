@@ -110,7 +110,20 @@
 	    ((next (pop (car emtt:pending-list))))
 	    (emtt:explore-one next report-cb report-f)))))
 
+;;;_ , Launch tests
+;;;_  . Counter
 
+(defvar emt:lch:testrun-counter 0 
+   "A counter used to make testrun-id." )
+
+;;;_  . emt:lch:run
+(defun emt:lch:run (what-to-run &optional prefix receiver)
+   ""
+   (emtt:test-finder:top 
+      what-to-run 
+      prefix  ;;Default is the empty list.
+      (prin1-to-string (incf emt:lch:testrun-counter))
+      (or receiver emtl:receiver-f)))
 
 ;;;_. Footers
 ;;;_ , Provides

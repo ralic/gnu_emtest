@@ -30,12 +30,19 @@
 ;;;_ , Requires
 
 (require 'formatter/hiformat)
-(require 'formatter/loformat)
 (require 'formatter/outline)
+
+(require 'emtest/types/testral-types)
+(require 'emtest/types/run-types)
+(require 'emtest/viewer/sumgrades)
 (require 'emtest/viewer/view-types)
-(require 'emtest/types/grade-types)
-(require 'custom)
+(require 'emtest/viewer/emviewer2)
 (require 'emtest/viewer/all-note-formatters)
+(require 'emtest/main/find-tests)
+
+(require 'utility/pathtree)
+(require 'utility/dynvars)
+(require 'custom)
 
 ;;;_. Body
 ;;;_ , Data
@@ -150,11 +157,9 @@ Hack: We add a space after the button."
 	 ((func
 	     `(lambda (button)
 		 (interactive)
-		 (emtl:dispatch-normal
-		    ',(emtt:explorable->how-to-run 
-			 explorable)
-		    ',(emtt:explorable->prestn-path 
-			 explorable)))))
+		 (emt:lch:run
+		    ',(emtt:explorable->how-to-run explorable)
+		    ',(emtt:explorable->prestn-path explorable)))))
 	 `(button ,text 
 	     action ,func
 	     help-echo "Rerun this test"))))

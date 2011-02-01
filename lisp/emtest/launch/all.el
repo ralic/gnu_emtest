@@ -24,52 +24,14 @@
 
 ;;;_ , Commentary:
 
-;; 
+;; OBSOLETE
 
 ;;;_ , Requires
-(require 'emtest/main/find-tests)
 
 ;;;_. Body
 
 ;;;_ , Borrowed variables
-;;;_  . Counter
 
-;;$$MOVE ME into test-finder
-;;Should probably live elsewhere.  Possibly in emtest/viewer/receive.
-;;But then emtl:dispatch-normal must move there as well.
-(defvar emtl:testrun-counter 0 
-   "A counter used to make testrun-id.
-With `cl' loaded, use it as (incf emtl:testrun-counter)." )
-
-;;;_ , emtl:dispatch-normal
-;;$$MOVE ME into test-finder
-(defun emtl:dispatch-normal (what-to-run &optional prefix receiver)
-   ""
-   (emtt:test-finder:top 
-      what-to-run 
-      prefix  ;;Default is the empty list.
-      (prin1-to-string (incf emtl:testrun-counter))
-      (or receiver emtl:receiver-f)))
-
-
-;;;_ , emt:debug-on-entry
-;;$$IMPROVE ME  Make the interface much more specific.
-;;;###autoload
-(defun emt:debug-on-entry (&rest r)
-   "Debug all test clauses on entry."
-   
-   (interactive)
-   (setq emti:debug-p t))
-
-;;;_ , emt:cancel-debug-on-entry
-;;$$IMPROVE ME  Make the interface volunteer only currently debugged
-;;runnables.
-;;;###autoload
-(defun emt:cancel-debug-on-entry (&rest r)
-   ""
-   
-   (interactive)
-   (setq emti:debug-p nil))
 
 
 ;;;_. Footers

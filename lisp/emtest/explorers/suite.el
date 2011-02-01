@@ -29,14 +29,13 @@
 
 ;;;_ , Requires
 
-(require 'emtest/main/define)
-(require 'emtest/support/keepup)
-(require 'emtest/types/testral-types)
-(require 'emtest/types/run-types)
-(require 'emtest/explorers/clause)
 (require 'emtest/editing/lisp)
 (require 'emtest/launch/all)
-
+(require 'emtest/main/define)
+(require 'emtest/main/find-tests)
+(require 'emtest/support/keepup)
+(require 'emtest/types/run-types)
+(require 'emtest/types/testral-types)
 
 ;;;_. Body
 ;;;_ , Launchers
@@ -44,7 +43,7 @@
 (defun emtl:run-suite (suite-sym)
    "Run the test suite associated with SUITE-SYM."
    
-   (emtl:dispatch-normal 
+   (emt:lch:run 
       `(suite ,suite-sym)
       (list (format "Suite %s" suite-sym))))
 
