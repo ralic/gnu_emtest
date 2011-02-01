@@ -40,11 +40,9 @@
    "Alist from governor symbol to format function" )
 ;;;_  . emtvf:TESTRAL:add-gov
 (defun emtvf:TESTRAL:add-gov (gov-symbol formatter)
-   ""
-   (unless (assq gov-symbol emtvf:TESTRAL-gov-alist)
-      (push 
-	 (list gov-symbol formatter)
-	 emtvf:TESTRAL-gov-alist)))
+   "Register FORMATTER governed by GOV-SYMBOL."
+   (utim:new-apair 
+      gov-symbol formatter emtvf:TESTRAL-gov-alist))
 
 ;;;_  . emtvf:get-TESTRAL-formatter
 (defun emtvf:get-TESTRAL-formatter (gov-symbol)

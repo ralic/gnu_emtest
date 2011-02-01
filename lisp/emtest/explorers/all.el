@@ -42,36 +42,34 @@
 Files that define explorers should call `emtt:add-explorer' to add
 their methods.
 
-Format: Each entry is (PREDICATE FUNCTION NAME), where 
- * PREDICATE is a predicate to tell whether 
- * FUNCTION explores the test or suite.
-
-THIS FORMAT MAY CHANGE." )
+Format: Each entry is (GOV-SYMBOL FUNCTION NAME), where 
+ * GOV-SYMBOL is a governor symbol
+ * FUNCTION explores the test or suite." )
 
 ;;;_  . emtt:add-explorer
 
-(defun emtt:add-explorer (pred func &optional name &rest dummy)
-   "Add an explorer to our alist of explorers"
-   
-   (unless (assq pred emtt:test-finder:method-list)
-      (push 
-	 (list pred func name)
-	 emtt:test-finder:method-list)))
+(defun emtt:add-explorer (gov-symbol func &optional name &rest dummy)
+   "Add FUNC as explorer governed by GOV-SYMBOL"
+   (utim:new-apair 
+      gov-symbol 
+      (list func name)
+      emtt:test-finder:method-list))
+;;;_  . emtt:get-explore-info
+(defun emtt:get-explore-info (gov-symbol)
+   "Get the relevant info for GOV-SYMBOL.
+GOV-SYMBOL should be a symbol."
+   (utim:assq-value 
+      gov-symbol
+      emtt:test-finder:method-list
+      (list #'emtt:explore-fallback "Fallback")))
 
-;;;_  . emtt:match-explorer
-(defsubst emtt:match-explorer (how method)
-   "Return non-nil if METHOD is right for HOW"
-   (funcall (car method) how))
 ;;;_  . emtt:get-explore-func 
 (defun emtt:get-explore-func (how)
    "Get a relevant function for HOW.
 Should not fail.
 HOW must be a list."
-   (utim:assq-value 
-      (car how) 
-      emtt:test-finder:method-list
-      #'emtt:explore-fallback))
-
+   (car
+      (emtt:get-explore-info (car how))))
 
 ;;;_  . Special explorers
 ;;;_   , emtt:explore-hello
@@ -84,6 +82,8 @@ HOW must be a list."
 	 :name "Emtest"
 	 :version emtt:version
 	 :explore-methods-supported
+	 ;;$$RETHINK ME May make more sense to pass symbol or symbol
+	 ;;name now.
 	 (mapcar #'third emtt:test-finder:method-list))))
 
 ;;;_    . Register it

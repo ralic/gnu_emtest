@@ -121,6 +121,7 @@ return a form."
 
 
 ;;;_ , utim:assq-value
+;;;###autoload
 (defun utim:assq-value (key list &optional default)
    "Return the cdr of an element of LIST whose car is eq to KEY.
 If not found, return DEFAULT instead."
@@ -129,6 +130,12 @@ If not found, return DEFAULT instead."
 	   (assq key list)))
        (if cell (second cell) default)))
 
+;;;_ , utim:new-apair
+;;;###autoload
+(defmacro utim:new-apair (key value list)
+   "Add an element with car KEY to LIST unless it's there already."
+   `(unless (assq ,key ,list)
+       (push (list ,key ,value) ,list)))
 
 ;;;_. Footers
 ;;;_ , Provides
