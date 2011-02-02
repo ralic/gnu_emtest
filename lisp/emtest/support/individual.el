@@ -28,17 +28,29 @@
 ;; individuated yet, though it will be.
 
 ;;;_ , Requires
+(require 'emtest/explorers/all)
 
 ;;;_. Body
 ;;;_ , Types
-;;It's an alist of (how-to-run . property-alist)
+;;It's an alist of (how-to-run cached-score score-properties-alist . property-alist)
 
 ;;;_ , List of individual tests
 (defvar emt:ind:alist 
    '()
+   ;;Format will store score-cache separately.
    "Alist of properties of individual tests" )
 ;;;_ , emt:ind:get-prop Get properties of a test
 ;;;_ , emt:ind:set-prop Set properties of a test
+;;;_ , emt:ind:set-score-component
+
+;;;_ , emt:ind:get-score 
+(defun emt:ind:get-score (test-id)
+   "Get the score of a given test.
+The higher, the more easily the test will be run."
+
+   ;;$$IMPROVE ME If TEST-ID has test properties, use them.
+   (emtt:get-explore-base-score (car test-id)))
+
 
 ;;;_. Footers
 ;;;_ , Provides

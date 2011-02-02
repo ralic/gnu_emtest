@@ -45,14 +45,15 @@ add their methods.  Recommended: autoload a form like:
 `(eval-after-load 'emtest/main/all-runners '(emtt:add-explorer SYM
 FUNCTION NAME))'.
 
-Format: Each entry is (GOV-SYMBOL FUNCTION NAME), where 
+Format: Each entry is (GOV-SYMBOL FUNCTION NAME BASE-SCORE), where 
  * GOV-SYMBOL is a governor symbol
  * FUNCTION explores the test or suite.
- * NAME is the name of the method." )
+ * NAME is the name of the method.
+ * BASE-SCORE is the default explorability score for this type." )
 
 ;;;_  . emtt:add-explorer
 
-(defun emtt:add-explorer (gov-symbol func &optional name &rest dummy)
+(defun emtt:add-explorer (gov-symbol func &optional name base-score &rest dummy)
    "Add FUNC as explorer governed by GOV-SYMBOL"
    (utim:new-apair 
       gov-symbol 
@@ -74,6 +75,15 @@ Should not fail.
 HOW must be a list."
    (car
       (emtt:get-explore-info (car how))))
+
+;;;_ , emtt:get-explore-base-score
+(defun emtt:get-explore-base-score (gov-sym)
+   "Get the base score of a given test governor."
+   
+   ;;$$IMPROVE ME Let gov register a base-score and use that.
+   (if (memq gov-sym '(form indexed-clause))
+      0
+      10))
 
 ;;;_  . Special explorers
 ;;;_   , emtt:explore-hello
