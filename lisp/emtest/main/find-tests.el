@@ -46,7 +46,10 @@
    (pending () :type (repeat emtt:explorable))
    ;;The integer is the lowest score it accepted last time it ran.
    ;;nil if none.
-   (has-run () :type (repeat (list emtt:explorable (or null integer)))))
+   (has-run () 
+      :type (repeat (list emtt:explorable (or null integer))))
+   (min-score 0 :type integer))
+
 
 ;;;_ , Run tests
 ;;;_  . emtt:explore-one
@@ -58,12 +61,9 @@
 	    (emtt:explorable->how-to-run explorable))
 	 (has-run
 	    (assoc test-id (emt:testrun->has-run testrun))))
-      ;;$$IMPROVE ME Handle the case where it has run before but
-      ;;min-priority may have prevented it from exploring everything.
-      ;;That becomes the new max priority.
 
-      ;;$$IMPROVE ME Adjust the priority by stored data about that
-      ;;explorable, if there is any.  Relevant API: `emt:ind:get-prop'.
+      ;;$$IMPROVE ME Get the score and only run the test if score is
+      ;;acceptable.  Relevant API: `emt:ind:get-prop'.
 
       (unless has-run
 	 (push (list test-id nil) (emt:testrun->has-run testrun))
