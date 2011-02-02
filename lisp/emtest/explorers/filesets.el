@@ -114,7 +114,7 @@ If prefix arg is given, prompt for fileset name in any case."
 ;;;_ , Register
 ;;;###autoload (eval-after-load 'emtest/explorers/all
 ;;;###autoload '(emtt:add-explorer 'fileset #'emtt:explore-fileset
-;;;###autoload "Fileset"))
+;;;###autoload "Fileset" 0))
 
 ;;;_. Footers
 ;;;_ , Provides

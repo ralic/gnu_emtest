@@ -105,7 +105,7 @@ This is the heart of Emtest exploration: A test itself."
 ;;;_   , Register
 ;;;###autoload (eval-after-load 'emtest/explorers/all
 ;;;###autoload  '(emtt:add-explorer 'form #'emtt:explore-literal-clause
-;;;###autoload  "Literal clause"))
+;;;###autoload  "Literal clause" 0))
 ;;;_  . emtt:explore-indexed-clause
 ;;;###autoload
 (defun emtt:explore-indexed-clause (test-id props path report-f)
@@ -122,7 +122,7 @@ This is the heart of Emtest exploration: A test itself."
 ;;;_   , Register
 ;;;###autoload (eval-after-load 'emtest/explorers/all
 ;;;###autoload  '(emtt:add-explorer 'indexed-clause #'emtt:explore-indexed-clause
-;;;###autoload  "Indexed clause"))
+;;;###autoload  "Indexed clause" 0))
 
 ;;;_. Footers
 ;;;_ , Provides

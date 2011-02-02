@@ -57,7 +57,7 @@ Format: Each entry is (GOV-SYMBOL FUNCTION NAME BASE-SCORE), where
    "Add FUNC as explorer governed by GOV-SYMBOL"
    (utim:new-apair 
       gov-symbol 
-      (list func name)
+      (list func (or name "<UNNAMED>") (or base-score 0))
       emtt:test-finder:method-list))
 ;;;_  . emtt:get-explore-info
 (defun emtt:get-explore-info (gov-symbol)
