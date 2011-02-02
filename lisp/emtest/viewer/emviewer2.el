@@ -24,21 +24,21 @@
 
 ;;;_ , Commentary:
 
-;; Borrowed from emviewer, only needs differentiate a few things.
-;; They ought to share code.
-
+;; A static version of the original emviewer.
 
 ;;;_ , Requires
 
-
 (require 'emtest/types/testral-types)
 (require 'emtest/viewer/emformat)
-(require 'emtest/viewer/organize)
 (require 'emtest/viewer/empathtree)
+(require 'emtest/viewer/mode)
+(require 'emtest/viewer/organize)
 (require 'emtest/viewer/view-types)
 (require 'formatter/loformat)
-(require 'emtest/viewer/mode)
+(require 'formatter/pseudodynamic)
 (require 'utility/dynvars)
+(require 'utility/pathtree)
+
 ;;;_. Body
 ;;;_ , Constants
 ;;;_  . emtv2:report-buffer-name
@@ -111,24 +111,6 @@
 	 (generate-new-buffer
 	    emtv2:report-buffer-name)))
    (emtvo:setup-if-needed #'emtv2:pathtree-cb #'ignore))
-
-;;;_ , Pseudo-dynamic printing
-;;;_  . emtv2:insert:dynamic
-(defun emtv2:insert:dynamic (recurse-f obj func data)
-   "Insert (statically) the result of a dynamic spec"
-   (let*
-      ((fmt-list 
-	  (utidyv:with-vars data 
-	     (funcall func obj))))
-      (funcall recurse-f fmt-list)))
-
-;;;_  . emtvf:make-dynamic
-(defun emtvf:make-dynamic (obj func)
-   "Make a form that calls a dynamic object"
-   `(dynamic 
-       ,obj 
-       ,func
-       ,(utidyv:capture-vars emtvf:dynvars)))
 
 ;;;_ , Static printing functions
 ;;;_  . emtv2:print-all

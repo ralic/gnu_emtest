@@ -29,20 +29,17 @@
 
 ;;;_ , Requires
 
-(require 'formatter/hiformat)
-(require 'formatter/outline)
-
-(require 'emtest/types/testral-types)
+(require 'custom)
+(require 'emtest/main/find-tests)
 (require 'emtest/types/run-types)
+(require 'emtest/types/testral-types)
+(require 'emtest/viewer/all-note-formatters)
 (require 'emtest/viewer/sumgrades)
 (require 'emtest/viewer/view-types)
-(require 'emtest/viewer/emviewer2)
-(require 'emtest/viewer/all-note-formatters)
-(require 'emtest/main/find-tests)
-
-(require 'utility/pathtree)
+(require 'formatter/hiformat)
+(require 'formatter/outline)
 (require 'utility/dynvars)
-(require 'custom)
+(require 'utility/pathtree)
 
 ;;;_. Body
 ;;;_ , Data
@@ -111,6 +108,14 @@ which may not imply success of an assertion."
    "Dynamic variables that emformat uses" )
 
 ;;;_ , Lower format functions
+;;;_  . emtvf:make-dynamic
+(defun emtvf:make-dynamic (obj func)
+   "Make a form that calls a dynamic object"
+   `(dynamic 
+       ,obj 
+       ,func
+       ,(utidyv:capture-vars emtvf:dynvars)))
+
 ;;;_ , Helper functions
 ;;;_  . Characterizing object representation
 ;;;_   , emtvf:short-obj-p 
