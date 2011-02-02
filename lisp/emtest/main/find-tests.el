@@ -37,6 +37,17 @@
 (require 'emtest/explorers/all)
 
 ;;;_. Body
+;;;_ , Structure
+(defstruct (emt:testrun
+	      (:copier nil)
+	      (:conc-name emt:testrun->)
+	      (:constructor emt:make-testrun))
+   "State data about a given testrun"
+   (pending () :type (repeat emtt:explorable))
+   ;;The integer is the lowest score it accepted last time it ran.
+   ;;nil if none.
+   (has-run () :type (repeat (list emtt:explorable (or null integer)))))
+
 ;;;_ , Run tests
 ;;;_  . emtt:explore-one
 (defun emtt:explore-one (explorable func report-f)
@@ -67,9 +78,6 @@
 
 
 ;;;_  . emtt:test-finder:top
-
-;;$$RECONSIDER MY INTERFACE what-to-run may become an
-;;`emtt:explorable' and be pushed as itself.  Callers must take notice.
 (defun emtt:test-finder:top (what-to-run path-prefix testrun-id report-cb)
    ""
    
