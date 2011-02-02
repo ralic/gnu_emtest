@@ -77,13 +77,11 @@ HOW must be a list."
       (emtt:get-explore-info (car how))))
 
 ;;;_ , emtt:get-explore-base-score
-(defun emtt:get-explore-base-score (gov-sym)
+(defun emtt:get-explore-base-score (gov-symbol)
    "Get the base score of a given test governor."
-   
-   ;;$$IMPROVE ME Let gov register a base-score and use that.
-   (if (memq gov-sym '(form indexed-clause))
-      0
-      10))
+   (or
+      (fourth (emtt:get-explore-info gov-symbol))
+      0))
 
 ;;;_  . Special explorers
 ;;;_   , emtt:explore-hello
