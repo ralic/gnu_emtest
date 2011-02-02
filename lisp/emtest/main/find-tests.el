@@ -76,6 +76,20 @@
 	 (funcall (emtt:get-explore-func test-id)
 	    test-id props path local-report-f))))
 
+;;;_  . emt:report
+(defun emt:report (testrun report-cb testrun-id suites tests &optional prefix)
+   "Report SUITES as results and schedule TESTS to run"
+   (when tests
+      (callf2 append 
+	 tests
+	 (emt:testrun->pending testrun)))
+		
+   (funcall report-cb
+      (emt:testral:make-report
+	 :newly-pending (length tests)
+	 :testrun-id testrun-id
+	 :test-id-prefix prefix
+	 :suites suites)))
 
 ;;;_  . emtt:test-finder:top
 (defun emtt:test-finder:top (what-to-run path-prefix testrun-id report-cb)
@@ -87,18 +101,9 @@
 	 ;; Poor-man's closures.
 	 (report-f
 	    `(lambda (suites tests &optional prefix)
-		(when tests
-		   (callf2 append 
-		      tests
-		      (emt:testrun->pending ,testrun)))
-		
-		(funcall #',report-cb
-		   (emt:testral:make-report
-		      :newly-pending (length tests)
-		      :testrun-id ,testrun-id
-		      :test-id-prefix prefix
-		      :suites suites)))))
-
+		(funcall #'emt:report ',testrun #',report-cb ,testrun-id 
+		   suites tests prefix))))
+      
       ;;Enqueue the root test. 
       (funcall report-f
 	 '()
@@ -114,9 +119,14 @@
 	 ;;Careful: `pop' seems to have a problem if called in
 	 ;;something that sets the value of the list, as
 	 ;;`emtt:explore-one' sometimes did.
-	 (let
-	    ((next (pop (emt:testrun->pending testrun))))
-	    (emtt:explore-one next report-cb report-f)))))
+	 (let*
+	    ((next (pop (emt:testrun->pending testrun)))
+	       (has-run
+		  (assoc next (emt:testrun->has-run testrun))))
+	    
+	    (unless has-run
+	       (push (list next nil) (emt:testrun->has-run testrun))
+	       (emtt:explore-one next report-cb report-f))))))
 
 ;;;_ , Launch tests
 ;;;_  . Counter
