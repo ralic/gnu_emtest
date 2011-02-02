@@ -165,8 +165,8 @@ LIBRARY is the absolute file name of the library"
 	    :grade '())
 	 list-to-run))))
 ;;;_ , Insinuate
-;;;###autoload (eval-after-load 'emtest/explorers/all
-;;;###autoload  '(emtt:add-explorer 'library:elisp-load #'emtt:explore-library
+;;;###autoload (eval-after-load 'emtest/main/all-explorers
+;;;###autoload  '(emt:exps:add 'library:elisp-load #'emtt:explore-library
 ;;;###autoload  "Elisp library" 10))
 
 ;;;_. Footers

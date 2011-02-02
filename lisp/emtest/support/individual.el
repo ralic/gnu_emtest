@@ -28,7 +28,7 @@
 ;; individuated yet, though it will be.
 
 ;;;_ , Requires
-(require 'emtest/explorers/all)
+(require 'emtest/main/all-explorers)
 
 ;;;_. Body
 ;;;_ , Types
@@ -49,7 +49,7 @@
 The higher, the more easily the test will be run."
 
    ;;$$IMPROVE ME If TEST-ID has test properties, use them.
-   (emtt:get-explore-base-score (car test-id)))
+   (emt:exps:get-base-score (car test-id)))
 
 
 ;;;_. Footers

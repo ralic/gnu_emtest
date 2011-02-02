@@ -116,8 +116,8 @@ Does nothing if the buffer is not in a known lisp mode."
 '(or (get symbol 'emtt:test-thru) symbol)
 
 ;;;_ , Insinuate
-;;;###autoload (eval-after-load 'emtest/explorers/all
-;;;###autoload  '(emtt:add-explorer 'suite #'emtt:explore-suite
+;;;###autoload (eval-after-load 'emtest/main/all-explorers
+;;;###autoload  '(emt:exps:add 'suite #'emtt:explore-suite
 ;;;###autoload  "Suite" 10))
 
 ;;;_. Footers

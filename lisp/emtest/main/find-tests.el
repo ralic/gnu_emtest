@@ -34,7 +34,7 @@
    (require 'cl))
 (require 'emtest/types/run-types)
 (require 'emtest/types/testral-types)
-(require 'emtest/explorers/all)
+(require 'emtest/main/all-explorers)
 
 ;;;_. Body
 ;;;_ , Structure
@@ -87,7 +87,7 @@
 	    ;;miss.
 	    (emtp tp:a084136e-8f02-49a5-ac0d-9f65509cedf2
 	       (test-id)
-	       (funcall (emtt:get-explore-func test-id)
+	       (funcall (emt:exps:get-func test-id)
 		  test-id props path local-report-f))))))
 
 ;;;_  . emt:report

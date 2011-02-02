@@ -1,4 +1,4 @@
-;;;_ emtest/explorers/all.el --- Explorer-collection functionality
+;;;_ emtest/main/all-explorers.el --- Explorer-collection functionality
 
 ;;;_. Headers
 ;;;_ , License
@@ -36,13 +36,13 @@
 ;;;_. Body
 ;;;_ , Collecting explorers
 ;;;_  . List of explorers
-(defvar emtt:test-finder:method-list 
+(defvar emt:exps:alist 
    '()
-   "List of explorer methods.
+   "List of explorers and their data.
 
-Files that define explorers should call `emtt:add-explorer' to
+Files that define explorers should call `emt:exps:add' to
 add their methods.  Recommended: autoload a form like:
-`(eval-after-load 'emtest/main/all-runners '(emtt:add-explorer SYM
+`(eval-after-load 'emtest/main/all-runners '(emt:exps:add SYM
 FUNCTION NAME))'.
 
 Format: Each entry is (GOV-SYMBOL FUNCTION NAME BASE-SCORE), where 
@@ -51,42 +51,42 @@ Format: Each entry is (GOV-SYMBOL FUNCTION NAME BASE-SCORE), where
  * NAME is the name of the method.
  * BASE-SCORE is the default explorability score for this type." )
 
-;;;_  . emtt:add-explorer
+;;;_  . emt:exps:add
 
-(defun emtt:add-explorer (gov-symbol func &optional name base-score &rest dummy)
+(defun emt:exps:add (gov-symbol func &optional name base-score &rest dummy)
    "Add FUNC as explorer governed by GOV-SYMBOL"
    (utim:new-apair 
       gov-symbol 
       (list func (or name "<UNNAMED>") (or base-score 0))
-      emtt:test-finder:method-list))
-;;;_  . emtt:get-explore-info
-(defun emtt:get-explore-info (gov-symbol)
+      emt:exps:alist))
+;;;_  . emt:exps:get-info
+(defun emt:exps:get-info (gov-symbol)
    "Get the relevant info for GOV-SYMBOL.
 GOV-SYMBOL should be a symbol."
    (utim:assq-value 
       gov-symbol
-      emtt:test-finder:method-list
-      (list #'emtt:explore-fallback "Fallback")))
+      emt:exps:alist
+      (list #'emt:exp:fallback "Fallback")))
 
-;;;_  . emtt:get-explore-func 
-(defun emtt:get-explore-func (how)
+;;;_  . emt:exps:get-func 
+(defun emt:exps:get-func (how)
    "Get a relevant function for HOW.
 Should not fail.
 HOW must be a list."
    (car
-      (emtt:get-explore-info (car how))))
+      (emt:exps:get-info (car how))))
 
-;;;_ , emtt:get-explore-base-score
-(defun emtt:get-explore-base-score (gov-symbol)
+;;;_ , emt:exps:get-base-score
+(defun emt:exps:get-base-score (gov-symbol)
    "Get the base score of a given test governor."
    (or
-      (fourth (emtt:get-explore-info gov-symbol))
+      (fourth (emt:exps:get-info gov-symbol))
       0))
 
 ;;;_  . Special explorers
-;;;_   , emtt:explore-hello
+;;;_   , emt:exp:hello
 ;;This doesn't require an autoload but all others do.
-(defun emtt:explore-hello (test-id props path report-f)
+(defun emt:exp:hello (test-id props path report-f)
    "Report about Emtest, listing the explore methods."
    
    (funcall report-f
@@ -96,16 +96,16 @@ HOW must be a list."
 	 :explore-methods-supported
 	 ;;$$RETHINK ME May make more sense to pass symbol or symbol
 	 ;;name now.
-	 (mapcar #'third emtt:test-finder:method-list))))
+	 (mapcar #'third emt:exps:alist))))
 
 ;;;_    . Register it
 
-(emtt:add-explorer 'hello #'emtt:explore-hello
+(emt:exps:add 'hello #'emt:exp:hello
    "Tester signature") 
 
-;;;_   , emtt:explore-fallback
+;;;_   , emt:exp:fallback
 ;;Not part of the list of methods.
-(defun emtt:explore-fallback (test-id props path report-f)
+(defun emt:exp:fallback (test-id props path report-f)
    "Report that no matching explore method could be found."
 
    (funcall report-f
@@ -116,7 +116,7 @@ HOW must be a list."
 
 ;;;_. Footers
 ;;;_ , Provides
-(provide 'emtest/explorers/all)
+(provide 'emtest/main/all-explorers)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -124,4 +124,4 @@ HOW must be a list."
 ;;;_  + End:
 
 ;;;_ , End
-;;; emtest/explorers/all.el ends here
+;;; emtest/main/all-explorers.el ends here

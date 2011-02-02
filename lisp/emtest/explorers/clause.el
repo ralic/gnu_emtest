@@ -103,8 +103,8 @@ This is the heart of Emtest exploration: A test itself."
       report-f))
 
 ;;;_   , Register
-;;;###autoload (eval-after-load 'emtest/explorers/all
-;;;###autoload  '(emtt:add-explorer 'form #'emtt:explore-literal-clause
+;;;###autoload (eval-after-load 'emtest/main/all-explorers
+;;;###autoload  '(emt:exps:add 'form #'emtt:explore-literal-clause
 ;;;###autoload  "Literal clause" 0))
 ;;;_  . emtt:explore-indexed-clause
 ;;;###autoload
@@ -120,8 +120,8 @@ This is the heart of Emtest exploration: A test itself."
 
 
 ;;;_   , Register
-;;;###autoload (eval-after-load 'emtest/explorers/all
-;;;###autoload  '(emtt:add-explorer 'indexed-clause #'emtt:explore-indexed-clause
+;;;###autoload (eval-after-load 'emtest/main/all-explorers
+;;;###autoload  '(emt:exps:add 'indexed-clause #'emtt:explore-indexed-clause
 ;;;###autoload  "Indexed clause" 0))
 
 ;;;_. Footers
