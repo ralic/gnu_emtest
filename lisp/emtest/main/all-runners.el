@@ -66,7 +66,7 @@ GOV-SYMBOL should be a symbol."
    (utim:assq-value 
       gov-symbol
       emt:runner:alist
-      (list #'emt:runner:fallback "Fallback")))
+      #'emt:runner:fallback))
 
 ;;;_  . emt:runner:get-func 
 (defalias 'emt:runner:get-func 'emt:runner:get-info)
