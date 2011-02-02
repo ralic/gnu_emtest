@@ -47,7 +47,7 @@
    ;;The integer is the lowest score it accepted last time it ran.
    ;;nil if none.
    (has-run () 
-      :type (repeat (list emtt:explorable (or null integer))))
+      :type (repeat emthow))
    (min-score 0 :type integer))
 
 
@@ -60,13 +60,13 @@
 	 (test-id
 	    (emtt:explorable->how-to-run explorable))
 	 (has-run
-	    (assoc test-id (emt:testrun->has-run testrun))))
+	    (member test-id (emt:testrun->has-run testrun))))
 
       ;;$$IMPROVE ME Get the score and only run the test if score is
       ;;acceptable.  Relevant API: `emt:ind:get-prop'.
 
       (unless has-run
-	 (push (list test-id nil) (emt:testrun->has-run testrun))
+	 (push test-id (emt:testrun->has-run testrun))
 	 (let*
 	    (
 	       (props
