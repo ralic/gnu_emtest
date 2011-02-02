@@ -50,31 +50,44 @@
 
 ;;;_ , Run tests
 ;;;_  . emtt:explore-one
-(defun emtt:explore-one (explorable func report-f)
+(defun emtt:explore-one (explorable report-f testrun)
    ""
-   (let*
-      (
+   (let* 
+      (	    
 	 (test-id
 	    (emtt:explorable->how-to-run explorable))
-	 (props
-	    (emtt:explorable->properties explorable))
-	 (path
-	    (emtt:explorable->prestn-path explorable))
-	 (local-report-f
-	    `(lambda (report &optional tests prefix)
-		(funcall 
-		   ,report-f
-		   (list 
-		      (list ,explorable nil report))
-		   tests
-		   prefix))))
+	 (has-run
+	    (assoc test-id (emt:testrun->has-run testrun))))
+      ;;$$IMPROVE ME Handle the case where it has run before but
+      ;;min-priority may have prevented it from exploring everything.
+      ;;That becomes the new max priority.
 
-      ;;$$IMPROVE ME condition-case this and report bad test if we
-      ;;miss.
-      (emtp tp:a084136e-8f02-49a5-ac0d-9f65509cedf2
-	 (test-id)
-	 (funcall (emtt:get-explore-func test-id)
-	    test-id props path local-report-f))))
+      ;;$$IMPROVE ME Adjust the priority by stored data about that
+      ;;explorable, if there is any.  Relevant API: `emt:ind:get-prop'.
+
+      (unless has-run
+	 (push (list test-id nil) (emt:testrun->has-run testrun))
+	 (let*
+	    (
+	       (props
+		  (emtt:explorable->properties explorable))
+	       (path
+		  (emtt:explorable->prestn-path explorable))
+	       (local-report-f
+		  `(lambda (report &optional tests prefix)
+		      (funcall 
+			 ,report-f
+			 (list 
+			    (list ,explorable nil report))
+			 tests
+			 prefix))))
+
+	    ;;$$IMPROVE ME condition-case this and report bad test if we
+	    ;;miss.
+	    (emtp tp:a084136e-8f02-49a5-ac0d-9f65509cedf2
+	       (test-id)
+	       (funcall (emtt:get-explore-func test-id)
+		  test-id props path local-report-f))))))
 
 ;;;_  . emt:report
 (defun emt:report (testrun report-cb testrun-id suites tests &optional prefix)
@@ -93,7 +106,7 @@
 
 ;;;_  . emtt:test-finder:top
 (defun emtt:test-finder:top (what-to-run path-prefix testrun-id report-cb)
-   ""
+   "Explore WHAT-TO-RUN, sending its results to REPORT-CB"
    
    (let*  
       (  
@@ -120,13 +133,9 @@
 	 ;;something that sets the value of the list, as
 	 ;;`emtt:explore-one' sometimes did.
 	 (let*
-	    ((next (pop (emt:testrun->pending testrun)))
-	       (has-run
-		  (assoc next (emt:testrun->has-run testrun))))
-	    
-	    (unless has-run
-	       (push (list next nil) (emt:testrun->has-run testrun))
-	       (emtt:explore-one next report-cb report-f))))))
+	    ((next (pop (emt:testrun->pending testrun))))
+	    (emtt:explore-one next report-f testrun)))))
+
 
 ;;;_ , Launch tests
 ;;;_  . Counter
