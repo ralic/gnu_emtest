@@ -82,14 +82,16 @@
    ""
    
    (let*  
-      (  (emtt:pending-list (list '()))
+      (  
+	 (testrun (emt:make-testrun))
 	 ;; Poor-man's closures.
 	 (report-f
 	    `(lambda (suites tests &optional prefix)
 		(when tests
 		   (callf2 append 
 		      tests
-		      (car ',emtt:pending-list)))
+		      (emt:testrun->pending ,testrun)))
+		
 		(funcall #',report-cb
 		   (emt:testral:make-report
 		      :newly-pending (length tests)
@@ -107,12 +109,13 @@
 	       :properties ())))
       
       ;;Loop thru the pending list.
-      (while (car emtt:pending-list)
+      (while
+	 (emt:testrun->pending testrun)
 	 ;;Careful: `pop' seems to have a problem if called in
 	 ;;something that sets the value of the list, as
 	 ;;`emtt:explore-one' sometimes did.
 	 (let
-	    ((next (pop (car emtt:pending-list))))
+	    ((next (pop (emt:testrun->pending testrun))))
 	    (emtt:explore-one next report-cb report-f)))))
 
 ;;;_ , Launch tests
