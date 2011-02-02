@@ -60,12 +60,13 @@
 	 (test-id
 	    (emtt:explorable->how-to-run explorable))
 	 (has-run
-	    (member test-id (emt:testrun->has-run testrun))))
+	    (member test-id (emt:testrun->has-run testrun)))
+	 (score (emt:ind:get-score test-id)))
 
-      ;;$$IMPROVE ME Get the score and only run the test if score is
-      ;;acceptable.  Relevant API: `emt:ind:get-prop'.
-
-      (unless has-run
+      (when 
+	 (and 
+	    (not has-run)
+	    (>= score (emt:testrun->min-score testrun)))
 	 (push test-id (emt:testrun->has-run testrun))
 	 (let*
 	    (
@@ -105,12 +106,13 @@
 	 :suites suites)))
 
 ;;;_  . emtt:test-finder:top
-(defun emtt:test-finder:top (what-to-run path-prefix testrun-id report-cb)
+(defun emtt:test-finder:top (what-to-run path-prefix testrun-id
+			       report-cb &optional min-score)
    "Explore WHAT-TO-RUN, sending its results to REPORT-CB"
    
    (let*  
       (  
-	 (testrun (emt:make-testrun))
+	 (testrun (emt:make-testrun :min-score (or min-score 0)))
 	 ;; Poor-man's closures.
 	 (report-f
 	    `(lambda (suites tests &optional prefix)
