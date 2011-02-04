@@ -223,8 +223,22 @@ If impossible, return nil instead"
 ;;;###autoload
 (defun emtr:expect (props form report-f)
    "Run a test-case on external program and report the result."
-   (unless
-      (> emtr:expect-num-running emtr:expect-max-running)
+   (if
+      (>= emtr:expect-num-running emtr:expect-max-running)
+      (funcall report-f
+	 (emt:testral:make-suite
+	    :contents
+	    (emtt:testral:with-context
+	       ;;Make a note about the error
+	       (emtt:testral:add-note
+		  "problem"
+		  'dormant
+		  'error-raised
+		  'too-many-processes)
+	       ;;Then give all the notes.
+	       (emtt:testral:note-list))
+	    :grade
+	    'dormant))
       (let
 	 ((con
 	     (emtt:testral:make-continuing props)))
