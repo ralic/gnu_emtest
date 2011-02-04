@@ -86,6 +86,28 @@
 		  (emtvp:node->children obj))
 	       ;;Do summarization
 	       (emtvr:cache-subtree-grade obj)
+	       ;;Record a suitable score component
+	       (when (emt:view:suite-p obj)
+		  (emt:ind:set-score-component
+		     (emt:view:suite->how-to-run obj)
+		     'passfail
+		     (case
+			(emt:grade:summary->worst
+			   (emt:view:presentable->sum-grades obj))
+			(fail 10)
+			;;Usually don't need to rerun passes
+			((ok test-case) -10)
+			;;Generally rerunning blowouts is just
+			;;troublesome
+			(blowout -100)
+			;;Some ungradeds merely used `assert' instead of
+			;;`emt:assert'
+			(ungraded 0)
+			;;Dormants asked not to be run, so don't try hard
+			;;to run them
+			(dormant -5)
+			;;Anything else, no effect.
+			(t 0))))
 	       (undirty 'summary)
 	       ;;Parent (if any) now needs to be resummarized.
 	       (let
