@@ -46,7 +46,7 @@
 ;;;_  . emt:vw:note:ediff-string-w/persist
 ;;$$MOVE ME, RENAME ME  It's not specific to this formatter.
 (defun emt:vw:note:ediff-string-w/persist (value backend id)
-   ""
+   "Compare VALUE with stored value ID in BACKEND"
    (let 
       ;;Make a buffer for each
 
@@ -65,7 +65,14 @@
       ;;from here.  `ediff-save-buffer' almost does if only it could call
       ;;an alternative to `save-buffer'
       (ediff-buffers buf-expected buf-got)))
-
+;;;_  . emt:vw:note:bfunc:ediff
+;;$$IMPROVE ME Encap the call-with-args action.
+(defun emt:vw:note:bfunc:ediff (button)
+   "Button action: Compare with stored value"
+   
+   (let
+      ((args (button-get button ediff-args)))
+      (apply #'emt:vw:note:ediff-string-w/persist args)))
 
 ;;;_ , not-in-db
 ;;;_  . emt:vw:note:not-in-db
@@ -121,24 +128,13 @@
 	    '()
 	    `(
 		(button "[Accept]"
-		   action
-		   (lambda (button)
-		      (interactive)
-		      (emdb:set-value
-			 ',backend
-			 ',id
-			 ',value
-			 'correct-answer))
-		   help-echo "Accept the new value")
+		   action ,#'emt:vw:note:accept-in-db
+		   help-echo "Accept the new value"
+		   accept-in-db-args (,backend ,id ,value correct-answer))
 		" "
 		(button "[Compare]"
-		   action
-		   (lambda (button)
-		      (interactive)
-		      (emt:vw:note:ediff-string-w/persist
-			 ',value
-			 ',backend
-			 ',id))
+		   action ,#'emt:vw:note:bfunc:ediff
+		   ediff-args (,value ,backend ,id)
 		   help-echo "Compare to the accepted value"))))
       (list
 	 (emtvf:obj-or-string value)) 
