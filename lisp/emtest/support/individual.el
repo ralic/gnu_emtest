@@ -42,7 +42,13 @@
 ;;;_ , emt:ind:get-prop Get properties of a test
 ;;;_ , emt:ind:set-prop Set properties of a test
 ;;;_ , emt:ind:set-score-component
-
+(defun emt:ind:set-score-component (test-id key bonus)
+   "Set a score component KEY of TEST-ID to BONUS"
+   
+   (let*
+      ()
+      
+      ))
 ;;;_ , emt:ind:get-score 
 (defun emt:ind:get-score (test-id)
    "Get the score of a given test.
