@@ -157,7 +157,6 @@ which may not imply success of an assertion."
 (defun emtvf:button-explore-func (button)
    "Explore explorable, given BUTTON."
    
-   (interactive)
    (emt:lch:run
       (button-get button 'how-to-run)
       (button-get button 'prestn-path)))
@@ -171,32 +170,32 @@ which may not imply success of an assertion."
 	  help-echo "Rerun this test"
 	  how-to-run  ,(emtt:explorable->how-to-run  explorable)
 	  prestn-path ,(emtt:explorable->prestn-path explorable))))
-
+;;;_   , emtvf:button-toggle-mark-func
+(defun emtvf:button-toggle-mark-func (button)
+   "Toggle the mark on viewable given on BUTTON."
+   (let
+      ((viewable (button-get button 'viewable)))
+      (setf
+	 (emt:view:suite->mark viewable)
+	 (not (emt:view:suite->mark viewable)))
+      (emt:ind:set-score-component
+	 (emt:view:suite->how-to-run viewable)
+	 'marked
+	 (if (emt:view:suite->mark viewable) 1000 0))
+		 
+      ;;Cause it to be reprinted, or just reprint the button.
+      ;;$$IMPROVE ME Encapsulate this so it looks like
+      ;;we're passing the viewable to a reprint routine.
+      (emtv2:print-all (emtvo:get-root))))
 ;;;_   , emtvf:button-toggle-mark
-(defun emtvf:button-toggle-mark (viewable text)
+(defun emtvf:button-toggle-mark (viewable)
    "Make a button to toggle the mark on VIEWABLE."
    (when viewable
-      (let
-	 ((func
-	     ;;$$IMPROVE ME See button params instead of making a new
-	     ;;func.
-	     `(lambda (button)
-		 (interactive)
-		 (setf
-		    (emt:view:suite->mark ,viewable)
-		    (not (emt:view:suite->mark ,viewable)))
-		 (emt:ind:set-score-component
-		    (emt:view:suite->how-to-run obj)
-		    'marked
-		    (if (emt:view:suite->mark ,viewable) 1000 0))
-		 
-		 ;;Cause it to be reprinted, or just reprint the button.
-		 ;;$$IMPROVE ME Encapsulate this so it looks like
-		 ;;we're passing the viewable to a reprint routine.
-		 (emtv2:print-all (emtvo:get-root)))))
-	 `(button ,text 
-	     action ,func
-	     help-echo "Mark this test-suite"))))
+      `(button ,(if (emt:view:suite->mark viewable) "X" "_") 
+	  action ,#'emtvf:button-toggle-mark-func
+	  help-echo "Mark this test-suite"
+	  viewable ,viewable)))
+
 ;;;_  . Objects
 ;;;_   , emtvf:obj-or-string
 (defun emtvf:obj-or-string (value)
@@ -320,9 +319,7 @@ Must be called in a `utidyv:top' context."
 			(hiformat:separate
 			   (delq nil
 			      (list
-				 '(emtvf:button-toggle-mark
-				    view-node
-				    (if (emt:view:suite->mark) "X" "_"))
+				 (emtvf:button-toggle-mark view-node)
 				 `(w/face ,name emtvf:face:suitename)
 				 (emtvf:button-to-explore explorable "[RUN]")
 				 grades-sum))
