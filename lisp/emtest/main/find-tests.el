@@ -35,7 +35,7 @@
 (require 'emtest/types/run-types)
 (require 'emtest/types/testral-types)
 (require 'emtest/main/all-explorers)
-
+(require 'emtest/support/individual)
 ;;;_. Body
 ;;;_ , Structure
 (defstruct (emt:testrun
