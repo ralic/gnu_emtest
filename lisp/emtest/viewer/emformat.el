@@ -153,20 +153,25 @@ which may not imply success of an assertion."
 	      (list x " "))
 	 (nreverse (remq nil emtvf:*hdln-path*)))))
 ;;;_  . Buttons
+;;;_   , emtvf:button-explore-func
+(defun emtvf:button-explore-func (button)
+   "Explore explorable, given BUTTON."
+   
+   (interactive)
+   (emt:lch:run
+      (button-get button 'how-to-run)
+      (button-get button 'prestn-path)))
+
 ;;;_   , emtvf:button-to-explore
 (defun emtvf:button-to-explore (explorable text)
    "Make a button to explore EXPLORABLE."
    (when explorable
-      (let
-	 ((func
-	     `(lambda (button)
-		 (interactive)
-		 (emt:lch:run
-		    ',(emtt:explorable->how-to-run explorable)
-		    ',(emtt:explorable->prestn-path explorable)))))
-	 `(button ,text 
-	     action ,func
-	     help-echo "Rerun this test"))))
+      `(button ,text 
+	  action ,#'emtvf:button-explore-func
+	  help-echo "Rerun this test"
+	  how-to-run  ,(emtt:explorable->how-to-run  explorable)
+	  prestn-path ,(emtt:explorable->prestn-path explorable))))
+
 ;;;_   , emtvf:button-toggle-mark
 (defun emtvf:button-toggle-mark (viewable text)
    "Make a button to toggle the mark on VIEWABLE."
