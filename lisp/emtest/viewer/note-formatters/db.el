@@ -1,4 +1,4 @@
-;;;_ emtest/viewer/note-formatters/compare-w-persist.el --- TESTRAL formatter for comparison-w/persist
+;;;_ emtest/viewer/note-formatters/not-in-db.el --- TESTRAL formatter for not-in-db
 
 ;;;_. Headers
 ;;;_ , License
@@ -32,7 +32,18 @@
 (require 'emtest/viewer/emformat)
 
 ;;;_. Body
-;;;_ , emt:vw:note:ediff-string-w/persist
+;;;_ , Helpers
+;;;_  . emt:vw:note:accept-in-db
+(defun emt:vw:note:accept-in-db (button)
+   "Accept a value in db, as given by BUTTON."
+   (let
+      ((arg (button-get button 'accept-in-db-args)))
+      (emdb:set-value
+	 ',backend
+	 ',id
+	 ',value
+	 'correct-answer)))
+;;;_  . emt:vw:note:ediff-string-w/persist
 ;;$$MOVE ME, RENAME ME  It's not specific to this formatter.
 (defun emt:vw:note:ediff-string-w/persist (value backend id)
    ""
@@ -55,7 +66,43 @@
       ;;an alternative to `save-buffer'
       (ediff-buffers buf-expected buf-got)))
 
-;;;_ , emt:vw:note:comparison-w/persist
+
+;;;_ , not-in-db
+;;;_  . emt:vw:note:not-in-db
+;;;###autoload
+(defun emt:vw:note:not-in-db (note value id backend)
+   "Formatter for TESTRAL note governed by `not-in-db'"
+   (emtvf:outline-item-emformat
+      "ID not in database "
+      `(
+	  ,(emtvf:outline-item-emformat
+	      (list
+		 "Value "
+		 `(button "[Accept]"
+		     action ,#'emt:vw:note:accept-in-db
+		     help-echo "Accept this value"
+		     accept-in-db-args (,backend ,id ,value correct-answer)))
+	      (if
+		 (stringp value)
+		 ;;Indent it so it can't affect outline
+		 ;;structure. 
+		 `(indent 4 ,value)
+		 `(object ,value nil))
+	      ;;Sometimes fold it.  Say, if it's not a string or is a
+	      ;;long string.
+	      (or
+		 (not (stringp value))
+		 (> (length value) 100))))
+      
+      'emtvf:face:ungraded))
+;;;_  . Register it
+;;;###autoload (eval-after-load 'emtest/viewer/all-note-formatters
+;;;###autoload '(emt:vw:note:add-gov
+;;;###autoload    'not-in-db 
+;;;###autoload    #'emt:vw:note:not-in-db))
+
+;;;_ , comparison-w/persist
+;;;_  . emt:vw:note:comparison-w/persist
 ;;;###autoload
 (defun emt:vw:note:comparison-w/persist (note matched-p value backend id)
    "Formatter for TESTRAL note governed by `comparison-w/persist'"
@@ -99,19 +146,20 @@
 	 'emtvf:face:ok-match
 	 'emtvf:face:mismatch)
       matched-p))
-
-;;;_. Footers
-;;;_ , Register it
+;;;_  . Register it
 ;;;###autoload (eval-after-load 'emtest/viewer/all-note-formatters
 ;;;###autoload '(emt:vw:note:add-gov
 ;;;###autoload    'comparison-w/persist 
 ;;;###autoload    #'emt:vw:note:comparison-w/persist))
+
+
+;;;_. Footers
 ;;;_ , Postlude (Hack because we `require' the target file)
 ;;;###autoload (provide 'emtest/viewer/note-formatters/registrations)
 
 ;;;_ , Provides
 
-(provide 'emtest/viewer/note-formatters/compare-w-persist)
+(provide 'emtest/viewer/note-formatters/not-in-db)
 
 ;;;_ * Local emacs vars.
 ;;;_  + Local variables:
@@ -119,4 +167,4 @@
 ;;;_  + End:
 
 ;;;_ , End
-;;; emtest/viewer/note-formatters/compare-w-persist.el ends here
+;;; emtest/viewer/note-formatters/not-in-db.el ends here
