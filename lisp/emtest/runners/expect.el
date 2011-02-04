@@ -63,6 +63,15 @@
    question
    form
    timeout)
+;;;_ , Configuration
+(defconst emtr:expect-max-running 3 
+   "Maximum number of expect interactions allowed to run at once" )
+;;;_ , Variables
+
+(defvar emtr:expect-num-running 0 
+   "Number of expect interactions currently running" )
+(defvar emtr:expect-queue '()
+   "Queue of expect interactions that are waiting till something finishes" )
 
 ;;;_ , Utility
 ;;;_  . emtr:with-testral
@@ -162,6 +171,7 @@ OBJ must evaluate to an `emtr:expect-data'."
       
       ;;Otherwise we're done.
       (progn
+	 (decf emtr:expect-num-running)
 	 ;;Report results
 	 (funcall (emtr:expect-data->report-f data)
 	    (emt:testral:make-suite
@@ -186,7 +196,8 @@ If impossible, return nil instead"
 	    (let* 
 	       ((forms (cddr form)))
 	       (if forms `(progn ,@forms) nil))
-	    ;;$$PUNT Take a timeout nicely.
+	    ;;$$IMPROVE ME Make `timeout' a special variable, rename
+	    ;;it.  Get it from FORM if available.
 	    :timeout timeout))
       ;;Dormant tests
       (quote
@@ -212,97 +223,99 @@ If impossible, return nil instead"
 ;;;###autoload
 (defun emtr:expect (props form report-f)
    "Run a test-case on external program and report the result."
-
-   (let
-      ((con
-	  (emtt:testral:make-continuing props)))
-      ;;Testpoint to check what we receive.
-      (emth:protect&trap err
-	 (emtp tp:96304f8f-2edc-4ac9-8ecb-9c6ad9ce0415 (form)
-	    (let*
-	       (  (form-parms (car form))
-		  (exec+args
-		     (eval
-			(second (assq 'exec+args form-parms))))
-		  (dummy
-		     (when (null exec+args)
-			(error "emtr:expect: no exec+args given")))
-		  (dummy
-		     (when (not (stringp (car exec+args)))
-			(error "emtr:expect: exec is not a string")))
-		  (dummy
-		     (when (not (file-name-absolute-p (car exec+args)))
-			(error "emtr:expect: path to exec is not absolute")))
-		  (prompt
-		     (eval
-			(second (assq 'prompt    form-parms))))
-		  (dummy
-		     (when (null prompt)
-			(error "emtr:expect: no prompt set")))
-		  (shell
-		     ;;Defaults to nil
-		     (eval
-			(second (assq 'shell     form-parms))))
-		  (timeout
-		     ;;Defaults to 30
-		     (or
+   (unless
+      (> emtr:expect-num-running emtr:expect-max-running)
+      (let
+	 ((con
+	     (emtt:testral:make-continuing props)))
+	 ;;Testpoint to check what we receive.
+	 (emth:protect&trap err
+	    (emtp tp:96304f8f-2edc-4ac9-8ecb-9c6ad9ce0415 (form)
+	       (let*
+		  (  (form-parms (car form))
+		     (exec+args
 			(eval
-			   (second (assq 'timeout form-parms)))
-			30))
-		  (proc
-		     (apply 
-			(if shell
-			   #'start-process-shell-command
-			   #'start-process)
-			"expect" nil exec+args))
-		  (dummy
-		     (unless
-			;;0 status means a live process
-			(equal
-			   (process-exit-status proc)
-			   0)
-			(error
-			   "emtr:expect: No live process")))
-		  (tq
-		     (tq-create proc))
+			   (second (assq 'exec+args form-parms))))
+		     (dummy
+			(when (null exec+args)
+			   (error "emtr:expect: no exec+args given")))
+		     (dummy
+			(when (not (stringp (car exec+args)))
+			   (error "emtr:expect: exec is not a string")))
+		     (dummy
+			(when (not (file-name-absolute-p (car exec+args)))
+			   (error "emtr:expect: path to exec is not absolute")))
+		     (prompt
+			(eval
+			   (second (assq 'prompt    form-parms))))
+		     (dummy
+			(when (null prompt)
+			   (error "emtr:expect: no prompt set")))
+		     (shell
+			;;Defaults to nil
+			(eval
+			   (second (assq 'shell     form-parms))))
+		     (timeout
+			;;Defaults to 30
+			(or
+			   (eval
+			      (second (assq 'timeout form-parms)))
+			   30))
+		     (proc
+			(apply 
+			   (if shell
+			      #'start-process-shell-command
+			      #'start-process)
+			   "expect" nil exec+args))
+		     (dummy
+			(unless
+			   ;;0 status means a live process
+			   (equal
+			      (process-exit-status proc)
+			      0)
+			   (error
+			      "emtr:expect: No live process")))
+		     (tq
+			(tq-create proc))
 		     
-		  (pending
-		     (emtt:testral:continued-with con
-			(delq nil
-			   (mapcar
-			      #'emtr:expect-form->predata
-			      (cdr form)))))
-		  (data
-		     (emtr:make-expect-data
-			:tq tq
-			:report-f report-f
-			;;Timer is not set now, it will be set when we
-			;;start
-			:timer nil 
-			;;Will be set when we start.
-			:interaction-id nil 
-			:pending pending
-			:prompt prompt
-			:testral-obj con)))
+		     (pending
+			(emtt:testral:continued-with con
+			   (delq nil
+			      (mapcar
+				 #'emtr:expect-form->predata
+				 (cdr form)))))
+		     (data
+			(emtr:make-expect-data
+			   :tq tq
+			   :report-f report-f
+			   ;;Timer is not set now, it will be set when we
+			   ;;start
+			   :timer nil 
+			   ;;Will be set when we start.
+			   :interaction-id nil 
+			   :pending pending
+			   :prompt prompt
+			   :testral-obj con)))
 	       
-	       ;;Start the testing
-	       (emtr:expect-start-next data)))
+		  ;;Start the testing
+		  (incf emtr:expect-num-running)
+		  (emtr:expect-start-next data)))
 	 
-	 (when err
-	    (funcall report-f
-	       (emt:testral:make-suite
-		  :contents
-		  (emtt:testral:continued-with con
-		     ;;Make a note about the error
-		     (emtt:testral:add-note
-			"problem"
-			'ungraded
-			'error-raised
-			err)
-		     ;;Then give all the notes.
-		     (emtt:testral:note-list))
-		  :grade
-		  'ungraded))))))
+	    (when err
+	       (funcall report-f
+		  (emt:testral:make-suite
+		     :contents
+		     (emtt:testral:continued-with con
+			;;Make a note about the error
+			(emtt:testral:add-note
+			   "problem"
+			   'ungraded
+			   'error-raised
+			   err)
+			;;Then give all the notes.
+			(emtt:testral:note-list))
+		     :grade
+		     'ungraded)))))))
 
 ;;;_ , Register it
 ;;;###autoload (eval-after-load 'emtest/main/all-runners
