@@ -155,8 +155,7 @@ which may not imply success of an assertion."
 ;;;_  . Buttons
 ;;;_   , emtvf:button-to-explore
 (defun emtvf:button-to-explore (explorable text)
-   "Make a button to explore EXPLORABLE.
-Hack: We add a space after the button."
+   "Make a button to explore EXPLORABLE."
    (when explorable
       (let
 	 ((func
@@ -168,6 +167,31 @@ Hack: We add a space after the button."
 	 `(button ,text 
 	     action ,func
 	     help-echo "Rerun this test"))))
+;;;_   , emtvf:button-toggle-mark
+(defun emtvf:button-toggle-mark (viewable text)
+   "Make a button to toggle the mark on VIEWABLE."
+   (when viewable
+      (let
+	 ((func
+	     ;;$$IMPROVE ME See button params instead of making a new
+	     ;;func.
+	     `(lambda (button)
+		 (interactive)
+		 (setf
+		    (emt:view:suite->mark ,viewable)
+		    (not (emt:view:suite->mark ,viewable)))
+		 (emt:ind:set-score-component
+		    (emt:view:suite->how-to-run obj)
+		    'marked
+		    (if (emt:view:suite->mark ,viewable) 1000 0))
+		 
+		 ;;Cause it to be reprinted, or just reprint the button.
+		 ;;$$IMPROVE ME Encapsulate this so it looks like
+		 ;;we're passing the viewable to a reprint routine.
+		 (emtv2:print-all (emtvo:get-root)))))
+	 `(button ,text 
+	     action ,func
+	     help-echo "Mark this test-suite"))))
 ;;;_  . Objects
 ;;;_   , emtvf:obj-or-string
 (defun emtvf:obj-or-string (value)
@@ -291,6 +315,9 @@ Must be called in a `utidyv:top' context."
 			(hiformat:separate
 			   (delq nil
 			      (list
+				 '(emtvf:button-toggle-mark
+				    view-node
+				    (if (emt:view:suite->mark) "X" "_"))
 				 `(w/face ,name emtvf:face:suitename)
 				 (emtvf:button-to-explore explorable "[RUN]")
 				 grades-sum))
