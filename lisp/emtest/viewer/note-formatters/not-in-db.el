@@ -33,6 +33,16 @@
 
 
 ;;;_. Body
+;;;_ , emt:vw:note:accept-in-db
+(defun emt:vw:note:accept-in-db (button)
+   "Accept a value in db, as given by BUTTON."
+   (let
+      ((arg (button-get button 'accept-in-db-args)))
+      (emdb:set-value
+	 ',backend
+	 ',id
+	 ',value
+	 'correct-answer)))
 ;;;_ , emt:vw:note:not-in-db
 ;;;###autoload
 (defun emt:vw:note:not-in-db (note value id backend)
@@ -44,16 +54,9 @@
 	      (list
 		 "Value "
 		 `(button "[Accept]"
-		     action 
-		     (lambda (button)
-			(interactive)
-			(emdb:set-value
-			   ',backend
-			   ',id
-			   ',value
-			   'correct-answer))
-		     help-echo 
-		     "Accept this value"))
+		     action ,#'emt:vw:note:accept-in-db
+		     help-echo "Accept this value"
+		     accept-in-db-args (,backend ,id ,value correct-answer)))
 	      (if
 		 (stringp value)
 		 ;;Indent it so it can't affect outline
