@@ -37,7 +37,6 @@
 (require 'emtest/testhelp/tagnames)
 (require 'emtest/testhelp/match)
 (require 'emtest/explorers/library/testhelp)
-(require 'emtest/launch/all)
 (require 'emtest/launch/all/testhelp)
 (require 'utility/pathtree)
 (require 'utility/pathtree/testhelp)

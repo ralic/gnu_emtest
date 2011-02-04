@@ -29,7 +29,6 @@
 
 ;;;_ , Requires
 
-(require 'emtest/launch/all)
 (require 'emtest/main/all-runners)
 (require 'emtest/main/define)
 (require 'emtest/main/find-tests)

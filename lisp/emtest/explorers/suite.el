@@ -30,7 +30,6 @@
 ;;;_ , Requires
 
 (require 'emtest/editing/lisp)
-(require 'emtest/launch/all)
 (require 'emtest/main/define)
 (require 'emtest/main/find-tests)
 (require 'emtest/support/keepup)

@@ -29,7 +29,6 @@
 
 ;;;_ , Requires
 
-(require 'emtest/launch/all)  ;;launch is not actually used in here.
 (require 'emtest/main/find-tests)
 (require 'emtest/testhelp/misc)
 (require 'emtest/testhelp/tagnames)

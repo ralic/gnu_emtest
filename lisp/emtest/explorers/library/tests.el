@@ -32,7 +32,6 @@
 
 (require 'emtest/explorers/library)
 (require 'emtest/explorers/library/testhelp)
-(require 'emtest/launch/all)
 (require 'emtest/main/define)
 (require 'emtest/testhelp/standard)
 (require 'emtest/testhelp/testpoint)

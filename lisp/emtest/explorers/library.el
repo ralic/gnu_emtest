@@ -29,7 +29,6 @@
 
 ;;;_ , Requires
 
-(require 'emtest/launch/all)
 (require 'emtest/main/find-tests)
 (require 'emtest/types/run-types)
 (require 'emtest/types/testral-types)
