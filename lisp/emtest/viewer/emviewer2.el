@@ -88,6 +88,27 @@
 	       (emtvr:cache-subtree-grade obj)
 	       ;;Record a suitable score component
 	       (when (emt:view:suite-p obj)
+		  (emt:ind:set-prop
+		     (emtt:explorable->how-to-run
+			(emt:view:suite->how-to-run obj))
+		     'should-rerun
+		     (case
+			(emt:grade:summary->worst
+			   (emt:view:presentable->sum-grades obj))
+			(fail t)
+			((ok test-case) nil)
+			;;Generally rerunning blowouts is just
+			;;troublesome
+			(blowout nil)
+			;;Some ungradeds merely used `assert' instead of
+			;;`emt:assert'
+			(ungraded t)
+			;;Dormants asked not to be run, so don't try hard
+			;;to run them
+			(dormant nil)
+			;;Anything else, no effect.
+			(t t)))
+		  
 		  (emt:ind:set-score-component
 		     (emtt:explorable->how-to-run
 			(emt:view:suite->how-to-run obj))

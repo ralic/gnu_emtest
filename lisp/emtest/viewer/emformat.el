@@ -179,6 +179,12 @@ which may not imply success of an assertion."
       (setf
 	 (emt:view:suite->mark viewable)
 	 (not (emt:view:suite->mark viewable)))
+      (emt:ind:set-prop
+	 (emtt:explorable->how-to-run
+	    (emt:view:suite->how-to-run viewable))
+	 'wanna-run
+	 t)
+      
       (emt:ind:set-score-component
 	 (emtt:explorable->how-to-run
 	    (emt:view:suite->how-to-run viewable))
