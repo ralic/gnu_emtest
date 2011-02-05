@@ -182,7 +182,7 @@ which may not imply success of an assertion."
       (emt:ind:set-prop
 	 (emtt:explorable->how-to-run
 	    (emt:view:suite->how-to-run viewable))
-	 'wanna-run
+	 'user-says-rerun
 	 t)
       
       (emt:ind:set-score-component

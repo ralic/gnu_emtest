@@ -91,7 +91,7 @@
 		  (emt:ind:set-prop
 		     (emtt:explorable->how-to-run
 			(emt:view:suite->how-to-run obj))
-		     'should-rerun
+		     'grade-says-rerun
 		     (case
 			(emt:grade:summary->worst
 			   (emt:view:presentable->sum-grades obj))

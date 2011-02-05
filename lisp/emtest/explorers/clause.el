@@ -88,8 +88,8 @@
    (if
       (utim:get-properties 'no-redo-passes props)
       (or
-	 (emt:ind:get-prop test-id 'should-rerun)
-	 (emt:ind:get-prop test-id 'wanna-run))
+	 (emt:ind:get-prop test-id 'grade-says-rerun)
+	 (emt:ind:get-prop test-id 'user-says-rerun))
       t))
 
 ;;;_ , Explorers
