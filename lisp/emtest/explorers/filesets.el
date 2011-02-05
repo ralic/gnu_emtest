@@ -54,7 +54,7 @@ If prefix arg is given, prompt for fileset name in any case."
 
    (let*
       (
-	 (name (second test-id))
+	 (fileset-name (second test-id))
 	 (fileset
 	    (filesets-get-fileset-from-name fileset-name))
 	 (test-files
