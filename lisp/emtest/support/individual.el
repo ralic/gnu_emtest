@@ -74,16 +74,33 @@
 	    (emt:ind:make-entry 
 	       :test-id test-id
 	       :score-properties-alist (list (cons key bonus)))))))
-
+;;;_ , emt:ind:entry-get-score
+(defun emt:ind:entry-get-score (entry)
+   "Get the score of a ENTRY.
+ENTRY must be a `emt:ind:entry'"
+   (or
+      (emt:ind:entry->cached-score entry)
+      (let*
+	 ((components
+	     (emt:ind:entry->score-properties-alist entry))
+	    (score 
+	       (apply #'+
+		  (mapcar #'cdr components))))
+	       
+	 (setf
+	    (emt:ind:entry->cached-score entry)
+	    score)
+	 score)))
 
 ;;;_ , emt:ind:get-score 
 (defun emt:ind:get-score (test-id)
    "Get the score of a given test.
 The higher, the more easily the test will be run."
-
-   ;;$$IMPROVE ME If TEST-ID has test properties, use them.
-   (emt:exps:get-base-score (car test-id)))
-
+   (let
+      ((entry (emt:ind:get-entry test-id)))
+      (if entry
+	 (emt:ind:entry-get-score entry)
+	 (emt:exps:get-base-score (car test-id)))))
 
 ;;;_. Footers
 ;;;_ , Provides
