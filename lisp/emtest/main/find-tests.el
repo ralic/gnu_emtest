@@ -179,7 +179,7 @@ If RESTRAINED, the property list won't redo tests that passed"
 	 (emtt:make-explorable
 	    :how-to-run  what-to-run
 	    :prestn-path prefix  ;;Default is the empty list.
-	    :properties (props)))
+	    :properties  '()))
       (or testrun-id
 	 (prin1-to-string (incf emt:lch:testrun-counter)))
       (or receiver emtl:receiver-f)

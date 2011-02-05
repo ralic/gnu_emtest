@@ -127,8 +127,7 @@ LIBRARY is the absolute file name of the library"
       (emt:lch:run 
 	 `(library:elisp-load ,library ,lib-sym)
 	 (emt:lch:get-prop-list arg)
-	 (list (concat "library " (symbol-name lib-sym)))
-	 receiver)))
+	 (list (concat "library " (symbol-name lib-sym))))))
 
 ;;;_ , Explorer
 ;;;_  . emtt:explore-library
