@@ -64,13 +64,17 @@
    (let
       ((entry (emt:ind:get-entry test-id)))
       (if entry
-	 (setf
-	    (emt:ind:entry->score-properties-alist entry)
-	    (cons
-	       (cons key bonus)
-	       (assq-delete-all 
-		  key 
-		  (emt:ind:entry->score-properties-alist entry))))
+	 (progn
+	    (setf
+	       (emt:ind:entry->score-properties-alist entry)
+	       (cons
+		  (cons key bonus)
+		  (assq-delete-all 
+		     key 
+		     (emt:ind:entry->score-properties-alist entry))))
+	    (setf
+	       (emt:ind:entry->cached-score entry)
+	       nil))
 	 (emt:ind:add-entry
 	    (emt:ind:make-entry 
 	       :test-id test-id
