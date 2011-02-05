@@ -53,7 +53,7 @@
 
 ;;;_ , Run tests
 ;;;_  . emtt:explore-one
-(defun emtt:explore-one (explorable report-f testrun)
+(defun emtt:explore-one (explorable testrun)
    ""
    (let* 
       (	    
@@ -118,18 +118,14 @@
    (explorable-list testrun-id report-cb &optional min-score)
    "Explore WHAT-TO-RUN, sending its results to REPORT-CB"
    
-   (let*  
+   (let
       (  
 	 (testrun 
 	    (emt:make-testrun
 	       :pending (copy-list explorable-list)
 	       :min-score (or min-score 0)
 	       :report-cb  report-cb
-	       :testrun-id testrun-id))
-	 
-	 (report-f
-	    `(lambda (suites tests &optional prefix)
-		(funcall #'emt:report ',testrun suites tests prefix))))
+	       :testrun-id testrun-id)))
 
       (emt:report-nosched testrun (length explorable-list) '())
       
@@ -141,7 +137,7 @@
 	 ;;`emtt:explore-one' sometimes did.
 	 (let*
 	    ((next (pop (emt:testrun->pending testrun))))
-	    (emtt:explore-one next report-f testrun)))))
+	    (emtt:explore-one next testrun)))))
 
 
 ;;;_ , Launch tests
