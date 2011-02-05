@@ -89,9 +89,12 @@ ENTRY must be a `emt:ind:entry'"
 	 ((components
 	     (emt:ind:entry->score-properties-alist entry))
 	    (score 
-	       (apply #'+
-		  (mapcar #'cdr components))))
-	       
+	       (+
+		  (apply #'+
+		     (mapcar #'cdr components))
+		  (emt:exps:get-base-score 
+		     (emt:ind:entry->test-id entry)))))
+	 
 	 (setf
 	    (emt:ind:entry->cached-score entry)
 	    score)
