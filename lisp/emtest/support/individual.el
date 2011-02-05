@@ -50,13 +50,42 @@
 ;;;_ , emt:ind:get-entry
 (defsubst emt:ind:get-entry (test-id)
    "Get the entry for TEST-ID"
+   (check-type test-id emthow)
    (assoc test-id emt:ind:alist))
 ;;;_ , emt:ind:add-entry
 (defsubst emt:ind:add-entry (entry)
    "Add entry ENTRY"
+   (check-type test-id emthow)
    (push entry emt:ind:alist))
-;;;_ , emt:ind:get-prop Get properties of a test
-;;;_ , emt:ind:set-prop Set properties of a test
+;;;_ , emt:ind:get-prop 
+(defun emt:ind:get-prop (test-id key)
+   "Get property KEY of test TEST-ID"
+
+   (let
+      ((entry (emt:ind:get-entry test-id)))
+      (if entry
+	 (utim:get-properties key (emt:ind:entry->property-alist entry))
+	 nil)))
+
+;;;_ , emt:ind:set-prop 
+(defun emt:ind:set-prop (test-id key value)
+   "Set property KEY of test TEST-ID to VALUE"
+
+   (let
+      ((entry (emt:ind:get-entry test-id)))
+      (if entry
+	 (setf
+	    (emt:ind:entry->property-alist entry)
+	    (cons
+	       (cons key value)
+	       (assq-delete-all 
+		  key 
+		  (emt:ind:entry->property-alist entry))))
+	 (emt:ind:add-entry
+	    (emt:ind:make-entry 
+	       :test-id test-id
+	       :property-alist (list (cons key value)))))))
+
 ;;;_ , emt:ind:set-score-component
 (defun emt:ind:set-score-component (test-id key bonus)
    "Set a score component KEY of TEST-ID to BONUS"
