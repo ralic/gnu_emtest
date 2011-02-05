@@ -49,8 +49,8 @@
    (has-run () 
       :type (repeat emthow))
    (min-score 0 :type integer)
-   testrun-id
-   prefix)
+   report-cb
+   testrun-id)
 
 
 ;;;_ , Run tests
@@ -90,7 +90,7 @@
 		  test-id props path local-report-f))))))
 
 ;;;_  . emt:report-nosched
-(defun emt:report-nosched (report-cb testrun count suites)
+(defun emt:report-nosched (report-cb testrun count suites &optional prefix)
    "Report SUITES as results"
    (funcall report-cb
       (emt:testral:make-report
@@ -112,29 +112,40 @@
 	       (push explorable
 		  (emt:testrun->pending testrun)))))
       (emt:report-nosched report-cb testrun count suites)))
-
 ;;;_  . emtt:test-finder:top
 (defun emtt:test-finder:top (what-to-run path-prefix testrun-id
 			       report-cb &optional min-score)
    "Explore WHAT-TO-RUN, sending its results to REPORT-CB"
-   
-   (let*  
-      (  
-	 (testrun (emt:make-testrun :min-score (or min-score 0)))
-	 ;; Poor-man's closures.
-	 (report-f
-	    `(lambda (suites tests &optional prefix)
-		(funcall #'emt:report ',testrun #',report-cb ,testrun-id 
-		   suites tests prefix))))
-      
-      ;;Enqueue the root test. 
-      (push
+   (emtt:test-finder:top-x
+      (list
 	 (emtt:make-explorable
 	    :how-to-run  what-to-run
 	    :prestn-path path-prefix
-	    :properties ())
-	 (emt:testrun->pending testrun))
-      (emt:report-nosched report-cb testrun 1 '())
+	    :properties ()))
+      testrun-id report-cb min-score))
+
+;;;_  . emtt:test-finder:top-x
+(defun emtt:test-finder:top-x 
+   (explorable-list testrun-id report-cb &optional min-score)
+   "Explore WHAT-TO-RUN, sending its results to REPORT-CB"
+   
+   (let*  
+      (  
+	 (testrun 
+	    (emt:make-testrun
+	       :pending (copy-list explorable-list)
+	       :min-score (or min-score 0)
+	       :report-cb  report-cb
+	       :testrun-id testrun-id))
+	 
+	 ;; Poor-man's closures.
+	 (report-f
+	    ;;$$IMPROVE ME emt:report get the rest of this from testrun.
+	    `(lambda (suites tests &optional prefix)
+		(funcall #'emt:report ',testrun #',report-cb ,testrun-id 
+		   suites tests prefix))))
+
+      (emt:report-nosched report-cb testrun (length explorable-list) '())
       
       ;;Loop thru the pending list.
       (while
