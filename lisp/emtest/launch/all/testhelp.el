@@ -42,16 +42,12 @@
    "Run the test suite associated with SUITE-SYM.
 Results are passed to function CALLBACK."
    
-   (emtt:test-finder:top
-      ;;$$UPDATE ME - will need to change what it makes.  
-
-      ;;$$REFACTOR ME Would like to use `emtl:run-suite'.  Perhaps
-      ;;these can process arglist and then apply, and `emtl:run-suite'
-      ;;etc can take all the args.
+   (emt:lch:run
       `(suite ,suite-sym)
       '()
-      "0" 
-      callback))
+      callback
+      "0"))
+
 
 ;;;_ , emtt:ts:run-test
 (defun emtt:ts:run-test (test-form callback &optional prefix testrun-id)
@@ -66,21 +62,22 @@ followed by a form."
    ;;test-support for emt-define.
    (check-type test-form (list t t))
 
-   (emtt:test-finder:top 
+   (emt:lch:run
       `(form ,test-form)
       (or prefix (list "test-form"))
-      (or testrun-id "0")
-      callback))
+      callback
+      (or testrun-id "0")))
+
 
 ;;;_ , emtl:th:hello
 (defun emtl:th:hello (callback &optional prefix testrun-id)
    ""
    
-   (emtt:test-finder:top 
+   (emt:lch:run
       '(hello)
       (or prefix (list ""))
-      (or testrun-id "0")
-      callback))
+      callback
+      (or testrun-id "0")))
 
 ;;;_. Footers
 ;;;_ , Provides

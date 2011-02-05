@@ -44,11 +44,11 @@
 (defun emtt:th:explore-one (form callback &optional testrun-id)
    ""
    ;;Test thru top call for now.
-   (emtt:test-finder:top 
+   (emt:lch:run
       `(form ,form)
       (list "form")
-      (or testrun-id "0")
-      callback))
+      callback
+      (or testrun-id "0")))
 
 
 ;;;_. Footers

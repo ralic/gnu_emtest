@@ -111,19 +111,7 @@
 		  (emt:testrun->pending testrun)))))
       (emt:report-nosched report-cb testrun count suites)))
 ;;;_  . emtt:test-finder:top
-(defun emtt:test-finder:top (what-to-run path-prefix testrun-id
-			       report-cb &optional min-score)
-   "Explore WHAT-TO-RUN, sending its results to REPORT-CB"
-   (emtt:test-finder:top-x
-      (list
-	 (emtt:make-explorable
-	    :how-to-run  what-to-run
-	    :prestn-path path-prefix
-	    :properties ()))
-      testrun-id report-cb min-score))
-
-;;;_  . emtt:test-finder:top-x
-(defun emtt:test-finder:top-x 
+(defun emtt:test-finder:top 
    (explorable-list testrun-id report-cb &optional min-score)
    "Explore WHAT-TO-RUN, sending its results to REPORT-CB"
    
@@ -163,13 +151,19 @@
    "A counter used to make testrun-id." )
 
 ;;;_  . emt:lch:run
-(defun emt:lch:run (what-to-run &optional prefix receiver)
-   ""
-   (emtt:test-finder:top 
-      what-to-run 
-      prefix  ;;Default is the empty list.
-      (prin1-to-string (incf emt:lch:testrun-counter))
+(defun emt:lch:run (what-to-run &optional prefix receiver testrun-id)
+   "Run a single test"
+   (emtt:test-finder:top
+      (list
+	 (emtt:make-explorable
+	    :how-to-run  what-to-run
+	    :prestn-path prefix  ;;Default is the empty list.
+	    :properties ()))
+      (or testrun-id
+	 (prin1-to-string (incf emt:lch:testrun-counter)))
       (or receiver emtl:receiver-f)))
+;;;_  . emt:lch:run-explist
+;;$$WRITE ME
 
 ;;;_. Footers
 ;;;_ , Provides
