@@ -184,13 +184,7 @@ which may not imply success of an assertion."
 	    (emt:view:suite->how-to-run viewable))
 	 'user-says-rerun
 	 t)
-      
-      (emt:ind:set-score-component
-	 (emtt:explorable->how-to-run
-	    (emt:view:suite->how-to-run viewable))
-	 'marked
-	 (if (emt:view:suite->mark viewable) 1000 0))
-		 
+
       ;;Cause it to be reprinted, or just reprint the button.
       ;;$$IMPROVE ME Encapsulate this so it looks like
       ;;we're passing the viewable to a reprint routine.

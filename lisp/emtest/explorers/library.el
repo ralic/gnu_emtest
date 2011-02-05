@@ -167,7 +167,7 @@ LIBRARY is the absolute file name of the library"
 ;;;_ , Insinuate
 ;;;###autoload (eval-after-load 'emtest/main/all-explorers
 ;;;###autoload  '(emt:exps:add 'library:elisp-load #'emtt:explore-library
-;;;###autoload  "Elisp library" 10))
+;;;###autoload  "Elisp library"))
 
 ;;;_. Footers
 ;;;_ , Provides

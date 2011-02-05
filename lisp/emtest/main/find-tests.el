@@ -48,8 +48,7 @@
       :type (repeat emthow))
    report-cb
    testrun-id
-   (properties () :type (repeat (cons symbol t)))
-   (min-score 0 :type integer))
+   (properties () :type (repeat (cons symbol t))))
 
 
 
@@ -114,14 +113,13 @@
 ;;;_  . emtt:test-finder:top
 ;;;###autoload
 (defun emtt:test-finder:top 
-   (explorable-list testrun-id report-cb properties &optional min-score)
+   (explorable-list testrun-id report-cb properties)
    "Explore WHAT-TO-RUN, sending its results to REPORT-CB"
    (let
       (  
 	 (testrun 
 	    (emt:make-testrun
 	       :pending    (copy-list explorable-list)
-	       :min-score  (or min-score 0)
 	       :report-cb  report-cb
 	       :testrun-id testrun-id
 	       :properties properties)))

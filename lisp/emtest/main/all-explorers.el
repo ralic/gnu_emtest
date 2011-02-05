@@ -45,19 +45,18 @@ add their methods.  Recommended: autoload a form like:
 `(eval-after-load 'emtest/main/all-runners '(emt:exps:add SYM
 FUNCTION NAME))'.
 
-Format: Each entry is (GOV-SYMBOL FUNCTION NAME BASE-SCORE), where 
+Format: Each entry is (GOV-SYMBOL FUNCTION NAME), where 
  * GOV-SYMBOL is a governor symbol
  * FUNCTION explores the test or suite.
- * NAME is the name of the method.
- * BASE-SCORE is the default explorability score for this type." )
+ * NAME is the name of the method." )
 
 ;;;_  . emt:exps:add
 
-(defun emt:exps:add (gov-symbol func &optional name base-score &rest dummy)
+(defun emt:exps:add (gov-symbol func &optional name &rest dummy)
    "Add FUNC as explorer governed by GOV-SYMBOL"
    (utim:new-apair 
       gov-symbol 
-      (list func (or name "<UNNAMED>") (or base-score 0))
+      (list func (or name "<UNNAMED>"))
       emt:exps:alist))
 ;;;_  . emt:exps:get-info
 (defun emt:exps:get-info (gov-symbol)
@@ -76,15 +75,8 @@ HOW must be a list."
    (car
       (emt:exps:get-info (car how))))
 
-;;;_ , emt:exps:get-base-score
-(defun emt:exps:get-base-score (gov-symbol)
-   "Get the base score of a given test governor."
-   (or
-      (fourth (emt:exps:get-info gov-symbol))
-      0))
-
-;;;_  . Special explorers
-;;;_   , emt:exp:hello
+;;;_ , Special explorers
+;;;_  . emt:exp:hello
 ;;This doesn't require an autoload but all others do.
 (defun emt:exp:hello (test-id props path report-f)
    "Report about Emtest, listing the explore methods."
@@ -98,12 +90,11 @@ HOW must be a list."
 	 ;;name now.
 	 (mapcar #'third emt:exps:alist))))
 
-;;;_    . Register it
+;;;_   , Register it
 
-(emt:exps:add 'hello #'emt:exp:hello
-   "Tester signature") 
+(emt:exps:add 'hello #'emt:exp:hello "Tester signature") 
 
-;;;_   , emt:exp:fallback
+;;;_  . emt:exp:fallback
 ;;Not part of the list of methods.
 (defun emt:exp:fallback (test-id props path report-f)
    "Report that no matching explore method could be found."
