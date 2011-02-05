@@ -111,6 +111,7 @@
 		  (emt:testrun->pending testrun)))))
       (emt:report-nosched report-cb testrun count suites)))
 ;;;_  . emtt:test-finder:top
+;;;###autoload
 (defun emtt:test-finder:top 
    (explorable-list testrun-id report-cb &optional min-score)
    "Explore WHAT-TO-RUN, sending its results to REPORT-CB"
@@ -151,6 +152,7 @@
    "A counter used to make testrun-id." )
 
 ;;;_  . emt:lch:run
+;;;###autoload
 (defun emt:lch:run (what-to-run &optional prefix receiver testrun-id)
    "Run a single test"
    (emtt:test-finder:top
