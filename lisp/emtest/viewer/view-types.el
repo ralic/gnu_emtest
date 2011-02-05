@@ -81,6 +81,7 @@ treewise, including any grades from this node."
    (id () :type emtvr:suite->id
       :doc "The normative id, often the same as `how-to-run'.")
 
+   ;;$$RENAME ME
    (how-to-run ():type emtt:explorable
       :doc "How to run this as a test.")
 
