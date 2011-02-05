@@ -81,8 +81,17 @@
 	 current-prefix-arg))
    ;;Unlike eval-expression, this does not do the extra stuff
    (emtt:eval arg))
+;;;_ , Helper
+;;;_  . emtt:explore-clause-p
+(defun emtt:explore-clause-p (test-id props)
+   "Non-nil if TEST-ID should be explored"
+   (if
+      (utim:get-properties 'no-redo-passes props)
+      ;;$$IMPROVE ME Directly use passedness
+      (>= (emt:ind:get-score test-id) 0)
+      t))
 
-;;;_ , Functions
+;;;_ , Explorers
 ;;;_  . emtt:explore-clause
 
 (defun emtt:explore-clause (clause props report-f)
@@ -98,10 +107,12 @@ This is the heart of Emtest exploration: A test itself."
 ;;;###autoload
 (defun emtt:explore-literal-clause (test-id props path report-f)
    "Explore a literal clause in Emtest."
-   (emtt:explore-clause
-      (second test-id)
-      props
-      report-f))
+   (if (emtt:explore-clause-p test-id props)
+      (emtt:explore-clause
+	 (second test-id)
+	 props
+	 report-f)
+      (funcall report-f nil nil nil 1)))
 
 ;;;_   , Register
 ;;;###autoload (eval-after-load 'emtest/main/all-explorers
@@ -111,13 +122,15 @@ This is the heart of Emtest exploration: A test itself."
 ;;;###autoload
 (defun emtt:explore-indexed-clause (test-id props path report-f)
    "Explore an indexed clause in a suite in Emtest."
-   (destructuring-bind (suite-sym clause-index) (cdr test-id)
-      (emtd:update-for-sym suite-sym)
-      (emtd:destructure-suite-3 suite-sym
-	 (emtt:explore-clause 
-	    (nth clause-index clause-list)
-	    props
-	    report-f))))
+   (if (emtt:explore-clause-p test-id props)
+      (destructuring-bind (suite-sym clause-index) (cdr test-id)
+	 (emtd:update-for-sym suite-sym)
+	 (emtd:destructure-suite-3 suite-sym
+	    (emtt:explore-clause 
+	       (nth clause-index clause-list)
+	       props
+	       report-f)))
+      (funcall report-f nil nil nil 1)))
 
 
 ;;;_   , Register
