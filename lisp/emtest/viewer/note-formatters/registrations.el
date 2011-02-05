@@ -46,11 +46,20 @@ Formatter for TESTRAL note governed by `matched'
 
 ;;;***
 
-;;;### (autoloads (emt:vw:note:comparison-w/persist) "emtest/viewer/note-formatters/compare-w-persist"
-;;;;;;  "compare-w-persist.el" (19783 34754))
-;;; Generated autoloads from compare-w-persist.el
+;;;### (autoloads (emt:vw:note:comparison-w/persist emt:vw:note:not-in-db)
+;;;;;;  "emtest/viewer/note-formatters/db" "db.el" (19788 36489))
+;;; Generated autoloads from db.el
 
-(autoload (quote emt:vw:note:comparison-w/persist) "emtest/viewer/note-formatters/compare-w-persist" "\
+(autoload (quote emt:vw:note:not-in-db) "emtest/viewer/note-formatters/db" "\
+Formatter for TESTRAL note governed by `not-in-db'
+
+\(fn NOTE VALUE ID BACKEND)" nil nil)
+ (eval-after-load 'emtest/viewer/all-note-formatters
+ '(emt:vw:note:add-gov
+   'not-in-db 
+   #'emt:vw:note:not-in-db))
+
+(autoload (quote emt:vw:note:comparison-w/persist) "emtest/viewer/note-formatters/db" "\
 Formatter for TESTRAL note governed by `comparison-w/persist'
 
 \(fn NOTE MATCHED-P VALUE BACKEND ID)" nil nil)
@@ -89,21 +98,6 @@ Formatter for TESTRAL note governed by `error-raised'
  '(emt:vw:note:add-gov
    'error-raised 
    #'emt:vw:note:error-raised))
-
-;;;***
-
-;;;### (autoloads (emt:vw:note:not-in-db) "emtest/viewer/note-formatters/not-in-db"
-;;;;;;  "not-in-db.el" (19783 34798))
-;;; Generated autoloads from not-in-db.el
-
-(autoload (quote emt:vw:note:not-in-db) "emtest/viewer/note-formatters/not-in-db" "\
-Formatter for TESTRAL note governed by `not-in-db'
-
-\(fn NOTE VALUE ID BACKEND)" nil nil)
- (eval-after-load 'emtest/viewer/all-note-formatters
- '(emt:vw:note:add-gov
-   'not-in-db 
-   #'emt:vw:note:not-in-db))
 
 ;;;***
 
