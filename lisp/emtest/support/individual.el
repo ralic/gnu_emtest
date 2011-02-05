@@ -60,6 +60,7 @@
 ;;;_ , emt:ind:set-score-component
 (defun emt:ind:set-score-component (test-id key bonus)
    "Set a score component KEY of TEST-ID to BONUS"
+   (check-type test-id emthow)
    (let
       ((entry (emt:ind:get-entry test-id)))
       (if entry
