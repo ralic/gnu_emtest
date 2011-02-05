@@ -44,8 +44,6 @@
 	      (:constructor emt:make-testrun))
    "State data about a given testrun"
    (pending () :type (repeat emtt:explorable))
-   ;;The integer is the lowest score it accepted last time it ran.
-   ;;nil if none.
    (has-run () 
       :type (repeat emthow))
    (min-score 0 :type integer)
