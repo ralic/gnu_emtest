@@ -32,23 +32,43 @@
 
 ;;;_. Body
 ;;;_ , Types
-;;It's an alist of (how-to-run cached-score score-properties-alist . property-alist)
+(defstruct (emt:ind:entry
+	      (:type list)
+	      (:copier nil)
+	      (:conc-name emt:ind:entry->)
+	      (:constructor emt:ind:make-entry))
+   "An individual test entry"
+   (test-id () :type emthow)
+   (cached-score () :type (or integer null))
+   (score-properties-alist () :type (repeat (list symbol integer))) 
+   (property-alist () :type (repeat (list symbol t))))
 
 ;;;_ , List of individual tests
 (defvar emt:ind:alist 
    '()
-   ;;Format will store score-cache separately.
    "Alist of properties of individual tests" )
 ;;;_ , emt:ind:get-prop Get properties of a test
 ;;;_ , emt:ind:set-prop Set properties of a test
 ;;;_ , emt:ind:set-score-component
 (defun emt:ind:set-score-component (test-id key bonus)
    "Set a score component KEY of TEST-ID to BONUS"
-   
-   (let*
-      ()
-      
-      ))
+   (let
+      ((apair (assoc test-id emt:ind:alist)))
+      (if apair
+	 (setf
+	    (emt:ind:entry->score-properties-alist apair)
+	    (cons
+	       (cons key bonus)
+	       (assq-delete-all 
+		  key 
+		  (emt:ind:entry->score-properties-alist apair))))
+	 (push
+	    (emt:ind:make-entry 
+	       :test-id test-id
+	       :score-properties-alist (list (cons key bonus)))
+	    emt:ind:alist))))
+
+
 ;;;_ , emt:ind:get-score 
 (defun emt:ind:get-score (test-id)
    "Get the score of a given test.
