@@ -87,8 +87,9 @@
    "Non-nil if TEST-ID should be explored"
    (if
       (utim:get-properties 'no-redo-passes props)
-      ;;$$IMPROVE ME Directly use passedness
-      (>= (emt:ind:get-score test-id) 0)
+      (or
+	 (emt:ind:get-prop test-id 'should-rerun)
+	 (emt:ind:get-prop test-id 'wanna-run))
       t))
 
 ;;;_ , Explorers
