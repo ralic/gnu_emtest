@@ -88,16 +88,16 @@
 		  test-id props path local-report-f))))))
 
 ;;;_  . emt:report-nosched
-(defun emt:report-nosched (report-cb testrun count suites &optional prefix)
+(defun emt:report-nosched (testrun count suites &optional prefix)
    "Report SUITES as results"
-   (funcall report-cb
+   (funcall (emt:testrun->report-cb testrun)
       (emt:testral:make-report
 	 :newly-pending count
-	 :testrun-id testrun-id
+	 :testrun-id (emt:testrun->testrun-id testrun)
 	 :test-id-prefix prefix
 	 :suites suites)))
 ;;;_  . emt:report
-(defun emt:report (testrun report-cb testrun-id suites tests &optional prefix)
+(defun emt:report (testrun suites tests &optional prefix)
    "Report SUITES as results and schedule TESTS to run"
    (let ((count 0))
       (dolist (explorable tests)
@@ -109,7 +109,7 @@
 	       (incf count)
 	       (push explorable
 		  (emt:testrun->pending testrun)))))
-      (emt:report-nosched report-cb testrun count suites)))
+      (emt:report-nosched testrun count suites)))
 ;;;_  . emtt:test-finder:top
 ;;;###autoload
 (defun emtt:test-finder:top 
@@ -127,12 +127,10 @@
 	 
 	 ;; Poor-man's closures.
 	 (report-f
-	    ;;$$IMPROVE ME emt:report get the rest of this from testrun.
 	    `(lambda (suites tests &optional prefix)
-		(funcall #'emt:report ',testrun #',report-cb ,testrun-id 
-		   suites tests prefix))))
+		(funcall #'emt:report ',testrun suites tests prefix))))
 
-      (emt:report-nosched report-cb testrun (length explorable-list) '())
+      (emt:report-nosched testrun (length explorable-list) '())
       
       ;;Loop thru the pending list.
       (while
