@@ -89,7 +89,8 @@
 	       ;;Record a suitable score component
 	       (when (emt:view:suite-p obj)
 		  (emt:ind:set-score-component
-		     (emt:view:suite->how-to-run obj)
+		     (emtt:explorable->how-to-run
+			(emt:view:suite->how-to-run obj))
 		     'passfail
 		     (case
 			(emt:grade:summary->worst

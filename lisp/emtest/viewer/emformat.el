@@ -179,7 +179,8 @@ which may not imply success of an assertion."
 	 (emt:view:suite->mark viewable)
 	 (not (emt:view:suite->mark viewable)))
       (emt:ind:set-score-component
-	 (emt:view:suite->how-to-run viewable)
+	 (emtt:explorable->how-to-run
+	    (emt:view:suite->how-to-run viewable))
 	 'marked
 	 (if (emt:view:suite->mark viewable) 1000 0))
 		 
