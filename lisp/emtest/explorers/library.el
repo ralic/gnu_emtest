@@ -111,21 +111,23 @@ PROMPT is a prompt string"
 
 ;;;_  . emt:library
 ;;;###autoload
-(defun emt:library (library &optional receiver)
+(defun emt:library (library &optional arg)
    "Run the test suites of LIBRARY.
 LIBRARY is the absolute file name of the library"
    
    (interactive
       (list
 	 (emtel:read-testable-library 
-	    "Run tests of which library: ")))
+	    "Run tests of which library: ")
+	 current-prefix-arg))
    
    (let
       ((lib-sym
 	  (emtt:lib-path->lib-sym library)))
       (emt:lch:run 
-	 `(library:elisp-load ,library ,lib-sym) 
-	 (list (concat "library " (symbol-name lib-sym))) 
+	 `(library:elisp-load ,library ,lib-sym)
+	 (emt:lch:get-prop-list arg)
+	 (list (concat "library " (symbol-name lib-sym)))
 	 receiver)))
 
 ;;;_ , Explorer

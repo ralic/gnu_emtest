@@ -44,6 +44,7 @@ Results are passed to function CALLBACK."
    
    (emt:lch:run
       `(suite ,suite-sym)
+      emt:lch:proplist:vanilla
       '()
       callback
       "0"))
@@ -64,6 +65,7 @@ followed by a form."
 
    (emt:lch:run
       `(form ,test-form)
+      emt:lch:proplist:vanilla
       (or prefix (list "test-form"))
       callback
       (or testrun-id "0")))
@@ -75,6 +77,7 @@ followed by a form."
    
    (emt:lch:run
       '(hello)
+      emt:lch:proplist:vanilla
       (or prefix (list ""))
       callback
       (or testrun-id "0")))

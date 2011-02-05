@@ -46,6 +46,7 @@
    ;;Test thru top call for now.
    (emt:lch:run
       `(form ,form)
+      emt:lch:proplist:vanilla
       (list "form")
       callback
       (or testrun-id "0")))

@@ -46,12 +46,14 @@
    
    (emt:lch:run
       `(form ,form)
+      emt:lch:proplist:vanilla
       (list "form")))
 ;;;_  . emtt:eval
 (defun emtt:eval (expression)
    ""
    (emt:lch:run
       `(form (list nil expression))
+      emt:lch:proplist:vanilla
       (list "expression")))
 
 ;;;_  . emt:eval-last-sexp

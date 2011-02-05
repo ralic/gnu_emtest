@@ -38,13 +38,19 @@
 
 ;;;_ , Launcher emt:fileset
 ;;;###autoload
-(defun emt:fileset (fileset-name)
+(defun emt:fileset (fileset-name &optional arg)
    "Launch the tests defined in FILESET.
 If prefix arg is given, prompt for fileset name in any case."
    (interactive
-      (list (fileset-whole-read-fileset current-prefix-arg)))
+      (list
+	 (fileset-whole-read-fileset current-prefix-arg)
+	 ;;$$IMPROVE ME  Get this arg in a responsive way.  Understand
+	 ;;different values of the prefix arg.
+	 t))
+   
    (emt:lch:run
       `(fileset ,fileset-name)
+      (emt:lch:get-prop-list arg)
       (list (concat "fileset " fileset-name))))
 
 ;;;_ , Explorer emtt:explore-fileset

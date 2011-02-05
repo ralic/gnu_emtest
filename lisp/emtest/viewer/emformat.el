@@ -156,9 +156,10 @@ which may not imply success of an assertion."
 ;;;_   , emtvf:button-explore-func
 (defun emtvf:button-explore-func (button)
    "Explore explorable, given BUTTON."
-   
+   ;;$$IMPROVE ME Distinguish proplists we want to use.
    (emt:lch:run
       (button-get button 'how-to-run)
+      emt:lch:proplist:vanilla
       (button-get button 'prestn-path)))
 
 ;;;_   , emtvf:button-to-explore

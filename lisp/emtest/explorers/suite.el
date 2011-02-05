@@ -39,11 +39,11 @@
 ;;;_. Body
 ;;;_ , Launchers
 ;;;_  . emtl:run-suite
-(defun emtl:run-suite (suite-sym)
+(defun emtl:run-suite (suite-sym &optional arg)
    "Run the test suite associated with SUITE-SYM."
-   
    (emt:lch:run 
       `(suite ,suite-sym)
+      (emt:lch:get-prop-list arg)
       (list (format "Suite %s" suite-sym))))
 
 ;;;_  . emt:defun-at-point
@@ -65,7 +65,7 @@ Does nothing if the buffer is not in a known lisp mode."
 	 ((suite-sym
 	     (emtel:suite-sym-at-point)))
 	 (check-type suite-sym symbol)
-	 (emtl:run-suite suite-sym))))
+	 (emtl:run-suite suite-sym nil))))
 
 
 ;;;_ , Explorer

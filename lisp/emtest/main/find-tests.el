@@ -46,9 +46,11 @@
    (pending () :type (repeat emtt:explorable))
    (has-run () 
       :type (repeat emthow))
-   (min-score 0 :type integer)
    report-cb
-   testrun-id)
+   testrun-id
+   (properties () :type (repeat (cons symbol t)))
+   (min-score 0 :type integer))
+
 
 
 ;;;_ , Run tests
@@ -60,27 +62,29 @@
 	 (test-id
 	    (emtt:explorable->how-to-run explorable))
 	 (has-run
-	    (member test-id (emt:testrun->has-run testrun)))
-	 (score (emt:ind:get-score test-id)))
+	    (member test-id (emt:testrun->has-run testrun))))
 
       (when (not has-run)
 	 (push test-id (emt:testrun->has-run testrun))
 	 (let*
 	    (
 	       (props
-		  (emtt:explorable->properties explorable))
+		  (append
+		     (emt:testrun->properties testrun)
+		     (emtt:explorable->properties explorable)))
 	       (path
 		  (emtt:explorable->prestn-path explorable))
 	       ;; Poor-man's closure
 	       (local-report-f
-		  `(lambda (report &optional tests prefix)
+		  `(lambda (report &optional tests prefix skipped)
 		      (funcall 
 			 #'emt:report 
 			 ',testrun
 			 (list 
 			    (list ,explorable nil report))
 			 tests
-			 prefix))))
+			 prefix 
+			 skipped))))
 
 	    ;;$$IMPROVE ME condition-case this and report bad test if we
 	    ;;miss.
@@ -99,7 +103,7 @@
 	 :test-id-prefix prefix
 	 :suites suites)))
 ;;;_  . emt:report
-(defun emt:report (testrun suites tests &optional prefix)
+(defun emt:report (testrun suites tests &optional prefix skipped)
    "Report SUITES as results and schedule TESTS to run"
    (let ((count 0))
       (dolist (explorable tests)
@@ -115,17 +119,17 @@
 ;;;_  . emtt:test-finder:top
 ;;;###autoload
 (defun emtt:test-finder:top 
-   (explorable-list testrun-id report-cb &optional min-score)
+   (explorable-list testrun-id report-cb properties &optional min-score)
    "Explore WHAT-TO-RUN, sending its results to REPORT-CB"
-   
    (let
       (  
 	 (testrun 
 	    (emt:make-testrun
-	       :pending (copy-list explorable-list)
-	       :min-score (or min-score 0)
+	       :pending    (copy-list explorable-list)
+	       :min-score  (or min-score 0)
 	       :report-cb  report-cb
-	       :testrun-id testrun-id)))
+	       :testrun-id testrun-id
+	       :properties properties)))
 
       (emt:report-nosched testrun (length explorable-list) '())
       
@@ -146,19 +150,40 @@
 (defvar emt:lch:testrun-counter 0 
    "A counter used to make testrun-id." )
 
+;;;_  . Convenient property-lists
+(defconst emt:lch:proplist:vanilla
+   '()
+   "Property list for a normal run")
+(defconst emt:lch:proplist:restrained 
+   '((no-redo-passes t))
+   "Property list for a restrained run: No redoing already-passed tests" )
+(defconst emt:lch:proplist:alist
+   '()
+   "Alist of property lists" )
+;;;_  . emt:lch:get-prop-list
+(defun emt:lch:get-prop-list (&optional restrained)
+   "Get a suitable property list.
+If RESTRAINED, the property list won't redo tests that passed"
+   ;;$$IMPROVE ME If it's neither t nor nil, interactively pick from
+   ;;the alist
+   (if restrained
+      emt:lch:proplist:restrained
+      emt:lch:proplist:vanilla))
+
 ;;;_  . emt:lch:run
 ;;;###autoload
-(defun emt:lch:run (what-to-run &optional prefix receiver testrun-id)
+(defun emt:lch:run (what-to-run props &optional prefix receiver testrun-id)
    "Run a single test"
    (emtt:test-finder:top
       (list
 	 (emtt:make-explorable
 	    :how-to-run  what-to-run
 	    :prestn-path prefix  ;;Default is the empty list.
-	    :properties ()))
+	    :properties (props)))
       (or testrun-id
 	 (prin1-to-string (incf emt:lch:testrun-counter)))
-      (or receiver emtl:receiver-f)))
+      (or receiver emtl:receiver-f)
+      props))
 ;;;_  . emt:lch:run-explist
 ;;$$WRITE ME
 
