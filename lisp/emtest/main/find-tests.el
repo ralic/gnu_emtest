@@ -63,32 +63,41 @@
 	    (member test-id (emt:testrun->has-run testrun)))
 	 (score (emt:ind:get-score test-id)))
 
-      (when 
+      (if 
 	 (and 
 	    (not has-run)
 	    (>= score (emt:testrun->min-score testrun)))
-	 (push test-id (emt:testrun->has-run testrun))
-	 (let*
-	    (
-	       (props
-		  (emtt:explorable->properties explorable))
-	       (path
-		  (emtt:explorable->prestn-path explorable))
-	       (local-report-f
-		  `(lambda (report &optional tests prefix)
-		      (funcall 
-			 ,report-f
-			 (list 
-			    (list ,explorable nil report))
-			 tests
-			 prefix))))
+	 (progn
+	    (push test-id (emt:testrun->has-run testrun))
+	    (let*
+	       (
+		  (props
+		     (emtt:explorable->properties explorable))
+		  (path
+		     (emtt:explorable->prestn-path explorable))
+		  (local-report-f
+		     `(lambda (report &optional tests prefix)
+			 (funcall 
+			    ,report-f
+			    (list 
+			       (list ,explorable nil report))
+			    tests
+			    prefix))))
 
-	    ;;$$IMPROVE ME condition-case this and report bad test if we
-	    ;;miss.
-	    (emtp tp:a084136e-8f02-49a5-ac0d-9f65509cedf2
-	       (test-id)
-	       (funcall (emt:exps:get-func test-id)
-		  test-id props path local-report-f))))))
+	       ;;$$IMPROVE ME condition-case this and report bad test if we
+	       ;;miss.
+	       (emtp tp:a084136e-8f02-49a5-ac0d-9f65509cedf2
+		  (test-id)
+		  (funcall (emt:exps:get-func test-id)
+		     test-id props path local-report-f))))
+	 ;;$$IMPROVE ME HACK, "psychically" know report-cb
+	 (funcall report-cb
+	    (emt:testral:make-report
+	       :newly-pending -1
+	       :testrun-id testrun-id
+	       :test-id-prefix prefix
+	       :suites '()))
+	 )))
 
 ;;;_  . emt:report
 (defun emt:report (testrun report-cb testrun-id suites tests &optional prefix)
