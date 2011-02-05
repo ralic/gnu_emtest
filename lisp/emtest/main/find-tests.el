@@ -80,8 +80,10 @@
 		      (funcall 
 			 #'emt:report 
 			 ',testrun
-			 (list 
-			    (list ,explorable nil report))
+			 (if report
+			    (list 
+			       (list ,explorable nil report))
+			    ())
 			 tests
 			 prefix 
 			 skipped))))
@@ -105,16 +107,9 @@
 ;;;_  . emt:report
 (defun emt:report (testrun suites tests &optional prefix skipped)
    "Report SUITES as results and schedule TESTS to run"
-   (let ((count 0))
-      (dolist (explorable tests)
-	 (let*
-	    ((test-id
-		(emtt:explorable->how-to-run explorable))
-	       (score (emt:ind:get-score test-id)))
-	    (when (>= score (emt:testrun->min-score testrun))
-	       (incf count)
-	       (push explorable
-		  (emt:testrun->pending testrun)))))
+   (let ((count (- (length tests) (or skipped 0))))
+      (when tests
+	 (callf2 append tests (emt:testrun->pending testrun)))
       (emt:report-nosched testrun count suites)))
 ;;;_  . emtt:test-finder:top
 ;;;###autoload
