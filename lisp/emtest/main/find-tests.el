@@ -48,7 +48,9 @@
    ;;nil if none.
    (has-run () 
       :type (repeat emthow))
-   (min-score 0 :type integer))
+   (min-score 0 :type integer)
+   testrun-id
+   prefix)
 
 
 ;;;_ , Run tests
@@ -63,56 +65,53 @@
 	    (member test-id (emt:testrun->has-run testrun)))
 	 (score (emt:ind:get-score test-id)))
 
-      (if 
-	 (and 
-	    (not has-run)
-	    (>= score (emt:testrun->min-score testrun)))
-	 (progn
-	    (push test-id (emt:testrun->has-run testrun))
-	    (let*
-	       (
-		  (props
-		     (emtt:explorable->properties explorable))
-		  (path
-		     (emtt:explorable->prestn-path explorable))
-		  (local-report-f
-		     `(lambda (report &optional tests prefix)
-			 (funcall 
-			    ,report-f
-			    (list 
-			       (list ,explorable nil report))
-			    tests
-			    prefix))))
+      (when (not has-run)
+	 (push test-id (emt:testrun->has-run testrun))
+	 (let*
+	    (
+	       (props
+		  (emtt:explorable->properties explorable))
+	       (path
+		  (emtt:explorable->prestn-path explorable))
+	       (local-report-f
+		  `(lambda (report &optional tests prefix)
+		      (funcall 
+			 ,report-f
+			 (list 
+			    (list ,explorable nil report))
+			 tests
+			 prefix))))
 
-	       ;;$$IMPROVE ME condition-case this and report bad test if we
-	       ;;miss.
-	       (emtp tp:a084136e-8f02-49a5-ac0d-9f65509cedf2
-		  (test-id)
-		  (funcall (emt:exps:get-func test-id)
-		     test-id props path local-report-f))))
-	 ;;$$IMPROVE ME HACK, "psychically" know report-cb
-	 (funcall report-cb
-	    (emt:testral:make-report
-	       :newly-pending -1
-	       :testrun-id testrun-id
-	       :test-id-prefix prefix
-	       :suites '()))
-	 )))
+	    ;;$$IMPROVE ME condition-case this and report bad test if we
+	    ;;miss.
+	    (emtp tp:a084136e-8f02-49a5-ac0d-9f65509cedf2
+	       (test-id)
+	       (funcall (emt:exps:get-func test-id)
+		  test-id props path local-report-f))))))
 
-;;;_  . emt:report
-(defun emt:report (testrun report-cb testrun-id suites tests &optional prefix)
-   "Report SUITES as results and schedule TESTS to run"
-   (when tests
-      (callf2 append 
-	 tests
-	 (emt:testrun->pending testrun)))
-		
+;;;_  . emt:report-nosched
+(defun emt:report-nosched (report-cb testrun count suites)
+   "Report SUITES as results"
    (funcall report-cb
       (emt:testral:make-report
-	 :newly-pending (length tests)
+	 :newly-pending count
 	 :testrun-id testrun-id
 	 :test-id-prefix prefix
 	 :suites suites)))
+;;;_  . emt:report
+(defun emt:report (testrun report-cb testrun-id suites tests &optional prefix)
+   "Report SUITES as results and schedule TESTS to run"
+   (let ((count 0))
+      (dolist (explorable tests)
+	 (let*
+	    ((test-id
+		(emtt:explorable->how-to-run explorable))
+	       (score (emt:ind:get-score test-id)))
+	    (when (>= score (emt:testrun->min-score testrun))
+	       (incf count)
+	       (push explorable
+		  (emt:testrun->pending testrun)))))
+      (emt:report-nosched report-cb testrun count suites)))
 
 ;;;_  . emtt:test-finder:top
 (defun emtt:test-finder:top (what-to-run path-prefix testrun-id
@@ -129,13 +128,13 @@
 		   suites tests prefix))))
       
       ;;Enqueue the root test. 
-      (funcall report-f
-	 '()
-	 (list
-	    (emtt:make-explorable
-	       :how-to-run  what-to-run
-	       :prestn-path path-prefix
-	       :properties ())))
+      (push
+	 (emtt:make-explorable
+	    :how-to-run  what-to-run
+	    :prestn-path path-prefix
+	    :properties ())
+	 (emt:testrun->pending testrun))
+      (emt:report-nosched report-cb testrun 1 '())
       
       ;;Loop thru the pending list.
       (while
