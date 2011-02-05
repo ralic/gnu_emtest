@@ -47,26 +47,33 @@
 (defvar emt:ind:alist 
    '()
    "Alist of properties of individual tests" )
+;;;_ , emt:ind:get-entry
+(defsubst emt:ind:get-entry (test-id)
+   "Get the entry for TEST-ID"
+   (assoc test-id emt:ind:alist))
+;;;_ , emt:ind:add-entry
+(defsubst emt:ind:add-entry (entry)
+   "Add entry ENTRY"
+   (push entry emt:ind:alist))
 ;;;_ , emt:ind:get-prop Get properties of a test
 ;;;_ , emt:ind:set-prop Set properties of a test
 ;;;_ , emt:ind:set-score-component
 (defun emt:ind:set-score-component (test-id key bonus)
    "Set a score component KEY of TEST-ID to BONUS"
    (let
-      ((apair (assoc test-id emt:ind:alist)))
-      (if apair
+      ((entry (emt:ind:get-entry test-id)))
+      (if entry
 	 (setf
-	    (emt:ind:entry->score-properties-alist apair)
+	    (emt:ind:entry->score-properties-alist entry)
 	    (cons
 	       (cons key bonus)
 	       (assq-delete-all 
 		  key 
-		  (emt:ind:entry->score-properties-alist apair))))
-	 (push
+		  (emt:ind:entry->score-properties-alist entry))))
+	 (emt:ind:add-entry
 	    (emt:ind:make-entry 
 	       :test-id test-id
-	       :score-properties-alist (list (cons key bonus)))
-	    emt:ind:alist))))
+	       :score-properties-alist (list (cons key bonus)))))))
 
 
 ;;;_ , emt:ind:get-score 
