@@ -71,10 +71,12 @@
 		  (emtt:explorable->properties explorable))
 	       (path
 		  (emtt:explorable->prestn-path explorable))
+	       ;; Poor-man's closure
 	       (local-report-f
 		  `(lambda (report &optional tests prefix)
 		      (funcall 
-			 ,report-f
+			 #'emt:report 
+			 ',testrun
 			 (list 
 			    (list ,explorable nil report))
 			 tests
@@ -125,7 +127,6 @@
 	       :report-cb  report-cb
 	       :testrun-id testrun-id))
 	 
-	 ;; Poor-man's closures.
 	 (report-f
 	    `(lambda (suites tests &optional prefix)
 		(funcall #'emt:report ',testrun suites tests prefix))))
