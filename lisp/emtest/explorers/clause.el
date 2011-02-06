@@ -85,12 +85,20 @@
 ;;;_  . emtt:explore-clause-p
 (defun emtt:explore-clause-p (test-id props)
    "Non-nil if TEST-ID should be explored"
-   (if
-      (utim:get-properties 'no-redo-passes props)
-      (or
-	 (emt:ind:get-prop test-id 'grade-says-rerun)
-	 (emt:ind:get-prop test-id 'user-says-rerun))
-      t))
+   (prog1
+      (if
+	 (utim:get-properties 'no-redo-passes props)
+	 (or
+	    (not
+	       (emt:ind:get-prop test-id 'has-run))
+	    (emt:ind:get-prop test-id 'grade-says-rerun)
+	    (emt:ind:get-prop test-id 'user-says-rerun))
+	 t)
+      ;;$$HACK  Doing this properly would require rewriting to get
+      ;;this info from receive alist.  Then we'd check whether test-id
+      ;;was present instead of setting a property.
+      (emt:ind:set-prop test-id 'has-run t)))
+
 
 ;;;_ , Explorers
 ;;;_  . emtt:explore-clause
