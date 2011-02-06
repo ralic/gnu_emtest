@@ -180,7 +180,13 @@ OBJ must evaluate to an `emtr:expect-data'."
 		  (emtt:testral:note-list))
 	       :grade 'test-case))
 	 ;;Close tq
-	 (tq-close (emtr:expect-data->tq data)))))
+	 (tq-close (emtr:expect-data->tq data))
+	 (when emtr:expect-queue
+	    (let
+	       ((args (pop emtr:expect-queue)))
+	       (apply #'emtr:expect args))))))
+
+
 
 
 ;;;_  . emtr:expect-form->predata
@@ -225,20 +231,7 @@ If impossible, return nil instead"
    "Run a test-case on external program and report the result."
    (if
       (>= emtr:expect-num-running emtr:expect-max-running)
-      (funcall report-f
-	 (emt:testral:make-suite
-	    :contents
-	    (emtt:testral:with-context
-	       ;;Make a note about the error
-	       (emtt:testral:add-note
-		  "problem"
-		  'dormant
-		  'error-raised
-		  'too-many-processes)
-	       ;;Then give all the notes.
-	       (emtt:testral:note-list))
-	    :grade
-	    'dormant))
+      (push (list props form report-f) emtr:expect-queue)
       (let
 	 ((con
 	     (emtt:testral:make-continuing props)))
