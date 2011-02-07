@@ -37,12 +37,8 @@
 (defun emt:vw:note:accept-in-db (button)
    "Accept a value in db, as given by BUTTON."
    (let
-      ((arg (button-get button 'accept-in-db-args)))
-      (emdb:set-value
-	 ',backend
-	 ',id
-	 ',value
-	 'correct-answer)))
+      ((args (button-get button 'accept-in-db-args)))
+      (apply #'emdb:set-value args)))
 ;;;_  . emt:vw:note:ediff-string-w/persist
 ;;$$MOVE ME, RENAME ME  It's not specific to this formatter.
 (defun emt:vw:note:ediff-string-w/persist (value backend id)
