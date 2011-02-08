@@ -86,7 +86,7 @@ OBJ must evaluate to an `emtr:expect-data'."
 
 ;;;_ , Support
 ;;;_  . emtr:expect-cb
-(defun emtr:expect-cb (data answer)
+(defun emtr:expect-cb (data raw-answer)
    "Callback for tq-enqueue"
    (when (first data)
       (emtt:testral:continued-with (second data)
@@ -94,7 +94,20 @@ OBJ must evaluate to an `emtr:expect-data'."
 	    aborted-p
 	    (emtt:testral:with-parent-id
 	       (emtr:expect-data->interaction-id (third data))
-	       (eval (first data)))
+	       (let*
+		  (  (endpos
+			(progn
+			   (string-match 
+			      (concat 
+				 (regexp-quote 
+				    (emtr:expect-data->prompt 
+				       (third data)))
+				 "$")
+			      raw-answer)
+			   (match-beginning 0)))
+		     (answer
+			(substring raw-answer 0 endpos )))
+		  (eval (first data))))
 	    (when aborted-p 
 	       (emtt:testral:add-note 
 		  "problem"
