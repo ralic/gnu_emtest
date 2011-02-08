@@ -53,7 +53,8 @@
    prompt
    testral-obj
    (interaction-id () :doc
-      "The parent note id of the current interaction"))
+      "The parent note id of the current interaction")
+   append-newline)
 
 ;;;_  . emtr:interact-predata
 (defstruct (emtr:interact-predata
@@ -160,7 +161,11 @@ OBJ must evaluate to an `emtr:expect-data'."
 	       (emtr:interact-predata->question next)))
 
 	 (tq-enqueue (emtr:expect-data->tq data)
-	    (emtr:interact-predata->question next)
+	    (let
+	       ((ques (emtr:interact-predata->question next)))
+	       (if (emtr:expect-data->append-newline data)
+		  (concat ques "\n")
+		  ques))
 	    (emtr:expect-data->prompt data)
 	    (list 
 	       (emtr:interact-predata->form next) 
@@ -302,7 +307,10 @@ If impossible, return nil instead"
 			   :interaction-id nil 
 			   :pending pending
 			   :prompt prompt
-			   :testral-obj con)))
+			   :testral-obj con
+			   :append-newline 
+			   (second (assq 'append-newline form-parms)))))
+		  
 	       
 		  ;;Start the testing
 		  (incf emtr:expect-num-running)
