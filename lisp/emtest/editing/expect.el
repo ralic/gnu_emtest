@@ -34,7 +34,7 @@
 ;;;_. Body
 
 ;;;_ , emtr:expect:buffer->form
-(defun emtr:expect:buffer->form (prompt)
+(defun emtr:expect:buffer->form (prompt &optional w/o-prompt w/o-newline)
    "Return a script form generated from the current buffer.
 Buffer should contain a transcript of a session with the program that
 is to be scripted.  
@@ -59,23 +59,36 @@ This fills the same need as autoexpect."
 
       (mapcar
 	 #'(lambda (piece)
-	      `(t ,(first piece)
+	      (let
+		 ((question
+		     (first piece))
+		    (answer
+		       (second piece)))
+	      `(t ,(if (and 
+			  w/o-newline 
+			  (string-match "\n$" question))
+		      (substring question 0 (match-beginning 0))
+		      question)
 		  (emt:doc "WRITE ME")
 		  (emt:assert 
 		     (equal answer 
-			,(concat (second piece) prompt)))))
+			,(if w/o-prompt
+			    answer
+			    (concat answer prompt)))))))
 	 (nreverse rv-pieces))))
 
 ;;;_ , emtr:expect:buffer-capture-form
 ;;;###autoload
-(defun emtr:expect:buffer-capture-form (prompt)
+(defun emtr:expect:buffer-capture-form 
+   (prompt &optional w/o-prompt w/o-newline)
    "Push entries for an `emtr:expect' script onto the kill ring.
-Current buffer should contain a transcript of a session."
+Current buffer should contain a transcript of a session and point
+should be before it."
    
    (interactive "sPrompt: ")
    (kill-new 
       (pp-to-string
-	 (emtr:expect:buffer->form prompt))))
+	 (emtr:expect:buffer->form prompt w/o-prompt w/o-newline))))
 
 ;;;_. Footers
 ;;;_ , Provides
