@@ -46,8 +46,8 @@ This fills the same need as autoexpect."
       (while (re-search-forward 
 		(concat
 		   prompt
-		   "\\([^\n]*\n\\)"
-		   "\\([^\n]*\n\\)"
+		   "\\(.*\\)" "\n"
+		   "\\(\\(.\\|\n\\)*?\\)"
 		   prompt)
 		nil t)
 	 (push
