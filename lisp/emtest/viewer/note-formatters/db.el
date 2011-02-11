@@ -67,7 +67,7 @@
    "Button action: Compare with stored value"
    
    (let
-      ((args (button-get button ediff-args)))
+      ((args (button-get button 'ediff-args)))
       (apply #'emt:vw:note:ediff-string-w/persist args)))
 
 ;;;_ , not-in-db
