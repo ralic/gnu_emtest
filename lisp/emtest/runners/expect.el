@@ -65,7 +65,7 @@
    form
    timeout)
 ;;;_ , Configuration
-(defconst emtr:expect-max-running 3 
+(defconst emtr:expect-max-running 1
    "Maximum number of expect interactions allowed to run at once" )
 ;;;_ , Variables
 
