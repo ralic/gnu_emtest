@@ -55,7 +55,13 @@
        ,(cond
 	   ((null contents) nil)
 	   (fold
-	      `(overlay (invisible outline) (sep 2) ,contents))
+	      `(overlay 
+		  (invisible outline
+		     isearch-open-invisible
+		     ,(or outline-isearch-open-invisible-function
+			 'outline-isearch-open-invisible))
+		  (sep 2) 
+		  ,contents))
 	   (t
 	      `((sep 2) ,contents)))
        (sep 2)))
