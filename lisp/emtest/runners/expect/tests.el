@@ -55,7 +55,9 @@
       (t "echo hello\n"
 	 (emt:doc "A simple test")
 	 (emt:assert 
-	    (equal answer "hello\n% ")))))
+	    (equal raw-answer "hello\n% "))
+	 (emt:assert 
+	    (equal answer "hello\n")))))
 
 ;;;_ , To meta-test
 ;;Receive and test that fail/no fail was found, and no other grade.
