@@ -132,9 +132,28 @@ OBJ must evaluate to an `emtr:expect-data'."
    
    ;;Pop tq
    (tq-queue-pop (emtr:expect-data->tq data))
-   ;;Start another.
-   (emtr:expect-start-next data))
 
+   ;;$$IMPROVE ME  Optionally start another. `emtr:expect-start-next'
+   (emtr:expect-done data))
+
+;;;_  . emtr:expect-done
+(defun emtr:expect-done (data)
+   "Finish an expect session"
+   
+   (decf emtr:expect-num-running)
+   ;;Report results
+   (funcall (emtr:expect-data->report-f data)
+      (emt:testral:make-suite
+	 :contents
+	 (emtr:with-testral data
+	    (emtt:testral:note-list))
+	 :grade 'test-case))
+   ;;Close tq
+   (tq-close (emtr:expect-data->tq data))
+   (when emtr:expect-queue
+      (let
+	 ((args (pop emtr:expect-queue)))
+	 (apply #'emtr:expect args))))
 
 ;;;_  . emtr:expect-start-next
 (defun emtr:expect-start-next (data)
@@ -188,21 +207,7 @@ OBJ must evaluate to an `emtr:expect-data'."
 	    nil))
       
       ;;Otherwise we're done.
-      (progn
-	 (decf emtr:expect-num-running)
-	 ;;Report results
-	 (funcall (emtr:expect-data->report-f data)
-	    (emt:testral:make-suite
-	       :contents
-	       (emtr:with-testral data
-		  (emtt:testral:note-list))
-	       :grade 'test-case))
-	 ;;Close tq
-	 (tq-close (emtr:expect-data->tq data))
-	 (when emtr:expect-queue
-	    (let
-	       ((args (pop emtr:expect-queue)))
-	       (apply #'emtr:expect args))))))
+      (emtr:expect-done data)))
 
 
 
