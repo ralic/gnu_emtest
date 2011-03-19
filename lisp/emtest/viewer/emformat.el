@@ -171,6 +171,13 @@ which may not imply success of an assertion."
 	  help-echo "Rerun this test"
 	  how-to-run  ,(emtt:explorable->how-to-run  explorable)
 	  prestn-path ,(emtt:explorable->prestn-path explorable))))
+
+;;;_   , emtvf:reprint-button
+(defun emtvf:reprint-button (button)
+   ""
+   ;;Cause it to be reprinted, or just reprint the button.
+   (emtv2:print-all (emtvo:get-root)))
+
 ;;;_   , emtvf:button-toggle-mark-func
 (defun emtvf:button-toggle-mark-func (button)
    "Toggle the mark on viewable given on BUTTON."
@@ -184,11 +191,8 @@ which may not imply success of an assertion."
 	    (emt:view:suite->how-to-run viewable))
 	 'user-says-rerun
 	 t)
+      (emtvf:reprint-button button)))
 
-      ;;Cause it to be reprinted, or just reprint the button.
-      ;;$$IMPROVE ME Encapsulate this so it looks like
-      ;;we're passing the viewable to a reprint routine.
-      (emtv2:print-all (emtvo:get-root))))
 ;;;_   , emtvf:button-toggle-mark
 (defun emtvf:button-toggle-mark (viewable)
    "Make a button to toggle the mark on VIEWABLE."
