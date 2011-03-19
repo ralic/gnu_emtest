@@ -145,9 +145,9 @@ PROPS is the property-list for the text, if any."
 ;;;_  . loformat:button
 (defun loformat:button (recurse-f text &rest button-props)
    "Insert a button with action FUNC"
-   (require 'button)
-   (apply #'insert-button text button-props))
-
+   (if (require 'button nil t)
+      (apply #'insert-button text button-props)
+      (funcall recurse-f "[Missing module `button']")))
 
 ;;;_ , Defaults
 ;;;_  . loformat:default-alist
