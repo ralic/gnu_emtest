@@ -171,12 +171,28 @@ which may not imply success of an assertion."
 	  help-echo "Rerun this test"
 	  how-to-run  ,(emtt:explorable->how-to-run  explorable)
 	  prestn-path ,(emtt:explorable->prestn-path explorable))))
+;;;_   , emtvf:viewable->mark-text
+(defun emtvf:viewable->mark-text (viewable)
+   "Return the text of VIEWABLE's current mark."
+   (if (emt:view:suite->mark viewable) "X" "_"))
 
 ;;;_   , emtvf:reprint-button
+;;$$IMPROVE ME  Make this work for buttons in general, not just
+;;(un)mark on viewables
 (defun emtvf:reprint-button (button)
-   ""
-   ;;Cause it to be reprinted, or just reprint the button.
-   (emtv2:print-all (emtvo:get-root)))
+   "Cause BUTTON to be reprinted"
+   (let
+      (  (viewable (button-get button 'viewable))
+	 (pos (button-start button)))
+
+      ;;This removes the whole thing, overlay and all.
+      (delete-region pos (button-end button))
+      ;;Insert a new button at that position
+      (save-excursion
+	 (goto-char pos)
+	 (loformat:insert
+	    (emtvf:button-toggle-mark viewable)
+	    emtv2:format-alist))))
 
 ;;;_   , emtvf:button-toggle-mark-func
 (defun emtvf:button-toggle-mark-func (button)
@@ -197,7 +213,7 @@ which may not imply success of an assertion."
 (defun emtvf:button-toggle-mark (viewable)
    "Make a button to toggle the mark on VIEWABLE."
    (when viewable
-      `(button ,(if (emt:view:suite->mark viewable) "X" "_") 
+      `(button ,(emtvf:viewable->mark-text viewable) 
 	  action ,#'emtvf:button-toggle-mark-func
 	  help-echo "Mark this test-suite"
 	  viewable ,viewable)))
