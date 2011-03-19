@@ -1,0 +1,93 @@
+* Using Emtest
+** Headers
+*** Purpose
+
+Basic instructions to the user of Emtest
+
+*** State
+
+Sketched.
+*** DONE Meta
+
+Commands are still described as from rtest.  Fix that when emt:
+versions become available.
+
+** Body
+*** Setup
+
+Unarchive it in your emacs-site-lisp directory. (This already sets it
+up) 
+Run the self-tests
+
+*** Overview of use
+
+You write tests.  They go either 
+ * into the same file as the code being tested
+ * into some file ending in ".el" in a directory named "t/".  I'll
+   make this more precise later on.
+
+*** Writing tests
+**** Editor help
+
+The command rtest:insert is your friend.
+
+**** Format
+**** Location
+
+Tests go
+
+ * into the same file as the code being tested
+ * into some file ending in ".el" in a directory named "t/".  
+
+"t/" must be in your load-path or in a directory associated with a
+project.
+
+
+*** Running tests
+
+The command emt:defun-at-point is your friend.
+* Notes
+** Test graphical interactivity in these stages	    :advice:testinteractives:
+
+When you test graphical interactive functionality, there's a danger of
+getting enmeshed in the details of the interface.  Then when the
+interface adds widgets, changes layout, or w/e, the test starts
+failing even though there's nothing properly wrong.  And then even if
+you fix the test, you have to change all the playbacks.
+
+To avoid this pain, keep these types of testing separate:
+
+ * Functionality :: What the interface is supposed to make happen.
+                    Test this by invoking it directly without user
+                    interaction.  You may have to redesign some
+                    functions to allow this.
+
+ * Presentation :: What is shown to the user, possibly after some
+		   functionality has run.
+
+		   Test that presentation is the same as a "gold
+		   standard" functionality.  When it isn't, that's a
+		   bad test or a manual test (depending on whether
+		   manual interaction is enabled).  Emtest's "persist"
+		   functionality supports this.
+		   
+
+ * Interaction :: How the user makes specific things happen.  This
+                  should done by playbacks.  Again, when they're not
+                  available it's a bad test or a manual test.
+
+		  This is more demanding than the other types, because
+		  the test sometimes needs to know the identities of
+		  components, and because the test must be robust
+		  against running out of {keystrokes, clicks, w/e}
+
+		  Emtest's "keystuffer" functionality will support
+		  this.
+		   
+ * Access to components :: Last and least, can the user in fact
+      interact with every components they are expected to use?  Again
+      this can be done largely by playback; when the presentation
+      changes, that's a bad test or a manual test.
+
+      NB, this is not a test of the interface engine, but of the
+      specific components & layout being used.
