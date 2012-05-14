@@ -91,22 +91,26 @@ HOW must be a list."
 	 :contents 
 	 (emt:testral:make-runform-list
 	    :els
-	    ;; $$IMPROVE ME: Skip if show-avail is nil.
-	    (mapcar 
-	       #'(lambda (x)
-		    (emtt:make-explorable
-		       :how-to-run (list (car x))
-		       ;; Could use name here.
-		       :prestn-path (list (car x))))
-	       emt:exps:alist))
+	    (delq nil
+	       (mapcar 
+		  #'(lambda (x)
+		       (destructuring-bind
+			  (gov (func name show-avail))
+			  x
+			  (if show-avail
+			     (emtt:make-explorable
+				:how-to-run (list (car x))
+				;; Could use name here.
+				:prestn-path (list (car x))))))
+		  emt:exps:alist)))
 	 
 	 :grade nil)))
 
 
 ;;;_   , Register it
-;; We don't show whats-available itself in whats-available, so
-;; SHOW-AVAIL is `nil'
-(emt:exps:add 'whats-available #'emt:exp:available "What's available" nil)
+;; If we don't show whats-available itself, display gets messy.
+;; Should be fixed at source.
+(emt:exps:add 'whats-available #'emt:exp:available "What's available" t)
 
 ;;;_   , emtest
 ;;;###autoload
