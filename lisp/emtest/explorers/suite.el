@@ -74,38 +74,57 @@ Does nothing if the buffer is not in a known lisp mode."
 ;;;###autoload
 (defun emtt:explore-suite (test-id props-unused path report-f)
    ""
-   (let* 
-      (
-	 (suite-sym
-	    (second test-id)))
+   (if (cdr test-id)
+      (let* 
+	 (
+	    (suite-sym
+	       (second test-id)))
       
-      (emtd:update-for-sym suite-sym)
-      (emtd:destructure-suite-3 suite-sym
-	 (let
-	    (  
-	       (rv-list-to-run '()))
-	    (dotimes (n (length clause-list))
-	       (push  
-		  (emtt:make-explorable
-		     :how-to-run
-		     `(indexed-clause ,suite-sym ,n)
-		     :prestn-path 
-		     (append 
-			path
-			(list (format "Clause %d" n)))
-		     ;;Each clause has the properties of the suite
-		     ;;(and for now, only those).  `props' comes from
-		     ;;`emtd:destructure-suite-3', not from arglist.
-		     :properties props)
-		  rv-list-to-run))
+	 (emtd:update-for-sym suite-sym)
+	 (emtd:destructure-suite-3 suite-sym
+	    (let
+	       (  
+		  (rv-list-to-run '()))
+	       (dotimes (n (length clause-list))
+		  (push  
+		     (emtt:make-explorable
+			:how-to-run
+			`(indexed-clause ,suite-sym ,n)
+			:prestn-path 
+			(append 
+			   path
+			   (list (format "Clause %d" n)))
+			;;Each clause has the properties of the suite
+			;;(and for now, only those).  `props' comes from
+			;;`emtd:destructure-suite-3', not from arglist.
+			:properties props)
+		     rv-list-to-run))
 
-	    (funcall report-f
-	       (emt:testral:make-suite
-		  :contents 
-		  (emt:testral:make-runform-list
-		     :els (reverse rv-list-to-run))
-		  :grade '())
-	       (reverse rv-list-to-run))))))
+	       (funcall report-f
+		  (emt:testral:make-suite
+		     :contents 
+		     (emt:testral:make-runform-list
+			:els (reverse rv-list-to-run))
+		     :grade '())
+		  (reverse rv-list-to-run)))))
+
+      ;; $$IMPROVE ME:  List suites that we know about.
+      (funcall report-f
+	 (emt:testral:make-suite
+	    :contents 
+	    (emt:testral:make-note-list
+	       :notes 
+	       (list
+		  (emt:testral:make-note
+		     :id 	"0"
+		     :parent-id nil
+		     :grade     nil
+		     :relation 'trace
+		     :governor 'doc
+		     :value    '("Listing all suites is not implemented"))))
+	    :grade nil)
+	 '())))
+
 ;;;_ , Getting test suites indirectly.
 
 ;;$$WRITE ME Also get tests indirectly.  Maybe be replaced by just
