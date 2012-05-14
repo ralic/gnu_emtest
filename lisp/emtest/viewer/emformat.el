@@ -350,17 +350,7 @@ Must be called in a `utidyv:top' context."
 				 (emtvf:button-to-explore explorable "[RUN]")
 				 grades-sum))
 			   " ")
-			(typecase (emt:testral:suite->contents object)
-			   (emt:testral:runform-list
-			      (emt:vw:runform-list
-				 (emt:testral:suite->contents object)))
-			   ;; Notes are already placed in the
-			   ;; presentation tree.
-			   (emt:testral:note-list
-			      (emtvf:mapnodes children "No child suites"))
-			   (null "No child contents")
-			   ;; $$IMPROVE ME Print this in blowout face.
-			   (t "Unknown type"))
+			(emtvf:mapnodes children "No child suites")
 			grade-face
 			boring-p)))))
 	 
