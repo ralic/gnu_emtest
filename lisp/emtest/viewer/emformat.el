@@ -118,7 +118,11 @@ which may not imply success of an assertion."
 ;;;_  . emtvf:sym->suitename
 (defun emtvf:sym->suitename (sym)
    "Make a form for a suitename given as a symbol"
-   `(w/face ,(symbol-name sym) emtvf:face:suitename))
+   `(w/face 
+       ,(if (symbolp sym)
+	   (symbol-name sym)
+	   sym) 
+       emtvf:face:suitename))
 
 ;;;_ , Helper functions
 ;;;_  . Characterizing object representation
