@@ -355,7 +355,8 @@ Must be called in a `utidyv:top' context."
 			boring-p)))))
 	 (emt:view:how-to-run
 	    (emt:vw:how-to-run
-	       (emt:view:how-to-run->contents view-node)))
+	       (emt:view:how-to-run->contents view-node)
+	       name))
 	 
 	 (emt:view:note
 	    (emt:vw:note view-node))
@@ -396,11 +397,13 @@ OBJ must be a TESTRAL viewable (`emt:view:note')."
 	     (object ,err nil)
 	     "\n"))))
 ;;;_  . emt:vw:how-to-run
-(defun emt:vw:how-to-run (obj)
+(defun emt:vw:how-to-run (obj name)
    "Make a format form for a emt:view:how-to-run, which encases a emtt:explorable."
    (emtvf:outline-item-emformat
-      ;; $$FIXME There's no good name in runform.
-      (emtvf:button-to-explore obj "[RUN]")
+      (list 
+	 `(w/face ,(symbol-name name) emtvf:face:suitename)
+	 " "
+	 (emtvf:button-to-explore obj "[RUN]"))
       nil
       'emtvf:face:dormant))
 
