@@ -85,6 +85,34 @@ LIB-PATH must be a path to a library that is already loaded."
 	 (provide-cell
 	    (assq 'provide lib-data)))
       (cdr provide-cell)))
+;;;_  . emtt:load-hist-line-has-tests
+(defun emtt:load-hist-line-has-tests (lib-data)
+   "Return non-nil just if LIB-DATA has any tests.
+
+LIB-DATA must be in the format of a line from load-history."
+
+   (some
+      #'(lambda (x)
+	   (get (emtl:ldhst-el->symbol x) 'emt:suite))
+      (cdr lib-data)))
+
+;;;_  . emtt:all-testing-libs
+(defun emtt:all-testing-libs ()
+   "Return a list of all testable libraries, each a list of
+\(symbol absolute-filename\)."
+   
+   (delq nil
+      (mapcar
+	 #'(lambda (line)
+	      (if (emtt:load-hist-line-has-tests line)
+		 (let
+		    ((cell (assoc 'provide line)))
+		    (if cell
+		       (list (cdr cell) (car line))
+		       nil))
+		 nil))
+	  load-history)))
+
 ;;;_ , Launcher
 ;;;_  . emt:lib-at-point
 
@@ -101,11 +129,7 @@ PROMPT is a prompt string"
       prompt
       load-history
       ;;Narrow to just libraries that have tests in them.
-      #'(lambda (lib-data)
-	   (some
-	      #'(lambda (x)
-		   (get (emtl:ldhst-el->symbol x) 'emt:suite))
-	      (cdr lib-data)))
+      #'emtt:load-hist-line-has-tests
       t))
 ;;$$ADD TESTS There are example loads in emtest/explorers/library/tests
 
@@ -134,36 +158,55 @@ LIBRARY is the absolute file name of the library"
 ;;;###autoload
 (defun emtt:explore-library (test-id props path report-f)
    ""
+   (if (cdr test-id)
+      (destructuring-bind (gov lib-path lib-sym) test-id
+	 (let* 
+	    (  
+	       (lib-sym (or lib-sym (emtt:lib-path->lib-sym lib-path)))
+	       (suite-list
+		  (emtt:lib-suites lib-path))
+	       (list-to-run
+		  (mapcar
+		     #'(lambda (suite-sym)
+			  (emtt:make-explorable
+			     :how-to-run
+			     `(suite ,suite-sym)
+			     :prestn-path 
+			     (append 
+				path
+				(list (symbol-name suite-sym)))
+			     ;;For now, libraries have no properties.
+			     :properties ()
+			     :aliases ()))
+		     suite-list)))
 
-   (destructuring-bind (gov lib-path lib-sym) test-id
-   (let* 
-      (  
-	 (lib-sym (or lib-sym (emtt:lib-path->lib-sym lib-path)))
-	 (suite-list
-	    (emtt:lib-suites lib-path))
-	 (list-to-run
-	    (mapcar
-	       #'(lambda (suite-sym)
-		    (emtt:make-explorable
-		       :how-to-run
-		       `(suite ,suite-sym)
-		       :prestn-path 
-		       (append 
-			  path
-			  (list (symbol-name suite-sym)))
-		       ;;For now, libraries have no properties.
-		       :properties ()
-		       :aliases ()))
-	       suite-list)))
-
-      (funcall report-f 
+	    (funcall report-f 
+	       (emt:testral:make-suite
+		  :contents
+		  (emt:testral:make-runform-list
+		     :els list-to-run)
+		  ;;$$IMPROVE ME Set this if it crapped out right here.
+		  :grade '())
+	       list-to-run)))
+      
+      
+      ;; Tell about libraries that we know about.
+      (funcall report-f
 	 (emt:testral:make-suite
-	    :contents
+	    :contents 
 	    (emt:testral:make-runform-list
-	       :els list-to-run)
-	    ;;$$IMPROVE ME Set this if it crapped out right here.
-	    :grade '())
-	 list-to-run))))
+	       :els
+	       (mapcar 
+		  #'(lambda (x)
+		       (emtt:make-explorable
+			  :how-to-run  
+			  (list 'library:elisp-load (second x))
+			  :prestn-path
+			  (list 'library:elisp-load (first x))))
+		  (emtt:all-testing-libs)))
+	    :grade nil)
+	 '())))
+
 ;;;_ , Insinuate
 ;;;###autoload (eval-after-load 'emtest/main/all-explorers
 ;;;###autoload  '(emt:exps:add 'library:elisp-load #'emtt:explore-library
