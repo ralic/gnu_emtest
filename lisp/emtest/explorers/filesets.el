@@ -69,65 +69,85 @@ If prefix arg is given, prompt for fileset name in any case."
 ;;;###autoload
 (defun emtt:explore-fileset (test-id props path report-f)
    "Run the tests defined in fileset."
+   (if (cdr test-id)
+      (let*
+	 (
+	    (fileset-name (second test-id))
+	    (fileset
+	       (filesets-get-fileset-from-name fileset-name))
+	    (test-files
+	       (filesets-get-filelist fileset nil nil))
+	    (test-files
+	       ;;Remove those that aren't elisp source
+	       (remove-if-not
+		  #'(lambda (filename)
+		       (string-match emacs-lisp-file-regexp filename))
+		  test-files))
+	    (dummy
+	       (dolist (filename test-files)
+		  (when (not (assoc filename load-history))
+		     (load filename t nil t))))
 
-   (let*
-      (
-	 (fileset-name (second test-id))
-	 (fileset
-	    (filesets-get-fileset-from-name fileset-name))
-	 (test-files
-	    (filesets-get-filelist fileset nil nil))
-	 (test-files
-	    ;;Remove those that aren't elisp source
-	    (remove-if-not
-	       #'(lambda (filename)
-		    (string-match emacs-lisp-file-regexp filename))
-	       test-files))
-	 (dummy
-	    (dolist (filename test-files)
-	       (when (not (assoc filename load-history))
-		  (load filename t nil t))))
-
-	 (suite-list
-	    (let* 
-	       ((suite-syms))
-	       (do-symbols (sym)
-		  (let*
-		     ((props (get sym 'emt:properties))
-			(load-file-name (second (assoc 'load-file-name props))))
-		     (when
-			(and load-file-name
-			   (member load-file-name test-files))
+	    (suite-list
+	       (let* 
+		  ((suite-syms))
+		  (do-symbols (sym)
+		     (let*
+			((props (get sym 'emt:properties))
+			   (load-file-name (second (assoc 'load-file-name props))))
+			(when
+			   (and load-file-name
+			      (member load-file-name test-files))
 	       
-			;;Collect that suite by symbol
-			(push sym suite-syms))))
-	       suite-syms))
+			   ;;Collect that suite by symbol
+			   (push sym suite-syms))))
+		  suite-syms))
 	 
-	 ;;$$ENCAP ME Scheduling a list of suite-syms.
-	 (list-to-run
-	    (mapcar
-	       #'(lambda (suite-sym)
-		    (emtt:make-explorable
-		       :how-to-run
-		       `(suite ,suite-sym)
-		       :prestn-path 
-		       (append 
-			  path
-			  (list (symbol-name suite-sym)))
-		       ;;For now, libraries have no
-		       ;;properties. 
-		       :properties ()
-		       :aliases ()))
-	       suite-list)))
+	    ;;$$ENCAP ME Scheduling a list of suite-syms.
+	    (list-to-run
+	       (mapcar
+		  #'(lambda (suite-sym)
+		       (emtt:make-explorable
+			  :how-to-run
+			  `(suite ,suite-sym)
+			  :prestn-path 
+			  (append 
+			     path
+			     (list (symbol-name suite-sym)))
+			  ;;For now, libraries have no
+			  ;;properties. 
+			  :properties ()
+			  :aliases ()))
+		  suite-list)))
 
-      (funcall report-f 
+	 (funcall report-f 
+	    (emt:testral:make-suite
+	       :contents
+	       (emt:testral:make-runform-list
+		  :els list-to-run)
+	       ;;Punt - only if it crapped out right here.
+	       :grade '())
+	    list-to-run))
+
+      ;; Tell about filesets that we know about.
+      (funcall report-f
 	 (emt:testral:make-suite
-	    :contents
+	    :contents 
 	    (emt:testral:make-runform-list
-	       :els list-to-run)
-	     ;;Punt - only if it crapped out right here.
-	    :grade '())
-	 list-to-run)))
+	       :els
+	       (mapcar 
+		  #'(lambda (x)
+		       (let
+			  ((name (first x)))
+		       (emtt:make-explorable
+			  :how-to-run  
+			  (list 'fileset name)
+			  :prestn-path
+			  (list 'fileset name))))
+		  filesets-data))
+	    :grade nil)
+	 '())))
+
 
 ;;;_ , Register
 ;;;###autoload (eval-after-load 'emtest/main/all-explorers
