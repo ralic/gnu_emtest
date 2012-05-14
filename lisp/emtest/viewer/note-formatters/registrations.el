@@ -47,7 +47,7 @@ Formatter for TESTRAL note governed by `matched'
 ;;;***
 
 ;;;### (autoloads (emt:vw:note:comparison-w/persist emt:vw:note:not-in-db)
-;;;;;;  "emtest/viewer/note-formatters/db" "db.el" (19788 36489))
+;;;;;;  "emtest/viewer/note-formatters/db" "db.el" (19793 37300))
 ;;; Generated autoloads from db.el
 
 (autoload (quote emt:vw:note:not-in-db) "emtest/viewer/note-formatters/db" "\
