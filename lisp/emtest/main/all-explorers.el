@@ -76,10 +76,9 @@ HOW must be a list."
       (emt:exps:get-info (car how))))
 
 ;;;_ , Special explorers
-;;;_  . emt:exp:hello
-;; $$RENAME ME emt:exp:available
-;;This doesn't require an autoload but all others do.
-(defun emt:exp:hello (test-id props path report-f)
+;;;_  . emt:exp:available
+;;This doesn't require an autoload but all other explorers do.
+(defun emt:exp:available (test-id props path report-f)
    "Report about Emtest, listing the explore methods."
 
    (funcall report-f
@@ -99,7 +98,7 @@ HOW must be a list."
 
 ;;;_   , Register it
 
-(emt:exps:add 'hello #'emt:exp:hello "What's available") 
+(emt:exps:add 'whats-available #'emt:exp:available "What's available") 
 
 ;;;_   , emtest
 ;;;###autoload
@@ -107,7 +106,7 @@ HOW must be a list."
    "Run the top level of Emtest, which will show what's available."
    
    (interactive)
-   (emt:lch:run '(hello) '() '()))
+   (emt:lch:run '(whats-available) '() '(whats-available)))
 
 
 ;;;_  . emt:exp:fallback
