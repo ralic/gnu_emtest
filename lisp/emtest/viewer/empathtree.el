@@ -218,8 +218,11 @@ could be, such as when a note-list hasn't been expanded."
       #'(lambda (runform)
 	   (emtvp:add-child
 	      tree node
-	      ;; $$IMPROVE ME Get name from runform when we have it.
-	      "Unnamed runform"
+	      ;; Quick and dirty: the path should agree with suite
+	      ;; until the last node (Maybe the convention should be
+	      ;; that runforms under a suite set this field minus a
+	      ;; suite prefix)
+	      (car (last (emtt:explorable->prestn-path runform)))
 	      (emt:view:make-how-to-run :contents runform)))
       (emt:testral:runform-list->els runform-list)))
 

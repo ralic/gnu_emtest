@@ -91,8 +91,7 @@ HOW must be a list."
 	       #'(lambda (x)
 		    (emtt:make-explorable
 		       :how-to-run (list (car x))
-		       ;; These should be presented at top level.
-		       :prestn-path '()))
+		       :prestn-path (list (car x))))
 	       emt:exps:alist))
 	 
 	 :grade nil)))
