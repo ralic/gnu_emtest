@@ -116,6 +116,7 @@ This is the heart of Emtest exploration: A test itself."
 ;;;###autoload
 (defun emtt:explore-literal-clause (test-id props path report-f)
    "Explore a literal clause in Emtest."
+   ;; If no clause is given. we can do little.
    (if (emtt:explore-clause-p test-id props)
       (emtt:explore-clause
 	 (second test-id)
@@ -131,6 +132,8 @@ This is the heart of Emtest exploration: A test itself."
 ;;;###autoload
 (defun emtt:explore-indexed-clause (test-id props path report-f)
    "Explore an indexed clause in a suite in Emtest."
+   ;; If no index is given, we could possibly list them but since they
+   ;; have no names it'd accomplish little.
    (if (emtt:explore-clause-p test-id props)
       (destructuring-bind (suite-sym clause-index) (cdr test-id)
 	 (emtd:update-for-sym suite-sym)
