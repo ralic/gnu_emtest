@@ -77,22 +77,30 @@ HOW must be a list."
 
 ;;;_ , Special explorers
 ;;;_  . emt:exp:hello
+;; $$RENAME ME emt:exp:available
 ;;This doesn't require an autoload but all others do.
 (defun emt:exp:hello (test-id props path report-f)
    "Report about Emtest, listing the explore methods."
-   
+
    (funcall report-f
-      (emt:testral:make-test-runner-info
-	 :name "Emtest"
-	 :version emtt:version
-	 :explore-methods-supported
-	 ;;$$RETHINK ME May make more sense to pass symbol or symbol
-	 ;;name now.
-	 (mapcar #'third emt:exps:alist))))
+      (emt:testral:make-suite
+	 :contents 
+	 (emt:testral:make-runform-list
+	    :els
+	    (mapcar 
+	       #'(lambda (x)
+		    (emtt:make-explorable
+		       :how-to-run (list (car x))
+		       ;; These should be presented at top level.
+		       :prestn-path '()))
+	       emt:exps:alist))
+	 
+	 :grade nil)))
+
 
 ;;;_   , Register it
 
-(emt:exps:add 'hello #'emt:exp:hello "Tester signature") 
+(emt:exps:add 'hello #'emt:exp:hello "What's available") 
 
 ;;;_   , emtest
 ;;;###autoload
