@@ -119,9 +119,9 @@ which may not imply success of an assertion."
 (defun emtvf:sym->suitename (sym)
    "Make a form for a suitename given as a symbol"
    `(w/face 
-       ,(if (symbolp sym)
-	   (symbol-name sym)
-	   sym) 
+       ,(etypecase sym
+	   (symbol (symbol-name sym))
+	   (string sym))
        emtvf:face:suitename))
 
 ;;;_ , Helper functions
