@@ -213,7 +213,7 @@ could be, such as when a note-list hasn't been expanded."
 ;;;_  . emtvr:collect-runform-list
 (defun emtvr:collect-runform-list (node tree runform-list)
    "Put viewables for RUNFORM-LIST under NODE in TREE."
-   		     
+
    (mapcar
       #'(lambda (runform)
 	   (emtvp:add-child
