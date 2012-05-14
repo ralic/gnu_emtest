@@ -324,6 +324,7 @@ Must be called in a `utidyv:top' context."
 		     (emt:view:suite->how-to-run suite)))
 	       (etypecase object
 		  (null "A null viewable")
+		  ;; $$OBSOLESCENT
 		  (emt:testral:test-runner-info
 		     (emtvf:outline-item-emformat
 			(hiformat:separate
@@ -331,7 +332,10 @@ Must be called in a `utidyv:top' context."
 			      `(w/face ,name emtvf:face:suitename)
 			      grades-sum)
 			   " ")
-			(emtvf:mapnodes children "No child suites") 
+		;; Each should xform to a button to launch that.
+			(emt:testral:test-runner-info->explore-methods-supported
+	 object)
+			;;(emtvf:mapnodes children "No child suites")
 			grade-face
 			boring-p))
 		  
@@ -346,7 +350,17 @@ Must be called in a `utidyv:top' context."
 				 (emtvf:button-to-explore explorable "[RUN]")
 				 grades-sum))
 			   " ")
-			(emtvf:mapnodes children "No child suites")
+			(typecase (emt:testral:suite->contents object)
+			   (emt:testral:runform-list
+			      (emt:vw:runform-list
+				 (emt:testral:suite->contents object)))
+			   ;; Notes are already placed in the
+			   ;; presentation tree.
+			   (emt:testral:note-list
+			      (emtvf:mapnodes children "No child suites"))
+			   (null "No child contents")
+			   ;; $$IMPROVE ME Print this in blowout face.
+			   (t "Unknown type"))
 			grade-face
 			boring-p)))))
 	 
@@ -388,6 +402,19 @@ OBJ must be a TESTRAL viewable (`emt:view:note')."
 	 `((w/face "Error in formatter: " emtvf:face:blowout) 
 	     (object ,err nil)
 	     "\n"))))
+;;;_  . 
+(defun emt:vw:runform-list (obj)
+   "Make a format form for a emt:testral:runform-list"
+   
+   (mapcar
+      #'(lambda (x)
+	   (emtvf:outline-item-emformat
+	      ;; $$FIXME There's no good name in runform.
+	      (emtvf:button-to-explore x "[RUN]")
+	      nil
+	      'emtvf:face:dormant))
+      (emt:testral:runform-list->els
+	 obj)))
 
 ;;;_ , About grades
 ;;;_  . Structure emtvf:grade-fmt
