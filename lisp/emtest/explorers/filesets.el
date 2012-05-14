@@ -37,6 +37,15 @@
 ;;;_. Body
 
 ;;;_ , Launchers 
+;;;_  . emt:fileset-launch
+(defun emt:fileset-launch (fileset-name rerun)
+   "Launch the tests defined in FILESET."
+   
+   (emt:lch:run
+      `(fileset ,fileset-name)
+      (emt:lch:get-prop-list rerun)
+      (list (concat "fileset " fileset-name))))
+
 ;;;_  . emt:fileset
 ;;;###autoload
 (defun emt:fileset (fileset-name)
@@ -45,11 +54,8 @@ If prefix arg is given, prompt for fileset name in any case."
    (interactive
       (list
 	 (fileset-whole-read-fileset current-prefix-arg)))
-   
-   (emt:lch:run
-      `(fileset ,fileset-name)
-      (emt:lch:get-prop-list t)
-      (list (concat "fileset " fileset-name))))
+   (emt:fileset-launch fileset-name t))
+
 
 ;;;_  . emt:fileset-all
 ;;;###autoload
@@ -59,11 +65,7 @@ If prefix arg is given, prompt for fileset name in any case."
    (interactive
       (list
 	 (fileset-whole-read-fileset current-prefix-arg)))
-   
-   (emt:lch:run
-      `(fileset ,fileset-name)
-      (emt:lch:get-prop-list nil)
-      (list (concat "fileset " fileset-name))))
+      (emt:fileset-launch fileset-name nil))
 
 ;;;_ , Explorer emtt:explore-fileset
 ;;;###autoload
