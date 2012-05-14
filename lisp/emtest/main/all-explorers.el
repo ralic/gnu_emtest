@@ -94,6 +94,15 @@ HOW must be a list."
 
 (emt:exps:add 'hello #'emt:exp:hello "Tester signature") 
 
+;;;_   , emtest
+;;;###autoload
+(defun emtest ()
+   "Run the top level of Emtest, which will show what's available."
+   
+   (interactive)
+   (emt:lch:run '(hello) '() '()))
+
+
 ;;;_  . emt:exp:fallback
 ;;Not part of the list of methods.
 (defun emt:exp:fallback (test-id props path report-f)
