@@ -353,6 +353,9 @@ Must be called in a `utidyv:top' context."
 			(emtvf:mapnodes children "No child suites")
 			grade-face
 			boring-p)))))
+	 (emt:view:how-to-run
+	    (emt:vw:how-to-run
+	       (emt:view:how-to-run->contents view-node)))
 	 
 	 (emt:view:note
 	    (emt:vw:note view-node))
@@ -392,19 +395,14 @@ OBJ must be a TESTRAL viewable (`emt:view:note')."
 	 `((w/face "Error in formatter: " emtvf:face:blowout) 
 	     (object ,err nil)
 	     "\n"))))
-;;;_  . 
-(defun emt:vw:runform-list (obj)
-   "Make a format form for a emt:testral:runform-list"
-   
-   (mapcar
-      #'(lambda (x)
-	   (emtvf:outline-item-emformat
-	      ;; $$FIXME There's no good name in runform.
-	      (emtvf:button-to-explore x "[RUN]")
-	      nil
-	      'emtvf:face:dormant))
-      (emt:testral:runform-list->els
-	 obj)))
+;;;_  . emt:vw:how-to-run
+(defun emt:vw:how-to-run (obj)
+   "Make a format form for a emt:view:how-to-run, which encases a emtt:explorable."
+   (emtvf:outline-item-emformat
+      ;; $$FIXME There's no good name in runform.
+      (emtvf:button-to-explore obj "[RUN]")
+      nil
+      'emtvf:face:dormant))
 
 ;;;_ , About grades
 ;;;_  . Structure emtvf:grade-fmt
