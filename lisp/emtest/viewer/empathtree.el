@@ -188,7 +188,7 @@ could be, such as when a note-list hasn't been expanded."
 
 ;;;_  . emtvr:collect-testral-2
 (defun emtvr:collect-testral-2  (node tree)
-   "Put NODE's TESTRAL notes under it in pathtree TREE."
+   "Put NODE's TESTRAL notes or runform-list under it in pathtree TREE."
    (check-type tree emtvp)
    (check-type node emtvp:node)
    (when (emt:view:suite-p node)
@@ -199,13 +199,29 @@ could be, such as when a note-list hasn't been expanded."
 	    (let
 	       ((contents
 		   (emt:testral:suite->contents result)))
-	       (when
-		  (emt:testral:note-list-p contents)
-		  (emtvr:collect-testral-2-aux 
-		     (emt:testral:note-list->notes contents)
-		     node
-		     tree)))))))
+	       (typecase contents
+		  
+		  (emt:testral:note-list
+		     (emtvr:collect-testral-2-aux 
+			(emt:testral:note-list->notes contents)
+			node
+			tree))
+		  (emt:testral:runform-list
+		     (emtvr:collect-runform-list
+			node tree contents))))))))
 
+;;;_  . emtvr:collect-runform-list
+(defun emtvr:collect-runform-list (node tree runform-list)
+   "Put viewables for RUNFORM-LIST under NODE in TREE."
+   		     
+   (mapcar
+      #'(lambda (runform)
+	   (emtvp:add-child
+	      tree node
+	      ;; $$IMPROVE ME Get name from runform when we have it.
+	      "Unnamed runform"
+	      (emt:view:make-how-to-run :contents runform)))
+      (emt:testral:runform-list->els runform-list)))
 
 
 ;;;_. Footers

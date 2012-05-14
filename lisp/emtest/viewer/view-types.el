@@ -101,6 +101,14 @@ treewise, including any grades from this node."
    (mark () :type bool))
 
 
+;;;_  . Notes in viewable form.
+(defstruct (emt:view:how-to-run
+	      (:constructor emt:view:make-how-to-run)
+	      (:conc-name emt:view:how-to-run->)
+	      (:include emt:view:presentable))
+   "A how-to-run as it occurs in a suite's contents (not within
+   the suite itself, which is just inside that)"
+   (contents () :type emtt:explorable))
 
 ;;;_  . Notes in viewable form.
 (defstruct (emt:view:note
