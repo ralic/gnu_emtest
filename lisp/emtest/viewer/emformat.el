@@ -115,6 +115,10 @@ which may not imply success of an assertion."
        ,obj 
        ,func
        ,(utidyv:capture-vars emtvf:dynvars)))
+;;;_  . emtvf:sym->suitename
+(defun emtvf:sym->suitename (sym)
+   "Make a form for a suitename given as a symbol"
+   `(w/face ,(symbol-name sym) emtvf:face:suitename))
 
 ;;;_ , Helper functions
 ;;;_  . Characterizing object representation
@@ -329,7 +333,7 @@ Must be called in a `utidyv:top' context."
 		     (emtvf:outline-item-emformat
 			(hiformat:separate
 			   (list
-			      `(w/face ,name emtvf:face:suitename)
+			      (emtvf:sym->suitename name)
 			      grades-sum)
 			   " ")
 		;; Each should xform to a button to launch that.
@@ -346,7 +350,7 @@ Must be called in a `utidyv:top' context."
 			   (delq nil
 			      (list
 				 (emtvf:button-toggle-mark view-node)
-				 `(w/face ,name emtvf:face:suitename)
+				 (emtvf:sym->suitename name)
 				 (emtvf:button-to-explore explorable "[RUN]")
 				 grades-sum))
 			   " ")
@@ -401,7 +405,7 @@ OBJ must be a TESTRAL viewable (`emt:view:note')."
    "Make a format form for a emt:view:how-to-run, which encases a emtt:explorable."
    (emtvf:outline-item-emformat
       (list 
-	 `(w/face ,(symbol-name name) emtvf:face:suitename)
+	 (emtvf:sym->suitename name)
 	 " "
 	 (emtvf:button-to-explore obj "[RUN]"))
       nil
