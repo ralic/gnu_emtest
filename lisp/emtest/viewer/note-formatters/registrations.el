@@ -8,22 +8,22 @@
 ;;;;;;  "asserted.el" (19783 34766))
 ;;; Generated autoloads from asserted.el
 
-(autoload (quote emt:vw:note:failed) "emtest/viewer/note-formatters/asserted" "\
+(autoload 'emt:vw:note:failed "emtest/viewer/note-formatters/asserted" "\
 Formatter for TESTRAL note governed by `failed'
 
 \(fn NOTE FORM)" nil nil)
 
-(autoload (quote emt:vw:note:succeeded) "emtest/viewer/note-formatters/asserted" "\
+(autoload 'emt:vw:note:succeeded "emtest/viewer/note-formatters/asserted" "\
 Formatter for TESTRAL note governed by `succeeded'
 
 \(fn NOTE FORM)" nil nil)
 
-(autoload (quote emt:vw:note:mismatched) "emtest/viewer/note-formatters/asserted" "\
+(autoload 'emt:vw:note:mismatched "emtest/viewer/note-formatters/asserted" "\
 Formatter for TESTRAL note governed by `mismatched'
 
 \(fn NOTE FORM)" nil nil)
 
-(autoload (quote emt:vw:note:matched) "emtest/viewer/note-formatters/asserted" "\
+(autoload 'emt:vw:note:matched "emtest/viewer/note-formatters/asserted" "\
 Formatter for TESTRAL note governed by `matched'
 
 \(fn NOTE FORM)" nil nil)
@@ -50,7 +50,7 @@ Formatter for TESTRAL note governed by `matched'
 ;;;;;;  "emtest/viewer/note-formatters/db" "db.el" (19793 37300))
 ;;; Generated autoloads from db.el
 
-(autoload (quote emt:vw:note:not-in-db) "emtest/viewer/note-formatters/db" "\
+(autoload 'emt:vw:note:not-in-db "emtest/viewer/note-formatters/db" "\
 Formatter for TESTRAL note governed by `not-in-db'
 
 \(fn NOTE VALUE ID BACKEND)" nil nil)
@@ -59,7 +59,7 @@ Formatter for TESTRAL note governed by `not-in-db'
    'not-in-db 
    #'emt:vw:note:not-in-db))
 
-(autoload (quote emt:vw:note:comparison-w/persist) "emtest/viewer/note-formatters/db" "\
+(autoload 'emt:vw:note:comparison-w/persist "emtest/viewer/note-formatters/db" "\
 Formatter for TESTRAL note governed by `comparison-w/persist'
 
 \(fn NOTE MATCHED-P VALUE BACKEND ID)" nil nil)
@@ -75,7 +75,7 @@ Formatter for TESTRAL note governed by `comparison-w/persist'
 ;;;;;;  "doc.el" (19783 34777))
 ;;; Generated autoloads from doc.el
 
-(autoload (quote emt:vw:note:doc) "emtest/viewer/note-formatters/doc" "\
+(autoload 'emt:vw:note:doc "emtest/viewer/note-formatters/doc" "\
 Formatter for TESTRAL note governed by `doc'
 
 \(fn NOTE DOC)" nil nil)
@@ -90,7 +90,7 @@ Formatter for TESTRAL note governed by `doc'
 ;;;;;;  "error-raised.el" (19783 34787))
 ;;; Generated autoloads from error-raised.el
 
-(autoload (quote emt:vw:note:error-raised) "emtest/viewer/note-formatters/error-raised" "\
+(autoload 'emt:vw:note:error-raised "emtest/viewer/note-formatters/error-raised" "\
 Formatter for TESTRAL note governed by `error-raised'
 
 \(fn NOTE &rest ERR)" nil nil)
@@ -105,7 +105,7 @@ Formatter for TESTRAL note governed by `error-raised'
 ;;;;;;  "parameter.el" (19783 34807))
 ;;; Generated autoloads from parameter.el
 
-(autoload (quote emt:vw:note:parameter) "emtest/viewer/note-formatters/parameter" "\
+(autoload 'emt:vw:note:parameter "emtest/viewer/note-formatters/parameter" "\
 Formatter for TESTRAL note governed by `parameter'
 
 \(fn NOTE ARG VAL)" nil nil)
@@ -120,7 +120,7 @@ Formatter for TESTRAL note governed by `parameter'
 ;;;;;;  "scope.el" (19783 34820))
 ;;; Generated autoloads from scope.el
 
-(autoload (quote emt:vw:note:scope) "emtest/viewer/note-formatters/scope" "\
+(autoload 'emt:vw:note:scope "emtest/viewer/note-formatters/scope" "\
 Formatter for TESTRAL viewable governed by `scope'
 
 \(fn NOTE &optional NAME)" nil nil)

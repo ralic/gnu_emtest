@@ -45,18 +45,23 @@ add their methods.  Recommended: autoload a form like:
 `(eval-after-load 'emtest/main/all-runners '(emt:exps:add SYM
 FUNCTION NAME))'.
 
-Format: Each entry is (GOV-SYMBOL FUNCTION NAME), where 
+Format: Each entry is (GOV-SYMBOL (FUNCTION NAME SHOW-AVAIL)), where 
  * GOV-SYMBOL is a governor symbol
  * FUNCTION explores the test or suite.
- * NAME is the name of the method." )
+ * NAME is the name of the method.
+ * SHOW-AVAIL is non-nil if may be called with a test-id that
+   provides no further arguments to make it list what's available" )
 
 ;;;_  . emt:exps:add
 
-(defun emt:exps:add (gov-symbol func &optional name &rest dummy)
-   "Add FUNC as explorer governed by GOV-SYMBOL"
+(defun emt:exps:add (gov-symbol func &optional name list-all &rest dummy)
+   "Add FUNC as explorer governed by GOV-SYMBOL.
+
+If LIST-ALL is non-nil, func may be called with a test-id that
+provides no further arguments and should list what's available."
    (utim:new-apair 
       gov-symbol 
-      (list func (or name "<UNNAMED>"))
+      (list func (or name "<UNNAMED>") list-all)
       emt:exps:alist))
 ;;;_  . emt:exps:get-info
 (defun emt:exps:get-info (gov-symbol)
@@ -86,10 +91,12 @@ HOW must be a list."
 	 :contents 
 	 (emt:testral:make-runform-list
 	    :els
+	    ;; $$IMPROVE ME: Skip if show-avail is nil.
 	    (mapcar 
 	       #'(lambda (x)
 		    (emtt:make-explorable
 		       :how-to-run (list (car x))
+		       ;; Could use name here.
 		       :prestn-path (list (car x))))
 	       emt:exps:alist))
 	 
@@ -97,8 +104,9 @@ HOW must be a list."
 
 
 ;;;_   , Register it
-
-(emt:exps:add 'whats-available #'emt:exp:available "What's available") 
+;; We don't show whats-available itself in whats-available, so
+;; SHOW-AVAIL is `nil'
+(emt:exps:add 'whats-available #'emt:exp:available "What's available" nil)
 
 ;;;_   , emtest
 ;;;###autoload
