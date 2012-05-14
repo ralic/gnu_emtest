@@ -57,7 +57,12 @@
    (aliases () 
       :type (repeat emthow) 
       :doc "A possibly empty list of other IDs that would launch the
-      same thing")) 
+      same thing")
+   ;; $$IMPROVE ME: Add a name field here.
+   '(name "UNNAMED" 
+       :type string 
+       :doc "A name or description of this explorable.")
+   ) 
 
 ;;;_ , emtt:dynamic-method
 ;;$$USE ME
