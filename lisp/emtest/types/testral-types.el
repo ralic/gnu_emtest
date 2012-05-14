@@ -89,16 +89,15 @@
   (newly-pending  () :type integer)
   (test-id-prefix () :type emt:testral:prestn-path)
   (suites () :type 
-	  (repeat
-	   ;;$$IMPROVE ME Move emtt:explorable into a common ancestor
-	     ;;of emt:testral:test-runner-info and emt:testral:suite.
-	     ;;Adjust `emtvr:receive-one' accordingly.
-	   (list 
-	    emtt:explorable
-	    null ;;let's leave that an empty list for now
-	    (or emt:testral:suite emt:testral:test-runner-info)))))
+     (repeat
+	(list 
+	   emtt:explorable
+	   null ;;let's leave that an empty list for now
+	   ;; $$This will become just emt:testral:suite
+	   (or emt:testral:suite emt:testral:test-runner-info)))))
 
 ;;;_  . test-runner info
+;; $$OBSOLESCENT
 (defstruct (emt:testral:test-runner-info
 	    (:constructor emt:testral:make-test-runner-info)
 	    (:conc-name emt:testral:test-runner-info->))

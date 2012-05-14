@@ -99,7 +99,10 @@
 ;;them.  Perhaps suite reports flag whether they have exhaustively
 ;;listed their children.
 (defun emtvr:receive-one (receiver entry testrun-id prefix)
-   "Receive and store a single test report."
+   "Receive and store a single test report.
+
+Stores it on receiver' alist, keyed by how to run it."
+
    (check-type receiver emtvr:data)
    (destructuring-bind (how-to-run dummy suite) entry
       (let*
