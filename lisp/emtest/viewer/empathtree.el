@@ -185,6 +185,7 @@ could be, such as when a note-list hasn't been expanded."
 	       (emtvp:add-child
 		  tree parent nil child t))))))
 
+;;;_ , TESTRAL suites
 
 ;;;_  . emtvr:collect-testral-2
 (defun emtvr:collect-testral-2  (node tree)
@@ -200,7 +201,6 @@ could be, such as when a note-list hasn't been expanded."
 	       ((contents
 		   (emt:testral:suite->contents result)))
 	       (typecase contents
-		  
 		  (emt:testral:note-list
 		     (emtvr:collect-testral-2-aux 
 			(emt:testral:note-list->notes contents)
@@ -220,6 +220,33 @@ could be, such as when a note-list hasn't been expanded."
 	      (emt:view:make-how-to-run :contents runform)))
       (emt:testral:runform-list->els runform-list)))
 
+;;;_ , emtvr:place-node
+
+(defun emtvr:place-node (tree presentation-path cell)
+   "Add CELL to TREE at PRESENTATION-PATH.
+Cell must be a emt:view:presentable descendant."
+   (check-type cell emt:view:presentable)
+   (let
+      ((old-node 
+	  (emtvp:find-node tree presentation-path
+	     #'emt:view:make-presentable)))
+
+      (setf
+	 (emtvp:node->name cell)
+	 (car (last presentation-path)))
+      ;;Adopt suite children but not note children
+      (setf
+	 (emtvp:node->children cell)
+	 (delq nil
+	    (mapcar
+	       #'(lambda (child)
+		    (unless (emt:view:note-p child) child))
+	       (emtvp:node->children old-node))))
+       
+      ;;$$IMPROVE ME if (eq old-node cell) just dirty it for
+      ;;resummary/redisplay as `updated', and handle that.
+      (emtvp:replace-node
+	 tree old-node cell)))
 
 ;;;_. Footers
 ;;;_ , Provides

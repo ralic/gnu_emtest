@@ -43,33 +43,13 @@
 ;;;_ , Callbacks
 ;;;_  . emtvo:receive-cb
 
-;;$$PARAMETERIZE MY on make-display-data and tree object.
+;;$$PARAMETERIZE MY on make-display-data
 (defun emtvo:receive-cb (presentation-path cell)
    "Emviewer callback that `receive' gets.
 It just tells a pathtree to add this node."
-   (let
-      ((old-node 
-	  (emtvp:find-node emtvo:pathtree presentation-path
-	     #'emt:view:make-presentable)))
-      
-      ;;$$PUNT Call the make-display-data callback.
+   (emtvr:place-node
+      emtvo:pathtree presentation-path cell))
 
-      (setf
-	 (emtvp:node->name cell)
-	 (car (last presentation-path)))
-      ;;Adopt suite children but not note children
-      (setf
-	 (emtvp:node->children cell)
-	 (delq nil
-	    (mapcar
-	       #'(lambda (child)
-		    (unless (emt:view:note-p child) child))
-	       (emtvp:node->children old-node))))
-       
-      ;;$$IMPROVE ME if (eq old-node cell) just dirty it for
-      ;;resummary/redisplay as `updated', and handle that.
-      (emtvp:replace-node
-	 emtvo:pathtree old-node cell)))
 ;;;_  . emtvo:pathtree-cb-aux
 ;;$$OBSOLESCENT - Only called to make root.  We might as well just
 ;;pass root.  Waiting on changes to `emtvp:make-pathtree'.
