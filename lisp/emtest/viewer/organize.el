@@ -149,9 +149,10 @@ Make a `emt:view:presentable' or its descendant."
 ;;;_ , Command entry points
 ;;;_  . emtv2:tests-outstanding hollow. 
 (defvar emtv2:tests-outstanding)
-;;;_  . emtvo:reset
+;;;_  . emtest:reset
+;; Was "emtvo:reset"
 ;;;###autoload
-(defun emtvo:reset ()
+(defun emtest:reset ()
    ""
    
    (interactive)
