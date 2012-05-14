@@ -198,11 +198,14 @@ LIBRARY is the absolute file name of the library"
 	       :els
 	       (mapcar 
 		  #'(lambda (x)
+		       (let
+			  ((sym (first x))
+			     (path (second x)))
 		       (emtt:make-explorable
 			  :how-to-run  
-			  (list 'library:elisp-load (second x))
+			  (list 'library:elisp-load path sym)
 			  :prestn-path
-			  (list 'library:elisp-load (first x))))
+			  (list 'library:elisp-load sym))))
 		  (emtt:all-testing-libs)))
 	    :grade nil)
 	 '())))
