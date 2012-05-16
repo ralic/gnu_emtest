@@ -77,11 +77,11 @@ This fills the same need as autoexpect."
 			    (concat answer prompt)))))))
 	 (nreverse rv-pieces))))
 
-;;;_ , emt:ed:expect:buffer-capture-form
+;;;_ , emtest:get-expect-from-transcript
 ;;;###autoload
-(defun emt:ed:expect:buffer-capture-form 
+(defun emtest:get-expect-from-transcript 
    (prompt &optional w/o-prompt w/o-newline)
-   "Push entries for an `emtr:expect' script onto the kill ring.
+   "Push entries for an emtest expect script onto the kill ring.
 Current buffer should contain a transcript of a session and point
 should be before it."
    
