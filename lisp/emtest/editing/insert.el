@@ -139,7 +139,7 @@ function."
 	 ;;$$REFACTOR ME - code is shared with emt:ed:insert:prop-test-thru
 	 (let
 	    ((default-suite-name
-		(symbol-name (emtel:suite-sym-at-point))))
+		(symbol-name (emt:ed:lisp:suite-sym-at-point))))
 	 (read-string "Name of suite: " default-suite-name nil
 	    default-suite-name))))
    (let
@@ -177,7 +177,7 @@ function."
       (list 
 	 (let
 	    ((default-suite-name
-		(symbol-name (emtel:suite-sym-at-point))))
+		(symbol-name (emt:ed:lisp:suite-sym-at-point))))
 	 (read-string "Name of suite: " default-suite-name nil
 	    default-suite-name))))
    

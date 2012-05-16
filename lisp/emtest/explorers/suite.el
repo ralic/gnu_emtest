@@ -63,7 +63,7 @@ Does nothing if the buffer is not in a known lisp mode."
       (when arg (eval-defun nil))
       (let
 	 ((suite-sym
-	     (emtel:suite-sym-at-point)))
+	     (emt:ed:lisp:suite-sym-at-point)))
 	 (check-type suite-sym symbol)
 	 (emt:xp:suite:run suite-sym nil))))
 

@@ -34,39 +34,39 @@
 ;;;_. Body
 
 ;;;_   , Test helpers 
-;;;_    . emter:build-code:th
-(defun emter:build-code:th (input-list)
+;;;_    . emt:ed:trl:build-code:th
+(defun emt:ed:trl:build-code:th (input-list)
    ""
    
    (emtp:eval
       (dolist (input input-list)
 	 ;;Build item.
 	 (destructuring-bind (should &rest expression) input
-	    (emter:record-item expression (eval expression))
+	    (emt:ed:trl:record-item expression (eval expression))
 	    ;;SHOULD tells us to set up a should.
 	    (when should
 	       (setf
-		  (emter:item->should
-		     (car (last emter:value-list)))
+		  (emt:ed:trl:item->should
+		     (car (last emt:ed:trl:value-list)))
 		  t))))
       ;;Testpoint to skip displaying the item.
       (tp* (:id tp:8efac1de-09d4-4865-bea2-d3df2b211ad3 :count nil)())))
 
-;;;_    . emter:build-code:thm
-(defmacro emter:build-code:thm (input-list bindings &rest body)
-   "Run BODY with `emter:value-list' in a particular state.
+;;;_    . emt:ed:trl:build-code:thm
+(defmacro emt:ed:trl:build-code:thm (input-list bindings &rest body)
+   "Run BODY with `emt:ed:trl:value-list' in a particular state.
 INPUT-LIST elements are in the form (SHOULD . EXPRESSION).
 BINDINGS are as for a `let'"
    
-   `(let ((emter:value-list ())
+   `(let ((emt:ed:trl:value-list ())
 	    ,@bindings)
-       (emter:build-code:th ,input-list)
+       (emt:ed:trl:build-code:th ,input-list)
        ,@body))
-;;;_    . emter:build-code:th2
-(defun emter:build-code:th2 (precedence-pairs)
+;;;_    . emt:ed:trl:build-code:th2
+(defun emt:ed:trl:build-code:th2 (precedence-pairs)
    ""
    (emtp:eval
-      (emter:build-code)
+      (emt:ed:trl:build-code)
       ;;Testpoint per dependency
       (tp*
 	 (:id tp:ea524bc6-1e65-4c90-8772-ab94c916a375
@@ -78,22 +78,22 @@ BINDINGS are as for a `let'"
 	 (emt:assert
 	    (emth:sets= depend-set 
 	       precedence-pairs)))))
-;;;_    . emter:build-code:thm2
-(defmacro* emter:build-code:thm2 
+;;;_    . emt:ed:trl:build-code:thm2
+(defmacro* emt:ed:trl:build-code:thm2 
    ((&key inputs bindings precedence-pairs sym) &rest body)
    ""
    
-   `(emter:build-code:thm
+   `(emt:ed:trl:build-code:thm
        ,inputs
        ,bindings
        (let
 	  ((,sym
-	      (emter:build-code:th2 ,precedence-pairs)))
+	      (emt:ed:trl:build-code:th2 ,precedence-pairs)))
 	  ,@body)))
 
 
-;;;_    . emter:build-code:th:w-bindings-passes-p
-(defun emter:build-code:th:w-bindings-passes-p 
+;;;_    . emt:ed:trl:build-code:th:w-bindings-passes-p
+(defun emt:ed:trl:build-code:th:w-bindings-passes-p 
    (bindings should-pass-p code)
    ""
 

@@ -24,7 +24,7 @@
 
 ;;;_ , Commentary:
 
-;; 
+;; Code for understanding elisp forms, which emtest:defun-at-point etc use
 
 
 ;;;_ , Requires
@@ -33,16 +33,16 @@
 
 ;;;_. Body
 
-;;;_ , emtel:defun-types
-(defconst emtel:defun-types 
+;;;_ , emt:ed:lisp:all-defun-symbols
+(defconst emt:ed:lisp:all-defun-symbols 
   '(defun defun* defsubst defsubst* defmacro defmacro* defmethod
       deftype defadvice defstruct 
       emt:deftest-2 emt:deftest-3
       defmath)
    
   "List of defun-variant symbols we might see" )
-;;;_ , emtel:suite-sym-at-point-x
-(defun emtel:suite-sym-at-point-x (arg)
+;;;_ , emt:ed:lisp:suite-sym-at-point-x
+(defun emt:ed:lisp:suite-sym-at-point-x (arg)
    "Return the symbol that names the definition at point.
 With `nil' ARG, look backwards for it.
 With non-nil ARG, look forwards for it."
@@ -56,7 +56,7 @@ With non-nil ARG, look forwards for it."
 		     (current-buffer)))
 	       (symbol
 		  (if
-		     (memq type emtel:defun-types)
+		     (memq type emt:ed:lisp:all-defun-symbols)
 		     (read
 			(current-buffer)))))
 	    (if
@@ -69,15 +69,15 @@ With non-nil ARG, look forwards for it."
 		     (assq 'of symbol)))
 	       symbol)))
       (scan-error nil)))
-;;;_ , emtel:suite-sym-at-point
-(defun emtel:suite-sym-at-point () 
+;;;_ , emt:ed:lisp:suite-sym-at-point
+(defun emt:ed:lisp:suite-sym-at-point () 
    "Return the symbol of the test suite relevant to the definition at point"
    
    (or
       ;;First try to find it backwards
-      (emtel:suite-sym-at-point-x nil)
+      (emt:ed:lisp:suite-sym-at-point-x nil)
       ;;If that fails, try to find it forwards
-      (emtel:suite-sym-at-point-x -1)))
+      (emt:ed:lisp:suite-sym-at-point-x -1)))
 
 
 

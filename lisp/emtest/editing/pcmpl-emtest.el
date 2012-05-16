@@ -93,7 +93,7 @@
 	    (save-excursion
 	       (goto-char (pcomplete-begin 'first))
 	       (up-list -1)
-	       (symbol-name (emtel:suite-sym-at-point))))))
+	       (symbol-name (emt:ed:lisp:suite-sym-at-point))))))
 
    ;;How to indicate that this could also be a bare symbol?
    (pcomplete-nested
