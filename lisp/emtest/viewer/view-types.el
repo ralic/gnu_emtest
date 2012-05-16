@@ -33,8 +33,8 @@
 (eval-when-compile
    (require 'cl))
 ;;;_. Body
-;;;_ , emtvr:suite->id
-(deftype emtvr:suite->id ()
+;;;_ , emt:view:suite-id
+(deftype emt:view:suite-id ()
    "The ID of a reported suite.  In fact a how-to-run object"
    'emt:run:how)
 
@@ -78,7 +78,7 @@ treewise, including any grades from this node."
 	      (:include emt:view:presentable))
    ""
    ;;Just for suite nodes.
-   (id () :type emtvr:suite->id
+   (id () :type emt:view:suite-id
       :doc "The normative id, often the same as explorable:how-to-run.")
 
 
