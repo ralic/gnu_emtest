@@ -57,9 +57,9 @@ If prefix arg is given, prompt for fileset name in any case."
    (emt:xp:fileset-launch fileset-name t))
 
 
-;;;_  . emt:xp:fileset-all
+;;;_  . emtest:fileset-all
 ;;;###autoload
-(defun emt:xp:fileset-all (fileset-name)
+(defun emtest:fileset-all (fileset-name)
    "Launch the tests defined in FILESET.
 If prefix arg is given, prompt for fileset name in any case."
    (interactive
