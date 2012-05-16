@@ -234,15 +234,18 @@ NAME should be the nickname of some launchable"
    '(
        (list    list t)
        (integer read t)
-       (grade   intern)
+       (grade   intern) ;; Not sure we'll need this.
        (symbol  intern)
        ;; (prestn-path)
 
-       (suite    emt:testral:make-suite   nil)
-       (note     emt:testral:note         nil)
-       (runforms emt:testral:runform-list nil)
-       (notes    emt:testral:note-list    nil)
-       (report   emt:testral:report       nil))
+       (suite      emt:testral:make-suite        nil)
+       (note       emt:testral:make-note         nil)
+       (runforms   emt:testral:make-runform-list nil)
+       (notes      emt:testral:make-note-list    nil)
+       (report     emt:testral:make-report       nil)
+       (explorable emtt:make-explorable          nil)
+       
+)
    
    "Alist of ctors of foreign-able types from stringtrees, for incoming objects.
 
@@ -294,8 +297,18 @@ If POSITIONAL? is t, each argument is simply recursively parsed first." )
 ;;;_ , Obj to stringtree
 ;;;_  . emt:foreign-stringtreer-alist 
 (defvar emt:foreign-stringtreer-alist 
-   '((listp "list" t identity)
-       (emt:testral:suite-p "suite" struct emt:testral:suite)
+   '(
+       (listp    "list"    t identity)
+       (integerp "integer" t emt:foreign:singleval-stringtreer)
+       (symbolp  "symbol"  t emt:foreign:singleval-stringtreer)
+       ;; We don't treat grade etc as a case, it's treated as symbol
+       
+       (emt:testral:suite-p        "suite"    struct emt:testral:suite)
+       (emt:testral:note-p         "note"     struct emt:testral:note)
+       (emt:testral:runform-list-p "runforms" struct emt:testral:runform-list)
+       (emt:testral:note-list-p    "notes"    struct emt:testral:note-list)
+       (emt:testral:report-p       "report"     struct emt:testral:report)
+       (emtt:explorable-p          "explorable" struct emtt:explorable)
        
        )
    "Alist of the stringtree-ers of foreign-able types, for outgoing objects.
@@ -312,6 +325,11 @@ Keywise-Stringtreer should return a list where each element of
 the list is in the form \(KEY VALUE\), and KEY is the symbol of a
 slot (without ':', which will be added in reading)."
    )
+;;;_  . emt:foreign:singleval-stringtreer
+(defun emt:foreign:singleval-stringtreer (x)
+   ""
+   (list
+      (prin1-to-string x)))
 
 ;;;_  . emt:foreign:struct-stringtreer
 (defun emt:foreign:struct-stringtreer (struct-sym x)
