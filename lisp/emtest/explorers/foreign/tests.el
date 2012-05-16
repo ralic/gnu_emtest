@@ -38,7 +38,7 @@
    '()
    "The normal surrounders for emtest/explorers/foreign tests" )
 ;;;_ , Examples
-(defconst emt:foreign:thd:examples
+(defconst emt:xp:foreign:thd:examples
    (emtg:define+
       ((project emtest)(library foreign))
       (transparent-tags () (type))
@@ -47,38 +47,38 @@
 	 (item ((type response)) "a"))))
 
 ;;;_ , Tests
-(emt:deftest-3 emt:foreign-read-buffer-csexp
+(emt:deftest-3 emt:xp:foreign-read-buffer-csexp
    (nil
       (emt:assert
-	 (equal (emt:foreign-read-buffer-csexp "1:a") "a")))
+	 (equal (emt:xp:foreign-read-buffer-csexp "1:a") "a")))
    (nil
       (emt:assert
-	 (equal (emt:foreign-read-buffer-csexp "1:abc") "a")))
+	 (equal (emt:xp:foreign-read-buffer-csexp "1:abc") "a")))
    (nil
       (emt:assert
-	 (equal (emt:foreign-read-buffer-csexp "2:abc") "ab")))
+	 (equal (emt:xp:foreign-read-buffer-csexp "2:abc") "ab")))
    (nil
       (emt:assert
-	 (equal (emt:foreign-read-buffer-csexp "(2:ab1:c)") '("ab" "c"))))
+	 (equal (emt:xp:foreign-read-buffer-csexp "(2:ab1:c)") '("ab" "c"))))
    (nil
       (emt:assert
-	 (equal (emt:foreign-read-buffer-csexp "(  )") '())))
+	 (equal (emt:xp:foreign-read-buffer-csexp "(  )") '())))
 
    (nil
       (emt:assert
-	 (equal (emt:foreign-read-buffer-csexp "( k )") '()))))
+	 (equal (emt:xp:foreign-read-buffer-csexp "( k )") '()))))
 
 
-;; Assumes emt:foreign-ctor-alist is constant.
+;; Assumes emt:xp:foreign-ctor-alist is constant.
 (emt:deftest-3
-   ((of 'emt:foreign-stringtree->object))
+   ((of 'emt:xp:foreign-stringtree->object))
    (nil
       (emt:assert
-	 (equal (emt:foreign-stringtree->object '("list" "a" "b")) 
+	 (equal (emt:xp:foreign-stringtree->object '("list" "a" "b")) 
 	    '("a" "b"))))
    (nil
       (emt:assert
-	 (equal (emt:foreign-stringtree->object '("integer" "57"))
+	 (equal (emt:xp:foreign-stringtree->object '("integer" "57"))
 	    57)))
 
    ;; Would test keywise '("suite" ("contents" "a") ("grade" "b"))
@@ -87,20 +87,20 @@
    )
 
 (emt:deftest-3
-   ((of 'emt:foreign:object->stringtree))
+   ((of 'emt:xp:foreign:object->stringtree))
    (nil
       (emt:assert
-	 (equal (emt:foreign:object->stringtree '("a" "b"))
+	 (equal (emt:xp:foreign:object->stringtree '("a" "b"))
 	     '("list" "a" "b")))))
 
 (emt:deftest-3
-   ((of 'emt:foreign:struct-stringtreer))
+   ((of 'emt:xp:foreign:struct-stringtreer))
    (nil
       ;; Would like a test on the constant classes too.  
 
       (emt:assert
 	 (equal
-	    (emt:foreign:struct-stringtreer
+	    (emt:xp:foreign:struct-stringtreer
 	       'emt:testral:suite
 	       (emt:testral:make-suite
 		  :contents '()
@@ -117,11 +117,11 @@
    )
 
 (emt:deftest-3
-   ((of 'emt:foreign:object->stringtree))
+   ((of 'emt:xp:foreign:object->stringtree))
    (nil
       (emt:assert
 	 (equal
-	    (emt:foreign:object->stringtree 
+	    (emt:xp:foreign:object->stringtree 
 	       (emt:testral:make-suite
 		  :contents '()
 		  :grade 'ok))
