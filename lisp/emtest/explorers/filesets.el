@@ -37,8 +37,8 @@
 ;;;_. Body
 
 ;;;_ , Launchers 
-;;;_  . emt:fileset-launch
-(defun emt:fileset-launch (fileset-name rerun)
+;;;_  . emt:xp:fileset-launch
+(defun emt:xp:fileset-launch (fileset-name rerun)
    "Launch the tests defined in FILESET."
    
    (emt:lch:run
@@ -46,30 +46,30 @@
       (emt:lch:get-prop-list rerun)
       (list (concat "fileset " fileset-name))))
 
-;;;_  . emt:fileset
+;;;_  . emtest:fileset
 ;;;###autoload
-(defun emt:fileset (fileset-name)
+(defun emtest:fileset (fileset-name)
    "Launch the tests defined in FILESET.
 If prefix arg is given, prompt for fileset name in any case."
    (interactive
       (list
 	 (fileset-whole-read-fileset current-prefix-arg)))
-   (emt:fileset-launch fileset-name t))
+   (emt:xp:fileset-launch fileset-name t))
 
 
-;;;_  . emt:fileset-all
+;;;_  . emt:xp:fileset-all
 ;;;###autoload
-(defun emt:fileset-all (fileset-name)
+(defun emt:xp:fileset-all (fileset-name)
    "Launch the tests defined in FILESET.
 If prefix arg is given, prompt for fileset name in any case."
    (interactive
       (list
 	 (fileset-whole-read-fileset current-prefix-arg)))
-      (emt:fileset-launch fileset-name nil))
+      (emt:xp:fileset-launch fileset-name nil))
 
-;;;_ , Explorer emtt:explore-fileset
+;;;_ , Explorer emt:xp:fileset
 ;;;###autoload
-(defun emtt:explore-fileset (test-id props path report-f)
+(defun emt:xp:fileset (test-id props path report-f)
    "Run the tests defined in fileset."
    (if (cdr test-id)
       (let*
@@ -153,7 +153,7 @@ If prefix arg is given, prompt for fileset name in any case."
 
 ;;;_ , Register
 ;;;###autoload (eval-after-load 'emtest/main/all-explorers
-;;;###autoload '(emt:exps:add 'fileset #'emtt:explore-fileset
+;;;###autoload '(emt:exps:add 'fileset #'emt:xp:fileset
 ;;;###autoload "Fileset" t))
 
 ;;;_. Footers
