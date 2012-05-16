@@ -109,9 +109,9 @@ If prefix arg is given, prompt for fileset name in any case."
 	    (list-to-run
 	       (mapcar
 		  #'(lambda (suite-sym)
-		       (emt:t:make-explorable
+		       (emt:run:make-explorable
 			  :how-to-run
-			  (emt:t:->how `(suite ,suite-sym))
+			  (emt:run:->how `(suite ,suite-sym))
 			  :prestn-path 
 			  (append 
 			     path
@@ -141,9 +141,9 @@ If prefix arg is given, prompt for fileset name in any case."
 		  #'(lambda (x)
 		       (let
 			  ((name (first x)))
-		       (emt:t:make-explorable
+		       (emt:run:make-explorable
 			  :how-to-run  
-			  (emt:t:->how (list 'fileset name))
+			  (emt:run:->how (list 'fileset name))
 			  :prestn-path
 			  (list 'fileset name))))
 		  filesets-data))

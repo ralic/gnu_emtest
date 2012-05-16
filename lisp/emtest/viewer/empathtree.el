@@ -214,7 +214,7 @@ could be, such as when a note-list hasn't been expanded."
    (mapcar
       #'(lambda (runform)
 	   (emtvo:receive-cb 
-	      (emt:t:explorable->prestn-path runform)
+	      (emt:run:explorable->prestn-path runform)
 	      (emt:view:make-explorable :contents runform)))
       (emt:testral:runform-list->els runform-list)))
 

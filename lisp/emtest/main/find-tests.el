@@ -43,9 +43,9 @@
 	      (:conc-name emt:testrun->)
 	      (:constructor emt:make-testrun))
    "State data about a given testrun"
-   (pending () :type (repeat emt:t:explorable))
+   (pending () :type (repeat emt:run:explorable))
    (has-run () 
-      :type (repeat emt:t:how))
+      :type (repeat emt:run:how))
    report-cb
    testrun-id
    (properties () :type (repeat (cons symbol t))))
@@ -59,9 +59,9 @@
    (let* 
       (	    
 	 (how-to-run
-	    (emt:t:explorable->how-to-run explorable))
+	    (emt:run:explorable->how-to-run explorable))
 	 (test-id
-	    (emt:t:how->contents how-to-run))
+	    (emt:run:how->contents how-to-run))
 	 (has-run
 	    (member test-id (emt:testrun->has-run testrun))))
 
@@ -72,9 +72,9 @@
 	       (props
 		  (append
 		     (emt:testrun->properties testrun)
-		     (emt:t:explorable->properties explorable)))
+		     (emt:run:explorable->properties explorable)))
 	       (path
-		  (emt:t:explorable->prestn-path explorable))
+		  (emt:run:explorable->prestn-path explorable))
 	       ;; Poor-man's closure
 	       (local-report-f
 		  `(lambda (report &optional tests prefix skipped)
@@ -170,11 +170,11 @@ If RESTRAINED, the property list won't redo tests that passed"
 (defun emt:lch:run (what-to-run props &optional prefix receiver testrun-id)
    "Run a single test.
 
-WHAT-TO-RUN is a list of symbols and strings, not an emt:t:how."
+WHAT-TO-RUN is a list of symbols and strings, not an emt:run:how."
    (emtt:test-finder:top
       (list
-	 (emt:t:make-explorable
-	    :how-to-run  (emt:t:->how what-to-run)
+	 (emt:run:make-explorable
+	    :how-to-run  (emt:run:->how what-to-run)
 	    :prestn-path prefix  ;;Default is the empty list.
 	    :properties  '()))
       (or testrun-id

@@ -89,8 +89,8 @@
 	       ;;Record this property
 	       (when (emt:view:suite-p obj)
 		  (emt:ind:set-prop
-		     (emt:t:how->contents
-			(emt:t:explorable->how-to-run
+		     (emt:run:how->contents
+			(emt:run:explorable->how-to-run
 			   (emt:view:suite->explorable obj)))
 		     'grade-says-rerun
 		     (case

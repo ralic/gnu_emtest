@@ -36,7 +36,7 @@
 	      (:conc-name emt:ind:entry->)
 	      (:constructor emt:ind:make-entry))
    "An individual test entry"
-   (test-path () :type emt:t:test-path) 
+   (test-path () :type emt:run:test-path) 
    (property-alist () :type (repeat (list symbol t))))
 
 ;;;_ , List of individual tests
@@ -46,17 +46,17 @@
 ;;;_ , emt:ind:get-entry
 (defsubst emt:ind:get-entry (test-path)
    "Get the entry for TEST-PATH"
-   (check-type test-path emt:t:test-path)
+   (check-type test-path emt:run:test-path)
    (assoc test-path emt:ind:alist))
 ;;;_ , emt:ind:add-entry
 (defsubst emt:ind:add-entry (entry)
    "Add entry ENTRY"
-   (check-type test-path emt:t:test-path)
+   (check-type test-path emt:run:test-path)
    (push entry emt:ind:alist))
 ;;;_ , emt:ind:get-prop 
 (defun emt:ind:get-prop (test-path key)
    "Get property KEY of test TEST-PATH"
-   (check-type test-path emt:t:test-path)
+   (check-type test-path emt:run:test-path)
    (let
       ((entry (emt:ind:get-entry test-path)))
       (if entry
@@ -68,7 +68,7 @@
 ;;;_ , emt:ind:set-prop 
 (defun emt:ind:set-prop (test-path key value)
    "Set property KEY of test TEST-PATH to VALUE"
-   (check-type test-path emt:t:test-path)
+   (check-type test-path emt:run:test-path)
    (let
       ((entry (emt:ind:get-entry test-path)))
       (if entry

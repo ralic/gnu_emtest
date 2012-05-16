@@ -238,12 +238,13 @@ NAME should be the nickname of some launchable"
        (symbol  intern t)
        ;; (prestn-path) Unused.
 
-       (suite      emt:testral:make-suite        nil)
-       (note       emt:testral:make-note         nil)
-       (runforms   emt:testral:make-runform-list nil)
-       (notes      emt:testral:make-note-list    nil)
-       (report     emt:testral:make-report       nil)
-       (explorable emt:t:make-explorable          nil)
+       (suite      emt:testral:make-suite           nil)
+       (note       emt:testral:make-note            nil)
+       (runforms   emt:testral:make-runform-list    nil)
+       (notes      emt:testral:make-note-list       nil)
+       (report     emt:testral:make-report          nil)
+       (explorable emt:run:make-explorable          nil)
+
        (how-to-run emt:xp:foreign:stringlist->how t)
        )
    
@@ -258,13 +259,13 @@ is interned, prepended with \":\".
 
 If POSITIONAL? is t, each argument is simply recursively parsed first." )
 ;;;_  . emt:xp:foreign:stringtree-kvlist->explorable
-;; Special treatment for emt:t:explorable because it contains
+;; Special treatment for emt:run:explorable because it contains
 ;; how-to-run in its fields and how-to-run is just a list of symbols.
 (defun emt:xp:foreign:stringlist->how (&rest args)
-   "Construct an emt:t:how prefixed by *how-to-prefix*.
+   "Construct an emt:run:how prefixed by *how-to-prefix*.
 
 ARGS are simple values."
-   (emt:t:->how
+   (emt:run:->how
       (append *how-to-prefix* args)))
 
 
@@ -320,11 +321,11 @@ ARGS are simple values."
        (emt:testral:runform-list-p "runforms" struct emt:testral:runform-list)
        (emt:testral:note-list-p    "notes"    struct emt:testral:note-list)
        (emt:testral:report-p       "report"     struct emt:testral:report)
-       (emt:t:explorable-p          "explorable" struct emt:t:explorable)
+       (emt:run:explorable-p          "explorable" struct emt:run:explorable)
 
        ;; We print the whole contents list; presumably it was
        ;; truncated right before we got here.
-       (emt:t:how-p                "how-to-run" t      emt:t:how->contents)
+       (emt:run:how-p                "how-to-run" t      emt:run:how->contents)
        )
    "Alist of the stringtree-ers of foreign-able types, for outgoing objects.
 
@@ -487,9 +488,9 @@ slot (without ':', which will be added in reading)."
 		  #'(lambda (x)
 		       (let
 			  ((name (first x)))
-			  (emt:t:make-explorable
+			  (emt:run:make-explorable
 			     :how-to-run  
-			     (emt:t:->how (list 'foreign name))
+			     (emt:run:->how (list 'foreign name))
 			     :prestn-path
 			     (list 'foreign name))))
 		  emt:xp:foreign:launchables))

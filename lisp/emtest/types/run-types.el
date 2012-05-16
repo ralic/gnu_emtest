@@ -33,28 +33,28 @@
 (require 'emtest/types/prestn-path)
 
 ;;;_. Body
-;;;_ , emt:t:test-path
-(deftype emt:t:test-path ()
+;;;_ , emt:run:test-path
+(deftype emt:run:test-path ()
    "Path to reach a specific test"
    '(repeat t))
-;;;_ , emt:t:how
-(defstruct (emt:t:how
+;;;_ , emt:run:how
+(defstruct (emt:run:how
 	      (:copier nil)
-	      (:conc-name emt:t:how->)
-	      (:constructor emt:t:->how (contents)))
+	      (:conc-name emt:run:how->)
+	      (:constructor emt:run:->how (contents)))
    "How to run a given test"
    (contents
-      :type emt:t:test-path
+      :type emt:run:test-path
       :doc "Path from tester root that will run a specific test"))
 
-;;;_ , emt:t:explorable (Full runnable)
-(defstruct (emt:t:explorable
+;;;_ , emt:run:explorable (Full runnable)
+(defstruct (emt:run:explorable
 	      (:copier nil)
-	      (:conc-name emt:t:explorable->)
-	      (:constructor emt:t:make-explorable))
+	      (:conc-name emt:run:explorable->)
+	      (:constructor emt:run:make-explorable))
    "All the information needed to specify how to run a test or suite."
    (how-to-run () 
-      :type emt:t:how
+      :type emt:run:how
       :doc "What explorer to use for this.")
    
    (prestn-path () 
@@ -65,7 +65,7 @@
       :type (repeat (list symbol *))
       :doc "The properties that this explorable has when it's run")
    (aliases () 
-      :type (repeat emt:t:how) 
+      :type (repeat emt:run:how) 
       :doc "A possibly empty list of other IDs that would launch the
       same thing")) 
 

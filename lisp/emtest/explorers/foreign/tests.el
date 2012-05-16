@@ -113,7 +113,7 @@
 	    (equal
 	       (emt:xp:foreign:stringtree->object
 		  '("how-to-run" ("symbol" "a") ("symbol" "b")))
-	       (emt:t:->how '(prefix-el-1 prefix-el-2 a b))))))
+	       (emt:run:->how '(prefix-el-1 prefix-el-2 a b))))))
    )
 
 (emt:deftest-3
@@ -132,7 +132,7 @@
    (nil
       (emt:assert
 	 (equal
-	    (emt:xp:foreign:object->stringtree (emt:t:->how '(a b)))
+	    (emt:xp:foreign:object->stringtree (emt:run:->how '(a b)))
 	    '("how-to-run" ("symbol" "a") ("symbol" "b")))))
 
    )

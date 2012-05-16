@@ -168,9 +168,9 @@ LIBRARY is the absolute file name of the library"
 	       (list-to-run
 		  (mapcar
 		     #'(lambda (suite-sym)
-			  (emt:t:make-explorable
+			  (emt:run:make-explorable
 			     :how-to-run
-			     (emt:t:->how `(suite ,suite-sym))
+			     (emt:run:->how `(suite ,suite-sym))
 			     :prestn-path 
 			     (append 
 				path
@@ -201,9 +201,9 @@ LIBRARY is the absolute file name of the library"
 		       (let
 			  ((sym (first x))
 			     (path (second x)))
-		       (emt:t:make-explorable
+		       (emt:run:make-explorable
 			  :how-to-run  
-			  (emt:t:->how (list 'library:elisp-load path sym))
+			  (emt:run:->how (list 'library:elisp-load path sym))
 			  :prestn-path
 			  (list 'library:elisp-load sym))))
 		  (emt:xp:library:get-all-testable)))

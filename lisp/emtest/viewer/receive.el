@@ -104,13 +104,13 @@ Stores it on receiver' alist, keyed by how to run it."
 
    (check-type receiver emtvr:data)
    (destructuring-bind (explorable suite) entry
-      (check-type explorable emt:t:explorable)
+      (check-type explorable emt:run:explorable)
       (let*
 	 ( 
-	    (id (emt:t:explorable->prestn-path explorable))
+	    (id (emt:run:explorable->prestn-path explorable))
 	    (presentation-path (append prefix id))
-	    (key (emt:t:explorable->how-to-run explorable)))
-	 (check-type key emt:t:how)
+	    (key (emt:run:explorable->how-to-run explorable)))
+	 (check-type key emt:run:how)
 
 	 ;;Handle special case: If suite reports that it has disappeared,
 	 ;;remove it from alist and from tree.  (How from tree?)

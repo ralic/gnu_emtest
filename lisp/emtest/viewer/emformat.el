@@ -167,7 +167,7 @@ which may not imply success of an assertion."
    ;;$$IMPROVE ME Distinguish proplists we want to use.
    (emt:lch:run
       ;; emt:lch:run wants just the contents, not the whole object.
-      (emt:t:how->contents
+      (emt:run:how->contents
 	 (button-get button 'how-to-run))
       emt:lch:proplist:vanilla
       (button-get button 'prestn-path)))
@@ -179,8 +179,8 @@ which may not imply success of an assertion."
       `(button ,text 
 	  action ,#'emtvf:button-explore-func
 	  help-echo "Rerun this test"
-	  how-to-run  ,(emt:t:explorable->how-to-run  explorable)
-	  prestn-path ,(emt:t:explorable->prestn-path explorable))))
+	  how-to-run  ,(emt:run:explorable->how-to-run  explorable)
+	  prestn-path ,(emt:run:explorable->prestn-path explorable))))
 ;;;_   , emtvf:viewable->mark-text
 (defun emtvf:viewable->mark-text (viewable)
    "Return the text of VIEWABLE's current mark."
@@ -213,8 +213,8 @@ which may not imply success of an assertion."
 	 (emt:view:suite->mark viewable)
 	 (not (emt:view:suite->mark viewable)))
       (emt:ind:set-prop
-	 (emt:t:how->contents
-	    (emt:t:explorable->how-to-run
+	 (emt:run:how->contents
+	    (emt:run:explorable->how-to-run
 	       (emt:view:suite->explorable viewable)))
 	 'user-says-rerun
 	 t)
@@ -393,7 +393,7 @@ OBJ must be a TESTRAL viewable (`emt:view:note')."
 	     "\n"))))
 ;;;_  . emt:vw:explorable
 (defun emt:vw:explorable (obj name)
-   "Make a format form for a emt:view:explorable, which encases a emt:t:explorable."
+   "Make a format form for a emt:view:explorable, which encases a emt:run:explorable."
    (emtvf:outline-item-emformat
       (list 
 	 (emtvf:sym->suitename name)
