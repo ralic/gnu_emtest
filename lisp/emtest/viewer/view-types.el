@@ -100,7 +100,7 @@ treewise, including any grades from this node."
    (mark () :type bool))
 
 
-;;;_  . Notes in viewable form.
+;;;_  . An explorable in viewable form.
 (defstruct (emt:view:explorable
 	      (:constructor emt:view:make-explorable)
 	      (:conc-name emt:view:explorable->)

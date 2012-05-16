@@ -46,7 +46,7 @@
 	 (emtvf:mapnodes
 	    (emtvp:node->children note) 
 	    nil))
-      'emtvf:face:failed))
+      'emt:view:face:failed))
 
 ;;;_ , emt:vw:note:succeeded
 ;;;###autoload
@@ -60,7 +60,7 @@
 	 (emtvf:mapnodes
 	    (emtvp:node->children note) 
 	    nil)) 
-      'emtvf:face:ok
+      'emt:view:face:ok
       t))
 ;;;_ , emt:vw:note:mismatched
 ;;;###autoload
@@ -73,7 +73,7 @@
 	 (emtvf:mapnodes
 	    (emtvp:node->children note) 
 	    nil)) 
-      'emtvf:face:mismatch))
+      'emt:view:face:mismatch))
 
 
 ;;;_ , emt:vw:note:matched
@@ -87,7 +87,7 @@
 	 (emtvf:mapnodes
 	    (emtvp:node->children note) 
 	    nil)) 
-      'emtvf:face:ok-match
+      'emt:view:face:ok-match
       t))
 
 

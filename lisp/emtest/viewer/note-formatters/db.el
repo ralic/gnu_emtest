@@ -97,7 +97,7 @@
 		 (not (stringp value))
 		 (> (length value) 100))))
       
-      'emtvf:face:ungraded))
+      'emt:view:face:ungraded))
 ;;;_  . Register it
 ;;;###autoload (eval-after-load 'emtest/viewer/all-note-formatters
 ;;;###autoload '(emt:vw:note:add-gov
@@ -135,8 +135,8 @@
       (list
 	 (emtvf:obj-or-string value)) 
       (if matched-p 
-	 'emtvf:face:ok-match
-	 'emtvf:face:mismatch)
+	 'emt:view:face:ok-match
+	 'emt:view:face:mismatch)
       matched-p))
 ;;;_  . Register it
 ;;;###autoload (eval-after-load 'emtest/viewer/all-note-formatters

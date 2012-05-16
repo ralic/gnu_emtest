@@ -45,40 +45,40 @@
 ;;;_ , Data
 ;;;_  . Faces
 ;;;_   , Grades
-(defface emtvf:face:ok 
+(defface emt:view:face:ok 
    '((default :foreground "green3" :weight bold))
    "Face for reporting passed tests"
    :group 'emtest)
 
-(defface emtvf:face:failed 
+(defface emt:view:face:failed 
    '((default :foreground "red" :weight bold))
    "Face for reporting failed tests"
    :group 'emtest)
 
-(defface emtvf:face:ungraded
+(defface emt:view:face:ungraded
    '((default :foreground "red" :strike-through t))
    "Face for reporting ungraded tests"
    :group 'emtest)
 
-(defface emtvf:face:blowout 
+(defface emt:view:face:blowout 
    '((default :foreground "black" :background "red" :weight bold))
    "Face for reporting blown-out tests"
    :group 'emtest)
 
-(defface emtvf:face:dormant
+(defface emt:view:face:dormant
    '((default :foreground "black"))
    "Face for reporting dormant tests"
    :group 'emtest)
 
 ;;;_   , Comparisons
-(defface emtvf:face:mismatch
+(defface emt:view:face:mismatch
    '((default :foreground "pink" :weight bold))
    "Face for reporting mismatches.
 NB, this is not a grade.  It indicates failure of a comparison,
 which may not imply failure of an assertion."
    :group 'emtest)
 
-(defface emtvf:face:ok-match
+(defface emt:view:face:ok-match
    '((default :foreground "green4" :weight bold))
    "Face for reporting correct matches.
 NB, this is not a grade.  It indicates a successful comparison,
@@ -86,14 +86,14 @@ which may not imply success of an assertion."
    :group 'emtest)
 
 ;;;_   , Pieces
-(defface emtvf:face:title
+(defface emt:view:face:title
    '((default 
 	:height 1.8
 	:foreground "black"))
    
    "Face for displaying Emtest banner"
    :group 'emtest)
-(defface emtvf:face:suitename
+(defface emt:view:face:suitename
    '((default 
 	:foreground "blue1"))
    
@@ -122,7 +122,7 @@ which may not imply success of an assertion."
        ,(etypecase sym
 	   (symbol (symbol-name sym))
 	   (string sym))
-       emtvf:face:suitename))
+       emt:view:face:suitename))
 
 ;;;_ , Helper functions
 ;;;_  . Characterizing object representation
@@ -297,7 +297,7 @@ VIEW-NODE must be at least an `emtvp:node'."
    (utidyv:top 
       emtvf:dynvars
       `(
-	  (w/face "Emtest results" emtvf:face:title)
+	  (w/face "Emtest results" emt:view:face:title)
 	  "\n"
 	  ,(emtvf:sum-grades-long (emt:view:presentable->sum-grades view-node))
 	  ,(emtvf:node view-node))))
@@ -388,7 +388,7 @@ OBJ must be a TESTRAL viewable (`emt:view:note')."
 	    obj
 	    (emt:testral:note->value note)))
       (error
-	 `((w/face "Error in formatter: " emtvf:face:blowout) 
+	 `((w/face "Error in formatter: " emt:view:face:blowout) 
 	     (object ,err nil)
 	     "\n"))))
 ;;;_  . emt:vw:explorable
@@ -400,7 +400,7 @@ OBJ must be a TESTRAL viewable (`emt:view:note')."
 	 " "
 	 (emtvf:button-to-explore obj "[RUN]"))
       nil
-      'emtvf:face:dormant))
+      'emt:view:face:dormant))
 
 ;;;_ , About grades
 ;;;_  . Structure emtvf:grade-fmt
@@ -439,7 +439,7 @@ severe."
    (emtvf:make-grade-fmt
       :symbol nil
       :fail-p nil
-      :face   'emtvf:face:dormant
+      :face   'emt:view:face:dormant
       :plural   "(UNUSED: No tests)"
       :singular "(UNUSED: No tests)"
       :severity 0)
@@ -450,7 +450,7 @@ severe."
       (emtvf:make-grade-fmt
 	 :symbol 'blowout
 	 :fail-p t
-	 :face   'emtvf:face:blowout
+	 :face   'emt:view:face:blowout
 	 :plural   "Blowouts"
 	 :singular "Blowout"
 	 :severity 100
@@ -458,7 +458,7 @@ severe."
       (emtvf:make-grade-fmt
 	 :symbol 'ungraded
 	 :fail-p t
-	 :face   'emtvf:face:ungraded
+	 :face   'emt:view:face:ungraded
 	 :plural   "Ungraded tests"
 	 :singular "Ungraded test"
 	 :severity 75
@@ -466,7 +466,7 @@ severe."
       (emtvf:make-grade-fmt
 	 :symbol 'fail
 	 :fail-p t
-	 :face   'emtvf:face:failed
+	 :face   'emt:view:face:failed
 	 :plural   "Failures"
 	 :singular "Failure"
 	 :severity 50
@@ -474,7 +474,7 @@ severe."
       (emtvf:make-grade-fmt
 	 :symbol 'dormant
 	 :fail-p t
-	 :face   'emtvf:face:dormant
+	 :face   'emt:view:face:dormant
 	 :plural   "Dormant tests"
 	 :singular "Dormant test"
 	 :severity 25
@@ -484,7 +484,7 @@ severe."
       (emtvf:make-grade-fmt
 	 :symbol 'ok
 	 :fail-p nil
-	 :face   'emtvf:face:ok
+	 :face   'emt:view:face:ok
 	 :plural   "(UNUSED: ok)"
 	 :singular "(UNUSED: ok)"
 	 :severity 10
@@ -492,7 +492,7 @@ severe."
       (emtvf:make-grade-fmt
 	 :symbol 'test-case
 	 :fail-p nil
-	 :face   'emtvf:face:ok
+	 :face   'emt:view:face:ok
 	 :plural   "Test cases"
 	 :singular "Test case"
 	 :severity 10)
@@ -554,11 +554,11 @@ SEPARATOR, if non-nil, is what separates the items."
       
       (cond
 	 ((null worst)
-	    '(w/face "Nothing was tested" emtvf:face:dormant))
+	    '(w/face "Nothing was tested" emt:view:face:dormant))
 	 ((emtvf:grade-fmt->fail-p 
 	     (emtvf:get-grade-info worst))
 	    (list
-	       '(w/face "Problems: " emtvf:face:failed)
+	       '(w/face "Problems: " emt:view:face:failed)
 	       (emtvf:map-grades
 		  #'(lambda (info count)
 		       (if
@@ -571,7 +571,7 @@ SEPARATOR, if non-nil, is what separates the items."
 		  ", ")
 	       "."))
 	 (t
-	    '(w/face "All OK" emtvf:face:ok)))))
+	    '(w/face "All OK" emt:view:face:ok)))))
 
 
 ;;;_   , emtvf:sum-grades-long
@@ -611,7 +611,7 @@ SEPARATOR, if non-nil, is what separates the items."
 	       "\n")))
       (cond
 	 ((null worst)
-	    '(w/face ("Nothing was tested" "\n") emtvf:face:dormant))
+	    '(w/face ("Nothing was tested" "\n") emt:view:face:dormant))
 	 ((emtvf:grade-fmt->fail-p 
 	     (emtvf:get-grade-info worst))
 	    (list
@@ -625,7 +625,7 @@ SEPARATOR, if non-nil, is what separates the items."
 	       "\n"))
 	 (t
 	    (list
-	       '(w/face "All OK" emtvf:face:ok)
+	       '(w/face "All OK" emt:view:face:ok)
 	       '(sep 5)
 	       successes
 	       '(sep 4))))))

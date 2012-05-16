@@ -40,7 +40,7 @@
    (emtvf:outline-item-emformat
       "Error raised: "
       `(object ,err nil) 
-      'emtvf:face:ungraded))
+      'emt:view:face:ungraded))
 
 ;;;_. Footers
 ;;;_ , Register it
