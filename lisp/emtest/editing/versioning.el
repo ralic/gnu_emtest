@@ -31,7 +31,7 @@
 
 ;;;_. Body
 ;;;_ , Conventional docstring converters
-(defun emtvers:substring->docform (str start &optional next)
+(defun emt:ed:vers:substring->docform (str start &optional next)
    ""
    (let*
       ((raw-sub
@@ -47,7 +47,7 @@
 	 (list 
 	    'emt:doc sub-2))))
 
-(defun emtvers:string->docstring-list (str)
+(defun emt:ed:vers:string->docstring-list (str)
    "Convert a string to docstring forms"
    
    (let*
@@ -72,18 +72,18 @@
 		   regexp
 		   str (1+ start)))
 	 (push
-	    (emtvers:substring->docform str start next)
+	    (emt:ed:vers:substring->docform str start next)
 	    rv-str-list)
 	 (setq start next))
       (push
-	 (emtvers:substring->docform str start next)
+	 (emt:ed:vers:substring->docform str start next)
 	 rv-str-list)
       (nreverse (delq nil rv-str-list))))
 
 
 ;;;_ , Test converters
 
-(defun emtvers:rtest->emtest (sexp)
+(defun emt:ed:vers:rtest->emtest (sexp)
    "Convert an rtest form to an emtest form"
 
    (when (listp sexp)
@@ -97,30 +97,30 @@
 	    (destructuring-bind (rtest-sym sym &rest clauses)
 	       sexp
 	       `(emt:deftest-3 ,sym
-		   ,@(mapcar #'emtvers:rtest-clause->emtest clauses)))))))
+		   ,@(mapcar #'emt:ed:vers:rtest-clause->emtest clauses)))))))
 
-(defun emtvers:rtest-clause->emtest-x (sexp)
+(defun emt:ed:vers:rtest-clause->emtest-x (sexp)
    ""
    (destructuring-bind (docstring form) 
       sexp
       `(nil
 	  (progn
-	     ,@(emtvers:string->docstring-list docstring)
+	     ,@(emt:ed:vers:string->docstring-list docstring)
 	     ,form))))
 
-(defun emtvers:rtest-clause->emtest (sexp)
+(defun emt:ed:vers:rtest-clause->emtest (sexp)
    "Convert an rtest clause to an emtest clause"
    (when (listp sexp)
       (if
 	 (eq (car sexp) 'quote)
 	 (list 
 	    'quote
-	    (emtvers:rtest-clause->emtest-x (second sexp)))
-	 (emtvers:rtest-clause->emtest-x sexp))))
-;;;_  . emtvers:goto-next-sexp 
+	    (emt:ed:vers:rtest-clause->emtest-x (second sexp)))
+	 (emt:ed:vers:rtest-clause->emtest-x sexp))))
+;;;_  . emt:ed:vers:goto-next-sexp 
 ;;Move point directly in front of next sexp
 ;;Return non-nil on success, nil or error on failure.
-(defun emtvers:goto-next-sexp (&optional noerror)
+(defun emt:ed:vers:goto-next-sexp (&optional noerror)
    ""
    
    (interactive)
@@ -139,7 +139,7 @@
 
 ;;;_  . Entry point
 ;;;###autoload
-(defun emtvers:cvt-rtest-at-point (&optional noerror)
+(defun emt:ed:vers:convert-rtest-at-point (&optional noerror)
    ""
    
    (interactive)
@@ -147,22 +147,22 @@
    ;;Move point to directly in front of next sexp so we don't eat
    ;;comments.
    (let
-      ((ok (emtvers:goto-next-sexp noerror)))
+      ((ok (emt:ed:vers:goto-next-sexp noerror)))
       (if ok
 	 (let*
 	    (  (pp-escape-newlines nil)
 	       (start (point))
 	       (rtest-form
 		  (read (current-buffer)))
-	       (emtest-form (emtvers:rtest->emtest rtest-form)))
+	       (emtest-form (emt:ed:vers:rtest->emtest rtest-form)))
 	    (when emtest-form
 	       (delete-region start (point))
 	       (pp emtest-form (current-buffer)))
 	    t))))
 
 
-;;;_  . emtvers:cvt-rtest-buffer
-(defun emtvers:cvt-rtest-buffer ()
+;;;_  . emt:ed:vers:cvt-rtest-buffer
+(defun emt:ed:vers:cvt-rtest-buffer ()
    ""
    ;;Find the library name wrt the known dir root
    (let* 
@@ -170,7 +170,7 @@
 	  (file-name-directory
 	     (file-relative-name 
 		buffer-file-name
-		emtvers:root-project-dir)))
+		emt:ed:vers:root-project-dir)))
 	 
 	 (emt-lib-name (concat lib-path "tests"))
 	 (rtest-lib-name (concat lib-path "rtest")))
@@ -181,17 +181,17 @@
 
       ;;Convert all the forms.
       (goto-char (point-min))
-      (while (emtvers:cvt-rtest-at-point t))))
+      (while (emt:ed:vers:convert-rtest-at-point t))))
 
 
-;;;_  . emtvers:root-project-dir
+;;;_  . emt:ed:vers:root-project-dir
 ;;$$IMPROVE ME Should be customizable or calculated, not handwritten.
-(defconst emtvers:root-project-dir 
+(defconst emt:ed:vers:root-project-dir 
    "~/projects/elisp/emtest/lisp/"
    "" )
-;;;_  . emtvers:cp-rtest-file
+;;;_  . emt:ed:vers:cp-rtest-file
 ;;;###autoload
-(defun emtvers:cp-rtest-file (filename)
+(defun emt:ed:vers:cp-rtest-file (filename)
    "Copy an rtest file, setting it up for emtest
 FILENAME is the filename of an existing rtest file"
    (interactive
@@ -226,7 +226,7 @@ FILENAME is the filename of an existing rtest file"
       (with-current-buffer
 	 (find-file-noselect emt-filename)
 	 ;;Convert it
-	 (emtvers:cvt-rtest-buffer)
+	 (emt:ed:vers:cvt-rtest-buffer)
 	 ;;Save it
 	 (save-buffer)))
    
@@ -236,15 +236,15 @@ FILENAME is the filename of an existing rtest file"
    ;;Pop that buffer up - maybe
    )
 
-;;;_ , emtvers:make-defstruct-explicit
+;;;_ , emt:ed:vers:make-defstruct-explicit
 ;;Usage:
 ;;Place point on already-paranthesized struct name (but not on the first character).  It can have
 ;;properties already such as :include.
-;;Command `emtvers:make-defstruct-explicit'
+;;Command `emt:ed:vers:make-defstruct-explicit'
 ;;In dired with all potentially affected files marked, query-replace
 ;;the symbols with their better-behaved counterparts.
 
-(fset 'emtvers:canonize-defstruct
+(fset 'emt:ed:vers:canonize-defstruct
    [C-M-kp-left ?\C-  C-M-kp-right ?\M-w ?\C-x ?r ?s ?a ?\C-m ?\C-i ?\( ?: ?c ?o ?n ?s ?t ?r ?u ?c ?t ?o ?r ?  ?m ?a ?k ?e ?- ?\C-x ?r ?i ?a ?\C-\M-u C-M-kp-right ?\C-m ?\C-i ?\( ?: ?c ?o ?n ?c ?- ?n ?a ?m ?e ?  ?\C-x ?r ?i ?a C-M-kp-right ?- ?\C-\M-u C-M-kp-right ?\C-m ?\C-i ?\( ?: ?c ?o ?p ?i ?e ?r ?  ?n ?i ?l ?\C-\M-u C-M-kp-right])
 
 ;;How: First, put point in register b for that buffer
@@ -253,7 +253,7 @@ FILENAME is the filename of an existing rtest file"
 ;;Begin query-replace with paste
 ;;User will edit the name and start the replacing
 ;;Replace it everywhere.
-(fset 'emtvers:replace-everywhere
+(fset 'emt:ed:vers:replace-everywhere
    [?\C-  C-kp-left ?\C-  C-M-kp-right ?\C-x ?r ?s ?a ?\C-x ?r ?j ?b ?Q ?\C-x ?r ?i ?a return up])
 
 ;;;_  . Examples
