@@ -52,7 +52,7 @@ It just tells a pathtree to add this node."
 
 ;;;_  . emtvo:pathtree-cb-aux
 ;;$$OBSOLESCENT - Only called to make root.  We might as well just
-;;pass root.  Waiting on changes to `emtvp:make-pathtree'.
+;;pass root.  Waiting on changes to `pathtree:make-pathtree'.
 ;;$$RETHINK ME When we set up display-data.  Perhaps better in the
 ;;freshener, getting foreign data stored in the pathtree.
 (defun emtvo:pathtree-cb-aux (old-version arg display-data)
@@ -72,20 +72,20 @@ Make a `emt:view:presentable' or its descendant."
 	       display-data)
 	    ;;Remove any note children from previous iterations.
 	    (setf
-	       (emtvp:node->children suite)
+	       (pathtree:node->children suite)
 	       (delq nil
 		  (mapcar
 		     #'(lambda (child)
 			  (unless (emt:view:note-p child) child))
-		     (emtvp:node->children suite))))
+		     (pathtree:node->children suite))))
 	    suite))
       ((eq (car arg) 'note-2)
 	 (check-type (second arg) emt:view:presentable)
 	 ;;Adopt all the old version's children
 	 (when old-version
 	    (setf
-	       (emtvp:node->children (second arg))
-	       (emtvp:node->children old-version)))
+	       (pathtree:node->children (second arg))
+	       (pathtree:node->children old-version)))
 	 (setf
 	    (emt:view:presentable->list (second arg))
 	    display-data)
@@ -98,7 +98,7 @@ Make a `emt:view:presentable' or its descendant."
    ""
    (unless emtvo:pathtree
       (setq emtvo:pathtree
-	 (emtvp:make-pathtree
+	 (pathtree:make-pathtree
 	    pathtree-cb
 	    `(lambda (old-version arg)
 		(emtvo:pathtree-cb-aux old-version arg (,make-display-data)))
@@ -124,7 +124,7 @@ Make a `emt:view:presentable' or its descendant."
 (defun emtvo:receive (report)
    "Receive REPORT"
    (emt:r:receive emtvo:receiver report)
-   (emtvp:freshen emtvo:pathtree))
+   (pathtree:freshen emtvo:pathtree))
 
 ;;;_ , Command entry points
 ;;;_  . emt:vw:top:tests-outstanding hollow. 

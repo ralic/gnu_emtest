@@ -36,29 +36,29 @@
 ;;;_. Body
 ;;;_ , Pathtree
 ;;;_  . Types
-;;;_   , emtvp:name-type
-(deftype emtvp:name-type ()
+;;;_   , pathtree:name-type
+(deftype pathtree:name-type ()
    '(or null string symbol integer))
-;;;_   , emtvp:node
-(defstruct (emtvp:node
-	      (:constructor emtvp:make-node)
-	      (:conc-name emtvp:node->)
+;;;_   , pathtree:node
+(defstruct (pathtree:node
+	      (:constructor pathtree:make-node)
+	      (:conc-name pathtree:node->)
 	      (:copier nil))
    "A node in a pathtree"
-   (name ()      :type emtvp:name-type)
-   (parent () :type (or null emtvp:node))
+   (name ()      :type pathtree:name-type)
+   (parent () :type (or null pathtree:node))
    (children () 
-      :type (repeat emtvp:node))
+      :type (repeat pathtree:node))
    (dirty-flags ()
       :type (repeat symbol)))
 
 ;;;_   , emtvp
 (defstruct (emtvp
-	      (:constructor emtvp:make)
+	      (:constructor pathtree:make)
 	      (:conc-name emtvp->)
 	      (:copier nil))
    "A pathtree object"
-   (root ()         :type emtvp:node)
+   (root ()         :type pathtree:node)
 
    ;;*Callbacks*
    (node-dirtied   () 
@@ -73,56 +73,56 @@ dirty list.")
    (foreign-data ())
 
    ;;*Misc*
-   (type 'emtvp:node
+   (type 'pathtree:node
       :doc "The type of nodes.   Used in testing and testhelping.
-Must be derived from `emtvp:node'.")
+Must be derived from `pathtree:node'.")
    (dirty () 
-      :type (repeat emtvp:node)
+      :type (repeat pathtree:node)
       :doc "Dirty-list of nodes that want updating via NODE-DIRTIED"))
 
 ;;;_  . Functions
-;;;_   , emtvp:name=
-(defalias 'emtvp:name= 'equal)
-;;;_   , emtvp:make-pathtree
+;;;_   , pathtree:name=
+(defalias 'pathtree:name= 'equal)
+;;;_   , pathtree:make-pathtree
 ;;$$CHANGE MY ARGLIST Replace make-node and root-name with ROOT.
-(defun emtvp:make-pathtree (node-dirtied make-node type &optional root-name)
+(defun pathtree:make-pathtree (node-dirtied make-node type &optional root-name)
    "Make an empty tree"
    (let
       ((root (funcall make-node nil nil)))
       (setf
-	 (emtvp:node->name        root) (or root-name "")
-	 (emtvp:node->parent      root) nil
-	 (emtvp:node->dirty-flags root) '(new))
-      (emtvp:make
+	 (pathtree:node->name        root) (or root-name "")
+	 (pathtree:node->parent      root) nil
+	 (pathtree:node->dirty-flags root) '(new))
+      (pathtree:make
 	 :root         root
 	 :node-dirtied node-dirtied
 	 :type         type)))
 ;;;_   , Find nodes
-;;;_    . emtvp:find-node
-(defun emtvp:find-node (tree path make-empty-node)
+;;;_    . pathtree:find-node
+(defun pathtree:find-node (tree path make-empty-node)
    "Find a node at path PATH in TREE.
 Make intervening nodes if they don't exist.
 TREE must be a `emtvp'.
-PATH must be a list of `emtvp:name-type'."
+PATH must be a list of `pathtree:name-type'."
    
    (check-type tree emtvp)
-   (check-type path (repeat emtvp:name-type))
-   (emtvp:find-node-under-node
+   (check-type path (repeat pathtree:name-type))
+   (pathtree:find-node-under-node
       tree path (emtvp->root tree) make-empty-node))
 
-;;;_    . emtvp:find-node-under-node
-(defun emtvp:find-node-under-node (tree path node make-empty-node)
+;;;_    . pathtree:find-node-under-node
+(defun pathtree:find-node-under-node (tree path node make-empty-node)
    "Return a node at path PATH under node NODE.
 The return value is suitable as a parent
 Make intervening nodes if they don't exist.  
 
 TREE must be a `emtvp'.
-NODE must be a `emtvp:node' or descendant.
-PATH must be a list of `emtvp:name-type'."
+NODE must be a `pathtree:node' or descendant.
+PATH must be a list of `pathtree:name-type'."
 
    (check-type tree   emtvp)
-   (check-type path   (repeat emtvp:name-type))
-   (check-type node   emtvp:node)
+   (check-type path   (repeat pathtree:name-type))
+   (check-type node   pathtree:node)
    
    (let*
       (
@@ -131,84 +131,84 @@ PATH must be a list of `emtvp:name-type'."
 	 (child
 	    (or 
 	       (find name
-		  (emtvp:node->children node)
-		  :key #'emtvp:node->name
-		  :test #'emtvp:name=)
-	       (emtvp:add-child 
+		  (pathtree:node->children node)
+		  :key #'pathtree:node->name
+		  :test #'pathtree:name=)
+	       (pathtree:add-child 
 		  tree 
 		  node 
 		  name 
 		  (funcall make-empty-node)))))
       (if
 	 tail
-	 (emtvp:find-node-under-node tree tail child make-empty-node)
+	 (pathtree:find-node-under-node tree tail child make-empty-node)
 	 child)))
 ;;;_   , Add/remove nodes
-;;;_    . emtvp:replace-node
-(defun emtvp:replace-node (tree old-node new-node)
+;;;_    . pathtree:replace-node
+(defun pathtree:replace-node (tree old-node new-node)
    "Replace OLD-NODE with NEW-NODE in TREE.
 Error if OLD-NODE is the root or otherwise unparented."
    
    (let
-      ((parent (emtvp:node->parent old-node)))
+      ((parent (pathtree:node->parent old-node)))
       (unless parent 
 	 (error "Node %s must not be the root" old-node))
-      (emtvp:remove-child tree parent old-node)
-      (emtvp:add-child tree parent (emtvp:node->name new-node) new-node)))
+      (pathtree:remove-child tree parent old-node)
+      (pathtree:add-child tree parent (pathtree:node->name new-node) new-node)))
 
-;;;_    . emtvp:add-child
+;;;_    . pathtree:add-child
 ;;$$RETHINK MY ARGLIST don't take `name', caller should set it.
-(defun emtvp:add-child (tree parent name new-child &optional prepend)
+(defun pathtree:add-child (tree parent name new-child &optional prepend)
    "Add node NEW-CHILD at the end of PARENT's children.
 
 To stitch NEW-CHILD in we set name, parent, and dirty-flags, but
 don't otherwise alter it."
    (check-type tree   emtvp)
-   (check-type parent emtvp:node)
-   (check-type name   emtvp:name-type)
+   (check-type parent pathtree:node)
+   (check-type name   pathtree:name-type)
    
    (setf
-      (emtvp:node->name        new-child) name
-      (emtvp:node->parent      new-child) parent)
+      (pathtree:node->name        new-child) name
+      (pathtree:node->parent      new-child) parent)
 
    ;;Don't set NEW-CHILD's children - the callback is allowed to set
    ;;them and expect them to be used.
    (if prepend
       (callf2 cons
 	 new-child
-	 (emtvp:node->children parent))
+	 (pathtree:node->children parent))
       (callf append
-	 (emtvp:node->children parent)
+	 (pathtree:node->children parent)
 	 (list new-child)))
-   (emtvp:set-dirty tree new-child 'new)
+   (pathtree:set-dirty tree new-child 'new)
    new-child)
-;;;_    . emtvp:remove-child
-(defun emtvp:remove-child (tree parent child)
+;;;_    . pathtree:remove-child
+(defun pathtree:remove-child (tree parent child)
    "Remove child CHILD of PARENT and return it."
    (check-type tree   emtvp)
-   (check-type parent emtvp:node)
-   (check-type child  emtvp:node)
+   (check-type parent pathtree:node)
+   (check-type child  pathtree:node)
       
    ;;Do the actual removal
-   (callf2 delq child (emtvp:node->children parent))
+   (callf2 delq child (pathtree:node->children parent))
    ;;Indicate what has been done to each node.
-   (emtvp:set-dirty tree child 'lost-children)
-   (emtvp:set-dirty tree child 'deleted))
+   (pathtree:set-dirty tree child 'lost-children)
+   (pathtree:set-dirty tree child 'deleted))
 
 
 ;;;_ , Dirty flags
-;;;_  . emtvp:set-dirty
-(defun emtvp:set-dirty (tree node flag)
+;;;_  . pathtree:set-dirty
+(defun pathtree:set-dirty (tree node flag)
    "Mark NODE as dirty.  
 FLAG says what type of dirtiness is marked"
    (progn
        (pushnew flag
-	  (emtvp:node->dirty-flags node))
+	  (pathtree:node->dirty-flags node))
        (push node
 	  (emtvp->dirty tree))))
 
-;;;_  . emtvp:freshen
-(defun emtvp:freshen (tree)
+;;;_  . pathtree:freshen
+(defun pathtree:freshen (tree)
    ""
    ;;This call empties the dirty list too.
    (pending:do-all
@@ -216,7 +216,7 @@ FLAG says what type of dirtiness is marked"
       #'(lambda (el tree)
 	   "Call the cleaner callback.  No-op if there are no dirty-flags."
 	   (if
-	      (emtvp:node->dirty-flags el)
+	      (pathtree:node->dirty-flags el)
 	      (funcall (emtvp->node-dirtied tree) el tree)
 	      '()))
       (list tree)
@@ -225,27 +225,27 @@ FLAG says what type of dirtiness is marked"
 	      "Couldn't process nodes %S"
 	      (mapconcat
 		 #'(lambda (x)
-		      (emtvp:node->name x))
+		      (pathtree:node->name x))
 		 unprocessed
 		 "\n")))
       t))
 
 
 ;;;_ , Utilities to help define "cleaning" callbacks
-;;;_  . emtvp:util:match-as-car
-(defun emtvp:util:match-as-car (x el)
+;;;_  . pathtree:util:match-as-car
+(defun pathtree:util:match-as-car (x el)
    ""
    (and 
       (listp el)
       (eq (car el) x)))
 
-;;;_  . emtvp:util:member-as-car
-(defun emtvp:util:member-as-car (elt list)
+;;;_  . pathtree:util:member-as-car
+(defun pathtree:util:member-as-car (elt list)
    ""
    (member* elt list
-      :test #'emtvp:util:match-as-car))
-;;;_  . emtvp:util:handle-dirty
-(defmacro emtvp:util:handle-dirty (obj form)
+      :test #'pathtree:util:match-as-car))
+;;;_  . pathtree:util:handle-dirty
+(defmacro pathtree:util:handle-dirty (obj form)
    "Evaluate form with:
  * DIRTY-FLAGS bound to OBJ's dirty flags
 
@@ -262,7 +262,7 @@ And with the following functions defined:
       
       `(let* 
 	  (  (,objsym ,obj)
-	     (dirty-flags (emtvp:node->dirty-flags ,objsym))
+	     (dirty-flags (pathtree:node->dirty-flags ,objsym))
 	     (,new-dirty-nodes '()))
 	  (flet
 	     (  (undirty (flag)
@@ -273,17 +273,17 @@ And with the following functions defined:
 		      (delete* 
 			 flag
 			 dirty-flags 
-			 :test #'emtvp:util:match-as-car)))
+			 :test #'pathtree:util:match-as-car)))
 		(new-dirty (flag)
 		   (pushnew flag dirty-flags))
 		(new-dirty-node (flag node)
-		   (pushnew flag (emtvp:node->dirty-flags node))
+		   (pushnew flag (pathtree:node->dirty-flags node))
 		   (push node ,new-dirty-nodes)))
 	 
 	     ,form)
       
 	  (setf 
-	     (emtvp:node->dirty-flags ,objsym) dirty-flags)
+	     (pathtree:node->dirty-flags ,objsym) dirty-flags)
       
 
 	  ;;Return the nodes we newly know are dirty.  If dirty-flags is

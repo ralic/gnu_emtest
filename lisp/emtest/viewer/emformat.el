@@ -291,9 +291,9 @@ Intended for items that are basically just containers."
 
 (defun emt:fmt:top (view-node)
    "Make a format form for VIEW-NODE.
-VIEW-NODE must be at least an `emtvp:node'."
+VIEW-NODE must be at least an `pathtree:node'."
 
-   (check-type view-node emtvp:node)
+   (check-type view-node pathtree:node)
    (utidyv:top 
       emt:fmt:dynvars
       `(
@@ -308,14 +308,14 @@ VIEW-NODE must be at least an `emtvp:node'."
 VIEW-NODE must be an `emt:view:presentable'.
 Must be called in a `utidyv:top' context."
 
-   (check-type view-node emtvp:node)
+   (check-type view-node pathtree:node)
 
    (let*
       ((suite view-node)
 	 (name
-	    (emtvp:node->name view-node))
+	    (pathtree:node->name view-node))
 	 (children
-	    (emtvp:node->children view-node))
+	    (pathtree:node->children view-node))
 	 (grades
 	    (emt:view:presentable->sum-grades suite))
 	 (grade-face
@@ -359,7 +359,7 @@ Must be called in a `utidyv:top' context."
 	 (emt:view:note-placeholder
 	    (emt:fmt:shortcut-single
 	       nil
-	       (emtvp:node->children view-node)
+	       (pathtree:node->children view-node)
 	       '()
 	       nil
 	       "[Note placeholder with no children]"))
@@ -368,7 +368,7 @@ Must be called in a `utidyv:top' context."
 	 (emt:view:presentable
 	    (emt:fmt:shortcut-single 
 	       nil
-	       (emtvp:node->children view-node)
+	       (pathtree:node->children view-node)
 	       grades-sum
 	       grade-face
 	       "[Suite placeholder with no children]")))))

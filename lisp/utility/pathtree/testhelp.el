@@ -36,81 +36,81 @@
 (require 'utility/pathtree)
 ;;;_. Body
 ;;;_ , Derived structure
-(defstruct (emtvp:th:derived-node
-	      (:include emtvp:node)
-	      (:constructor emtvp:th:make-derived-node)
-	      (:conc-name emtvp:th:derived-node->)
+(defstruct (pathtree:th:derived-node
+	      (:include pathtree:node)
+	      (:constructor pathtree:th:make-derived-node)
+	      (:conc-name pathtree:th:derived-node->)
 	      (:copier nil))
-   "A node derived from emtvp:node"
+   "A node derived from pathtree:node"
    data)
 
 
 ;;;_ , Pattern governors
 (emtm:define-struct-governor 
-   (emtvp:node
-      (:constructor emtvp:make-node)
-      (:conc-name emtvp:node->)
+   (pathtree:node
+      (:constructor pathtree:make-node)
+      (:conc-name pathtree:node->)
       (:copier nil))
    name path parent children data)
 (emtm:define-struct-governor 
-   (emtvp:th:derived-node
-      (:include emtvp:node)
-      (:constructor emtvp:th:make-derived-node)
-      (:conc-name emtvp:th:derived-node->)
+   (pathtree:th:derived-node
+      (:include pathtree:node)
+      (:constructor pathtree:th:make-derived-node)
+      (:conc-name pathtree:th:derived-node->)
       (:copier nil))
    name path parent children data)
 (emtm:define-struct-governor 
    (emtvp
-      (:constructor emtvp:make)
+      (:constructor pathtree:make)
       (:conc-name emtvp->)
       (:copier nil))
    root)
-;;;_ , emtvp:th:type-correct-p Type checker
-(defun emtvp:th:type-correct-p (tree)
+;;;_ , pathtree:th:type-correct-p Type checker
+(defun pathtree:th:type-correct-p (tree)
    "Return non-nil just if the tree is a type-correct emtvp"
    (and
       (typep tree 'emtvp)
-      (emtvp:th:subtree-typecorrect-p
+      (pathtree:th:subtree-typecorrect-p
 	 (emtvp->root tree)
 	 (emtvp->type tree))))
 
-;;;_ , emtvp:th:subtree-typecorrect-p
-(defun emtvp:th:subtree-typecorrect-p (node type)
+;;;_ , pathtree:th:subtree-typecorrect-p
+(defun pathtree:th:subtree-typecorrect-p (node type)
    "Return non-nil just if the subtree is type-correct"
    (and
       (typep node type)
       (every
 	 #'(lambda (x)
-	      (emtvp:th:subtree-typecorrect-p x type))
-	 (emtvp:node->children node))))
+	      (pathtree:th:subtree-typecorrect-p x type))
+	 (pathtree:node->children node))))
 
 
-;;;_  . emtvp:th:callback:push
-(defun emtvp:th:callback:push (x)
+;;;_  . pathtree:th:callback:push
+(defun pathtree:th:callback:push (x)
    "Callback for testing pathtree.
 Store data about X on the list `*nodes-freshened*'.  Then clean up
    like a normal callback would must."
-   (check-type x emtvp:node)
+   (check-type x pathtree:node)
    (push  
       (list
-	 (emtvp:th:derived-node->name x)
-	 (emtvp:th:derived-node->data x)
-	 (emtvp:th:derived-node->dirty-flags x))
+	 (pathtree:th:derived-node->name x)
+	 (pathtree:th:derived-node->data x)
+	 (pathtree:th:derived-node->dirty-flags x))
       *nodes-freshened*)
    ;;Wipe out previous dirty-flags in case we are interested in later
    ;;operations. 
-   (setf (emtvp:node->dirty-flags x) '())
+   (setf (pathtree:node->dirty-flags x) '())
 
    ;;Return the empty list, indicating that there are no forther
    ;;operations to perform.
    ())
-;;;_  . emtvp:th:how-dirty
-;;Usage: (assert (equal (emtvp:th:how-dirty Name) Expected) t)
-;;Usage: (assert (emtm (emtvp:th:how-dirty Name) Expected) t)
+;;;_  . pathtree:th:how-dirty
+;;Usage: (assert (equal (pathtree:th:how-dirty Name) Expected) t)
+;;Usage: (assert (emtm (pathtree:th:how-dirty Name) Expected) t)
 
 ;;But this can't be easily used when matching patterns.  Maybe if we
 ;;sort flags. 
-(defun emtvp:th:how-dirty (name)
+(defun pathtree:th:how-dirty (name)
    ""
    
    ;;Mapcar, giving applicable dirty-flags.  Empty list for other names.
@@ -132,77 +132,77 @@ Store data about X on the list `*nodes-freshened*'.  Then clean up
 
 ;;;_   , Tests (of this helper)
 ;;See below
-;;;_  . emtvp:th:assert-name-dirtiness
-(defmacro emtvp:th:assert-name-dirtiness (name pattern)
+;;;_  . pathtree:th:assert-name-dirtiness
+(defmacro pathtree:th:assert-name-dirtiness (name pattern)
    ""
    
    `(let
        ((how-dirty
-	   (emtvp:th:how-dirty ,name)))
+	   (pathtree:th:how-dirty ,name)))
        (assert 
 	  (emtm how-dirty ,pattern)
 	  nil "Mismatch %S has %s" ,name how-dirty)))
 
 
-;;;_  . emtvp:th:let-usuals
-(defmacro emtvp:th:let-usuals (other-lets &rest body)
+;;;_  . pathtree:th:let-usuals
+(defmacro pathtree:th:let-usuals (other-lets &rest body)
    ""
    
    `(let*
 	 (  (*nodes-freshened* '())
 	    (tree 
-	       (emtvp:make-pathtree
-		  #'emtvp:th:callback:push
+	       (pathtree:make-pathtree
+		  #'pathtree:th:callback:push
 		  #'(lambda(node data) 
-		       (emtvp:th:make-derived-node
+		       (pathtree:th:make-derived-node
 			  :data (or data "default-data")))
-		  'emtvp:th:derived-node))
+		  'pathtree:th:derived-node))
 	    ,@other-lets)
        ,@body))
 
-;;;_  . emtvp:th:skeleton
-(defun emtvp:th:skeleton (tree)
+;;;_  . pathtree:th:skeleton
+(defun pathtree:th:skeleton (tree)
    "Return a skeleton of TREE"
    (check-type tree emtvp)
-   (emtvp:th:skeleton-recurse (emtvp->root tree)))
+   (pathtree:th:skeleton-recurse (emtvp->root tree)))
 
-;;;_  . emtvp:th:skeleton-recurse
-(defun emtvp:th:skeleton-recurse (node)
+;;;_  . pathtree:th:skeleton-recurse
+(defun pathtree:th:skeleton-recurse (node)
    "Return a skeleton of NODE"
    (cons
-      (emtvp:node->name node)
+      (pathtree:node->name node)
       (mapcar
-	 #'emtvp:th:skeleton-recurse
-      (emtvp:node->children node))))
-;;;_  . emtvp:th:add/replace-node
+	 #'pathtree:th:skeleton-recurse
+      (pathtree:node->children node))))
+;;;_  . pathtree:th:add/replace-node
 ;;$$NEW, for testing
-(defun emtvp:th:add/replace-node (tree path arg)
+(defun pathtree:th:add/replace-node (tree path arg)
    "Add a node"
 
    (let
       ((node 
-	  (emtvp:find-node tree path 
+	  (pathtree:find-node tree path 
 	     #'(lambda() 
-		  (emtvp:th:make-derived-node :data
+		  (pathtree:th:make-derived-node :data
 		     "default-data")))))
       
-      (emtvp:replace-node tree node
-	 (emtvp:th:make-derived-node
+      (pathtree:replace-node tree node
+	 (pathtree:th:make-derived-node
 	    :data arg))))
 
-;;;_  . emtvp:th:add/replace-node-recurse
-(defun emtvp:th:add/replace-node-recurse (tree node path arg)
+;;;_  . pathtree:th:add/replace-node-recurse
+(defun pathtree:th:add/replace-node-recurse (tree node path arg)
    ""
 
    (let
       ((node 
-	  (emtvp:find-node-under-node tree path node
+	  (pathtree:find-node-under-node tree path node
 	     #'(lambda() 
-		  (emtvp:th:make-derived-node :data
+		  (pathtree:th:make-derived-node :data
 		     "default-data")))))
       
-      (emtvp:replace-node tree node
-	 (emtvp:th:make-derived-node
+      (pathtree:replace-node tree node
+	 (pathtree:th:make-derived-node
 	    :data arg))))
 ;;;_. Footers
 ;;;_ , Provides

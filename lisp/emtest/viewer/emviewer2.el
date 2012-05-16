@@ -57,12 +57,12 @@
    (check-type obj emt:view:presentable)
    (check-type tree emtvp)
 
-   (emtvp:util:handle-dirty obj
+   (pathtree:util:handle-dirty obj
       (cond
 	 (
 	    (or
 	       (member 'new dirty-flags)
-	       (emtvp:util:member-as-car 
+	       (pathtree:util:member-as-car 
 		  'replaced 
 		  dirty-flags))
 	    (undirty 'new)
@@ -70,7 +70,7 @@
 	    (new-dirty 'summary)
 	    (new-dirty 'notes)
 	    (let
-	       ((parent (emtvp:node->parent obj)))
+	       ((parent (pathtree:node->parent obj)))
 	       (when parent
 		  ;;Parent's summary may be dirty now.
 		  (new-dirty-node 'summary parent))))
@@ -82,8 +82,8 @@
 	       (some
 		  #'(lambda (child)
 		       (member 'summary 
-			  (emtvp:node->dirty-flags child)))
-		  (emtvp:node->children obj))
+			  (pathtree:node->dirty-flags child)))
+		  (pathtree:node->children obj))
 	       ;;Do summarization
 	       (emt:pth:grd:cache-subtree-grade obj)
 	       ;;Record this property
@@ -112,7 +112,7 @@
 	       (undirty 'summary)
 	       ;;Parent (if any) now needs to be resummarized.
 	       (let
-		  ((parent (emtvp:node->parent obj)))
+		  ((parent (pathtree:node->parent obj)))
 		  (when parent
 		     (new-dirty-node 'summary parent)))))
 
@@ -139,7 +139,7 @@
 ;;;_  . emt:vw:top:print-all
 (defun emt:vw:top:print-all (top-node)
    "Format and print the whole report."
-   (emtvp:freshen emtvo:pathtree)
+   (pathtree:freshen emtvo:pathtree)
    (with-current-buffer emt:vw:top:report-buffer
       (let
 	 ((inhibit-read-only t))

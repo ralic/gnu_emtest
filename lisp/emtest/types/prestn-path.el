@@ -51,10 +51,10 @@
    ""
    (equal a b))
 ;;;_  . Conversion functions
-;;;_   , emt:testral:id->emtvp:name
-(defalias 'emt:testral:id->emtvp:name 'identity)
-;;;_   , emt:testral:map-id->emtvp:name
-(defalias 'emt:testral:map-id->emtvp:name 'identity)
+;;;_   , emt:testral:id->pathtree:name
+(defalias 'emt:testral:id->pathtree:name 'identity)
+;;;_   , emt:testral:map-id->pathtree:name
+(defalias 'emt:testral:map-id->pathtree:name 'identity)
 
 ;;;_. Footers
 ;;;_ , Provides

@@ -39,7 +39,7 @@
    "Formatter for TESTRAL viewable governed by `scope'"
    (emt:fmt:shortcut-single
       name
-      (emtvp:node->children note)
+      (pathtree:node->children note)
       '()
       (emt:fmt:grade-overall-face
 	 (emt:view:presentable->sum-grades note))

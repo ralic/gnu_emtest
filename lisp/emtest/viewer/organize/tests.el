@@ -72,13 +72,13 @@
 	 (emt:assert (identity emtvo:pathtree))
 	 (emt:doc "Validate: Tree is the right type all thru it")
 	 (emt:assert
-	    (emtvp:th:type-correct-p emtvo:pathtree))
+	    (pathtree:th:type-correct-p emtvo:pathtree))
 	 (emt:doc "Response: The results occur exactly in expected
    positions in the tree.")
 	 (emt:assert
 	    (emtm 
 	       emtvo:pathtree
-	       (emtvp:make 
+	       (pathtree:make 
 		  :root
 		  ;;Pathtree's root
 		  (emt:view:make-presentable
@@ -106,13 +106,13 @@
 	 (emt:assert (identity emtvo:pathtree))
 	 (emt:doc "Validate: Tree is the right type all thru it")
 	 (emt:assert
-	    (emtvp:th:type-correct-p emtvo:pathtree))
+	    (pathtree:th:type-correct-p emtvo:pathtree))
 	 (emt:doc "Response: The results occur exactly in expected
    positions in the tree.")
 	 (emt:assert
 	    (emtm 
 	       emtvo:pathtree
-	       (emtvp:make 
+	       (pathtree:make 
 		  :root
 		  ;;Pathtree's root
 		  (emt:view:make-presentable
@@ -147,13 +147,13 @@
 	 (emt:assert (identity emtvo:pathtree))
 	 (emt:doc "Validate: Tree is the right type all thru it")
 	 (emt:assert
-	    (emtvp:th:type-correct-p emtvo:pathtree))
+	    (pathtree:th:type-correct-p emtvo:pathtree))
 	 (emt:doc "Response: The results occur exactly in expected
    positions in the tree.")
 	 (emt:assert
 	    (emtm 
 	       emtvo:pathtree
-	       (emtvp:make 
+	       (pathtree:make 
 		  :root
 		  ;;Pathtree's root
 		  (emt:view:make-presentable

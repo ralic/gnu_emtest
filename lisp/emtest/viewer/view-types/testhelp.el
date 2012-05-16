@@ -41,7 +41,7 @@
    (emt:view:presentable
       (:constructor emt:view:make-presentable)
       (:conc-name emt:view:presentable->)
-      (:include emtvp:node))
+      (:include pathtree:node))
    children ;;Included
    sum-grades list)
 

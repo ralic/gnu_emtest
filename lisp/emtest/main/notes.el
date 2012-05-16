@@ -244,7 +244,7 @@ GOVERNOR is a symbol indicating a specific formatter for the output."
    "Add a TESTRAL note.
 
 RELATION gives the relation to the parent note or the suite.  It
-must be a `emtvp:relation-element' - for now, that's a string.
+must be a `pathtree:relation-element' - for now, that's a string.
 
 GOVERNOR is a symbol indicating a specific formatter for the output."
    (when (emtt:testral:p)

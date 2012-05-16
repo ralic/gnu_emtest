@@ -44,7 +44,7 @@
       (list
 	 (emt:fmt:obj-or-string form)
 	 (emt:fmt:mapnodes
-	    (emtvp:node->children note) 
+	    (pathtree:node->children note) 
 	    nil))
       'emt:view:face:failed))
 
@@ -58,7 +58,7 @@
       (list
 	 (emt:fmt:obj-or-string form)
 	 (emt:fmt:mapnodes
-	    (emtvp:node->children note) 
+	    (pathtree:node->children note) 
 	    nil)) 
       'emt:view:face:ok
       t))
@@ -71,7 +71,7 @@
       (list
 	 (emt:fmt:obj-or-string form)
 	 (emt:fmt:mapnodes
-	    (emtvp:node->children note) 
+	    (pathtree:node->children note) 
 	    nil)) 
       'emt:view:face:mismatch))
 
@@ -85,7 +85,7 @@
       (list
 	 (emt:fmt:obj-or-string form)
 	 (emt:fmt:mapnodes
-	    (emtvp:node->children note) 
+	    (pathtree:node->children note) 
 	    nil)) 
       'emt:view:face:ok-match
       t))

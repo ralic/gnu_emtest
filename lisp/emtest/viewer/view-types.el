@@ -60,7 +60,7 @@ But if there were no cases, assertions, etc, `nil'."
 (defstruct (emt:view:presentable
 	      (:constructor emt:view:make-presentable)
 	      (:conc-name emt:view:presentable->)
-	      (:include emtvp:node))
+	      (:include pathtree:node))
    "The base viewable type.  We use this as the content element in
 pathtree nodes."
    (sum-grades () :type emt:view:grade-summary

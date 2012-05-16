@@ -97,7 +97,7 @@ could be, such as when a note-list hasn't been expanded."
 	       #'(lambda (child)
 		    (emt:view:presentable->sum-grades
 		       child))
-	       (emtvp:node->children node)))
+	       (pathtree:node->children node)))
 
 	 ;;Accessor
 	 (own-grade
@@ -110,7 +110,7 @@ could be, such as when a note-list hasn't been expanded."
 ;;;_  . emt:pth:grd:cache-subtree-grade
 (defun emt:pth:grd:cache-subtree-grade (node)
    ""
-   (check-type node emtvp:node)
+   (check-type node pathtree:node)
    (when (typep node 'emt:view:presentable)
       (setf
 	 (emt:view:presentable->sum-grades node)
@@ -146,7 +146,7 @@ could be, such as when a note-list hasn't been expanded."
       
       ;;Remove any previous children.  That's only needed for NODE
       ;;itself, the other viewables are new.
-      (setf (emtvp:node->children node) nil)
+      (setf (pathtree:node->children node) nil)
       
       ;;Record each note's viewable with its parent.  This may skip
       ;;nodes that have no parent.
@@ -172,15 +172,15 @@ could be, such as when a note-list hasn't been expanded."
 		  (ancestor (second cell))
 		  (parent
 		     (if path
-			(emtvp:find-node-under-node
+			(pathtree:find-node-under-node
 			   tree 
-			   (emt:testral:map-id->emtvp:name path) 
+			   (emt:testral:map-id->pathtree:name path) 
 			   ancestor
 			   #'emt:view:make-note-placeholder)
 			ancestor)))
 	       ;;$$IMPROVE ME If there's a `emt:view:note-placeholder', replace
 	       ;;it with this one.
-	       (emtvp:add-child
+	       (pathtree:add-child
 		  tree parent nil child t))))))
 
 ;;;_ , TESTRAL suites
@@ -189,7 +189,7 @@ could be, such as when a note-list hasn't been expanded."
 (defun emt:pth:collect-testral-2  (node tree)
    "Put NODE's TESTRAL notes or runform-list under it in pathtree TREE."
    (check-type tree emtvp)
-   (check-type node emtvp:node)
+   (check-type node pathtree:node)
    (when (emt:view:suite-p node)
       (let
 	 ((result
@@ -226,24 +226,24 @@ Cell must be a emt:view:presentable descendant."
    (check-type cell emt:view:presentable)
    (let
       ((old-node 
-	  (emtvp:find-node tree presentation-path
+	  (pathtree:find-node tree presentation-path
 	     #'emt:view:make-presentable)))
 
       (setf
-	 (emtvp:node->name cell)
+	 (pathtree:node->name cell)
 	 (car (last presentation-path)))
       ;;Adopt suite children but not note children
       (setf
-	 (emtvp:node->children cell)
+	 (pathtree:node->children cell)
 	 (delq nil
 	    (mapcar
 	       #'(lambda (child)
 		    (unless (emt:view:note-p child) child))
-	       (emtvp:node->children old-node))))
+	       (pathtree:node->children old-node))))
        
       ;;$$IMPROVE ME if (eq old-node cell) just dirty it for
       ;;resummary/redisplay as `updated', and handle that.
-      (emtvp:replace-node
+      (pathtree:replace-node
 	 tree old-node cell)))
 
 ;;;_. Footers
