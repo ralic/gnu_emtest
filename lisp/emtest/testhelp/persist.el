@@ -63,7 +63,7 @@ BACKEND, if given, describes the database backend."
       (condition-case err
 	 (let*
 	    ((stored-value
-		(emdb:get-value backend id 'correct-answer))
+		(emt:db:get-value backend id 'correct-answer))
 	       (result
 		  (funcall compare-f value stored-value)))
 
@@ -79,7 +79,7 @@ BACKEND, if given, describes the database backend."
 	    result)
 	       
 	 ;;If we can't get the object, make a note.
-	 (emdb:error
+	 (emt:db:error
 	    (emtt:testral:add-note
 	       "trace"
 	       nil

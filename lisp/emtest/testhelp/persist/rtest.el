@@ -24,7 +24,7 @@
 
 ;;;_ , Commentary:
 
-;; 
+;; This file is obsolete.
 
 
 ;;;_ , Requires

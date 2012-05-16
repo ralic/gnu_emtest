@@ -38,7 +38,7 @@
    "Accept a value in db, as given by BUTTON."
    (let
       ((args (button-get button 'accept-in-db-args)))
-      (apply #'emdb:set-value args)))
+      (apply #'emt:db:set-value args)))
 ;;;_  . emt:vw:note:ediff-string-w/persist
 ;;$$MOVE ME, RENAME ME  It's not specific to this formatter.
 (defun emt:vw:note:ediff-string-w/persist (value backend id)
@@ -53,7 +53,7 @@
 	 (buf-got    (generate-new-buffer "*Emtest got*")))
       ;;Put each into its buffer 
       (with-current-buffer buf-expected
-	 (insert (emdb:get-value backend id 'correct-answer)))
+	 (insert (emt:db:get-value backend id 'correct-answer)))
       (with-current-buffer buf-got
 	 (insert value))
       ;;Run ediff on those buffers.
