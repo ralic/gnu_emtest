@@ -48,8 +48,8 @@ OBJ may be a grade symbol or already be a summary."
 ;;;_  . emtvr:sym->severity
 (defun emtvr:sym->severity (sym)
    "Return the severity of SYM, which should be a grade symbol."
-   (emtvf:grade-fmt->severity
-      (emtvf:get-grade-info sym)))
+   (emt:fmt:grade-fmt->severity
+      (emt:fmt:get-grade-info sym)))
 ;;;_  . emtvr:add-one-grade
 (defun emtvr:add-one-grade (sums sym count)
    "Add the grade represented by SYM to SUMS"

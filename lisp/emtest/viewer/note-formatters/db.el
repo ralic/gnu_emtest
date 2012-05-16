@@ -75,10 +75,10 @@
 ;;;###autoload
 (defun emt:vw:note:not-in-db (note value id backend)
    "Formatter for TESTRAL note governed by `not-in-db'"
-   (emtvf:outline-item-emformat
+   (emt:fmt:outline-item-emformat
       "ID not in database "
       `(
-	  ,(emtvf:outline-item-emformat
+	  ,(emt:fmt:outline-item-emformat
 	      (list
 		 "Value "
 		 `(button "[Accept]"
@@ -114,7 +114,7 @@
    ;;object: If rejected, to accept it (Done).  To edit it and save
    ;;the new version as acceptable.  To diff the value with it.
 
-   (emtvf:outline-item-emformat
+   (emt:fmt:outline-item-emformat
       (list
 	 (if matched-p 
 	    "Matched"
@@ -133,7 +133,7 @@
 		   ediff-args (,value ,backend ,id)
 		   help-echo "Compare to the accepted value"))))
       (list
-	 (emtvf:obj-or-string value)) 
+	 (emt:fmt:obj-or-string value)) 
       (if matched-p 
 	 'emt:view:face:ok-match
 	 'emt:view:face:mismatch)

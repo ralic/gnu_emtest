@@ -37,14 +37,14 @@
 ;;;###autoload
 (defun emt:vw:note:scope (note &optional name)
    "Formatter for TESTRAL viewable governed by `scope'"
-   (emtvf:shortcut-single
+   (emt:fmt:shortcut-single
       name
       (emtvp:node->children note)
       '()
-      (emtvf:grade-overall-face
+      (emt:fmt:grade-overall-face
 	 (emt:view:presentable->sum-grades note))
       '((sep 2) "No nested notes")
-      (emtvf:grade-boring (emt:view:presentable->sum-grades note))))
+      (emt:fmt:grade-boring (emt:view:presentable->sum-grades note))))
 
 
 

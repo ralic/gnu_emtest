@@ -158,7 +158,7 @@
 (defun emtv2:insert (top-node)
    "Insert TOP-NODE via loformat"
    (let*
-      ((tree (emtvf:top top-node)))
+      ((tree (emt:fmt:top top-node)))
       (loformat:insert
 	 tree
 	 emtv2:format-alist)))

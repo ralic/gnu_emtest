@@ -39,23 +39,23 @@
    "Formatter for TESTRAL note governed by `parameter'"
    
    (cond
-      ((and (emtvf:short-obj-p arg) (emtvf:short-obj-p val))
-	 (emtvf:outline-item-emformat
+      ((and (emt:fmt:short-obj-p arg) (emt:fmt:short-obj-p val))
+	 (emt:fmt:outline-item-emformat
 	    `((small-object ,arg nil)
 		" => "
 		(small-object ,val nil))
 	    nil))
-      ((emtvf:short-obj-p arg)
-	 (emtvf:outline-item-emformat
+      ((emt:fmt:short-obj-p arg)
+	 (emt:fmt:outline-item-emformat
 	    `(small-object ,arg nil)
-	    (emtvf:obj-or-string val)))
+	    (emt:fmt:obj-or-string val)))
       
       (t
-	 (emtvf:outline-item-emformat
+	 (emt:fmt:outline-item-emformat
 	    "Param"
 	    `((object ,arg nil)
 		" => "
-		,(emtvf:obj-or-string val))))))
+		,(emt:fmt:obj-or-string val))))))
 
 
 ;;;_. Footers

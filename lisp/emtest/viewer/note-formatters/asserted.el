@@ -39,11 +39,11 @@
 (defun emt:vw:note:failed (note form)
    "Formatter for TESTRAL note governed by `failed'"
    ;;$$IMPROVE ME  Take assert args as params, print them.
-   (emtvf:outline-item-emformat
+   (emt:fmt:outline-item-emformat
       "Failed assertion"
       (list
-	 (emtvf:obj-or-string form)
-	 (emtvf:mapnodes
+	 (emt:fmt:obj-or-string form)
+	 (emt:fmt:mapnodes
 	    (emtvp:node->children note) 
 	    nil))
       'emt:view:face:failed))
@@ -53,11 +53,11 @@
 (defun emt:vw:note:succeeded (note form)
    "Formatter for TESTRAL note governed by `succeeded'"
    ;;$$IMPROVE ME  Take assert args as params, print them.
-   (emtvf:outline-item-emformat
+   (emt:fmt:outline-item-emformat
       "Assertion succeeded"
       (list
-	 (emtvf:obj-or-string form)
-	 (emtvf:mapnodes
+	 (emt:fmt:obj-or-string form)
+	 (emt:fmt:mapnodes
 	    (emtvp:node->children note) 
 	    nil)) 
       'emt:view:face:ok
@@ -66,11 +66,11 @@
 ;;;###autoload
 (defun emt:vw:note:mismatched (note form)
    "Formatter for TESTRAL note governed by `mismatched'"
-   (emtvf:outline-item-emformat
+   (emt:fmt:outline-item-emformat
       "Mismatched"
       (list
-	 (emtvf:obj-or-string form)
-	 (emtvf:mapnodes
+	 (emt:fmt:obj-or-string form)
+	 (emt:fmt:mapnodes
 	    (emtvp:node->children note) 
 	    nil)) 
       'emt:view:face:mismatch))
@@ -80,11 +80,11 @@
 ;;;###autoload
 (defun emt:vw:note:matched (note form)
    "Formatter for TESTRAL note governed by `matched'"
-   (emtvf:outline-item-emformat
+   (emt:fmt:outline-item-emformat
       "Matched"
       (list
-	 (emtvf:obj-or-string form)
-	 (emtvf:mapnodes
+	 (emt:fmt:obj-or-string form)
+	 (emt:fmt:mapnodes
 	    (emtvp:node->children note) 
 	    nil)) 
       'emt:view:face:ok-match

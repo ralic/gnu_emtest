@@ -100,23 +100,23 @@ which may not imply success of an assertion."
    "Face for displaying test names"
    :group 'emtest)
 ;;;_  . Configuration
-;;;_   , emtvf:dynvars
-(defconst emtvf:dynvars 
+;;;_   , emt:fmt:dynvars
+(defconst emt:fmt:dynvars 
    (append
-      '((emtvf:*hdln-path*))
-      emtvf:outline:dynvars)
+      '((emt:fmt:*hdln-path*))
+      emt:fmt:outline:dynvars)
    "Dynamic variables that emformat uses" )
 
 ;;;_ , Lower format functions
-;;;_  . emtvf:make-dynamic
-(defun emtvf:make-dynamic (obj func)
+;;;_  . emt:fmt:make-dynamic
+(defun emt:fmt:make-dynamic (obj func)
    "Make a form that calls a dynamic object"
    `(dynamic 
        ,obj 
        ,func
-       ,(utidyv:capture-vars emtvf:dynvars)))
-;;;_  . emtvf:sym->suitename
-(defun emtvf:sym->suitename (sym)
+       ,(utidyv:capture-vars emt:fmt:dynvars)))
+;;;_  . emt:fmt:sym->suitename
+(defun emt:fmt:sym->suitename (sym)
    "Make a form for a suitename given as a symbol"
    `(w/face 
        ,(etypecase sym
@@ -126,8 +126,8 @@ which may not imply success of an assertion."
 
 ;;;_ , Helper functions
 ;;;_  . Characterizing object representation
-;;;_   , emtvf:short-obj-p 
-(defun emtvf:short-obj-p (obj)
+;;;_   , emt:fmt:short-obj-p 
+(defun emt:fmt:short-obj-p (obj)
    "Return t is object's printed representation is fairly short"
    (or
       (symbolp obj)
@@ -137,32 +137,32 @@ which may not imply success of an assertion."
 
 ;;;_  . Singles-Path
 ;;;_   , Special variables
-(declare (special emtvf:*hdln-path*))
+(declare (special emt:fmt:*hdln-path*))
 
-;;;_   , emtvf:with-blank-singles-path
-(defmacro emtvf:with-blank-singles-path (&rest body)
+;;;_   , emt:fmt:with-blank-singles-path
+(defmacro emt:fmt:with-blank-singles-path (&rest body)
    "Eval BODY in a blank singles-path."
    
-   `(let ((emtvf:*hdln-path* '()))
+   `(let ((emt:fmt:*hdln-path* '()))
        ,@body))
-;;;_   , emtvf:with-more-singles-path
-(defmacro emtvf:with-more-singles-path (name &rest body)
+;;;_   , emt:fmt:with-more-singles-path
+(defmacro emt:fmt:with-more-singles-path (name &rest body)
    ""
    
-   `(let ((emtvf:*hdln-path* (cons name emtvf:*hdln-path*)))
+   `(let ((emt:fmt:*hdln-path* (cons name emt:fmt:*hdln-path*)))
        ,@body))
 
-;;;_   , emtvf:singles-path
-(defun emtvf:singles-path ()
+;;;_   , emt:fmt:singles-path
+(defun emt:fmt:singles-path ()
    ""
    (apply #'nconc
       (mapcar
 	 #'(lambda (x)
 	      (list x " "))
-	 (nreverse (remq nil emtvf:*hdln-path*)))))
+	 (nreverse (remq nil emt:fmt:*hdln-path*)))))
 ;;;_  . Buttons
-;;;_   , emtvf:button-explore-func
-(defun emtvf:button-explore-func (button)
+;;;_   , emt:fmt:button-explore-func
+(defun emt:fmt:button-explore-func (button)
    "Explore explorable, given BUTTON."
    ;;$$IMPROVE ME Distinguish proplists we want to use.
    (emt:lch:run
@@ -172,24 +172,24 @@ which may not imply success of an assertion."
       emt:lch:proplist:vanilla
       (button-get button 'prestn-path)))
 
-;;;_   , emtvf:button-to-explore
-(defun emtvf:button-to-explore (explorable text)
+;;;_   , emt:fmt:button-to-explore
+(defun emt:fmt:button-to-explore (explorable text)
    "Make a button to explore EXPLORABLE."
    (when explorable
       `(button ,text 
-	  action ,#'emtvf:button-explore-func
+	  action ,#'emt:fmt:button-explore-func
 	  help-echo "Rerun this test"
 	  how-to-run  ,(emt:run:explorable->how-to-run  explorable)
 	  prestn-path ,(emt:run:explorable->prestn-path explorable))))
-;;;_   , emtvf:viewable->mark-text
-(defun emtvf:viewable->mark-text (viewable)
+;;;_   , emt:fmt:viewable->mark-text
+(defun emt:fmt:viewable->mark-text (viewable)
    "Return the text of VIEWABLE's current mark."
    (if (emt:view:suite->mark viewable) "X" "_"))
 
-;;;_   , emtvf:reprint-button
+;;;_   , emt:fmt:reprint-button
 ;;$$IMPROVE ME  Make this work for buttons in general, not just
 ;;(un)mark on viewables
-(defun emtvf:reprint-button (button)
+(defun emt:fmt:reprint-button (button)
    "Cause BUTTON to be reprinted"
    (let
       (  (viewable (button-get button 'viewable))
@@ -201,11 +201,11 @@ which may not imply success of an assertion."
       (save-excursion
 	 (goto-char pos)
 	 (loformat:insert
-	    (emtvf:button-toggle-mark viewable)
+	    (emt:fmt:button-toggle-mark viewable)
 	    emtv2:format-alist))))
 
-;;;_   , emtvf:button-toggle-mark-func
-(defun emtvf:button-toggle-mark-func (button)
+;;;_   , emt:fmt:button-toggle-mark-func
+(defun emt:fmt:button-toggle-mark-func (button)
    "Toggle the mark on viewable given on BUTTON."
    (let
       ((viewable (button-get button 'viewable)))
@@ -218,20 +218,20 @@ which may not imply success of an assertion."
 	       (emt:view:suite->explorable viewable)))
 	 'user-says-rerun
 	 t)
-      (emtvf:reprint-button button)))
+      (emt:fmt:reprint-button button)))
 
-;;;_   , emtvf:button-toggle-mark
-(defun emtvf:button-toggle-mark (viewable)
+;;;_   , emt:fmt:button-toggle-mark
+(defun emt:fmt:button-toggle-mark (viewable)
    "Make a button to toggle the mark on VIEWABLE."
    (when viewable
-      `(button ,(emtvf:viewable->mark-text viewable) 
-	  action ,#'emtvf:button-toggle-mark-func
+      `(button ,(emt:fmt:viewable->mark-text viewable) 
+	  action ,#'emt:fmt:button-toggle-mark-func
 	  help-echo "Mark this test-suite"
 	  viewable ,viewable)))
 
 ;;;_  . Objects
-;;;_   , emtvf:obj-or-string
-(defun emtvf:obj-or-string (value)
+;;;_   , emt:fmt:obj-or-string
+(defun emt:fmt:obj-or-string (value)
    "Display VALUE.
 If VALUE is a string, display it literally, otherwise pretty-print it."
    (if
@@ -241,30 +241,30 @@ If VALUE is a string, display it literally, otherwise pretty-print it."
       `(indent 4 ,value)
       `(object ,value nil)))
 ;;;_  . Direct emformat support
-;;;_   , emtvf:outline-item-emformat
-(defmacro emtvf:outline-item-emformat (headtext contents &optional face fold)
+;;;_   , emt:fmt:outline-item-emformat
+(defmacro emt:fmt:outline-item-emformat (headtext contents &optional face fold)
    ""
    
-   `(emtvf:outline-item
-       (list (emtvf:singles-path) ,headtext)
-       (emtvf:with-blank-singles-path ,contents)
+   `(emt:fmt:outline-item
+       (list (emt:fmt:singles-path) ,headtext)
+       (emt:fmt:with-blank-singles-path ,contents)
        ,face
        ,fold))
 
-;;;_   , emtvf:mapnodes 
-(defun emtvf:mapnodes (list els=0)
-   "Map emtvf:node over LIST, making dynamic entries"
+;;;_   , emt:fmt:mapnodes 
+(defun emt:fmt:mapnodes (list els=0)
+   "Map emt:fmt:node over LIST, making dynamic entries"
    (hiformat:map 
       #'(lambda (obj &rest d)
-	   (emtvf:make-dynamic 
+	   (emt:fmt:make-dynamic 
 	      obj 
-	      #'emtvf:node))
+	      #'emt:fmt:node))
       list
       :separator "\n"
       :els=0 els=0))
 
-;;;_  . emtvf:shortcut-single
-(defmacro emtvf:shortcut-single (name children rest-headline face
+;;;_  . emt:fmt:shortcut-single
+(defmacro emt:fmt:shortcut-single (name children rest-headline face
    format-no-child &optional fold)
    "Display an item and its children, or display its single child.
 Intended for items that are basically just containers."
@@ -276,34 +276,34 @@ Intended for items that are basically just containers."
 	     (,children-sym ,children))
 	  (if
 	     (= (length ,children-sym) 1)
-	     (emtvf:with-more-singles-path ,name-sym
-		(emtvf:make-dynamic 
+	     (emt:fmt:with-more-singles-path ,name-sym
+		(emt:fmt:make-dynamic 
 		   (car ,children-sym)
-		   #'emtvf:node))
-	     (emtvf:outline-item-emformat
+		   #'emt:fmt:node))
+	     (emt:fmt:outline-item-emformat
 		(list ,name-sym ,rest-headline)
-		(emtvf:mapnodes ,children-sym ,format-no-child)
+		(emt:fmt:mapnodes ,children-sym ,format-no-child)
 		,face
 		,fold)))))
 
 ;;;_ , Format functions
-;;;_  . emtvf:top
+;;;_  . emt:fmt:top
 
-(defun emtvf:top (view-node)
+(defun emt:fmt:top (view-node)
    "Make a format form for VIEW-NODE.
 VIEW-NODE must be at least an `emtvp:node'."
 
    (check-type view-node emtvp:node)
    (utidyv:top 
-      emtvf:dynvars
+      emt:fmt:dynvars
       `(
 	  (w/face "Emtest results" emt:view:face:title)
 	  "\n"
-	  ,(emtvf:sum-grades-long (emt:view:presentable->sum-grades view-node))
-	  ,(emtvf:node view-node))))
+	  ,(emt:fmt:sum-grades-long (emt:view:presentable->sum-grades view-node))
+	  ,(emt:fmt:node view-node))))
 
-;;;_  . emtvf:node
-(defun emtvf:node (view-node)
+;;;_  . emt:fmt:node
+(defun emt:fmt:node (view-node)
    "Make a format form for VIEW-NODE.
 VIEW-NODE must be an `emt:view:presentable'.
 Must be called in a `utidyv:top' context."
@@ -319,11 +319,11 @@ Must be called in a `utidyv:top' context."
 	 (grades
 	    (emt:view:presentable->sum-grades suite))
 	 (grade-face
-	    (emtvf:grade-overall-face grades))
+	    (emt:fmt:grade-overall-face grades))
 	 (grades-sum
-	    (emtvf:sum-grades-short grades))
+	    (emt:fmt:sum-grades-short grades))
 	 (boring-p 
-	    (emtvf:grade-boring grades)))
+	    (emt:fmt:grade-boring grades)))
       
       (etypecase suite
 	 (emt:view:suite
@@ -336,16 +336,16 @@ Must be called in a `utidyv:top' context."
 	       (etypecase object
 		  (null "A null viewable")
 		  (emt:testral:suite
-		     (emtvf:outline-item-emformat
+		     (emt:fmt:outline-item-emformat
 			(hiformat:separate
 			   (delq nil
 			      (list
-				 (emtvf:button-toggle-mark view-node)
-				 (emtvf:sym->suitename name)
-				 (emtvf:button-to-explore explorable "[RUN]")
+				 (emt:fmt:button-toggle-mark view-node)
+				 (emt:fmt:sym->suitename name)
+				 (emt:fmt:button-to-explore explorable "[RUN]")
 				 grades-sum))
 			   " ")
-			(emtvf:mapnodes children "No child suites")
+			(emt:fmt:mapnodes children "No child suites")
 			grade-face
 			boring-p)))))
 	 (emt:view:explorable
@@ -357,7 +357,7 @@ Must be called in a `utidyv:top' context."
 	    (emt:vw:note view-node))
 
 	 (emt:view:note-placeholder
-	    (emtvf:shortcut-single
+	    (emt:fmt:shortcut-single
 	       nil
 	       (emtvp:node->children view-node)
 	       '()
@@ -366,7 +366,7 @@ Must be called in a `utidyv:top' context."
 	 
 	 ;;Base type, appears for the root node.
 	 (emt:view:presentable
-	    (emtvf:shortcut-single 
+	    (emt:fmt:shortcut-single 
 	       nil
 	       (emtvp:node->children view-node)
 	       grades-sum
@@ -394,21 +394,21 @@ OBJ must be a TESTRAL viewable (`emt:view:note')."
 ;;;_  . emt:vw:explorable
 (defun emt:vw:explorable (obj name)
    "Make a format form for a emt:view:explorable, which encases a emt:run:explorable."
-   (emtvf:outline-item-emformat
+   (emt:fmt:outline-item-emformat
       (list 
-	 (emtvf:sym->suitename name)
+	 (emt:fmt:sym->suitename name)
 	 " "
-	 (emtvf:button-to-explore obj "[RUN]"))
+	 (emt:fmt:button-to-explore obj "[RUN]"))
       nil
       'emt:view:face:dormant))
 
 ;;;_ , About grades
-;;;_  . Structure emtvf:grade-fmt
-(defstruct (emtvf:grade-fmt
+;;;_  . Structure emt:fmt:grade-fmt
+(defstruct (emt:fmt:grade-fmt
 	      (:type list)
-	      (:constructor emtvf:make-grade-fmt)
+	      (:constructor emt:fmt:make-grade-fmt)
 	      (:copier nil)
-	      (:conc-name emtvf:grade-fmt->))
+	      (:conc-name emt:fmt:grade-fmt->))
    "Describes how a given grade is formatter"
    (symbol () :type symbol
       :doc "The symbol that represents this grade-type.  Can also be
@@ -434,9 +434,9 @@ severe."
 
 
 ;;;_  . Data
-;;;_   , emtvf:grade-fmt-default
-(defconst emtvf:grade-fmt-default 
-   (emtvf:make-grade-fmt
+;;;_   , emt:fmt:grade-fmt-default
+(defconst emt:fmt:grade-fmt-default 
+   (emt:fmt:make-grade-fmt
       :symbol nil
       :fail-p nil
       :face   'emt:view:face:dormant
@@ -444,10 +444,10 @@ severe."
       :singular "(UNUSED: No tests)"
       :severity 0)
    "The default grade formatting info" )
-;;;_   , emtvf:grade-fmt-alist
-(defconst emtvf:grade-fmt-alist 
+;;;_   , emt:fmt:grade-fmt-alist
+(defconst emt:fmt:grade-fmt-alist 
    (list
-      (emtvf:make-grade-fmt
+      (emt:fmt:make-grade-fmt
 	 :symbol 'blowout
 	 :fail-p t
 	 :face   'emt:view:face:blowout
@@ -455,7 +455,7 @@ severe."
 	 :singular "Blowout"
 	 :severity 100
 	 )
-      (emtvf:make-grade-fmt
+      (emt:fmt:make-grade-fmt
 	 :symbol 'ungraded
 	 :fail-p t
 	 :face   'emt:view:face:ungraded
@@ -463,7 +463,7 @@ severe."
 	 :singular "Ungraded test"
 	 :severity 75
 	 )
-      (emtvf:make-grade-fmt
+      (emt:fmt:make-grade-fmt
 	 :symbol 'fail
 	 :fail-p t
 	 :face   'emt:view:face:failed
@@ -471,7 +471,7 @@ severe."
 	 :singular "Failure"
 	 :severity 50
 	 )
-      (emtvf:make-grade-fmt
+      (emt:fmt:make-grade-fmt
 	 :symbol 'dormant
 	 :fail-p t
 	 :face   'emt:view:face:dormant
@@ -481,7 +481,7 @@ severe."
 	 )
       ;;$$IMPROVE ME  Encap making a passing grade type, omitting
       ;;redundant info from arglist
-      (emtvf:make-grade-fmt
+      (emt:fmt:make-grade-fmt
 	 :symbol 'ok
 	 :fail-p nil
 	 :face   'emt:view:face:ok
@@ -489,48 +489,48 @@ severe."
 	 :singular "(UNUSED: ok)"
 	 :severity 10
 	 )
-      (emtvf:make-grade-fmt
+      (emt:fmt:make-grade-fmt
 	 :symbol 'test-case
 	 :fail-p nil
 	 :face   'emt:view:face:ok
 	 :plural   "Test cases"
 	 :singular "Test case"
 	 :severity 10)
-      emtvf:grade-fmt-default)
+      emt:fmt:grade-fmt-default)
    
    "Alist of grade formatting info" )
-;;;_   , emtvf:get-grade-info
-(defun emtvf:get-grade-info (sym)
+;;;_   , emt:fmt:get-grade-info
+(defun emt:fmt:get-grade-info (sym)
    "Return summary & formatting info about SYM.
 SYM should be a grade symbol, but this returns a valid object in any case."
    (or 
-      (assq sym emtvf:grade-fmt-alist)
-      emtvf:grade-fmt-default))
+      (assq sym emt:fmt:grade-fmt-alist)
+      emt:fmt:grade-fmt-default))
 ;;;_  . Grade helpers
-;;;_   , emtvf:grade-boring
-(defun emtvf:grade-boring (obj)
+;;;_   , emt:fmt:grade-boring
+(defun emt:fmt:grade-boring (obj)
    "Return non-nil if OBJ is all passing grades.
 OBJ must be a `emt:view:grade-summary'"
    (let*
       ((nobj (emtvr:->grade-summary obj))
 	 (worst (emt:view:grade-summary->worst nobj))
-	 (info (emtvf:get-grade-info worst)))
+	 (info (emt:fmt:get-grade-info worst)))
       (not
-	 (emtvf:grade-fmt->fail-p info))))
+	 (emt:fmt:grade-fmt->fail-p info))))
 
-;;;_   , emtvf:grade-overall-face
-(defun emtvf:grade-overall-face (obj)
+;;;_   , emt:fmt:grade-overall-face
+(defun emt:fmt:grade-overall-face (obj)
    "Return a face that hints at the overall quality of grades in OBJ.
 OBJ should be an `emt:view:grade-summary'."
 
    (let*
       ((nobj (emtvr:->grade-summary obj))
 	 (worst (emt:view:grade-summary->worst nobj))
-	 (info (emtvf:get-grade-info worst)))
-      (emtvf:grade-fmt->face info)))
+	 (info (emt:fmt:get-grade-info worst)))
+      (emt:fmt:grade-fmt->face info)))
 
-;;;_   , emtvf:map-grades
-(defun emtvf:map-grades (func nobj &optional separator)
+;;;_   , emt:fmt:map-grades
+(defun emt:fmt:map-grades (func nobj &optional separator)
    "Map FUNC over the grades seen in NOBJ.
 Any nil items are omitted, which makes a difference in separation.
 SEPARATOR, if non-nil, is what separates the items."
@@ -539,13 +539,13 @@ SEPARATOR, if non-nil, is what separates the items."
 	 (mapcar
 	    #'(lambda (grade)
 		 (funcall func 
-		    (emtvf:get-grade-info (first grade))
+		    (emt:fmt:get-grade-info (first grade))
 		    (second grade)))
 	    (emt:view:grade-summary->grades nobj)))
       separator))
 ;;;_  . Grade formatters
-;;;_   , emtvf:sum-grades-short
-(defun emtvf:sum-grades-short (obj &rest d)
+;;;_   , emt:fmt:sum-grades-short
+(defun emt:fmt:sum-grades-short (obj &rest d)
    "Give a summary of grades for this object."
    (let*
       (
@@ -555,17 +555,17 @@ SEPARATOR, if non-nil, is what separates the items."
       (cond
 	 ((null worst)
 	    '(w/face "Nothing was tested" emt:view:face:dormant))
-	 ((emtvf:grade-fmt->fail-p 
-	     (emtvf:get-grade-info worst))
+	 ((emt:fmt:grade-fmt->fail-p 
+	     (emt:fmt:get-grade-info worst))
 	    (list
 	       '(w/face "Problems: " emt:view:face:failed)
-	       (emtvf:map-grades
+	       (emt:fmt:map-grades
 		  #'(lambda (info count)
 		       (if
-			  (emtvf:grade-fmt->fail-p info)
+			  (emt:fmt:grade-fmt->fail-p info)
 			  `(w/face 
-			      ,(emtvf:grade-fmt->plural info)
-			      ,(emtvf:grade-fmt->face   info))
+			      ,(emt:fmt:grade-fmt->plural info)
+			      ,(emt:fmt:grade-fmt->face   info))
 			  '()))
 		  nobj
 		  ", ")
@@ -574,37 +574,37 @@ SEPARATOR, if non-nil, is what separates the items."
 	    '(w/face "All OK" emt:view:face:ok)))))
 
 
-;;;_   , emtvf:sum-grades-long
-(defun emtvf:sum-grades-long (obj &rest d)
+;;;_   , emt:fmt:sum-grades-long
+(defun emt:fmt:sum-grades-long (obj &rest d)
    "Give a summary of grades for this object."
    (let*
       (
 	 (nobj  (emtvr:->grade-summary obj))
 	 (worst (emt:view:grade-summary->worst nobj))
 	 (successes
-	    (emtvf:map-grades
+	    (emt:fmt:map-grades
 	       #'(lambda (info count)
 		    (if
-		       (not (emtvf:grade-fmt->fail-p info))
+		       (not (emt:fmt:grade-fmt->fail-p info))
 		       (hiformat:grammar:num-and-noun
 			  count 
-			  (emtvf:grade-fmt->singular
+			  (emt:fmt:grade-fmt->singular
 			     info)
-			  (emtvf:grade-fmt->plural
+			  (emt:fmt:grade-fmt->plural
 			     info))
 		       '()))
 	       nobj
 	       "\n"))
 	 (failures
-	    (emtvf:map-grades
+	    (emt:fmt:map-grades
 	       #'(lambda (info count)
 		    (if
-		       (emtvf:grade-fmt->fail-p info)
+		       (emt:fmt:grade-fmt->fail-p info)
 		       (hiformat:grammar:num-and-noun
 			  count 
-			  (emtvf:grade-fmt->singular
+			  (emt:fmt:grade-fmt->singular
 			     info)
-			  (emtvf:grade-fmt->plural
+			  (emt:fmt:grade-fmt->plural
 			     info))
 		       '()))
 	       nobj
@@ -612,8 +612,8 @@ SEPARATOR, if non-nil, is what separates the items."
       (cond
 	 ((null worst)
 	    '(w/face ("Nothing was tested" "\n") emt:view:face:dormant))
-	 ((emtvf:grade-fmt->fail-p 
-	     (emtvf:get-grade-info worst))
+	 ((emt:fmt:grade-fmt->fail-p 
+	     (emt:fmt:get-grade-info worst))
 	    (list
 	       "Problems:"
 	       '(sep 5)
