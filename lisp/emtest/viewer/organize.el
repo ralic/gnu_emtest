@@ -39,7 +39,7 @@
    "Pathtree object of type emtvp" )
 (defvar emtvo:receiver 
    nil
-   "Receiver object, of type `emtvr:data'" )
+   "Receiver object, of type `emt:r:data'" )
 ;;;_ , Callbacks
 ;;;_  . emtvo:receive-cb
 
@@ -47,7 +47,7 @@
 (defun emtvo:receive-cb (presentation-path cell)
    "Emviewer callback that `receive' gets.
 It just tells a pathtree to add this node."
-   (emtvr:place-node
+   (emt:pth:place-node
       emtvo:pathtree presentation-path cell))
 
 ;;;_  . emtvo:pathtree-cb-aux
@@ -107,7 +107,7 @@ Make a `emt:view:presentable' or its descendant."
    (unless 
       emtvo:receiver
       (setq emtvo:receiver
-	 (emtvr:make-data
+	 (emt:r:make-data
 	    :alist ()
 	    :tree-insert-cb #'emtvo:receive-cb
 	    ;;:tree-remove-cb Not yet
@@ -123,14 +123,13 @@ Make a `emt:view:presentable' or its descendant."
 ;;;_  . emtvo:receive
 (defun emtvo:receive (report)
    "Receive REPORT"
-   (emtvr:receive emtvo:receiver report)
+   (emt:r:receive emtvo:receiver report)
    (emtvp:freshen emtvo:pathtree))
 
 ;;;_ , Command entry points
 ;;;_  . emtv2:tests-outstanding hollow. 
 (defvar emtv2:tests-outstanding)
 ;;;_  . emtest:reset
-;; Was "emtvo:reset"
 ;;;###autoload
 (defun emtest:reset ()
    ""

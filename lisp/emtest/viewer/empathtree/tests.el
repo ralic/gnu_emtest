@@ -36,10 +36,10 @@
 (require 'emtest/viewer/view-types/testhelp)
 
 ;;;_. Body
-;;;_ , emtvr:grade:get-own
-(emt:deftest-3 emtvr:grade:get-own
+;;;_ , emt:pth:grd:node-proper
+(emt:deftest-3 emt:pth:grd:node-proper
    (nil
-      (emtg:with emtvr:thd ()
+      (emtg:with emt:r:thd ()
 	 (emtg:map result-name result-name
 	    (emt:doc "Param: A known view-node.")
 	    (emt:doc "Operation: Get own grade.")
@@ -50,20 +50,20 @@
 	       (when (emtg (type has-viewnode-p))
 		  (emt:assert
 		     (equal
-			(emtvr:get-subtree-grade
+			(emt:pth:grd:subtree
 			   (emtg:value+
-			      `((type emtvr:alist-item) ,@role&test-tags)))
+			      `((type emt:r:alist-item) ,@role&test-tags)))
 			(emtg:value+
 			   `((type suite-own+notes-badness-list)
 			       (name ,result-name)))))))))))
 
-;;;_ , emtvr:combine-grade
+;;;_ , emt:grd:combine
 ;;$$WRITE MY EXAMPLES
 
-;;;_ , emtvr:get-subtree-grade
-(emt:deftest-3 emtvr:get-subtree-grade
+;;;_ , emt:pth:grd:subtree
+(emt:deftest-3 emt:pth:grd:subtree
    (nil
-      (emtg:with emtvr:thd ()
+      (emtg:with emt:r:thd ()
 	 (emtg:map result-name result-name
 	    (emt:doc "Param: A known view-node.")
 	    (emt:doc "Operation: Get subtree grade.")
@@ -74,14 +74,14 @@
 	       (when (emtg (type has-viewnode-p))
 		  (emt:assert
 		     (equal
-			(emtvr:get-subtree-grade
+			(emt:pth:grd:subtree
 			   (emtg:value+
-			      `((type emtvr:alist-item) ,@role&test-tags)))
+			      `((type emt:r:alist-item) ,@role&test-tags)))
 			(emtg:value+
 			   `((type suite-own+notes-badness-list)
 			       (name ,'test-bad)))))))))))
 
-;;;_ , emtvr:collect-testral
+;;;_ , emt:pth:collect-testral
 ;;Tree is a parameter so it needn't be specially insulated.
 
 ;;Examples.

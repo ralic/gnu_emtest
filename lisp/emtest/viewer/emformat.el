@@ -512,7 +512,7 @@ SYM should be a grade symbol, but this returns a valid object in any case."
    "Return non-nil if OBJ is all passing grades.
 OBJ must be a `emt:view:grade-summary'"
    (let*
-      ((nobj (emtvr:->grade-summary obj))
+      ((nobj (emt:grd:->grade-summary obj))
 	 (worst (emt:view:grade-summary->worst nobj))
 	 (info (emt:fmt:get-grade-info worst)))
       (not
@@ -524,7 +524,7 @@ OBJ must be a `emt:view:grade-summary'"
 OBJ should be an `emt:view:grade-summary'."
 
    (let*
-      ((nobj (emtvr:->grade-summary obj))
+      ((nobj (emt:grd:->grade-summary obj))
 	 (worst (emt:view:grade-summary->worst nobj))
 	 (info (emt:fmt:get-grade-info worst)))
       (emt:fmt:grade-fmt->face info)))
@@ -549,7 +549,7 @@ SEPARATOR, if non-nil, is what separates the items."
    "Give a summary of grades for this object."
    (let*
       (
-	 (nobj (emtvr:->grade-summary obj))
+	 (nobj (emt:grd:->grade-summary obj))
 	 (worst (emt:view:grade-summary->worst nobj)))
       
       (cond
@@ -579,7 +579,7 @@ SEPARATOR, if non-nil, is what separates the items."
    "Give a summary of grades for this object."
    (let*
       (
-	 (nobj  (emtvr:->grade-summary obj))
+	 (nobj  (emt:grd:->grade-summary obj))
 	 (worst (emt:view:grade-summary->worst nobj))
 	 (successes
 	    (emt:fmt:map-grades

@@ -38,7 +38,7 @@
 
 ;;;_ , Testhelp
 
-(defun emtvr:th:assert-the-1-right-node (nodes-freshened)
+(defun emt:r:th:assert-the-1-right-node (nodes-freshened)
    ""
    
    (emt:assert

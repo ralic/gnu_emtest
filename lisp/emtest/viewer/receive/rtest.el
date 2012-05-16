@@ -36,12 +36,12 @@
 (require 'emtest/testhelp/match)
 
 ;;;_. Body
-;;;_  . emtvr:receive-one
-(put 'emtvr:receive-one 'rtest:test-thru
-   'emtvr:receive)
+;;;_  . emt:r:receive-one
+(put 'emt:r:receive-one 'rtest:test-thru
+   'emt:r:receive)
 ;;;_  . Tests
 
-(rtest:deftest emtvr:receive
+(rtest:deftest emt:r:receive
 
    ;;Add reports.  Lists should contain what's expected.
    (  "Situation: Empty report.
@@ -52,18 +52,18 @@ Response: List still contains nothing."
 	       (remember-freshened-node
 		  #'(lambda (x y)
 		       (push (list x y) nodes-freshened)))
-	       (receiver (emtvr:make-empty-alist remember-freshened-node #'ignore))
+	       (receiver (emt:r:make-empty-alist remember-freshened-node #'ignore))
 	       (report (emtg
 			  (project emtest)
 			  (sub-project testral)
 			  (library types)
 			  (type report)
 			  (name empty))))
-	    (emtvr:receive receiver report)
+	    (emt:r:receive receiver report)
 	    ;;Still an empty list
 	    (assert
 	       (equal
-		  (emtvr:data->alist receiver)
+		  (emt:r:data->alist receiver)
 		  '())
 	       t)
 	    ;;No callbacks happened
@@ -84,7 +84,7 @@ Response: List contains that one entry."
 	       (remember-freshened-node
 		  #'(lambda (x y)
 		       (push (list x y) nodes-freshened)))
-	       (receiver (emtvr:make-empty-alist remember-freshened-node #'ignore))
+	       (receiver (emt:r:make-empty-alist remember-freshened-node #'ignore))
 	       (report (emtg
 			  (project emtest)
 			  (sub-project testral)
@@ -92,24 +92,24 @@ Response: List contains that one entry."
 			  (type report)
 			  (role original-add)
 			  (what-test test-1))))
-	    (emtvr:receive receiver report)
+	    (emt:r:receive receiver report)
 
 	    ;;A list with just that entry
 	    (assert
 	       (emtm
-		  (emtvr:data->alist receiver)
+		  (emt:r:data->alist receiver)
 		  (list
 		     (eval 
 			'(emtg
-			    (type emtvr:alist-item-pattern)
+			    (type emt:r:alist-item-pattern)
 			    (role original-add)
 			    (what-test test-1)))))
 	       t)
 	    (assert
-	       (= (length (emtvr:data->alist receiver)) 1)
+	       (= (length (emt:r:data->alist receiver)) 1)
 	       t)
 	    (emtg:narrow ((what-test test-1)(role original-add))
-		  (emtvr:th:assert-the-1-right-node 
+		  (emt:r:th:assert-the-1-right-node 
 		     nodes-freshened))
 	    ;;
 	    t)))
@@ -125,8 +125,8 @@ Response: List contains just that one entry, not duplicated."
 	       (remember-freshened-node
 		  #'(lambda (x y)
 		       (push (list x y) nodes-freshened)))
-	       (receiver (emtvr:make-empty-alist remember-freshened-node #'ignore)))
-	    (emtvr:receive receiver 
+	       (receiver (emt:r:make-empty-alist remember-freshened-node #'ignore)))
+	    (emt:r:receive receiver 
 	       (emtg
 		  (project emtest)
 		  (sub-project testral)
@@ -137,7 +137,7 @@ Response: List contains just that one entry, not duplicated."
 	 
 	    (setq nodes-freshened '())
 	    ;;Add a report that just overrides the original
-	    (emtvr:receive receiver 
+	    (emt:r:receive receiver 
 	       (emtg
 		  (project emtest)
 		  (sub-project testral)
@@ -149,21 +149,21 @@ Response: List contains just that one entry, not duplicated."
 	    ;;A list with just that entry
 	    (assert
 	       (emtm
-		  (emtvr:data->alist receiver)
+		  (emt:r:data->alist receiver)
 		  (list
 		     (eval 
 			'(emtg
-			    (type emtvr:alist-item-pattern)
+			    (type emt:r:alist-item-pattern)
 			    (role replace)
 			    (what-test test-1)))))
 	       t)
 	    (assert
-	       (= (length (emtvr:data->alist receiver)) 1)
+	       (= (length (emt:r:data->alist receiver)) 1)
 	       t)
 
 	    ;;One (new) callback happened
 	    (emtg:narrow ((what-test test-1)(role replace))
-	       (emtvr:th:assert-the-1-right-node 
+	       (emt:r:th:assert-the-1-right-node 
 		  nodes-freshened))
 	    t)))
 
@@ -179,14 +179,14 @@ Response: List no longer contains that entry; it is empty."
 		  #'(lambda (x y)
 		       (push (list x y) nodes-freshened)))
 	       (receiver 
-		  (emtvr:make-empty-alist remember-freshened-node #'ignore)))
-	    (emtvr:receive receiver 
+		  (emt:r:make-empty-alist remember-freshened-node #'ignore)))
+	    (emt:r:receive receiver 
 	       (emtg
 		  (type report)
 		  (role original-add)
 		  (what-test test-1)))
 
-	    (emtvr:receive receiver 
+	    (emt:r:receive receiver 
 	       (emtg
 		  (type report)
 		  (role remove-previous)
@@ -195,7 +195,7 @@ Response: List no longer contains that entry; it is empty."
 	    ;;An empty list again
 	    (assert
 	       (equal
-		  (emtvr:data->alist receiver)
+		  (emt:r:data->alist receiver)
 		  '())
 	       t)
 
@@ -214,8 +214,8 @@ Response: List contains both entries."
 		  #'(lambda (x y)
 		       (push (list x y) nodes-freshened)))
 	       (receiver 
-		  (emtvr:make-empty-alist remember-freshened-node #'ignore)))
-	    (emtvr:receive receiver 
+		  (emt:r:make-empty-alist remember-freshened-node #'ignore)))
+	    (emt:r:receive receiver 
 	       (emtg
 		  (type report)
 		  (role original-add)
@@ -223,7 +223,7 @@ Response: List contains both entries."
 
 	    ;;Empty the callback list
 	    (setq nodes-freshened '())
-	    (emtvr:receive receiver 
+	    (emt:r:receive receiver 
 	       (emtg (type report)(what-test test-2)))
 
 	    ;;Test that we have the right contents.  Skip for now
@@ -231,7 +231,7 @@ Response: List contains both entries."
 
 	    ;;One (new) callback happened
 	    (emtg:narrow ((what-test test-2))
-	       (emtvr:th:assert-the-1-right-node 
+	       (emt:r:th:assert-the-1-right-node 
 		  nodes-freshened))
 
 	    t)))
@@ -249,7 +249,7 @@ Response: List contains both entries."
 	       (remember-freshened-node
 		  #'(lambda (x y)
 		       (push (list x y) nodes-freshened)))
-	       (receiver (emtvr:make-empty-alist remember-freshened-node #'ignore)))
+	       (receiver (emt:r:make-empty-alist remember-freshened-node #'ignore)))
 	    ;;List length.
 
 	    ;;Matches the pattern - but we don't have a set-match pattern

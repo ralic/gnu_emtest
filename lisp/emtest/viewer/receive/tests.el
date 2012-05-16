@@ -36,17 +36,17 @@
 (require 'emtest/testhelp/match)
 
 ;;;_. Body
-;;;_  . emtvr:receive-one
-(put 'emtvr:receive-one 'emt:test-thru 'emtvr:receive)
+;;;_  . emt:r:receive-one
+(put 'emt:r:receive-one 'emt:test-thru 'emt:r:receive)
 
 ;;;_  . Tests
 
-(emt:deftest-3 emtvr:receive
+(emt:deftest-3 emt:r:receive
    (nil
       (progn
 	 (emt:doc "Situation: Empty report.")
 	 (emt:doc "Response: List still contains nothing.")
-	 (emtg:with emtvr:thd nil
+	 (emtg:with emt:r:thd nil
 	    (let*
 	       ((nodes-freshened 'nil)
 		  (remember-freshened-node
@@ -56,7 +56,7 @@
 			     (list x y)
 			     nodes-freshened)))
 		  (receiver
-		     (emtvr:make-empty-alist remember-freshened-node #'ignore))
+		     (emt:r:make-empty-alist remember-freshened-node #'ignore))
 		  (report
 		     (emtg
 			(project emtest)
@@ -64,10 +64,10 @@
 			(library types)
 			(type report)
 			(name empty))))
-	       (emtvr:receive receiver report)
+	       (emt:r:receive receiver report)
 	       (emt:assert
 		  (equal
-		     (emtvr:data->alist receiver)
+		     (emt:r:data->alist receiver)
 		     'nil))
 	       (emt:assert
 		  (emtm nodes-freshened (list)))
@@ -76,7 +76,7 @@
       (progn
 	 (emt:doc "Situation: Have added a report w/1 entry")
 	 (emt:doc "Response: List contains that one entry.")
-	 (emtg:with emtvr:thd nil
+	 (emtg:with emt:r:thd nil
 	    (let*
 	       ((nodes-freshened 'nil)
 		  (remember-freshened-node
@@ -86,7 +86,7 @@
 			     (list x y)
 			     nodes-freshened)))
 		  (receiver
-		     (emtvr:make-empty-alist remember-freshened-node #'ignore))
+		     (emt:r:make-empty-alist remember-freshened-node #'ignore))
 		  (report
 		     (emtg
 			(project emtest)
@@ -95,24 +95,24 @@
 			(type report)
 			(role original-add)
 			(what-test test-1))))
-	       (emtvr:receive receiver report)
+	       (emt:r:receive receiver report)
 	       (emt:assert
 		  (emtm
-		     (emtvr:data->alist receiver)
+		     (emt:r:data->alist receiver)
 		     (list
 			(eval
 			   '(emtg
-			       (type emtvr:alist-item-pattern)
+			       (type emt:r:alist-item-pattern)
 			       (role original-add)
 			       (what-test test-1))))))
 	       (emt:assert
 		  (=
 		     (length
-			(emtvr:data->alist receiver))
+			(emt:r:data->alist receiver))
 		     1))
 	       (emt:doc "Response: One callback happened")
 	       (emtg:narrow ((what-test test-1)(role original-add))
-		  (emtvr:th:assert-the-1-right-node 
+		  (emt:r:th:assert-the-1-right-node 
 		     nodes-freshened))
 	       t))))
    (nil
@@ -120,7 +120,7 @@
 	 (emt:doc "Situation: Have added a report w/1 entry.")
 	 (emt:doc "Operation:  Another report with a different result for the same test.")
 	 (emt:doc "Response: List contains just that one entry, not duplicated.")
-	 (emtg:with emtvr:thd nil
+	 (emtg:with emt:r:thd nil
 	    (let*
 	       ((nodes-freshened 'nil)
 		  (remember-freshened-node
@@ -130,8 +130,8 @@
 			     (list x y)
 			     nodes-freshened)))
 		  (receiver
-		     (emtvr:make-empty-alist remember-freshened-node #'ignore)))
-	       (emtvr:receive receiver
+		     (emt:r:make-empty-alist remember-freshened-node #'ignore)))
+	       (emt:r:receive receiver
 		  (emtg
 		     (project emtest)
 		     (sub-project testral)
@@ -141,7 +141,7 @@
 		     (role original-add)))
 	       (emt:doc "Situation: Callback list is emptied")
 	       (setq nodes-freshened 'nil)
-	       (emtvr:receive receiver
+	       (emt:r:receive receiver
 		  (emtg
 		     (project emtest)
 		     (sub-project testral)
@@ -151,21 +151,21 @@
 		     (role replace)))
 	       (emt:assert
 		  (emtm
-		     (emtvr:data->alist receiver)
+		     (emt:r:data->alist receiver)
 		     (list
 			(eval
 			   '(emtg
-			       (type emtvr:alist-item-pattern)
+			       (type emt:r:alist-item-pattern)
 			       (role replace)
 			       (what-test test-1))))))
 	       (emt:assert
 		  (=
 		     (length
-			(emtvr:data->alist receiver))
+			(emt:r:data->alist receiver))
 		     1))
 	       (emt:doc "Response: One NEW callback happened")
 	       (emtg:narrow ((what-test test-1)(role replace))
-		  (emtvr:th:assert-the-1-right-node 
+		  (emt:r:th:assert-the-1-right-node 
 		     nodes-freshened))
 	       t))))
    (nil
@@ -173,7 +173,7 @@
 	 (emt:doc "Situation: Have added a report w/1 entry.")
 	 (emt:doc "Operation: Report removes previous report.")
 	 (emt:doc "Response: List no longer contains that entry; it is empty.")
-	 (emtg:with emtvr:thd
+	 (emtg:with emt:r:thd
 	    ((project emtest)
 	       (sub-project testral)
 	       (library types))
@@ -186,20 +186,20 @@
 			     (list x y)
 			     nodes-freshened)))
 		  (receiver
-		     (emtvr:make-empty-alist remember-freshened-node #'ignore)))
-	       (emtvr:receive receiver
+		     (emt:r:make-empty-alist remember-freshened-node #'ignore)))
+	       (emt:r:receive receiver
 		  (emtg
 		     (type report)
 		     (role original-add)
 		     (what-test test-1)))
-	       (emtvr:receive receiver
+	       (emt:r:receive receiver
 		  (emtg
 		     (type report)
 		     (role remove-previous)
 		     (what-test test-1)))
 	       (emt:assert
 		  (equal
-		     (emtvr:data->alist receiver)
+		     (emt:r:data->alist receiver)
 		     'nil))
 	       t))))
    (nil
@@ -207,7 +207,7 @@
 	 (emt:doc "Situation: Have added a report w/1 entry.")
 	 (emt:doc "Operation: Add a second report")
 	 (emt:doc "Response: List contains both entries.")
-	 (emtg:with emtvr:thd
+	 (emtg:with emt:r:thd
 	    ((project emtest)
 	       (sub-project testral)
 	       (library types))
@@ -220,28 +220,28 @@
 			     (list x y)
 			     nodes-freshened)))
 		  (receiver
-		     (emtvr:make-empty-alist remember-freshened-node #'ignore)))
-	       (emtvr:receive receiver
+		     (emt:r:make-empty-alist remember-freshened-node #'ignore)))
+	       (emt:r:receive receiver
 		  (emtg
 		     (type report)
 		     (role original-add)
 		     (what-test test-1)))
 	       (emt:doc "Situation: Callback list is emptied")
 	       (setq nodes-freshened 'nil)
-	       (emtvr:receive receiver
+	       (emt:r:receive receiver
 		  (emtg
 		     (type report)
 		     (what-test test-2)))
 	       (emt:doc "Response: One NEW callback happened")
 	       (emtg:narrow ((what-test test-2))
-		  (emtvr:th:assert-the-1-right-node 
+		  (emt:r:th:assert-the-1-right-node 
 		     nodes-freshened))
 	       t))))
    '(nil
        (progn
 	  (emt:doc "Situation: Empty tree.")
 	  (emt:doc "Operation: Add a report w/2 entries.")
-	  (emtg:with emtvr:thd nil
+	  (emtg:with emt:r:thd nil
 	     (let*
 		((nodes-freshened 'nil)
 		   (remember-freshened-node
@@ -251,7 +251,7 @@
 			      (list x y)
 			      nodes-freshened)))
 		   (receiver
-		      (emtvr:make-empty-alist 
+		      (emt:r:make-empty-alist 
 			 remember-freshened-node 
 			 #'ignore)))
 		;;$$WRITE ME

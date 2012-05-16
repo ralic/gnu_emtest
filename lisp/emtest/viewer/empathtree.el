@@ -38,15 +38,15 @@
 ;;;_. Body
 ;;;_ , Getting summed grades
 
-;;;_  . emtvr:notelist-raw-grade
-(defun emtvr:notelist-raw-grade (note-list)
-   ""
+;;;_  . emt:pth:grd:notelist-raw
+(defun emt:pth:grd:notelist-raw (note-list)
+   "Get a raw notelist's grade"
    (mapcar
       #'emt:testral:note->grade
       (emt:testral:note-list->notes note-list)))
-;;;_  . emtvr:grade:summarize-suite+notes
+;;;_  . emt:pth:grd:summarize-suite+notes
 ;;UNUSED but held ready if we change to dynamic reprinting.
-(defun emtvr:grade:summarize-suite+notes (s)
+(defun emt:pth:grd:summarize-suite+notes (s)
    "Return a summary grade for a suite node and its notes
 Intended for suites whose notes haven't been placed on pathtree"
    
@@ -56,14 +56,14 @@ Intended for suites whose notes haven't been placed on pathtree"
 	    (emt:testral:suite->contents s)))
       (typecase contents
 	 (emt:testral:note-list
-	    (emtvr:combine-grade
+	    (emt:grd:combine
 	       (cons
 		  own-grade
-		  (emtvr:notelist-raw-grade contents))))
+		  (emt:pth:grd:notelist-raw contents))))
 	 (t own-grade))))
 
-;;;_  . emtvr:grade:get-own
-(defun emtvr:grade:get-own (node)
+;;;_  . emt:pth:grd:node-proper
+(defun emt:pth:grd:node-proper (node)
    "Get a node's own grade.
 
 This includes grade that are not expressed in its children but
@@ -86,8 +86,8 @@ could be, such as when a note-list hasn't been expanded."
       (emt:view:presentable '())))
 
 
-;;;_  . emtvr:get-subtree-grade
-(defun emtvr:get-subtree-grade (node)
+;;;_  . emt:pth:grd:subtree
+(defun emt:pth:grd:subtree (node)
    ""
    (check-type node emt:view:presentable)
    (let*
@@ -101,32 +101,32 @@ could be, such as when a note-list hasn't been expanded."
 
 	 ;;Accessor
 	 (own-grade
-	    (emtvr:grade:get-own node)))
-      (emtvr:combine-grade
+	    (emt:pth:grd:node-proper node)))
+      (emt:grd:combine
 	 (cons
 	    own-grade
 	    childrens-grade))))
 
-;;;_  . emtvr:cache-subtree-grade
-(defun emtvr:cache-subtree-grade (node)
+;;;_  . emt:pth:grd:cache-subtree-grade
+(defun emt:pth:grd:cache-subtree-grade (node)
    ""
    (check-type node emtvp:node)
    (when (typep node 'emt:view:presentable)
       (setf
 	 (emt:view:presentable->sum-grades node)
-	 (emtvr:get-subtree-grade node))))
+	 (emt:pth:grd:subtree node))))
 
 ;;;_ , Collecting TESTRAL notes
-;;;_  . emtvr:alist-cell-t
-(deftype emtvr:alist-cell-t ()
+;;;_  . emt:pth:alist-cell
+(deftype emt:pth:alist-cell ()
    "Alist items have this type"
    '(list
        emt:testral:id-element
        emt:view:presentable
        (repeat emt:view:presentable)))
 
-;;;_  . emtvr:collect-testral-2-aux
-(defun emtvr:collect-testral-2-aux (list-of-notes node tree)
+;;;_  . emt:pth:collect-testral-2-aux
+(defun emt:pth:collect-testral-2-aux (list-of-notes node tree)
    ""
    (let
       ;;A parent-id of `nil' means a child of NODE itself.
@@ -142,7 +142,7 @@ could be, such as when a note-list hasn't been expanded."
 			       :contents note)
 			    '()))
 		    list-of-notes))))
-      (check-type alist (repeat emtvr:alist-cell-t))
+      (check-type alist (repeat emt:pth:alist-cell))
       
       ;;Remove any previous children.  That's only needed for NODE
       ;;itself, the other viewables are new.
@@ -157,10 +157,10 @@ could be, such as when a note-list hasn't been expanded."
 	       (parent-cell (assoc parent-id alist)))
 	    (when parent-cell
 	       (check-type parent-id   emt:testral:id-element)
-	       (check-type parent-cell emtvr:alist-cell-t)
+	       (check-type parent-cell emt:pth:alist-cell)
 	       (push (second cell) (third parent-cell)))))
 
-      (check-type alist (repeat emtvr:alist-cell-t))
+      (check-type alist (repeat emt:pth:alist-cell))
 
       ;;Put them in; pathtree will dirty them etc.
       (dolist (cell alist)
@@ -185,8 +185,8 @@ could be, such as when a note-list hasn't been expanded."
 
 ;;;_ , TESTRAL suites
 
-;;;_  . emtvr:collect-testral-2
-(defun emtvr:collect-testral-2  (node tree)
+;;;_  . emt:pth:collect-testral-2
+(defun emt:pth:collect-testral-2  (node tree)
    "Put NODE's TESTRAL notes or runform-list under it in pathtree TREE."
    (check-type tree emtvp)
    (check-type node emtvp:node)
@@ -200,16 +200,16 @@ could be, such as when a note-list hasn't been expanded."
 		   (emt:testral:suite->contents result)))
 	       (typecase contents
 		  (emt:testral:note-list
-		     (emtvr:collect-testral-2-aux 
+		     (emt:pth:collect-testral-2-aux 
 			(emt:testral:note-list->notes contents)
 			node
 			tree))
 		  (emt:testral:runform-list
-		     (emtvr:collect-runform-list
+		     (emt:pth:collect-runform-list
 			node tree contents))))))))
 
-;;;_  . emtvr:collect-runform-list
-(defun emtvr:collect-runform-list (node tree runform-list)
+;;;_  . emt:pth:collect-runform-list
+(defun emt:pth:collect-runform-list (node tree runform-list)
    "Put viewables for RUNFORM-LIST under NODE in TREE."
    (mapcar
       #'(lambda (runform)
@@ -218,9 +218,9 @@ could be, such as when a note-list hasn't been expanded."
 	      (emt:view:make-explorable :contents runform)))
       (emt:testral:runform-list->els runform-list)))
 
-;;;_ , emtvr:place-node
+;;;_ , emt:pth:place-node
 
-(defun emtvr:place-node (tree presentation-path cell)
+(defun emt:pth:place-node (tree presentation-path cell)
    "Add CELL to TREE at PRESENTATION-PATH.
 Cell must be a emt:view:presentable descendant."
    (check-type cell emt:view:presentable)

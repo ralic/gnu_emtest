@@ -85,7 +85,7 @@
 			  (emtvp:node->dirty-flags child)))
 		  (emtvp:node->children obj))
 	       ;;Do summarization
-	       (emtvr:cache-subtree-grade obj)
+	       (emt:pth:grd:cache-subtree-grade obj)
 	       ;;Record this property
 	       (when (emt:view:suite-p obj)
 		  (emt:ind:set-prop
@@ -117,7 +117,7 @@
 		     (new-dirty-node 'summary parent)))))
 
 	 ((member 'notes dirty-flags)
-	    (emtvr:collect-testral-2 obj tree)
+	    (emt:pth:collect-testral-2 obj tree)
 	    (undirty 'notes))
 	 ;;Other dirty flags are just cleared
 	 (dirty-flags

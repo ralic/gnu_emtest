@@ -58,14 +58,14 @@
    testrun-id
    result)
 
-;;;_ , emtvr:thd
-(defconst emtvr:thd
+;;;_ , emt:r:thd
+(defconst emt:r:thd
    (append
       emt:testral:thd:examples
       (emtg:define+ ()
 	 (transparent-tags () (type role what-test))
 	 (group
-	    ((type emtvr:alist-item-pattern))
+	    ((type emt:r:alist-item-pattern))
 	    (type-must-be () (emtm:pattern emt:view:suite))
 	    (item
 	       ( (role original-add)
@@ -116,7 +116,7 @@
 			   '(emtg (type testrun-id)(role replace))))))))
 
 	 (group
-	    ((type emtvr:alist-item))
+	    ((type emt:r:alist-item))
 	    (type-must-be () emt:view:suite)
 	    (item
 	       ( (role original-add)

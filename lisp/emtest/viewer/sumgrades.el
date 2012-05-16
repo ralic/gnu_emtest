@@ -34,8 +34,8 @@
 
 ;;;_. Body
 ;;;_ , Functions
-;;;_  . emtvr:->grade-summary
-(defun emtvr:->grade-summary (obj)
+;;;_  . emt:grd:->grade-summary
+(defun emt:grd:->grade-summary (obj)
    "Change OBJ object into a grade summary.
 OBJ may be a grade symbol or already be a summary."
    (etypecase obj 
@@ -43,15 +43,15 @@ OBJ may be a grade symbol or already be a summary."
       (emt:testral:grade-type
 	 (let
 	    ((obj-aux (emt:view:make-grade-summary)))
-	    (emtvr:add-grades obj-aux obj)
+	    (emt:grd:add obj-aux obj)
 	    obj-aux))))
-;;;_  . emtvr:sym->severity
-(defun emtvr:sym->severity (sym)
+;;;_  . emt:grd:sym->severity
+(defun emt:grd:sym->severity (sym)
    "Return the severity of SYM, which should be a grade symbol."
    (emt:fmt:grade-fmt->severity
       (emt:fmt:get-grade-info sym)))
-;;;_  . emtvr:add-one-grade
-(defun emtvr:add-one-grade (sums sym count)
+;;;_  . emt:grd:add-one-grade
+(defun emt:grd:add-one-grade (sums sym count)
    "Add the grade represented by SYM to SUMS"
    
    (let*
@@ -68,15 +68,15 @@ OBJ may be a grade symbol or already be a summary."
 	    (emt:view:grade-summary->grades sums)))
       (when
 	 (>
-	    (emtvr:sym->severity sym)
-	    (emtvr:sym->severity (emt:view:grade-summary->worst sums)))
+	    (emt:grd:sym->severity sym)
+	    (emt:grd:sym->severity (emt:view:grade-summary->worst sums)))
 	 (setf 
 	    (emt:view:grade-summary->worst sums)
 	    sym))))
 
 
-;;;_  . emtvr:add-grades
-(defun emtvr:add-grades (sums a)
+;;;_  . emt:grd:add
+(defun emt:grd:add (sums a)
    "Add A to grade summary SUMS and return SUMS
 SUMS must be a `emt:view:grade-summary'.
 A may be a grade symbol, a grade summary, or nil."
@@ -84,21 +84,21 @@ A may be a grade symbol, a grade summary, or nil."
    (etypecase a
       (null sums)
       (symbol
-	 (emtvr:add-one-grade sums a 1))
+	 (emt:grd:add-one-grade sums a 1))
       (emt:view:grade-summary
 	 (dolist (grade (emt:view:grade-summary->grades a))
-	    (emtvr:add-one-grade sums 
+	    (emt:grd:add-one-grade sums 
 	       (first grade) 
 	       (second grade)))))
    sums)
 
-;;;_  . emtvr:combine-grade
-(defun emtvr:combine-grade (grades)
+;;;_  . emt:grd:combine
+(defun emt:grd:combine (grades)
    "Combine the list GRADES into one entry"
    (let
       ((all
 	  (reduce
-	     #'emtvr:add-grades
+	     #'emt:grd:add
 	     grades
 	     :initial-value (emt:view:make-grade-summary))))
       

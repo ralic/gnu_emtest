@@ -35,30 +35,30 @@
 ;;;_. Body
 ;;;_ , Receive reports alist
 ;;;_  . Structure holding parameters for alist receive
-(defstruct (emtvr:data
-	    (:constructor emtvr:make-data)
-	    (:conc-name emtvr:data->)
+(defstruct (emt:r:data
+	    (:constructor emt:r:make-data)
+	    (:conc-name emt:r:data->)
 	    (:copier nil))
    ""
    alist
    tree-insert-cb
    tree-remove-cb)
 
-;;;_  . emtvr:make-empty-alist
+;;;_  . emt:r:make-empty-alist
 ;;Maybe the only ctor
-(defun emtvr:make-empty-alist (insert remove)
+(defun emt:r:make-empty-alist (insert remove)
    ""
    
-   (emtvr:make-data
+   (emt:r:make-data
       :alist '()
       :tree-insert-cb insert
       :tree-remove-cb remove))
 
 
-;;;_  . emtvr:receive
-(defun emtvr:receive (receiver report)
+;;;_  . emt:r:receive  
+(defun emt:r:receive (receiver report)
    ""
-   (check-type receiver emtvr:data)
+   (check-type receiver emt:r:data)
    (check-type report emt:testral:report)
    (let
       (  (testrun-id 
@@ -68,10 +68,10 @@
       
       ;;For each suite in the report, 
       (dolist (entry (emt:testral:report->suites report))
-	 (emtvr:receive-one receiver entry testrun-id prefix))))
+	 (emt:r:receive-one receiver entry testrun-id prefix))))
 
-;;;_  . emtvr:test-gone-p
-(defun emtvr:test-gone-p (suite)
+;;;_  . emt:r:test-gone-p
+(defun emt:r:test-gone-p (suite)
    ""
    ;;This representation is tentative.
    (when (emt:testral:suite-p suite)
@@ -86,7 +86,7 @@
       nil
       ))
 
-;;;_  . emtvr:receive-one
+;;;_  . emt:r:receive-one
 
 ;;$$IMPROVE ME Become smarter about aliases.  Pick the "best" one as
 ;;the id, favoring UUIDs (recognized as strings), allowing viewer's
@@ -97,12 +97,12 @@
 ;;are.  If other children are recorded, they no longer exist so remove
 ;;them.  Perhaps suite reports flag whether they have exhaustively
 ;;listed their children.
-(defun emtvr:receive-one (receiver entry testrun-id prefix)
+(defun emt:r:receive-one (receiver entry testrun-id prefix)
    "Receive and store a single test report.
 
 Stores it on receiver' alist, keyed by how to run it."
 
-   (check-type receiver emtvr:data)
+   (check-type receiver emt:r:data)
    (destructuring-bind (explorable suite) entry
       (check-type explorable emt:run:explorable)
       (let*
@@ -115,21 +115,21 @@ Stores it on receiver' alist, keyed by how to run it."
 	 ;;Handle special case: If suite reports that it has disappeared,
 	 ;;remove it from alist and from tree.  (How from tree?)
 	 (if
-	    (emtvr:test-gone-p suite)
+	    (emt:r:test-gone-p suite)
 	    (progn
 	       (setf
-		  (emtvr:data->alist receiver)
-		  (delete* key (emtvr:data->alist receiver)
+		  (emt:r:data->alist receiver)
+		  (delete* key (emt:r:data->alist receiver)
 		     :test #'equal
 		     :key #'emt:view:suite->id))
 	       (funcall 
-		  (emtvr:data->tree-remove-cb receiver)
+		  (emt:r:data->tree-remove-cb receiver)
 		  presentation-path))
 	    
 	    ;;The normal case:
 	    (let
 	       ((old-cell
-		   (find key (emtvr:data->alist receiver)
+		   (find key (emt:r:data->alist receiver)
 		      :test #'equal
 		      :key #'emt:view:suite->id)))
 
@@ -147,7 +147,7 @@ Stores it on receiver' alist, keyed by how to run it."
 		     ;;pathtree.  This puts it where it was, but also
 		     ;;dirties it
 		     (funcall 
-			(emtvr:data->tree-insert-cb receiver)
+			(emt:r:data->tree-insert-cb receiver)
 			presentation-path old-cell))
 	    
 		  ;;It's not present in alist.  Insert it.
@@ -159,9 +159,9 @@ Stores it on receiver' alist, keyed by how to run it."
 			    :presentation-path presentation-path
 			    :testrun-id        testrun-id
 			    :result            suite)))
-		     (push cell (emtvr:data->alist receiver))
+		     (push cell (emt:r:data->alist receiver))
 		     (funcall 
-			(emtvr:data->tree-insert-cb receiver)
+			(emt:r:data->tree-insert-cb receiver)
 			presentation-path cell))))))))
 
 ;;;_. Footers
