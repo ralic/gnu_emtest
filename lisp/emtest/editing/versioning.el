@@ -139,7 +139,7 @@
 
 ;;;_  . Entry point
 ;;;###autoload
-(defun emt:ed:vers:convert-rtest-at-point (&optional noerror)
+(defun emtest:versioning:convert-rtest-at-point (&optional noerror)
    ""
    
    (interactive)
@@ -181,7 +181,7 @@
 
       ;;Convert all the forms.
       (goto-char (point-min))
-      (while (emt:ed:vers:convert-rtest-at-point t))))
+      (while (emtest:versioning:convert-rtest-at-point t))))
 
 
 ;;;_  . emt:ed:vers:root-project-dir
@@ -189,9 +189,9 @@
 (defconst emt:ed:vers:root-project-dir 
    "~/projects/elisp/emtest/lisp/"
    "" )
-;;;_  . emt:ed:vers:cp-rtest-file
+;;;_  . emtest:versioning:convert-rtest-file
 ;;;###autoload
-(defun emt:ed:vers:cp-rtest-file (filename)
+(defun emtest:versioning:convert-rtest-file (filename)
    "Copy an rtest file, setting it up for emtest
 FILENAME is the filename of an existing rtest file"
    (interactive
