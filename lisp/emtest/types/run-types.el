@@ -60,7 +60,8 @@
       same thing")) 
 
 ;;;_ , emtt:dynamic-method
-;;$$USE ME
+;;$$USE ME - already obsolete.  how-to-run goes thru method, even on
+;;foreign. 
 (defstruct (emtt:dynamic-method
 	      (:constructor emtt:make-dynamic-method)
 	      (:copier nil)
