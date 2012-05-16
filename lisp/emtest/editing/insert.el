@@ -35,26 +35,26 @@
 
 ;;;_. Body
 
-;;;_ , emt:skeletons list of available skeletons
+;;;_ , emt:ed:insert:skeletons list of available skeletons
 
-(defconst emt:skeletons 
+(defconst emt:ed:insert:skeletons 
    (mapcar
       #'(lambda (x)
 	   (cons (symbol-name x) x))
       
       '(
-	  emt:insert-requires
-	  emt:insert-require-tp
-	  emt:insert-examples-dir
-	  emt:insert-with-buf
-	  emt:insert-test
-	  emt:insert-clause
-	  emt:insert-prop-test-thru
-	  emt:insert-persister
-	  emt:insert-db-id
-	  emt:insert-example-def
-	  emt:insert-testpoint
-	  emt:insert-testpoint-control
+	  emt:ed:insert:requires
+	  emt:ed:insert:require-tp
+	  emt:ed:insert:examples-dir
+	  emt:ed:insert:with-buf
+	  emt:ed:insert:test
+	  emt:ed:insert:clause
+	  emt:ed:insert:prop-test-thru
+	  emt:ed:insert:persister
+	  emt:ed:insert:db-id
+	  emt:ed:insert:example-def
+	  emt:ed:insert:testpoint
+	  emt:ed:insert:testpoint-control
 	  ))
 
    "Skeletons related to emtest" )
@@ -69,7 +69,7 @@
       (list
 	 (let* 
 	    (
-	       (table emt:skeletons)
+	       (table emt:ed:insert:skeletons)
 	       (element-name
 		(completing-read "Insert which skeleton: "
 		   table)))
@@ -82,8 +82,8 @@
       (call-interactively skeleton)))
 
 ;;;_ , The insertion commands.
-;;;_  . emt:insert-requires
-(defun emt:insert-requires ()
+;;;_  . emt:ed:insert:requires
+(defun emt:ed:insert:requires ()
    ""
    (interactive)
    (pp
@@ -100,13 +100,13 @@
    
    "Requires form for testpoint")
 
-(defun emt:insert-require-tp ()
+(defun emt:ed:insert:require-tp ()
    "Insert a requires form for testpoint"
    (interactive)
    (pp emt:insert:require-tp (current-buffer)))
 
-;;;_  . emt:insert-examples-dir
-(define-skeleton emt:insert-examples-dir
+;;;_  . emt:ed:insert:examples-dir
+(define-skeleton emt:ed:insert:examples-dir
    "Insert skeleton to define an examples directory"
    (read-string "Package name:" )
    "(defconst "str":th:examples-dir
@@ -114,8 +114,8 @@
       \"Directory where examples are\" )"
    )
 
-;;;_  . emt:insert-with-buf
-(define-skeleton emt:insert-with-buf
+;;;_  . emt:ed:insert:with-buf
+(define-skeleton emt:ed:insert:with-buf
    "Insert skeleton to call a form in a mock-buffer"
    ()
    "(emtb:with-buf
@@ -127,16 +127,16 @@
    "
    )
 
-;;;_  . emt:insert-test
+;;;_  . emt:ed:insert:test
 
-(defun emt:insert-test (suite-name)
+(defun emt:ed:insert:test (suite-name)
    "Insert a test definition.
 
 Prompts for a suite name.  The default suite-name is the previous
 function."
    (interactive
       (list 
-	 ;;$$REFACTOR ME - code is shared with emt:insert-prop-test-thru
+	 ;;$$REFACTOR ME - code is shared with emt:ed:insert:prop-test-thru
 	 (let
 	    ((default-suite-name
 		(symbol-name (emtel:suite-sym-at-point))))
@@ -150,7 +150,7 @@ function."
 	 (current-buffer))))
 
 
-;;;_  . emt:insert-clause
+;;;_  . emt:ed:insert:clause
 
 (defconst emt:insert:clause-form 
    '(()
@@ -158,7 +158,7 @@ function."
 	  (emt:doc "Situation: WRITEME.")
 	  (emt:doc "Response: WRITEME.")))
    "Sexp og a skeleton clause" )
-(defun emt:insert-clause ()
+(defun emt:ed:insert:clause ()
    ""
    
    (interactive)
@@ -166,9 +166,9 @@ function."
       emt:insert:clause-form
       (current-buffer)))
 
-;;;_  . emt:insert-prop-test-thru
+;;;_  . emt:ed:insert:prop-test-thru
 
-(defun emt:insert-prop-test-thru (suite-name)
+(defun emt:ed:insert:prop-test-thru (suite-name)
    "Insert an annotation: test this suite thru another suite.
 
 Prompts for a suite name.  The default suite-name is the previous
@@ -189,8 +189,8 @@ function."
    'THE-FUNCTION-TO-TEST-IT-THRU)")
       nil suite-name))
 
-;;;_  . emt:insert-persister
-(defun emt:insert-persister ()
+;;;_  . emt:ed:insert:persister
+(defun emt:ed:insert:persister ()
    "Insert a persister"
    (interactive)
    (let
@@ -198,15 +198,15 @@ function."
       (pp
 	 `(emt:assert (emt:eq-persist-p #'equal _ ,id))
 	 (current-buffer))))
-;;;_  . emt:insert-db-id
-(defun emt:insert-db-id ()
+;;;_  . emt:ed:insert:db-id
+(defun emt:ed:insert:db-id ()
    "Insert a database id"
    
    (interactive)
    (insert
       "(db-id `(persist ,_$$WRITEME))"))
-;;;_  . emt:insert-example-def
-(defun emt:insert-example-def ()
+;;;_  . emt:ed:insert:example-def
+(defun emt:ed:insert:example-def ()
    ""
    
    (interactive)
@@ -219,8 +219,8 @@ function."
 		items-start-here))
 	 
 	 (current-buffer))))
-;;;_  . emt:insert-testpoint
-(defun emt:insert-testpoint ()
+;;;_  . emt:ed:insert:testpoint
+(defun emt:ed:insert:testpoint ()
    ""
    
    (interactive)
@@ -233,7 +233,7 @@ function."
 	     (arg1))
 	 (current-buffer))))
 
-(defun emt:insert-testpoint-control ()
+(defun emt:ed:insert:testpoint-control ()
    ""
    
    (interactive)
