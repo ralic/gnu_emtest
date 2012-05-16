@@ -73,7 +73,6 @@
 ;;;_  . emtvr:test-gone-p
 (defun emtvr:test-gone-p (suite)
    ""
-   ;;`emt:testral:test-runner-info' is never test-gone
    ;;This representation is tentative.
    (when (emt:testral:suite-p suite)
       '(find

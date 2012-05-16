@@ -95,8 +95,7 @@ treewise, including any grades from this node."
       :doc "The ID of the testrun that created this result.")
    (result ()     
       :type (or null 
-	       emt:testral:suite 
-	       emt:testral:test-runner-info)
+	       emt:testral:suite )
       :doc "The result data itself")
    (mark () :type bool))
 

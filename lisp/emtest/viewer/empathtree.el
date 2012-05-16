@@ -77,9 +77,7 @@ could be, such as when a note-list hasn't been expanded."
 	    (etypecase s 
 	       (null) 
 	       (emt:testral:suite
-		  (emt:testral:suite->grade s))
-	       (emt:testral:test-runner-info
-		  '()))))
+		  (emt:testral:suite->grade s)))))
       (emt:view:note-placeholder '())
       (emt:view:note
 	 (emt:testral:note->grade

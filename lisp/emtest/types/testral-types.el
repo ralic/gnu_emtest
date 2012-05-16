@@ -93,11 +93,11 @@
 	(list 
 	   emtt:explorable
 	   null ;;let's leave that an empty list for now
-	   ;; $$This will become just emt:testral:suite
-	   (or emt:testral:suite emt:testral:test-runner-info)))))
+	   emt:testral:suite))))
 
 ;;;_  . test-runner info
-;; $$OBSOLESCENT.  Maybe this becomes just a note subtype.
+;; $$OBSOLETE.  Maybe re-realized as a note subtype.
+'
 (defstruct (emt:testral:test-runner-info
 	    (:constructor emt:testral:make-test-runner-info)
 	    (:conc-name emt:testral:test-runner-info->))

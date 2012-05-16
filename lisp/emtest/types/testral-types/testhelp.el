@@ -272,14 +272,7 @@
 	    ((what-test test-2))
 	    (emtg (type presentation-name)(what-test test-2))))
 
-      (group
-	 ;; Test-runner info
-	 ((type test-runner-info))
-	 (type-must-be () emt:testral:test-runner-info)
-	 (item
-	    ()
-	    (emt:testral:make-test-runner-info
-	       :name "My test runner")))
+
       (group
 	 ((type how-to-run))
 	 (item ((name test-1) ;;`name' seems redundant here now.
@@ -295,13 +288,7 @@
       (group
 	 ((type explorable))
 	 (type-must-be () emtt:explorable)
-	 (item
-	    ((name just-test-runner))
-	    (emtt:make-explorable
-	       :how-to-run  '(hello)
-	       :prestn-path () 
-	       :properties  ()
-	       :aliases     ()))
+
 	 (item
 	    ((what-test index-1))
 	    (emtt:make-explorable
@@ -382,20 +369,6 @@
 	       :test-id-prefix ()
 	       :newly-pending 0
 	       :suites (list)))
-
-	 ;;Just-test-runner report
-	 (item
-	    ((name just-test-runner))
-	    (emt:testral:make-report
-	       :testrun-id (emtg (type testrun-id)(role original-add))
-	       :tester-id "0"
-	       :test-id-prefix ()
-	       :newly-pending 0
-	       :suites (list
-			  (list 
-			     (emtg (type explorable)(name just-test-runner))
-			     () 
-			     (emtg (type test-runner-info))))))
 
 	 ;;Report one suite, no children
 	 (item

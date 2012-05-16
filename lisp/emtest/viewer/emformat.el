@@ -332,22 +332,6 @@ Must be called in a `utidyv:top' context."
 		     (emt:view:suite->how-to-run suite)))
 	       (etypecase object
 		  (null "A null viewable")
-		  ;; $$OBSOLESCENT
-		  (emt:testral:test-runner-info
-		     (emtvf:outline-item-emformat
-			(hiformat:separate
-			   (list
-			      (emtvf:sym->suitename name)
-			      grades-sum)
-			   " ")
-		;; Each should xform to a button to launch that.
-			(emt:testral:test-runner-info->explore-methods-supported
-	 object)
-			;;(emtvf:mapnodes children "No child suites")
-			grade-face
-			boring-p))
-		  
-		  
 		  (emt:testral:suite
 		     (emtvf:outline-item-emformat
 			(hiformat:separate
