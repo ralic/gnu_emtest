@@ -37,13 +37,13 @@
 
 ;;;_. Body
 ;;;_ , Constants
-;;;_   , emtt:library:th:examples-dir
-(defconst emtt:library:th:examples-dir
+;;;_   , emt:xp:library:th:examples-dir
+(defconst emt:xp:library:th:examples-dir
       (emtb:expand-filename-by-load-file "examples/find-libs/") 
       "Directory where find-libs examples are" )
 
-;;;_   , emtt:library:thd:examples
-(defconst emtt:library:thd:examples
+;;;_   , emt:xp:library:thd:examples
+(defconst emt:xp:library:thd:examples
    (emtg:define+
       ((project emtest)(library tester)(section entry-points))
       (transparent-tags () (type))
@@ -53,7 +53,7 @@
 	 (item ((type count)) 0)
 	 (item ((type lib-path))
 	    (concat
-	       emtt:library:th:examples-dir
+	       emt:xp:library:th:examples-dir
 	       (emtg (type name))
 	       ".el"))
 	 (item ((type suite-sym-list)) '())
@@ -68,7 +68,7 @@
 	 (item ((type name)) "example-2")
 	 (item ((type lib-path))
 	    (concat
-		   emtt:library:th:examples-dir
+		   emt:xp:library:th:examples-dir
 		   (emtg (type name))
 		   ".el"))
 	 (item ((type count)) 2)
@@ -85,7 +85,7 @@
 	 (item ((type count)) 1)
 	 (item ((type lib-path))
 	    (concat
-	       emtt:library:th:examples-dir
+	       emt:xp:library:th:examples-dir
 	       (emtg (type name))
 	       ".el"))
 	 (item ((type suite-sym-list)) '(foo))
@@ -106,7 +106,7 @@
       ;;library have associated suites.
 
       (item ((type load-path-entry)(num 0))
-	 emtt:library:th:examples-dir)
+	 emt:xp:library:th:examples-dir)
       (item ((type load-path))
 	 (emtg:map num nil
 	    (emtg (type load-path-entry))))
@@ -117,13 +117,13 @@
 
 
 ;;;_ , Helper functions
-;;;_  . emt:library:th:x
-(defmacro emt:library:th:x (+tagset &rest body)
+;;;_  . emt:xp:library:th:x
+(defmacro emt:xp:library:th:x (+tagset &rest body)
    "Run BODY in an environment with a certain load-path and
-   load-history defined as per `emtt:library:thd:examples'.
+   load-history defined as per `emt:xp:library:thd:examples'.
 +TAGSET is a tagset narrowing."
    
-   `(emtg:with emtt:library:thd:examples ,+tagset
+   `(emtg:with emt:xp:library:thd:examples ,+tagset
        (let
 	  (
 	     (load-path 
@@ -136,14 +136,14 @@
 		   :ignore-tags (count))))
 	  ,@body)))
 
-;;;_  . emt:library:th
+;;;_  . emt:xp:library:th
 
-(defmacro emt:library:th (+tagset &rest body)
+(defmacro emt:xp:library:th (+tagset &rest body)
    "Run BODY in an environment with a certain example library defined
-   as per `emtt:library:thd:examples'.
+   as per `emt:xp:library:thd:examples'.
 +TAGSET is a tagset narrowing."
 
-   `(emt:library:th:x ,+tagset
+   `(emt:xp:library:th:x ,+tagset
        ;;Define the suites (protected by a noprops)
        (let
 	  ((suite-sym-list (emtg (type suite-sym-list))))

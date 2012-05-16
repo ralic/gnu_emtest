@@ -39,29 +39,29 @@
 
 ;;;_. Body
 
-;;;_ , emtt:lib-path->lib-sym
-(emt:deftest-3 emtt:lib-path->lib-sym
+;;;_ , emt:xp:library:path->lib-sym
+(emt:deftest-3 emt:xp:library:path->lib-sym
    (nil
-      (emt:library:th ((count 2))
+      (emt:xp:library:th ((count 2))
 	 (emt:doc "Response: We get the lib symbol we expected.")
 	 (emt:assert
 	    (eq
-	       (emtt:lib-path->lib-sym (emtg (type lib-path)))
+	       (emt:xp:library:path->lib-sym (emtg (type lib-path)))
 	       (emtg (type sym)))))))
 
 
-;;;_ , emtt:lib-path-own-suites
+;;;_ , emt:xp:library:suites
 
-(emt:deftest-3 emtt:lib-path-own-suites
+(emt:deftest-3 emt:xp:library:suites
    ;;Could loop over more examples
    (nil
       (progn
 	 (emt:doc "Situation: There are two suites in the library.")
 	 (emt:doc "Response: Return a list of those suites' symbols.")
-	 (emt:library:th ((count 2))
+	 (emt:xp:library:th ((count 2))
 	    (let*
 	       ((syms
-		   (emtt:lib-path-own-suites
+		   (emt:xp:library:suites
 		      (emtg (type lib-path)))))
 	       (emt:assert
 		  (equal
@@ -82,9 +82,9 @@ Full exploration is used (Meaningless for now)")
 \\(Not tested: Exactly those two suites are seen.)
 \\(Not tested: Those suites have distinct IDs.)
 ")
-	 (emt:library:th ((count 2))
+	 (emt:xp:library:th ((count 2))
 	    (emtp:eval
-	       (emt:library
+	       (emt:xp:library
 		  (emtg (type lib-path))
 		  ;;Punt for now.
 ;; 		  #'(lambda (x)
