@@ -36,9 +36,9 @@
 
 ;;;_. Body
 ;;;_ , Launcher
-;;;_  . emt:sexp-at-point
+;;;_  . emtest:sexp-at-point
 ;;;###autoload
-(defun emt:sexp-at-point (form)
+(defun emtest:sexp-at-point (form)
    ""
    (interactive 
       (list 
@@ -48,17 +48,17 @@
       `(form ,form)
       emt:lch:proplist:vanilla
       (list "form")))
-;;;_  . emtt:eval
-(defun emtt:eval (expression)
+;;;_  . emt:xp:clause:eval
+(defun emt:xp:clause:eval (expression)
    ""
    (emt:lch:run
       `(form (list nil expression))
       emt:lch:proplist:vanilla
       (list "expression")))
 
-;;;_  . emt:eval-last-sexp
+;;;_  . emtest:eval-last-sexp
 ;;;###autoload
-(defun emt:eval-last-sexp (arg)
+(defun emtest:eval-last-sexp (arg)
    ""
    
    (interactive
@@ -66,11 +66,11 @@
    ;;Unlike eval-last-sexp, this does not try to print value in
    ;;minibuffer, nor in current buffer, nor optionally trigger the
    ;;debugger.
-   (emtt:eval arg))
+   (emt:xp:clause:eval arg))
 
-;;;_  . emt:eval-expression
+;;;_  . emtest:eval-expression
 ;;;###autoload
-(defun emt:eval-expression (arg &optional insert-value)
+(defun emtest:eval-expression (arg &optional insert-value)
    ""
    ;;Interactive form borrowed from "simple.el"
    (interactive
@@ -80,10 +80,10 @@
 		  'read-expression-history))
 	 current-prefix-arg))
    ;;Unlike eval-expression, this does not do the extra stuff
-   (emtt:eval arg))
+   (emt:xp:clause:eval arg))
 ;;;_ , Helper
-;;;_  . emtt:explore-clause-p
-(defun emtt:explore-clause-p (test-id props)
+;;;_  . emt:xp:clause:run-p
+(defun emt:xp:clause:run-p (test-id props)
    "Non-nil if TEST-ID should be explored"
    (prog1
       (if
@@ -101,9 +101,9 @@
 
 
 ;;;_ , Explorers
-;;;_  . emtt:explore-clause
+;;;_  . emt:xp:clause
 
-(defun emtt:explore-clause (clause props report-f)
+(defun emt:xp:clause (clause props report-f)
    "Explore one clause in Emtest.
 This is the heart of Emtest exploration: A test itself."
    (funcall 
@@ -112,13 +112,13 @@ This is the heart of Emtest exploration: A test itself."
       (emtd:clause->form clause)
       report-f))
 
-;;;_  . emtt:explore-literal-clause
+;;;_  . emt:xp:clause:literal
 ;;;###autoload
-(defun emtt:explore-literal-clause (test-id props path report-f)
+(defun emt:xp:clause:literal (test-id props path report-f)
    "Explore a literal clause in Emtest."
    ;; If no clause is given. we can do little.
-   (if (emtt:explore-clause-p test-id props)
-      (emtt:explore-clause
+   (if (emt:xp:clause:run-p test-id props)
+      (emt:xp:clause
 	 (second test-id)
 	 props
 	 report-f)
@@ -126,19 +126,19 @@ This is the heart of Emtest exploration: A test itself."
 
 ;;;_   , Register
 ;;;###autoload (eval-after-load 'emtest/main/all-explorers
-;;;###autoload  '(emt:exps:add 'form #'emtt:explore-literal-clause
+;;;###autoload  '(emt:exps:add 'form #'emt:xp:clause:literal
 ;;;###autoload  "Literal clause"))
-;;;_  . emtt:explore-indexed-clause
+;;;_  . emt:xp:clause:indexed
 ;;;###autoload
-(defun emtt:explore-indexed-clause (test-id props path report-f)
+(defun emt:xp:clause:indexed (test-id props path report-f)
    "Explore an indexed clause in a suite in Emtest."
    ;; If no index is given, we could possibly list them but since they
    ;; have no names it'd accomplish little.
-   (if (emtt:explore-clause-p test-id props)
+   (if (emt:xp:clause:run-p test-id props)
       (destructuring-bind (suite-sym clause-index) (cdr test-id)
 	 (emtd:update-for-sym suite-sym)
 	 (emtd:destructure-suite-3 suite-sym
-	    (emtt:explore-clause 
+	    (emt:xp:clause 
 	       (nth clause-index clause-list)
 	       props
 	       report-f)))
@@ -147,7 +147,7 @@ This is the heart of Emtest exploration: A test itself."
 
 ;;;_   , Register
 ;;;###autoload (eval-after-load 'emtest/main/all-explorers
-;;;###autoload  '(emt:exps:add 'indexed-clause #'emtt:explore-indexed-clause
+;;;###autoload  '(emt:exps:add 'indexed-clause #'emt:xp:clause:indexed
 ;;;###autoload  "Indexed clause"))
 
 ;;;_. Footers
