@@ -386,7 +386,6 @@
 	       :suites (list
 			  (list 
 			     (emtg (type explorable)(what-test test-1))
-			     ()
 			     (emtg (type suite)(what-test test-1)(role original-add))))))
       
 	 ;;A second report overriding the first
@@ -402,7 +401,6 @@
 	       :suites (list
 			  (list
 			     (emtg (type explorable)(what-test test-1))
-			     ()
 			     (emtg (type suite)(what-test test-1)(role replace))))))
 
 	 ;;A report removing the first report
@@ -418,7 +416,6 @@
 	       :suites (list
 			  (list
 			     (emtg (type explorable)(what-test test-1))
-			     ()
 			     (emtg (type suite)(what-test test-1)(role remove-previous))))))
       
 
@@ -435,7 +432,6 @@
 	       :suites (list
 			  (list 
 			     (emtg (type explorable)(what-test test-2))
-			     ()
 			     (emtg (type suite)(what-test test-2))))))
 
 	 ;;Maybe add:

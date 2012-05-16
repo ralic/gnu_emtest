@@ -103,7 +103,7 @@
 Stores it on receiver' alist, keyed by how to run it."
 
    (check-type receiver emtvr:data)
-   (destructuring-bind (explorable dummy suite) entry
+   (destructuring-bind (explorable suite) entry
       (check-type explorable emtt:explorable)
       (let*
 	 ( 

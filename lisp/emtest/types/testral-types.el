@@ -92,7 +92,6 @@
      (repeat
 	(list 
 	   emtt:explorable
-	   null ;;let's leave that an empty list for now
 	   emt:testral:suite))))
 
 ;;;_  . test-runner info

@@ -83,7 +83,7 @@
 			 ',testrun
 			 (if report
 			    (list 
-			       (list ,explorable nil report))
+			       (list ,explorable report))
 			    ())
 			 tests
 			 prefix 
