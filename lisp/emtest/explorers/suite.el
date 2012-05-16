@@ -38,17 +38,17 @@
 
 ;;;_. Body
 ;;;_ , Launchers
-;;;_  . emtl:run-suite
-(defun emtl:run-suite (suite-sym &optional arg)
+;;;_  . emt:xp:suite:run
+(defun emt:xp:suite:run (suite-sym &optional arg)
    "Run the test suite associated with SUITE-SYM."
    (emt:lch:run 
       `(suite ,suite-sym)
       (emt:lch:get-prop-list arg)
       (list (format "Suite %s" suite-sym))))
 
-;;;_  . emt:defun-at-point
+;;;_  . emtest:defun-at-point
 ;;;###autoload
-(defun emt:defun-at-point (arg)
+(defun emtest:defun-at-point (arg)
   "Run tests on the function or suite under point.
 
 If prefix ARG is non-nil, eval it first.
@@ -65,14 +65,14 @@ Does nothing if the buffer is not in a known lisp mode."
 	 ((suite-sym
 	     (emtel:suite-sym-at-point)))
 	 (check-type suite-sym symbol)
-	 (emtl:run-suite suite-sym nil))))
+	 (emt:xp:suite:run suite-sym nil))))
 
 
 ;;;_ , Explorer
 
-;;;_ , emtt:explore-suite
+;;;_ , emt:xp:suite
 ;;;###autoload
-(defun emtt:explore-suite (test-id props-unused path report-f)
+(defun emt:xp:suite (test-id props-unused path report-f)
    ""
    (if (cdr test-id)
       (let* 
@@ -135,7 +135,7 @@ Does nothing if the buffer is not in a known lisp mode."
 
 ;;;_ , Insinuate
 ;;;###autoload (eval-after-load 'emtest/main/all-explorers
-;;;###autoload  '(emt:exps:add 'suite #'emtt:explore-suite
+;;;###autoload  '(emt:exps:add 'suite #'emt:xp:suite
 ;;;###autoload  "Suite" nil))
 
 ;;;_. Footers
