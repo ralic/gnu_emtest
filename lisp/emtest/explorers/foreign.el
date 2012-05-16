@@ -450,9 +450,22 @@ slot (without ':', which will be added in reading)."
 	       (emt:testral:suite-p object)
 	       object
 	       (emt:testral:make-suite
-		  ;; $$IMPROVE ME Add a note about getting the wrong
-		  ;; object.
 		  :contents '()
+		  (emt:testral:make-note-list
+		     :notes 
+		     (list
+			(emt:testral:make-note
+			   :id 	"0"
+			   :parent-id nil
+			   :grade     'failed
+			   :relation 'trace
+			   ;; Use `doc' because there's no more
+			   ;; specific one.
+			   :governor 'doc
+			   :value    (list
+					(concat 
+					   "Got non-suite answer "
+					   answer)))))
 		  :grade 'blowout)))
 	 ;; Could schedule any tests a suite returns, depending on a flag.
 	 '())))
