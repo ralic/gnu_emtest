@@ -442,7 +442,7 @@ slot (without ':', which will be added in reading)."
       (let* 
 	 (
 	    (launchable-name (second test-id))
-	    (raw-question (third test-id))
+	    (raw-question (cddr test-id))
 	    (tester (emt:xp:foreign:get-tester launchable-name))
 	    (tq (second tester))
 	    (terminating-regex (third tester)))
