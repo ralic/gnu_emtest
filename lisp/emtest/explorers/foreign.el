@@ -36,7 +36,7 @@
 ;;;_. Body
 ;;;_ , Customizations
 
-(defcustom emt:foreign:launchables
+(defcustom emt:xp:foreign:launchables
    '()
    
    "List of executables suitable for this and config data for them."
@@ -84,16 +84,16 @@
 
 
 ;;;_ , Alist of foreign testers currently running
-(defvar emt:foreign:current-testers
+(defvar emt:xp:foreign:current-testers
    '()
    ;; For now, timer is not used.
    "Alist of current foreign processes.  
 
 Each element is of the form \(name tq timer launchable\)" )
 
-;;;_ , emt:foreign:make-tq
+;;;_ , emt:xp:foreign:make-tq
 ;; Could share this with expect.el
-(defun emt:foreign:make-tq (exec+args shell proc-base-name)
+(defun emt:xp:foreign:make-tq (exec+args shell proc-base-name)
    ""
    (let* 
       ((proc 
@@ -110,17 +110,17 @@ Each element is of the form \(name tq timer launchable\)" )
 	 (error
 	    "No live process"))
       (tq-create proc)))
-;;;_ , emt:foreign:launchable->tq
-(defun emt:foreign:launchable->tq (launchable)
+;;;_ , emt:xp:foreign:launchable->tq
+(defun emt:xp:foreign:launchable->tq (launchable)
    "Make a transaction queue appropriate to LAUNCHABLE"
    
-   (emt:foreign:make-tq (second launchable) (fourth launchable) "foreign"))
+   (emt:xp:foreign:make-tq (second launchable) (fourth launchable) "foreign"))
 
-;;;_ , emt:foreign:revive-tester
-(defun emt:foreign:revive-tester (tester)
+;;;_ , emt:xp:foreign:revive-tester
+(defun emt:xp:foreign:revive-tester (tester)
    "Make sure the tq of TESTER is alive.
 
-TESTER should be an element of emt:foreign:current-testers."
+TESTER should be an element of emt:xp:foreign:current-testers."
    
    (destructuring-bind (name tq timer launchable) tester
       (unless
@@ -129,11 +129,11 @@ TESTER should be an element of emt:foreign:current-testers."
 	 ;; don't make timers yet).
 	 (when (timerp timer) (cancel-timer timer))
 	 (setf (second tester) 
-	    (emt:foreign:launchable->tq launchable)))))
+	    (emt:xp:foreign:launchable->tq launchable)))))
 
-;;;_ , emt:foreign:get-tester
+;;;_ , emt:xp:foreign:get-tester
 
-(defun emt:foreign:get-tester (name)
+(defun emt:xp:foreign:get-tester (name)
    "Get the tester for name.
 
 NAME should be the nickname of some launchable"
@@ -141,20 +141,20 @@ NAME should be the nickname of some launchable"
    (let*
       (
 	 (launchable
-	    (assoc name emt:foreign:launchables))
-	 (tester (assoc name emt:foreign:current-testers)))
+	    (assoc name emt:xp:foreign:launchables))
+	 (tester (assoc name emt:xp:foreign:current-testers)))
       (if tester
-	 (emt:foreign:revive-tester tester)
+	 (emt:xp:foreign:revive-tester tester)
 	 ;; If it doesn't exist, make it.
 	 (progn
 	    (setq tester 
 	       (list 
 		  name
-		  (emt:foreign:launchable->tq launchable)
+		  (emt:xp:foreign:launchable->tq launchable)
 		  ;; No timer yet
 		  nil
 		  launchable))
-	    (push tester emt:foreign:current-testers)))
+	    (push tester emt:xp:foreign:current-testers)))
       tester))
 
 ;;;_ , Related to stopping it a certain time after last Q.
@@ -170,23 +170,23 @@ NAME should be the nickname of some launchable"
 ;;;_ , Utility
 
 ;;;_ , Text to Csexp
-;;;_  . emt:foreign-read-buffer-csexp-loop
-(defun emt:foreign-read-buffer-csexp-loop ()
+;;;_  . emt:xp:foreign:read-buffer-csexp-loop
+(defun emt:xp:foreign:read-buffer-csexp-loop ()
    ""
    
    (let
       ((rv-csexp (list)))
       ;; We come directly here when we see the end of a list.
-      (catch 'emt:foreign-csexp-EOL
+      (catch 'emt:xp:foreign:csexp-EOL
 	 (while (not (eobp))
 	    ;; We come directly here, skipping push, when we read a
 	    ;; non-object.
-	    (catch 'emt:foreign-csexp-NOTHING
-	       (push (emt:foreign-read-buffer-csexp-single) rv-csexp))))
+	    (catch 'emt:xp:foreign:csexp-NOTHING
+	       (push (emt:xp:foreign:read-buffer-csexp-single) rv-csexp))))
       (nreverse rv-csexp)))
 
-;;;_  . emt:foreign-read-buffer-csexp-single
-(defun emt:foreign-read-buffer-csexp-single ()
+;;;_  . emt:xp:foreign:read-buffer-csexp-single
+(defun emt:xp:foreign:read-buffer-csexp-single ()
    ""
    
    (if
@@ -211,26 +211,26 @@ NAME should be the nickname of some launchable"
 	       (unless (eobp) (forward-char)))
 	 
 	 (?\( 
-	    (emt:foreign-read-buffer-csexp-loop))
+	    (emt:xp:foreign:read-buffer-csexp-loop))
 	 (?\)
-	    (throw 'emt:foreign-csexp-EOL nil))
+	    (throw 'emt:xp:foreign:csexp-EOL nil))
 	 ;; Read nothing for whitespace etc.
-	 (t (throw 'emt:foreign-csexp-NOTHING nil)))))
-;;;_  . emt:foreign-read-buffer-csexp
-(defun emt:foreign-read-buffer-csexp (text)
+	 (t (throw 'emt:xp:foreign:csexp-NOTHING nil)))))
+;;;_  . emt:xp:foreign:read-buffer-csexp
+(defun emt:xp:foreign:read-buffer-csexp (text)
    ""
 
    (with-temp-buffer
       (insert text)
       (goto-char 1)
-      (catch 'emt:foreign-csexp-EOL
-	 (catch 'emt:foreign-csexp-NOTHING
-	    (emt:foreign-read-buffer-csexp-single)))))
+      (catch 'emt:xp:foreign:csexp-EOL
+	 (catch 'emt:xp:foreign:csexp-NOTHING
+	    (emt:xp:foreign:read-buffer-csexp-single)))))
 ;;;_ , Csexp to text
 ;;;_ , Stringtree to obj
-;;;_  . emt:foreign-ctor-alist
+;;;_  . emt:xp:foreign:ctor-alist
 
-(defvar emt:foreign-ctor-alist 
+(defvar emt:xp:foreign:ctor-alist 
    '(
        (list    list t)
        (integer read t)
@@ -257,9 +257,9 @@ is interned, prepended with \":\".
 
 If POSITIONAL? is t, each argument is simply recursively parsed first." )
 
-;;;_  . emt:foreign-stringtree->object
+;;;_  . emt:xp:foreign:stringtree->object
 
-(defun emt:foreign-stringtree->object (stringtree)
+(defun emt:xp:foreign:stringtree->object (stringtree)
    "Given a stringtree, construct a corresponding object"
 
    (typecase stringtree
@@ -269,7 +269,7 @@ If POSITIONAL? is t, each argument is simply recursively parsed first." )
 	    (let*
 	       (
 		  (sym (intern (car stringtree)))
-		  (cell (assq sym emt:foreign-ctor-alist)))
+		  (cell (assq sym emt:xp:foreign:ctor-alist)))
 	       (when cell
 		  (destructuring-bind
 		     (functor func positionalp) cell
@@ -277,7 +277,7 @@ If POSITIONAL? is t, each argument is simply recursively parsed first." )
 			;; Positionally
 			(apply func
 			   (mapcar 
-			      #'emt:foreign-stringtree->object
+			      #'emt:xp:foreign:stringtree->object
 			      (cdr stringtree)))
 			;;By key - basically imitates structure
 			;;construction.
@@ -290,17 +290,17 @@ If POSITIONAL? is t, each argument is simply recursively parsed first." )
 					 (list 
 					    ;; Key had better be a string
 					    (intern (concat ":" key)) 
-					    (emt:foreign-stringtree->object
+					    (emt:xp:foreign:stringtree->object
 					       value))))
 				 (cdr stringtree))))))))))))
 
 ;;;_ , Obj to stringtree
-;;;_  . emt:foreign-stringtreer-alist 
-(defvar emt:foreign-stringtreer-alist 
+;;;_  . emt:xp:foreign:stringtreer-alist 
+(defvar emt:xp:foreign:stringtreer-alist 
    '(
        (listp    "list"    t identity)
-       (integerp "integer" t emt:foreign:singleval-stringtreer)
-       (symbolp  "symbol"  t emt:foreign:singleval-stringtreer)
+       (integerp "integer" t emt:xp:foreign:singleval-stringtreer)
+       (symbolp  "symbol"  t emt:xp:foreign:singleval-stringtreer)
        ;; We don't treat grade etc as a case, it's treated as symbol
        
        (emt:testral:suite-p        "suite"    struct emt:testral:suite)
@@ -325,14 +325,14 @@ Keywise-Stringtreer should return a list where each element of
 the list is in the form \(KEY VALUE\), and KEY is the symbol of a
 slot (without ':', which will be added in reading)."
    )
-;;;_  . emt:foreign:singleval-stringtreer
-(defun emt:foreign:singleval-stringtreer (x)
+;;;_  . emt:xp:foreign:singleval-stringtreer
+(defun emt:xp:foreign:singleval-stringtreer (x)
    ""
    (list
       (prin1-to-string x)))
 
-;;;_  . emt:foreign:struct-stringtreer
-(defun emt:foreign:struct-stringtreer (struct-sym x)
+;;;_  . emt:xp:foreign:struct-stringtreer
+(defun emt:xp:foreign:struct-stringtreer (struct-sym x)
    ""
    (let
       ((slots 
@@ -350,10 +350,10 @@ slot (without ':', which will be added in reading)."
 		       (eq key 'cl-tag-slot)
 		       (list 
 			  (symbol-name key)
-			  (emt:foreign:object->stringtree value)))))
+			  (emt:xp:foreign:object->stringtree value)))))
 	    slots))))
-;;;_  . emt:foreign:keyvalue-stringtreer
-(defun emt:foreign:keyvalue-stringtreer (x)
+;;;_  . emt:xp:foreign:keyvalue-stringtreer
+(defun emt:xp:foreign:keyvalue-stringtreer (x)
    ""
    
    (destructuring-bind
@@ -361,11 +361,11 @@ slot (without ':', which will be added in reading)."
       (list 
 	 ;; Sym had better be a symbol
 	 (symbol-name sym)
-	 (emt:foreign:object->stringtree
+	 (emt:xp:foreign:object->stringtree
 	    value))))
-;;;_  . emt:foreign:object->stringtree
+;;;_  . emt:xp:foreign:object->stringtree
 
-(defun emt:foreign:object->stringtree (object)
+(defun emt:xp:foreign:object->stringtree (object)
    "Return a stringtree corresponding to OBJECT"
 
    (if
@@ -373,7 +373,7 @@ slot (without ':', which will be added in reading)."
       object
       (let* 
 	 ((occurence
-	     (find object emt:foreign-stringtreer-alist
+	     (find object emt:xp:foreign:stringtreer-alist
 		:test 
 		#'(lambda (ob form)
 		     (funcall (car form) ob)))))
@@ -385,42 +385,42 @@ slot (without ':', which will be added in reading)."
 		  (case positional
 		     ((t) 
 			(mapcar 
-			   #'emt:foreign:object->stringtree
+			   #'emt:xp:foreign:object->stringtree
 			   (funcall stringtreer object)))
 		     ((nil) 
 			(mapcar 
-			   #'emt:foreign:keyvalue-stringtreer
+			   #'emt:xp:foreign:keyvalue-stringtreer
 			   (funcall stringtreer object)))
 		     (struct
-			(emt:foreign:struct-stringtreer
+			(emt:xp:foreign:struct-stringtreer
 			   stringtreer object))
 		     (t '()))))))))
 
 ;;;_ , Text to/from TESTRAL
-;;;_ , emt:foreign-encode-TESTRAL
-(defun emt:foreign-encode-TESTRAL (raw-question)
+;;;_ , emt:xp:foreign:encode-TESTRAL
+(defun emt:xp:foreign:encode-TESTRAL (raw-question)
    ""
    ;; Punt for now
    "()")
-;;;_ , emt:foreign-decode-to-TESTRAL
-(defun emt:foreign-decode-to-TESTRAL (text)
+;;;_ , emt:xp:foreign:decode-to-TESTRAL
+(defun emt:xp:foreign:decode-to-TESTRAL (text)
    "Convert answer to csexp and thence to object."
 
    (let*
-      ((stringtree (emt:foreign-read-buffer-csexp text))
+      ((stringtree (emt:xp:foreign:read-buffer-csexp text))
 	 (object
-	    (emt:foreign-stringtree->object stringtree)))))
+	    (emt:xp:foreign:stringtree->object stringtree)))))
 
 ;;;_ , The explorer proper
-;;;_  . emt:foreign-report-results
-(defun emt:foreign-report-results (passed-object answer)
+;;;_  . emt:xp:foreign:report-results
+(defun emt:xp:foreign:report-results (passed-object answer)
    "Report the results when we get an answer"
    
    (destructuring-bind
       (report-f tester) passed-object
       (funcall report-f
 	 (let
-	    ((object (emt:foreign-decode-to-TESTRAL answer)))
+	    ((object (emt:xp:foreign:decode-to-TESTRAL answer)))
 	    ;; $$RETHINK This seems to be the expected return, but
 	    ;; maybe it should be emt:testral:report?  But report-f
 	    ;; expects a suite.
@@ -434,24 +434,24 @@ slot (without ':', which will be added in reading)."
 	 ;; Could schedule any tests a suite returns.
 	 '())))
 
-;;;_  . emtt:explore-foreign
+;;;_  . emt:xp:foreign
 ;;;###autoload
-(defun emtt:explore-foreign (test-id props-unused path report-f)
+(defun emt:xp:foreign (test-id props-unused path report-f)
    ""
    (if (cdr test-id)
       (let* 
 	 (
 	    (launchable-name (second test-id))
 	    (raw-question (third test-id))
-	    (tester (emt:foreign:get-tester launchable-name))
+	    (tester (emt:xp:foreign:get-tester launchable-name))
 	    (tq (second tester))
 	    (terminating-regex (third tester)))
 	 
 	 (tq-enqueue tq 
-	    (emt:foreign-encode-TESTRAL raw-question)
+	    (emt:xp:foreign:encode-TESTRAL raw-question)
 	    terminating-regex
 	    (list report-f tester)
-	    #'emt:foreign-report-results t))
+	    #'emt:xp:foreign:report-results t))
       
 
       ;; List foreigns that we could run, from customization list.
@@ -469,7 +469,7 @@ slot (without ':', which will be added in reading)."
 			     (list 'foreign name)
 			     :prestn-path
 			     (list 'foreign name))))
-		  emt:foreign:launchables))
+		  emt:xp:foreign:launchables))
 	    :grade nil)
 	 '())))
 
@@ -477,7 +477,7 @@ slot (without ':', which will be added in reading)."
 
 ;;;_ , Insinuate
 ;;;###autoload (eval-after-load 'emtest/main/all-explorers
-;;;###autoload  '(emt:exps:add 'foreign #'emtt:explore-foreign
+;;;###autoload  '(emt:exps:add 'foreign #'emt:xp:foreign
 ;;;###autoload  "Testers in other executables" t))
 
 ;;;_. Footers
