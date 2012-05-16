@@ -57,7 +57,7 @@
 (emt:deftest-3 
    ((of 'emtest/viewer/organize)
       (:surrounders
-	 ;;$$SHARE ME - factor `emtv2:ts:with-mock-viewer' in
+	 ;;$$SHARE ME - factor `emt:vw:top:ts:with-mock-viewer' in
 	 ;;emviewer2/testhelp.el to share this insulation.
 	 '((let
 	      (emtvo:receiver emtvo:pathtree)))))

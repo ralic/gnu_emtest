@@ -202,7 +202,7 @@ which may not imply success of an assertion."
 	 (goto-char pos)
 	 (loformat:insert
 	    (emt:fmt:button-toggle-mark viewable)
-	    emtv2:format-alist))))
+	    emt:vw:top:format-alist))))
 
 ;;;_   , emt:fmt:button-toggle-mark-func
 (defun emt:fmt:button-toggle-mark-func (button)

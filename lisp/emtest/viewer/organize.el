@@ -127,15 +127,15 @@ Make a `emt:view:presentable' or its descendant."
    (emtvp:freshen emtvo:pathtree))
 
 ;;;_ , Command entry points
-;;;_  . emtv2:tests-outstanding hollow. 
-(defvar emtv2:tests-outstanding)
+;;;_  . emt:vw:top:tests-outstanding hollow. 
+(defvar emt:vw:top:tests-outstanding)
 ;;;_  . emtest:reset
 ;;;###autoload
 (defun emtest:reset ()
    ""
    
    (interactive)
-   (setq emtv2:tests-outstanding 0)
+   (setq emt:vw:top:tests-outstanding 0)
    (setq emtvo:pathtree nil)
    (setq emtvo:receiver nil))
 

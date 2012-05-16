@@ -41,18 +41,18 @@
 
 ;;;_. Body
 ;;;_ , Constants
-;;;_  . emtv2:report-buffer-name
-(defconst emtv2:report-buffer-name 
+;;;_  . emt:vw:top:report-buffer-name
+(defconst emt:vw:top:report-buffer-name 
    "*Emtest Report*")
 ;;;_ , Vars
-(defvar emtv2:report-buffer nil 
+(defvar emt:vw:top:report-buffer nil 
    "Buffer that we write reports in" )
 
 ;;;_ , Glue functions
-;;;_  . emtv2:pathtree-cb
+;;;_  . emt:vw:top:pathtree-cb
 ;;Different from `emtest:viewer:pathtree-cb' in that it does not try
 ;;to print objects, thus does not deal with `dirty' flag.
-(defun emtv2:pathtree-cb (obj tree)
+(defun emt:vw:top:pathtree-cb (obj tree)
    "Callback to handle dirty flags, that `pathree' gets."
    (check-type obj emt:view:presentable)
    (check-type tree emtvp)
@@ -125,66 +125,66 @@
 
 
 
-;;;_  . emtv2:setup-if-needed
-(defun emtv2:setup-if-needed ()
+;;;_  . emt:vw:top:setup-if-needed
+(defun emt:vw:top:setup-if-needed ()
    ""
-   (unless (buffer-live-p emtv2:report-buffer)
+   (unless (buffer-live-p emt:vw:top:report-buffer)
       (setq 
-	 emtv2:report-buffer 
+	 emt:vw:top:report-buffer 
 	 (generate-new-buffer
-	    emtv2:report-buffer-name)))
-   (emtvo:setup-if-needed #'emtv2:pathtree-cb #'ignore))
+	    emt:vw:top:report-buffer-name)))
+   (emtvo:setup-if-needed #'emt:vw:top:pathtree-cb #'ignore))
 
 ;;;_ , Static printing functions
-;;;_  . emtv2:print-all
-(defun emtv2:print-all (top-node)
+;;;_  . emt:vw:top:print-all
+(defun emt:vw:top:print-all (top-node)
    "Format and print the whole report."
    (emtvp:freshen emtvo:pathtree)
-   (with-current-buffer emtv2:report-buffer
+   (with-current-buffer emt:vw:top:report-buffer
       (let
 	 ((inhibit-read-only t))
 	 (erase-buffer))
       (emtest/viewer/mode)
-      (emtv2:insert top-node)))
-;;;_  . emtv2:format-alist
-(defconst emtv2:format-alist 
+      (emt:vw:top:insert top-node)))
+;;;_  . emt:vw:top:format-alist
+(defconst emt:vw:top:format-alist 
    (append
-      '((dynamic emtv2:insert:dynamic))
+      '((dynamic emt:vw:top:insert:dynamic))
       loformat:default-alist)
    
    "List of formatters that emformat uses.")
 
-;;;_  . emtv2:insert
-(defun emtv2:insert (top-node)
+;;;_  . emt:vw:top:insert
+(defun emt:vw:top:insert (top-node)
    "Insert TOP-NODE via loformat"
    (let*
       ((tree (emt:fmt:top top-node)))
       (loformat:insert
 	 tree
-	 emtv2:format-alist)))
+	 emt:vw:top:format-alist)))
 
 ;;;_ , Overall callback
-;;;_  . emtv2:tests-outstanding
-(defvar emtv2:tests-outstanding 0 
+;;;_  . emt:vw:top:tests-outstanding
+(defvar emt:vw:top:tests-outstanding 0 
    "Number of tests currently enqueued that we haven't received
    reports from." )
-;;;_  . emtv2:tester-cb
+;;;_  . emt:vw:top:tester-cb
 ;;;###autoload
-(defun emtv2:tester-cb (report)
+(defun emt:vw:top:tester-cb (report)
    ""
    (check-type report emt:testral:report)
-   (emtv2:setup-if-needed)
+   (emt:vw:top:setup-if-needed)
    (emtvo:receive report)
-   (incf emtv2:tests-outstanding
+   (incf emt:vw:top:tests-outstanding
       (-
 	 (emt:testral:report->newly-pending report)
 	 (length
 	    (emt:testral:report->suites report))))
    
    (when
-      (equal emtv2:tests-outstanding 0)
-      (emtv2:print-all (emtvo:get-root))
-      (pop-to-buffer emtv2:report-buffer)))
+      (equal emt:vw:top:tests-outstanding 0)
+      (emt:vw:top:print-all (emtvo:get-root))
+      (pop-to-buffer emt:vw:top:report-buffer)))
 
 
 ;;;_. Footers

@@ -35,29 +35,29 @@
 
 ;;;_. Body
 
-(defun emtv2:ts:run-test (form)
+(defun emt:vw:top:ts:run-test (form)
    ""
    
-   (emtt:ts:run-test form #'emtv2:ts:run-test:callback))
+   (emtt:ts:run-test form #'emt:vw:top:ts:run-test:callback))
 
 ;;;_ , The callback 
-(defun emtv2:ts:run-test:callback (report)
+(defun emt:vw:top:ts:run-test:callback (report)
    ""
    
    (check-type report emt:testral:report)
-   (emtv2:tester-cb report))
+   (emt:vw:top:tester-cb report))
 
-;;;_ , emtv2:ts:with-mock-viewer
+;;;_ , emt:vw:top:ts:with-mock-viewer
 
-(defmacro emtv2:ts:with-mock-viewer (&rest body)
+(defmacro emt:vw:top:ts:with-mock-viewer (&rest body)
    ""
    
    `(with-temp-buffer
        (let
 	  (
-	     emtv2:receiver
-	     emtv2:result-root
-	     (emtv2:report-buffer
+	     emt:vw:top:receiver
+	     emt:vw:top:result-root
+	     (emt:vw:top:report-buffer
 		(current-buffer)))
 
 	  ,@body)))

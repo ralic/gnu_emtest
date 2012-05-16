@@ -48,7 +48,7 @@
 ;;Cheat for now: Always know to use emviewer2.  Later use a
 ;;customizable variable.
 (defconst emtl:receiver-f
-   #'emtv2:tester-cb
+   #'emt:vw:top:tester-cb
    "Which viewer to use to display results" )
 
 ;;;_. Footers

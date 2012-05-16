@@ -43,10 +43,10 @@
    '(nil
        ((emt:doc "Situation: testing an example") 
 	  (error "An example error"))) 
-   #'emtv2:tester-cb)
+   #'emt:vw:top:tester-cb)
 
 '
-(emtv2:ts:run-test
+(emt:vw:top:ts:run-test
    '(nil
        ((emt:doc "Situation: testing an example") 
 	  (error "An example error"))))

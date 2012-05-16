@@ -37,9 +37,9 @@
 (require 'emtest/types/testral-types/testhelp)
 
 ;;;_. Body
-;;;_ , emtv2:td:dir
+;;;_ , emt:vw:top:td:dir
 ;;$$CHECK ME  This was moved to here, needs rechecking.
-(defconst emtv2:td:dir
+(defconst emt:vw:top:td:dir
    (emtb:expand-filename-by-load-file "persist")
    "The file where the database is located" )
 
@@ -47,14 +47,14 @@
 (emt:deftest-3
    ((of 'emtest/viewer/emviewer2)
       (db-id
-	 `(persist ,emtv2:td:dir))
+	 `(persist ,emt:vw:top:td:dir))
       (:surrounders
 	 '((emtg:with emt:testral:thd:examples ()))))
    
    ;;Tests of just the viewer.
    (()
-      (emtv2:ts:with-mock-viewer
-	 (emtv2:tester-cb
+      (emt:vw:top:ts:with-mock-viewer
+	 (emt:vw:top:tester-cb
 	    (emtg (type report)(name just-test-runner)))
 
 	 (emt:emviewer:th:check-buffer-string
@@ -62,8 +62,8 @@
 	       "dbid:yygeryl0jwe0"))))
    
    (()
-      (emtv2:ts:with-mock-viewer
-	 (emtv2:tester-cb
+      (emt:vw:top:ts:with-mock-viewer
+	 (emt:vw:top:tester-cb
 	    (emtg (type report)(role original-add)(what-test test-1)))
 
 	 (emt:emviewer:th:check-buffer-string
@@ -71,8 +71,8 @@
 
 
    (()
-      (emtv2:ts:with-mock-viewer
-	 (emtv2:tester-cb
+      (emt:vw:top:ts:with-mock-viewer
+	 (emt:vw:top:tester-cb
 	    (emtg (type report)(what-test test-2)))
 
 	 (emt:emviewer:th:check-buffer-string
@@ -84,8 +84,8 @@
       ;;And capture the intermediate result stuff - gotta rewrite,
       ;;basically like above or like rewriting "receive" and also
       ;;testing it with set=.
-      (emtv2:ts:with-mock-viewer
-	 (emtv2:ts:run-test
+      (emt:vw:top:ts:with-mock-viewer
+	 (emt:vw:top:ts:run-test
 	    '("Situation: testing an example" 
 		(error "An example error")))
 
