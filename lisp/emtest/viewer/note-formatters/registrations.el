@@ -5,7 +5,7 @@
 
 ;;;### (autoloads (emt:vw:note:matched emt:vw:note:mismatched emt:vw:note:succeeded
 ;;;;;;  emt:vw:note:failed) "emtest/viewer/note-formatters/asserted"
-;;;;;;  "asserted.el" (19783 34766))
+;;;;;;  "asserted.el" (20404 6046))
 ;;; Generated autoloads from asserted.el
 
 (autoload 'emt:vw:note:failed "emtest/viewer/note-formatters/asserted" "\
@@ -47,7 +47,7 @@ Formatter for TESTRAL note governed by `matched'
 ;;;***
 
 ;;;### (autoloads (emt:vw:note:comparison-w/persist emt:vw:note:not-in-db)
-;;;;;;  "emtest/viewer/note-formatters/db" "db.el" (19793 37300))
+;;;;;;  "emtest/viewer/note-formatters/db" "db.el" (20404 7693))
 ;;; Generated autoloads from db.el
 
 (autoload 'emt:vw:note:not-in-db "emtest/viewer/note-formatters/db" "\
@@ -72,7 +72,7 @@ Formatter for TESTRAL note governed by `comparison-w/persist'
 ;;;***
 
 ;;;### (autoloads (emt:vw:note:doc) "emtest/viewer/note-formatters/doc"
-;;;;;;  "doc.el" (19783 34777))
+;;;;;;  "doc.el" (20404 6046))
 ;;; Generated autoloads from doc.el
 
 (autoload 'emt:vw:note:doc "emtest/viewer/note-formatters/doc" "\
@@ -87,7 +87,7 @@ Formatter for TESTRAL note governed by `doc'
 ;;;***
 
 ;;;### (autoloads (emt:vw:note:error-raised) "emtest/viewer/note-formatters/error-raised"
-;;;;;;  "error-raised.el" (19783 34787))
+;;;;;;  "error-raised.el" (20404 6046))
 ;;; Generated autoloads from error-raised.el
 
 (autoload 'emt:vw:note:error-raised "emtest/viewer/note-formatters/error-raised" "\
@@ -102,7 +102,7 @@ Formatter for TESTRAL note governed by `error-raised'
 ;;;***
 
 ;;;### (autoloads (emt:vw:note:parameter) "emtest/viewer/note-formatters/parameter"
-;;;;;;  "parameter.el" (19783 34807))
+;;;;;;  "parameter.el" (20404 6046))
 ;;; Generated autoloads from parameter.el
 
 (autoload 'emt:vw:note:parameter "emtest/viewer/note-formatters/parameter" "\
@@ -117,7 +117,7 @@ Formatter for TESTRAL note governed by `parameter'
 ;;;***
 
 ;;;### (autoloads (emt:vw:note:scope) "emtest/viewer/note-formatters/scope"
-;;;;;;  "scope.el" (19783 34820))
+;;;;;;  "scope.el" (20404 6046))
 ;;; Generated autoloads from scope.el
 
 (autoload 'emt:vw:note:scope "emtest/viewer/note-formatters/scope" "\

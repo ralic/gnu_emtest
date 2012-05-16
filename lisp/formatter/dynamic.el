@@ -240,7 +240,7 @@ This function is suitable as an ewoc printer."
 	       fmtdyn:*nodes-under*)))))
 ;;;_  . Usage
 '(defvar my-fmtdyn (fmtdyn:create))
-'(let* ((tree (emtvf:top top-node)))
+'(let* ((tree (emt:fmt:top top-node)))
     (fmtdyn:with my-fmtdyn
        (loformat:insert
 	  tree

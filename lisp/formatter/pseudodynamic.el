@@ -32,8 +32,8 @@
 (require 'utility/dynvars)
 
 ;;;_. Body
-;;;_ , emtv2:insert:dynamic
-(defun emtv2:insert:dynamic (recurse-f obj func data)
+;;;_ , emt:fmt:dyn:insert
+(defun emt:fmt:dyn:insert (recurse-f obj func data)
    "Insert (statically) the result of a dynamic spec"
    (let*
       ((fmt-list 

@@ -40,18 +40,18 @@
    
    (cond
       ((and (emt:fmt:short-obj-p arg) (emt:fmt:short-obj-p val))
-	 (emt:fmt:outline-item-emformat
+	 (emt:fmt:outline:item-emformat
 	    `((small-object ,arg nil)
 		" => "
 		(small-object ,val nil))
 	    nil))
       ((emt:fmt:short-obj-p arg)
-	 (emt:fmt:outline-item-emformat
+	 (emt:fmt:outline:item-emformat
 	    `(small-object ,arg nil)
 	    (emt:fmt:obj-or-string val)))
       
       (t
-	 (emt:fmt:outline-item-emformat
+	 (emt:fmt:outline:item-emformat
 	    "Param"
 	    `((object ,arg nil)
 		" => "

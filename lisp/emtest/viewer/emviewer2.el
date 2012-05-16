@@ -149,7 +149,7 @@
 ;;;_  . emt:vw:top:format-alist
 (defconst emt:vw:top:format-alist 
    (append
-      '((dynamic emt:vw:top:insert:dynamic))
+      '((dynamic emt:fmt:dyn:insert))
       loformat:default-alist)
    
    "List of formatters that emformat uses.")

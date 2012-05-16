@@ -34,16 +34,16 @@
 
 ;;;_. Body
 ;;;_  . Special variables
-(declare (special emtvf:*outline-depth* emtvf:*folded*))
+(declare (special emt:fmt:outline:*depth* emt:fmt:outline:*folded*))
 ;;;_   , For dynvars
-(defconst emtvf:outline:dynvars 
+(defconst emt:fmt:outline:dynvars 
    '(
-       (emtvf:*folded*) 
-       (emtvf:*outline-depth* 0))
+       (emt:fmt:outline:*folded*) 
+       (emt:fmt:outline:*depth* 0))
    "Dynamic variables that outline uses" )
 ;;;_  . Functions
-;;;_   , emtvf:outline-item-f
-(defun emtvf:outline-item-f (depth face headtext contents &optional fold)
+;;;_   , emt:fmt:outline:item-f
+(defun emt:fmt:outline:item-f (depth face headtext contents &optional fold)
    "Make an outline item of DEPTH."
    `(
        (sep 3)
@@ -66,7 +66,7 @@
 	      `((sep 2) ,contents)))
        (sep 2)))
 
-(defmacro emtvf:outline-item (headtext contents &optional face fold)
+(defmacro emt:fmt:outline:item (headtext contents &optional face fold)
    "Make an outline item.
 HEADTEXT gives the heading and CONTENTS as contents.
 FACE is the face to display the heading in.
@@ -77,16 +77,16 @@ If FOLD is non-nil, fold that contents."
 	 (new-depth     (make-symbol "new-depth")))
       
       `(let*
-	  (  (,new-depth (1+ emtvf:*outline-depth*))
+	  (  (,new-depth (1+ emt:fmt:outline:*depth*))
 	     ;;Don't re-fold if this item is inside a folded item.
-	     (,fold-now (and ,fold (not emtvf:*folded*)))
+	     (,fold-now (and ,fold (not emt:fmt:outline:*folded*)))
 	     (,contents-sym
 		(let
-		   (  (emtvf:*outline-depth* ,new-depth)
-		      (emtvf:*folded* (or emtvf:*folded* ,fold-now)))
-		   (declare (special emtvf:*outline-depth* emtvf:*folded*))
+		   (  (emt:fmt:outline:*depth* ,new-depth)
+		      (emt:fmt:outline:*folded* (or emt:fmt:outline:*folded* ,fold-now)))
+		   (declare (special emt:fmt:outline:*depth* emt:fmt:outline:*folded*))
 		   ,contents)))
-	  (emtvf:outline-item-f ,new-depth ,face ,headtext
+	  (emt:fmt:outline:item-f ,new-depth ,face ,headtext
 	     ,contents-sym ,fold-now))))
 
 

@@ -241,11 +241,11 @@ If VALUE is a string, display it literally, otherwise pretty-print it."
       `(indent 4 ,value)
       `(object ,value nil)))
 ;;;_  . Direct emformat support
-;;;_   , emt:fmt:outline-item-emformat
-(defmacro emt:fmt:outline-item-emformat (headtext contents &optional face fold)
+;;;_   , emt:fmt:outline:item-emformat
+(defmacro emt:fmt:outline:item-emformat (headtext contents &optional face fold)
    ""
    
-   `(emt:fmt:outline-item
+   `(emt:fmt:outline:item
        (list (emt:fmt:singles-path) ,headtext)
        (emt:fmt:with-blank-singles-path ,contents)
        ,face
@@ -280,7 +280,7 @@ Intended for items that are basically just containers."
 		(emt:fmt:make-dynamic 
 		   (car ,children-sym)
 		   #'emt:fmt:node))
-	     (emt:fmt:outline-item-emformat
+	     (emt:fmt:outline:item-emformat
 		(list ,name-sym ,rest-headline)
 		(emt:fmt:mapnodes ,children-sym ,format-no-child)
 		,face
@@ -336,7 +336,7 @@ Must be called in a `utidyv:top' context."
 	       (etypecase object
 		  (null "A null viewable")
 		  (emt:testral:suite
-		     (emt:fmt:outline-item-emformat
+		     (emt:fmt:outline:item-emformat
 			(hiformat:separate
 			   (delq nil
 			      (list
@@ -394,7 +394,7 @@ OBJ must be a TESTRAL viewable (`emt:view:note')."
 ;;;_  . emt:vw:explorable
 (defun emt:vw:explorable (obj name)
    "Make a format form for a emt:view:explorable, which encases a emt:run:explorable."
-   (emt:fmt:outline-item-emformat
+   (emt:fmt:outline:item-emformat
       (list 
 	 (emt:fmt:sym->suitename name)
 	 " "

@@ -39,7 +39,7 @@
 (defun emt:vw:note:failed (note form)
    "Formatter for TESTRAL note governed by `failed'"
    ;;$$IMPROVE ME  Take assert args as params, print them.
-   (emt:fmt:outline-item-emformat
+   (emt:fmt:outline:item-emformat
       "Failed assertion"
       (list
 	 (emt:fmt:obj-or-string form)
@@ -53,7 +53,7 @@
 (defun emt:vw:note:succeeded (note form)
    "Formatter for TESTRAL note governed by `succeeded'"
    ;;$$IMPROVE ME  Take assert args as params, print them.
-   (emt:fmt:outline-item-emformat
+   (emt:fmt:outline:item-emformat
       "Assertion succeeded"
       (list
 	 (emt:fmt:obj-or-string form)
@@ -66,7 +66,7 @@
 ;;;###autoload
 (defun emt:vw:note:mismatched (note form)
    "Formatter for TESTRAL note governed by `mismatched'"
-   (emt:fmt:outline-item-emformat
+   (emt:fmt:outline:item-emformat
       "Mismatched"
       (list
 	 (emt:fmt:obj-or-string form)
@@ -80,7 +80,7 @@
 ;;;###autoload
 (defun emt:vw:note:matched (note form)
    "Formatter for TESTRAL note governed by `matched'"
-   (emt:fmt:outline-item-emformat
+   (emt:fmt:outline:item-emformat
       "Matched"
       (list
 	 (emt:fmt:obj-or-string form)

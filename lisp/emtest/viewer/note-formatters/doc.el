@@ -41,14 +41,14 @@
    ;;long singles-paths are major culprits.
    (cond
       ((not (string-match "\n" doc))
-	 (emt:fmt:outline-item-emformat
+	 (emt:fmt:outline:item-emformat
 	     doc nil))
       ((string-match ": " doc)
-	 (emt:fmt:outline-item-emformat
+	 (emt:fmt:outline:item-emformat
 	     (substring doc 0 (match-end 0))
 	     (substring doc (match-end 0))))
       (t
-	 (emt:fmt:outline-item-emformat
+	 (emt:fmt:outline:item-emformat
 	     "Doc" doc))))
 
 ;;;_. Footers
