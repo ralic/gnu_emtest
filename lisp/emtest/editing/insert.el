@@ -59,10 +59,10 @@
 
    "Skeletons related to emtest" )
 
-;;;_ , emt:insert (Dispatcher for insert commands)
+;;;_ , emtest:insert (Dispatcher for insert commands)
 
 ;;;###autoload
-(defun emt:insert (skeleton)
+(defun emtest:insert (skeleton)
    "Insert a skeleton related to emtest"
   
    (interactive 

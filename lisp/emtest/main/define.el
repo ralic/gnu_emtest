@@ -33,7 +33,7 @@
 ;;  (require 'emtest/main/define)
 
 ;;The second is for files that include both main code and tests.  For
-;;these, command `emt:insert' and choose `emt:insert-requires'.  It
+;;these, command `emtest:insert' and choose `emt:insert-requires'.  It
 ;;will insert something like:
 
 ;; (unless (fboundp 'emt:deftest)

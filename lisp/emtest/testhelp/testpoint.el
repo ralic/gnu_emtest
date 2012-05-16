@@ -27,7 +27,7 @@
 ;; 
 
 ;;Instead writing a normal `require', use command
-;;`emt:insert' and select `emt:insert--require-tp'.  It will insert
+;;`emtest:insert' and select `emt:insert--require-tp'.  It will insert
 ;;this special code:
 
 ;; (eval-when-compile
