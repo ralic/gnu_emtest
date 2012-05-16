@@ -234,18 +234,17 @@ NAME should be the nickname of some launchable"
    '(
        (list    list t)
        (integer read t)
-       (grade   intern) ;; Not sure we'll need this.
+       (grade   intern) ;; Unused.
        (symbol  intern)
-       ;; (prestn-path)
+       ;; (prestn-path) Unused.
 
        (suite      emt:testral:make-suite        nil)
        (note       emt:testral:make-note         nil)
        (runforms   emt:testral:make-runform-list nil)
        (notes      emt:testral:make-note-list    nil)
        (report     emt:testral:make-report       nil)
-       (explorable emtt:make-explorable          nil)
-       
-)
+       (explorable emt:xp:foreign:stringtree-kvlist->explorable nil))
+   
    
    "Alist of ctors of foreign-able types from stringtrees, for incoming objects.
 
@@ -256,6 +255,27 @@ VALUE\).  Before CTOR is called, VALUE is recursively parsed and key
 is interned, prepended with \":\".
 
 If POSITIONAL? is t, each argument is simply recursively parsed first." )
+;;;_  . emt:xp:foreign:stringtree-kvlist->explorable
+;; Special treatment for emtt:explorable because it contains
+;; how-to-run in its fields and how-to-run is just a list of symbols.
+(defun emt:xp:foreign:stringtree-kvlist->explorable (&rest args)
+   "construct an emtt:explorable in which how-to-run are prefixed by *how-to-prefix*.
+
+ARGS are in the form of \(:KEY_SYM VALUE\)."
+
+   (let*
+      ((object (apply #'emtt:make-explorable args)))
+      (callf2
+	 append *how-to-prefix* 
+	 (emtt:explorable->how-to-run object))
+      (setf
+	 (emtt:explorable->aliases object)
+	 (mapcar
+	    #'(lambda (x)
+		 (append *how-to-prefix* x))
+	    (emtt:explorable->aliases object)))))
+
+
 
 ;;;_  . emt:xp:foreign:stringtree->object
 
@@ -400,6 +420,9 @@ slot (without ':', which will be added in reading)."
 ;;;_ , emt:xp:foreign:encode-TESTRAL
 (defun emt:xp:foreign:encode-TESTRAL (raw-question)
    ""
+   ;; Enclose question.
+   ;; emt:xp:foreign:object->stringtree
+   ;; stringtree->csexp
    ;; Punt for now
    "()")
 ;;;_ , emt:xp:foreign:decode-to-TESTRAL
@@ -417,7 +440,7 @@ slot (without ':', which will be added in reading)."
    "Report the results when we get an answer"
    
    (destructuring-bind
-      (how-to-prefix report-f tester) passed-object
+      (*how-to-prefix* report-f tester) passed-object
       (funcall report-f
 	 (let
 	    ((object (emt:xp:foreign:decode-to-TESTRAL answer)))
@@ -435,9 +458,7 @@ slot (without ':', which will be added in reading)."
 		  :contents '()
 		  :grade 'blowout)))
 	 ;; Could schedule any tests a suite returns, depending on a flag.
-	 '()
-	 ;; Prefix for the how-to-run's the foreign tester gives us.
-	 how-to-prefix)))
+	 '())))
 
 ;;;_  . emt:xp:foreign
 ;;;###autoload
