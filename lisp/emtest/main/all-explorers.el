@@ -70,7 +70,7 @@ GOV-SYMBOL should be a symbol."
    (utim:assq-value 
       gov-symbol
       emt:exps:alist
-      (list #'emt:exp:fallback "Fallback")))
+      (list #'emt:xp:fallback "Fallback")))
 
 ;;;_  . emt:exps:get-func 
 (defun emt:exps:get-func (how)
@@ -81,9 +81,9 @@ HOW must be a list."
       (emt:exps:get-info (car how))))
 
 ;;;_ , Special explorers
-;;;_  . emt:exp:available
+;;;_  . emt:xp:available
 ;;This doesn't require an autoload but all other explorers do.
-(defun emt:exp:available (test-id props path report-f)
+(defun emt:xp:available (test-id props path report-f)
    "Report about Emtest, listing the explore methods."
 
    (funcall report-f
@@ -110,7 +110,7 @@ HOW must be a list."
 ;;;_   , Register it
 ;; If we don't show whats-available itself, display gets messy.
 ;; Should be fixed at source.
-(emt:exps:add 'whats-available #'emt:exp:available "What's available" t)
+(emt:exps:add 'whats-available #'emt:xp:available "What's available" t)
 
 ;;;_   , emtest
 ;;;###autoload
@@ -121,9 +121,9 @@ HOW must be a list."
    (emt:lch:run '(whats-available) '() '(whats-available)))
 
 
-;;;_  . emt:exp:fallback
+;;;_  . emt:xp:fallback
 ;;Not part of the list of methods.
-(defun emt:exp:fallback (test-id props path report-f)
+(defun emt:xp:fallback (test-id props path report-f)
    "Report that no matching explore method could be found."
 
    (funcall report-f
