@@ -97,7 +97,7 @@
 	   (or emt:testral:suite emt:testral:test-runner-info)))))
 
 ;;;_  . test-runner info
-;; $$OBSOLESCENT
+;; $$OBSOLESCENT.  Maybe this becomes just a note subtype.
 (defstruct (emt:testral:test-runner-info
 	    (:constructor emt:testral:make-test-runner-info)
 	    (:conc-name emt:testral:test-runner-info->))
