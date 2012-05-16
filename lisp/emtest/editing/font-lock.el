@@ -31,15 +31,15 @@
 ;;Nothing
 
 ;;;_. Body
-;;;_ , emtest/editing/font-lock-make-keywordgroup
-(defun emtest/editing/font-lock-make-keywordgroup (object)
+;;;_ , emt:ed:font-lock:make-keywordgroup
+(defun emt:ed:font-lock:make-keywordgroup (object)
    ""
    `(,(regexp-opt (car object) 'words) 
        1
        ,(second object)
        prepend))
-;;;_ , emtest/editing/font-lock-data
-(defconst emtest/editing/font-lock-data 
+;;;_ , emt:ed:font-lock:data
+(defconst emt:ed:font-lock:data 
    '(((
 	 "emtp:eval"
 	 "emtp"
@@ -58,18 +58,18 @@
    
    "Keywords for Emtest, by group" )
 
-;;;_ , emtest/editing/font-lock-add-keywords
+;;;_ , emt:ed:font-lock:add-keywords
 ;;;###autoload
-(defun emtest/editing/font-lock-add-keywords ()
+(defun emt:ed:font-lock:add-keywords ()
    ""
    (when (featurep 'font-lock)
       (font-lock-add-keywords 'emacs-lisp-mode
 	 (mapcar
-	    #'emtest/editing/font-lock-make-keywordgroup
-	    emtest/editing/font-lock-data))))
+	    #'emt:ed:font-lock:make-keywordgroup
+	    emt:ed:font-lock:data))))
 
 ;;;_ , Insinuate
-;;;###autoload (add-hook 'emacs-lisp-mode-hook 'emtest/editing/font-lock-add-keywords)
+;;;###autoload (add-hook 'emacs-lisp-mode-hook 'emt:ed:font-lock:add-keywords)
 
 ;;;_. Footers
 ;;;_ , Provides
