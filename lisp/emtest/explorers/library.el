@@ -35,9 +35,9 @@
 
 ;;;_. Body
 ;;;_ , Support functions
-;;;_  . emtl:ldhst-el->symbol
+;;;_  . emt:xp:library:ldhst:el->symbol
 
-(defun emtl:ldhst-el->symbol (x)
+(defun emt:xp:library:ldhst:el->symbol (x)
    ""
    (if
       (symbolp x)
@@ -47,16 +47,16 @@
 	    '(autoload defun provide))
 	 (cdr x))))
 
-;;;_  . Helper emtt:lib-sym->suites
+;;;_  . Helper emt:xp:library:sym->suites
 
-(defun emtt:lib-sym->suites (lib-sym)
+(defun emt:xp:library:sym->suites (lib-sym)
    ""
-   (emtt:lib-suites
+   (emt:xp:library:suites
       (locate-library
 	 (symbol-name lib-sym))))
 
-;;;_  . emtt:lib-suites
-(defun emtt:lib-suites (lib-path)
+;;;_  . emt:xp:library:suites
+(defun emt:xp:library:suites (lib-path)
    "Return a list of test suites for LIB-PATH.
 
 Specifically, symbols defined in the library at LIB-PATH that
@@ -71,12 +71,12 @@ LIB-PATH must be a path to a library that is already loaded."
 	       (mapcar
 		  #'(lambda (x)
 		       (let
-			  ((sym (emtl:ldhst-el->symbol x)))
+			  ((sym (emt:xp:library:ldhst:el->symbol x)))
 			  (when (get sym 'emt:suite) sym)))
 		  (cdr lib-data)))))
       suites))
-;;;_  . emtt:lib-path->lib-sym
-(defun emtt:lib-path->lib-sym (lib-path)
+;;;_  . emt:xp:library:path->lib-sym
+(defun emt:xp:library:path->lib-sym (lib-path)
    ""
 
    (let*
@@ -85,26 +85,26 @@ LIB-PATH must be a path to a library that is already loaded."
 	 (provide-cell
 	    (assq 'provide lib-data)))
       (cdr provide-cell)))
-;;;_  . emtt:load-hist-line-has-tests
-(defun emtt:load-hist-line-has-tests (lib-data)
+;;;_  . emt:xp:library:ldhst:line-has-tests
+(defun emt:xp:library:ldhst:line-has-tests (lib-data)
    "Return non-nil just if LIB-DATA has any tests.
 
 LIB-DATA must be in the format of a line from load-history."
 
    (some
       #'(lambda (x)
-	   (get (emtl:ldhst-el->symbol x) 'emt:suite))
+	   (get (emt:xp:library:ldhst:el->symbol x) 'emt:suite))
       (cdr lib-data)))
 
-;;;_  . emtt:all-testing-libs
-(defun emtt:all-testing-libs ()
+;;;_  . emt:xp:library:get-all-testable
+(defun emt:xp:library:get-all-testable ()
    "Return a list of all testable libraries, each a list of
 \(symbol absolute-filename\)."
    
    (delq nil
       (mapcar
 	 #'(lambda (line)
-	      (if (emtt:load-hist-line-has-tests line)
+	      (if (emt:xp:library:ldhst:line-has-tests line)
 		 (let
 		    ((cell (assoc 'provide line)))
 		    (if cell
@@ -120,8 +120,8 @@ LIB-DATA must be in the format of a line from load-history."
 ;;at point.  Give a prompt for confirmation.
 ;;Can use `symbol-file'
 
-;;;_  . emtel:read-testable-library
-(defun emtel:read-testable-library (prompt)
+;;;_  . emt:xp:library:read-testable-library
+(defun emt:xp:library:read-testable-library (prompt)
    "Interactively read the name of a library containing tests.
 PROMPT is a prompt string"
    
@@ -129,13 +129,13 @@ PROMPT is a prompt string"
       prompt
       load-history
       ;;Narrow to just libraries that have tests in them.
-      #'emtt:load-hist-line-has-tests
+      #'emt:xp:library:ldhst:line-has-tests
       t))
 ;;$$ADD TESTS There are example loads in emtest/explorers/library/tests
 
-;;;_  . emt:library
+;;;_  . emtest:library
 ;;;###autoload
-(defun emt:library (library &optional arg)
+(defun emtest:library (library &optional arg)
    "Run the test suites of LIBRARY.
 LIBRARY is the absolute file name of the library"
    
@@ -147,24 +147,24 @@ LIBRARY is the absolute file name of the library"
    
    (let
       ((lib-sym
-	  (emtt:lib-path->lib-sym library)))
+	  (emt:xp:library:path->lib-sym library)))
       (emt:lch:run 
 	 `(library:elisp-load ,library ,lib-sym)
 	 (emt:lch:get-prop-list arg)
 	 (list (concat "library " (symbol-name lib-sym))))))
 
 ;;;_ , Explorer
-;;;_  . emtt:explore-library
+;;;_  . emt:xp:library
 ;;;###autoload
-(defun emtt:explore-library (test-id props path report-f)
+(defun emt:xp:library (test-id props path report-f)
    ""
    (if (cdr test-id)
       (destructuring-bind (gov lib-path lib-sym) test-id
 	 (let* 
 	    (  
-	       (lib-sym (or lib-sym (emtt:lib-path->lib-sym lib-path)))
+	       (lib-sym (or lib-sym (emt:xp:library:path->lib-sym lib-path)))
 	       (suite-list
-		  (emtt:lib-suites lib-path))
+		  (emt:xp:library:suites lib-path))
 	       (list-to-run
 		  (mapcar
 		     #'(lambda (suite-sym)
@@ -206,13 +206,13 @@ LIBRARY is the absolute file name of the library"
 			  (list 'library:elisp-load path sym)
 			  :prestn-path
 			  (list 'library:elisp-load sym))))
-		  (emtt:all-testing-libs)))
+		  (emt:xp:library:get-all-testable)))
 	    :grade nil)
 	 '())))
 
 ;;;_ , Insinuate
 ;;;###autoload (eval-after-load 'emtest/main/all-explorers
-;;;###autoload  '(emt:exps:add 'library:elisp-load #'emtt:explore-library
+;;;###autoload  '(emt:exps:add 'library:elisp-load #'emt:xp:library
 ;;;###autoload  "Elisp library" t))
 
 ;;;_. Footers
