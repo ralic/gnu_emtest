@@ -103,9 +103,7 @@
 	    (:conc-name emt:testral:test-runner-info->))
   "Info describing a tester."
   (name    ()  :type string)
-  (version "0" :type string)
-  ;;See [[id:b4sjlt20mze0][Test-runner info]]
-  (explore-methods-supported () :type (repeat emtt:method)))
+  (version "0" :type string))
 
 
 ;;;_  . suite info

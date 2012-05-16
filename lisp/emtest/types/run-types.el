@@ -59,23 +59,6 @@
       :doc "A possibly empty list of other IDs that would launch the
       same thing")) 
 
-;;;_ , emtt:dynamic-method
-;;$$USE ME - already obsolete.  how-to-run goes thru method, even on
-;;foreign. 
-(defstruct (emtt:dynamic-method
-	      (:constructor emtt:make-dynamic-method)
-	      (:copier nil)
-	      (:conc-name emtt:dynamic-method->))
-   "A dynamic exploration method."
-   name
-   keys)
-
-;;;_ , emtt:method (Union of those types)
-(deftype emtt:method ()
-   "A static or dynamic exploration method, for test-runner-info"
-   '(or emtt:dynamic-method emtt:explorable))
-
-
 
 ;;;_. Footers
 ;;;_ , Provides
