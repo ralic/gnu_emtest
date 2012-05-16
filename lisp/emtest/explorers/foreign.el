@@ -234,8 +234,8 @@ NAME should be the nickname of some launchable"
    '(
        (list    list t)
        (integer read t)
-       (grade   intern) ;; Unused.
-       (symbol  intern)
+       ;;(grade   intern) ;; Unused.
+       (symbol  intern t)
        ;; (prestn-path) Unused.
 
        (suite      emt:testral:make-suite        nil)
@@ -243,7 +243,9 @@ NAME should be the nickname of some launchable"
        (runforms   emt:testral:make-runform-list nil)
        (notes      emt:testral:make-note-list    nil)
        (report     emt:testral:make-report       nil)
-       (explorable emt:xp:foreign:stringtree-kvlist->explorable nil))
+       (explorable emtt:make-explorable          nil)
+       (how-to-run emt:xp:foreign:stringlist->how t)
+       )
    
    
    "Alist of ctors of foreign-able types from stringtrees, for incoming objects.
@@ -256,25 +258,14 @@ is interned, prepended with \":\".
 
 If POSITIONAL? is t, each argument is simply recursively parsed first." )
 ;;;_  . emt:xp:foreign:stringtree-kvlist->explorable
-;; $$CHANGED
 ;; Special treatment for emtt:explorable because it contains
 ;; how-to-run in its fields and how-to-run is just a list of symbols.
-(defun emt:xp:foreign:stringtree-kvlist->explorable (&rest args)
-   "construct an emtt:explorable in which how-to-run are prefixed by *how-to-prefix*.
+(defun emt:xp:foreign:stringlist->how (&rest args)
+   "Construct an emt:t:how prefixed by *how-to-prefix*.
 
-ARGS are in the form of \(:KEY_SYM VALUE\)."
-
-   (let*
-      ((object (apply #'emtt:make-explorable args)))
-      (callf2
-	 append *how-to-prefix* 
-	 (emtt:explorable->how-to-run object))
-      (setf
-	 (emtt:explorable->aliases object)
-	 (mapcar
-	    #'(lambda (x)
-		 (append *how-to-prefix* x))
-	    (emtt:explorable->aliases object)))))
+ARGS are simple values."
+   (emt:t:->how
+      (append *how-to-prefix* args)))
 
 
 
@@ -330,7 +321,10 @@ ARGS are in the form of \(:KEY_SYM VALUE\)."
        (emt:testral:note-list-p    "notes"    struct emt:testral:note-list)
        (emt:testral:report-p       "report"     struct emt:testral:report)
        (emtt:explorable-p          "explorable" struct emtt:explorable)
-       
+
+       ;; We print the whole contents list; presumably it was
+       ;; truncated right before we got here.
+       (emt:t:how-p                "how-to-run" t      emt:t:how->contents)
        )
    "Alist of the stringtree-ers of foreign-able types, for outgoing objects.
 
@@ -346,6 +340,7 @@ Keywise-Stringtreer should return a list where each element of
 the list is in the form \(KEY VALUE\), and KEY is the symbol of a
 slot (without ':', which will be added in reading)."
    )
+
 ;;;_  . emt:xp:foreign:singleval-stringtreer
 (defun emt:xp:foreign:singleval-stringtreer (x)
    ""

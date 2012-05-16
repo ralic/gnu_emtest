@@ -96,7 +96,8 @@
 (emt:deftest-3
    ((of 'emt:foreign:struct-stringtreer))
    (nil
-      ;; Would like a test on the constant classes too.
+      ;; Would like a test on the constant classes too.  
+
       (emt:assert
 	 (equal
 	    (emt:foreign:struct-stringtreer
@@ -104,7 +105,16 @@
 	       (emt:testral:make-suite
 		  :contents '()
 		  :grade 'ok))
-	    '(("contents" ("list")) ("grade" ("symbol" "ok")))))))
+	    '(("contents" ("list")) ("grade" ("symbol" "ok"))))))
+   (nil
+      (let
+	 ((*how-to-prefix* '(prefix-el-1 prefix-el-2)))
+	 (emt:assert
+	    (equal
+	       (emt:xp:foreign:stringtree->object
+		  '("how-to-run" ("symbol" "a") ("symbol" "b")))
+	       (emt:t:->how '(prefix-el-1 prefix-el-2 a b))))))
+   )
 
 (emt:deftest-3
    ((of 'emt:foreign:object->stringtree))
@@ -116,7 +126,16 @@
 		  :contents '()
 		  :grade 'ok))
 	    ;; NB, this was preliminary and not right
-	    '("suite" ("contents" ("list")) ("grade" ("symbol" "ok")))))))
+	    '("suite" 
+		("contents" ("list")) 
+		("grade" ("symbol" "ok"))))))
+   (nil
+      (emt:assert
+	 (equal
+	    (emt:xp:foreign:object->stringtree (emt:t:->how '(a b)))
+	    '("how-to-run" ("symbol" "a") ("symbol" "b")))))
+
+   )
 
 ;;;_. Footers
 ;;;_ , Provides
