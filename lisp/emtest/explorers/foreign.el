@@ -243,7 +243,7 @@ NAME should be the nickname of some launchable"
        (runforms   emt:testral:make-runform-list nil)
        (notes      emt:testral:make-note-list    nil)
        (report     emt:testral:make-report       nil)
-       (explorable emtt:make-explorable          nil)
+       (explorable emt:t:make-explorable          nil)
        (how-to-run emt:xp:foreign:stringlist->how t)
        )
    
@@ -258,7 +258,7 @@ is interned, prepended with \":\".
 
 If POSITIONAL? is t, each argument is simply recursively parsed first." )
 ;;;_  . emt:xp:foreign:stringtree-kvlist->explorable
-;; Special treatment for emtt:explorable because it contains
+;; Special treatment for emt:t:explorable because it contains
 ;; how-to-run in its fields and how-to-run is just a list of symbols.
 (defun emt:xp:foreign:stringlist->how (&rest args)
    "Construct an emt:t:how prefixed by *how-to-prefix*.
@@ -320,7 +320,7 @@ ARGS are simple values."
        (emt:testral:runform-list-p "runforms" struct emt:testral:runform-list)
        (emt:testral:note-list-p    "notes"    struct emt:testral:note-list)
        (emt:testral:report-p       "report"     struct emt:testral:report)
-       (emtt:explorable-p          "explorable" struct emtt:explorable)
+       (emt:t:explorable-p          "explorable" struct emt:t:explorable)
 
        ;; We print the whole contents list; presumably it was
        ;; truncated right before we got here.
@@ -487,7 +487,7 @@ slot (without ':', which will be added in reading)."
 		  #'(lambda (x)
 		       (let
 			  ((name (first x)))
-			  (emtt:make-explorable
+			  (emt:t:make-explorable
 			     :how-to-run  
 			     (emt:t:->how (list 'foreign name))
 			     :prestn-path

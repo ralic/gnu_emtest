@@ -71,7 +71,7 @@
 	    (:conc-name emt:testral:runform-list->))
   
   "List of explorables"
-  (els () :type (repeat emtt:explorable)))
+  (els () :type (repeat emt:t:explorable)))
 ;;;_   , emt:testral:note-list
 (defstruct (emt:testral:note-list
 	    (:constructor emt:testral:make-note-list)
@@ -91,7 +91,7 @@
   (suites () :type 
      (repeat
 	(list 
-	   emtt:explorable
+	   emt:t:explorable
 	   emt:testral:suite))))
 
 ;;;_  . test-runner info

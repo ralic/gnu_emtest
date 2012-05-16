@@ -90,7 +90,7 @@
 	       (when (emt:view:suite-p obj)
 		  (emt:ind:set-prop
 		     (emt:t:how->contents
-			(emtt:explorable->how-to-run
+			(emt:t:explorable->how-to-run
 			   (emt:view:suite->explorable obj)))
 		     'grade-says-rerun
 		     (case

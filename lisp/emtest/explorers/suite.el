@@ -87,7 +87,7 @@ Does nothing if the buffer is not in a known lisp mode."
 		  (rv-list-to-run '()))
 	       (dotimes (n (length clause-list))
 		  (push  
-		     (emtt:make-explorable
+		     (emt:t:make-explorable
 			:how-to-run
 			(emt:t:->how `(indexed-clause ,suite-sym ,n))
 			:prestn-path 

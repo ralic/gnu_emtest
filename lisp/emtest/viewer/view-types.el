@@ -82,7 +82,7 @@ treewise, including any grades from this node."
       :doc "The normative id, often the same as explorable:how-to-run.")
 
 
-   (explorable ():type emtt:explorable
+   (explorable ():type emt:t:explorable
       :doc "How to run this as a test.")
 
    ;;So that we can put new results in the same place.
@@ -108,7 +108,7 @@ treewise, including any grades from this node."
    "An explorable as it occurs in a suite's contents (not within
    the suite itself, which is just displayed inside a suite
    form)"
-   (contents () :type emtt:explorable))
+   (contents () :type emt:t:explorable))
 
 ;;;_  . Notes in viewable form.
 (defstruct (emt:view:note

@@ -98,7 +98,7 @@ HOW must be a list."
 			  (gov (func name show-avail))
 			  x
 			  (if show-avail
-			     (emtt:make-explorable
+			     (emt:t:make-explorable
 				:how-to-run (emt:t:->how (list (car x)))
 				;; Could use name here.
 				:prestn-path (list (car x))))))

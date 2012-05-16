@@ -179,8 +179,8 @@ which may not imply success of an assertion."
       `(button ,text 
 	  action ,#'emtvf:button-explore-func
 	  help-echo "Rerun this test"
-	  how-to-run  ,(emtt:explorable->how-to-run  explorable)
-	  prestn-path ,(emtt:explorable->prestn-path explorable))))
+	  how-to-run  ,(emt:t:explorable->how-to-run  explorable)
+	  prestn-path ,(emt:t:explorable->prestn-path explorable))))
 ;;;_   , emtvf:viewable->mark-text
 (defun emtvf:viewable->mark-text (viewable)
    "Return the text of VIEWABLE's current mark."
@@ -214,7 +214,7 @@ which may not imply success of an assertion."
 	 (not (emt:view:suite->mark viewable)))
       (emt:ind:set-prop
 	 (emt:t:how->contents
-	    (emtt:explorable->how-to-run
+	    (emt:t:explorable->how-to-run
 	       (emt:view:suite->explorable viewable)))
 	 'user-says-rerun
 	 t)
@@ -393,7 +393,7 @@ OBJ must be a TESTRAL viewable (`emt:view:note')."
 	     "\n"))))
 ;;;_  . emt:vw:explorable
 (defun emt:vw:explorable (obj name)
-   "Make a format form for a emt:view:explorable, which encases a emtt:explorable."
+   "Make a format form for a emt:view:explorable, which encases a emt:t:explorable."
    (emtvf:outline-item-emformat
       (list 
 	 (emtvf:sym->suitename name)

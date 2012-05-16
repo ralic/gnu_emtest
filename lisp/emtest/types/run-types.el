@@ -47,11 +47,11 @@
       :type emt:t:test-path
       :doc "Path from tester root that will run a specific test"))
 
-;;;_ , emtt:explorable (Full runnable)
-(defstruct (emtt:explorable
+;;;_ , emt:t:explorable (Full runnable)
+(defstruct (emt:t:explorable
 	      (:copier nil)
-	      (:conc-name emtt:explorable->)
-	      (:constructor emtt:make-explorable))
+	      (:conc-name emt:t:explorable->)
+	      (:constructor emt:t:make-explorable))
    "All the information needed to specify how to run a test or suite."
    (how-to-run () 
       :type emt:t:how

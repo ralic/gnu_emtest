@@ -43,7 +43,7 @@
 	      (:conc-name emt:testrun->)
 	      (:constructor emt:make-testrun))
    "State data about a given testrun"
-   (pending () :type (repeat emtt:explorable))
+   (pending () :type (repeat emt:t:explorable))
    (has-run () 
       :type (repeat emt:t:how))
    report-cb
@@ -59,7 +59,7 @@
    (let* 
       (	    
 	 (how-to-run
-	    (emtt:explorable->how-to-run explorable))
+	    (emt:t:explorable->how-to-run explorable))
 	 (test-id
 	    (emt:t:how->contents how-to-run))
 	 (has-run
@@ -72,9 +72,9 @@
 	       (props
 		  (append
 		     (emt:testrun->properties testrun)
-		     (emtt:explorable->properties explorable)))
+		     (emt:t:explorable->properties explorable)))
 	       (path
-		  (emtt:explorable->prestn-path explorable))
+		  (emt:t:explorable->prestn-path explorable))
 	       ;; Poor-man's closure
 	       (local-report-f
 		  `(lambda (report &optional tests prefix skipped)
@@ -173,7 +173,7 @@ If RESTRAINED, the property list won't redo tests that passed"
 WHAT-TO-RUN is a list of symbols and strings, not an emt:t:how."
    (emtt:test-finder:top
       (list
-	 (emtt:make-explorable
+	 (emt:t:make-explorable
 	    :how-to-run  (emt:t:->how what-to-run)
 	    :prestn-path prefix  ;;Default is the empty list.
 	    :properties  '()))

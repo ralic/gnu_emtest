@@ -287,11 +287,11 @@
 
       (group
 	 ((type explorable))
-	 (type-must-be () emtt:explorable)
+	 (type-must-be () emt:t:explorable)
 
 	 (item
 	    ((what-test index-1))
-	    (emtt:make-explorable
+	    (emt:t:make-explorable
 	       :how-to-run  
 	       (emtg (type how-to-run)(what-test index-1))
 	       :prestn-path () ;;Empty presentation name
@@ -300,7 +300,7 @@
 	 
 	 (item
 	    ((what-test test-1))
-	    (emtt:make-explorable
+	    (emt:t:make-explorable
 	       :how-to-run  
 	       (emtg (type how-to-run)(what-test test-1))
 	       :prestn-path (emtg (type presentation-name)(what-test test-1))
@@ -309,7 +309,7 @@
 
 	 (item
 	    ((what-test test-2))
-	    (emtt:make-explorable
+	    (emt:t:make-explorable
 	       :how-to-run  
 	       (emtg (type how-to-run)(what-test test-2))
 	       :prestn-path (emtg (type presentation-name)(what-test test-2))
