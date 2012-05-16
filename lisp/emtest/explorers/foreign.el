@@ -417,22 +417,27 @@ slot (without ':', which will be added in reading)."
    "Report the results when we get an answer"
    
    (destructuring-bind
-      (report-f tester) passed-object
+      (how-to-prefix report-f tester) passed-object
       (funcall report-f
 	 (let
 	    ((object (emt:xp:foreign:decode-to-TESTRAL answer)))
-	    ;; $$RETHINK This seems to be the expected return, but
-	    ;; maybe it should be emt:testral:report?  But report-f
-	    ;; expects a suite.
+	    ;; Suite returns are passed to the viewer, in a report
+	    ;; that our caller fills out from this info (testrun-id,
+	    ;; newly-pending).  In the future, other types of return
+	    ;; could be accepted just informationally.
+
 	    (if
 	       (emt:testral:suite-p object)
 	       object
 	       (emt:testral:make-suite
-		  ;; Add a note about getting the wrong object.
+		  ;; $$IMPROVE ME Add a note about getting the wrong
+		  ;; object.
 		  :contents '()
 		  :grade 'blowout)))
-	 ;; Could schedule any tests a suite returns.
-	 '())))
+	 ;; Could schedule any tests a suite returns, depending on a flag.
+	 '()
+	 ;; Prefix for the how-to-run's the foreign tester gives us.
+	 how-to-prefix)))
 
 ;;;_  . emt:xp:foreign
 ;;;###autoload
@@ -442,6 +447,7 @@ slot (without ':', which will be added in reading)."
       (let* 
 	 (
 	    (launchable-name (second test-id))
+	    (how-to-prefix (list (car test-id) launchable-name))
 	    (raw-question (cddr test-id))
 	    (tester (emt:xp:foreign:get-tester launchable-name))
 	    (tq (second tester))
@@ -450,7 +456,7 @@ slot (without ':', which will be added in reading)."
 	 (tq-enqueue tq 
 	    (emt:xp:foreign:encode-TESTRAL raw-question)
 	    terminating-regex
-	    (list report-f tester)
+	    (list how-to-prefix report-f tester)
 	    #'emt:xp:foreign:report-results t))
       
 
