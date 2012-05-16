@@ -136,7 +136,7 @@ Does nothing if the buffer is not in a known lisp mode."
 ;;;_ , Insinuate
 ;;;###autoload (eval-after-load 'emtest/main/all-explorers
 ;;;###autoload  '(emt:exps:add 'suite #'emtt:explore-suite
-;;;###autoload  "Suite" t))
+;;;###autoload  "Suite" nil))
 
 ;;;_. Footers
 ;;;_ , Provides
