@@ -111,7 +111,7 @@ If prefix arg is given, prompt for fileset name in any case."
 		  #'(lambda (suite-sym)
 		       (emtt:make-explorable
 			  :how-to-run
-			  `(suite ,suite-sym)
+			  (emt:t:->how `(suite ,suite-sym))
 			  :prestn-path 
 			  (append 
 			     path
@@ -143,7 +143,7 @@ If prefix arg is given, prompt for fileset name in any case."
 			  ((name (first x)))
 		       (emtt:make-explorable
 			  :how-to-run  
-			  (list 'fileset name)
+			  (emt:t:->how (list 'fileset name))
 			  :prestn-path
 			  (list 'fileset name))))
 		  filesets-data))

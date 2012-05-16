@@ -36,7 +36,7 @@
 ;;;_ , emtvr:suite->id
 (deftype emtvr:suite->id ()
    "The ID of a reported suite.  In fact a how-to-run object"
-   'emthow)
+   'emt:t:how)
 
 ;;;_ , Grade summary
 
@@ -79,10 +79,10 @@ treewise, including any grades from this node."
    ""
    ;;Just for suite nodes.
    (id () :type emtvr:suite->id
-      :doc "The normative id, often the same as `how-to-run'.")
+      :doc "The normative id, often the same as explorable:how-to-run.")
 
-   ;;$$RENAME ME
-   (how-to-run ():type emtt:explorable
+
+   (explorable ():type emtt:explorable
       :doc "How to run this as a test.")
 
    ;;So that we can put new results in the same place.
@@ -101,12 +101,13 @@ treewise, including any grades from this node."
 
 
 ;;;_  . Notes in viewable form.
-(defstruct (emt:view:how-to-run
-	      (:constructor emt:view:make-how-to-run)
-	      (:conc-name emt:view:how-to-run->)
+(defstruct (emt:view:explorable
+	      (:constructor emt:view:make-explorable)
+	      (:conc-name emt:view:explorable->)
 	      (:include emt:view:presentable))
-   "A how-to-run as it occurs in a suite's contents (not within
-   the suite itself, which is just inside that)"
+   "An explorable as it occurs in a suite's contents (not within
+   the suite itself, which is just displayed inside a suite
+   form)"
    (contents () :type emtt:explorable))
 
 ;;;_  . Notes in viewable form.

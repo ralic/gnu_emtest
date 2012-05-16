@@ -53,7 +53,7 @@
       (:conc-name emt:view:suite->)
       (:include emt:view:presentable))
    children ;;Included
-   how-to-run 
+   explorable
    presentation-path
    testrun-id
    result)
@@ -78,12 +78,12 @@
 			:result 
 			(eval
 			   '(emtg (type suite)(what-test test-1)(role original-add)))
-			:how-to-run
+			:explorable
 			(eval 
 			   '(emtg (type explorable)(what-test test-1)))
-;; 			:id
-;; 			(eval 
-;; 			   '(emtg (type how-to-run)(what-test test-1)))
+			;; 			:id
+			;; 			(eval 
+			;; 			   '(emtg (type how-to-run)(what-test test-1)))
 			:presentation-path
 			(eval 
 			   '(emtg (type presentation-path)(what-test test-1)))
@@ -102,12 +102,12 @@
 			:result 
 			(eval
 			   '(emtg (type suite)(what-test test-1)(role replace)))
-			:how-to-run
+			:explorable
 			(eval 
 			   '(emtg (type explorable)(what-test test-1)))
-;; 			:id
-;; 			(eval 
-;; 			   '(emtg (type how-to-run)(what-test test-1)))
+			;; 			:id
+			;; 			(eval 
+			;; 			   '(emtg (type how-to-run)(what-test test-1)))
 			:presentation-path
 			(eval 
 			   '(emtg (type presentation-path)(what-test test-1)))
@@ -129,7 +129,7 @@
 		     :result 
 		     (eval
 			'(emtg (type suite)(what-test test-1)(role original-add)))
-		     :how-to-run
+		     :explorable
 		     (eval 
 			'(emtg (type explorable)(what-test test-1)))
 		     :id
@@ -153,7 +153,7 @@
 		     :result 
 		     (eval
 			'(emtg (type suite)(what-test test-1)(role replace)))
-		     :how-to-run
+		     :explorable
 		     (eval 
 			'(emtg (type explorable)(what-test test-1)))
 		     :id

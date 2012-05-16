@@ -24,8 +24,6 @@
 
 ;;;_ , Commentary:
 
-;; For now, there's only one thing in this file and it's not
-;; individuated yet, though it will be.
 
 ;;;_ , Requires
 (require 'emtest/main/all-explorers)
@@ -38,7 +36,7 @@
 	      (:conc-name emt:ind:entry->)
 	      (:constructor emt:ind:make-entry))
    "An individual test entry"
-   (test-id () :type emthow) 
+   (test-path () :type emt:t:test-path) 
    (property-alist () :type (repeat (list symbol t))))
 
 ;;;_ , List of individual tests
@@ -46,21 +44,21 @@
    '()
    "Alist of properties of individual tests" )
 ;;;_ , emt:ind:get-entry
-(defsubst emt:ind:get-entry (test-id)
-   "Get the entry for TEST-ID"
-   (check-type test-id emthow)
-   (assoc test-id emt:ind:alist))
+(defsubst emt:ind:get-entry (test-path)
+   "Get the entry for TEST-PATH"
+   (check-type test-path emt:t:test-path)
+   (assoc test-path emt:ind:alist))
 ;;;_ , emt:ind:add-entry
 (defsubst emt:ind:add-entry (entry)
    "Add entry ENTRY"
-   (check-type test-id emthow)
+   (check-type test-path emt:t:test-path)
    (push entry emt:ind:alist))
 ;;;_ , emt:ind:get-prop 
-(defun emt:ind:get-prop (test-id key)
-   "Get property KEY of test TEST-ID"
-
+(defun emt:ind:get-prop (test-path key)
+   "Get property KEY of test TEST-PATH"
+   (check-type test-path emt:t:test-path)
    (let
-      ((entry (emt:ind:get-entry test-id)))
+      ((entry (emt:ind:get-entry test-path)))
       (if entry
 	 (let
 	    ((apair (assq key  (emt:ind:entry->property-alist entry))))
@@ -68,11 +66,11 @@
 	 nil)))
 
 ;;;_ , emt:ind:set-prop 
-(defun emt:ind:set-prop (test-id key value)
-   "Set property KEY of test TEST-ID to VALUE"
-
+(defun emt:ind:set-prop (test-path key value)
+   "Set property KEY of test TEST-PATH to VALUE"
+   (check-type test-path emt:t:test-path)
    (let
-      ((entry (emt:ind:get-entry test-id)))
+      ((entry (emt:ind:get-entry test-path)))
       (if entry
 	 (setf
 	    (emt:ind:entry->property-alist entry)
@@ -83,7 +81,7 @@
 		  (emt:ind:entry->property-alist entry))))
 	 (emt:ind:add-entry
 	    (emt:ind:make-entry 
-	       :test-id test-id
+	       :test-path test-path
 	       :property-alist (list (cons key value)))))))
 
 ;;;_. Footers

@@ -170,7 +170,7 @@ LIBRARY is the absolute file name of the library"
 		     #'(lambda (suite-sym)
 			  (emtt:make-explorable
 			     :how-to-run
-			     `(suite ,suite-sym)
+			     (emt:t:->how `(suite ,suite-sym))
 			     :prestn-path 
 			     (append 
 				path
@@ -203,7 +203,7 @@ LIBRARY is the absolute file name of the library"
 			     (path (second x)))
 		       (emtt:make-explorable
 			  :how-to-run  
-			  (list 'library:elisp-load path sym)
+			  (emt:t:->how (list 'library:elisp-load path sym))
 			  :prestn-path
 			  (list 'library:elisp-load sym))))
 		  (emt:xp:library:get-all-testable)))

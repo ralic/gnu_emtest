@@ -215,7 +215,7 @@ could be, such as when a note-list hasn't been expanded."
       #'(lambda (runform)
 	   (emtvo:receive-cb 
 	      (emtt:explorable->prestn-path runform)
-	      (emt:view:make-how-to-run :contents runform)))
+	      (emt:view:make-explorable :contents runform)))
       (emt:testral:runform-list->els runform-list)))
 
 ;;;_ , emtvr:place-node

@@ -89,7 +89,7 @@ Does nothing if the buffer is not in a known lisp mode."
 		  (push  
 		     (emtt:make-explorable
 			:how-to-run
-			`(indexed-clause ,suite-sym ,n)
+			(emt:t:->how `(indexed-clause ,suite-sym ,n))
 			:prestn-path 
 			(append 
 			   path

@@ -72,6 +72,7 @@ followed by a form."
 
 
 ;;;_ , emtl:th:hello
+'  ;; $$OBSOLETE
 (defun emtl:th:hello (callback &optional prefix testrun-id)
    ""
    

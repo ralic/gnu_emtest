@@ -45,7 +45,7 @@
    "State data about a given testrun"
    (pending () :type (repeat emtt:explorable))
    (has-run () 
-      :type (repeat emthow))
+      :type (repeat emt:t:how))
    report-cb
    testrun-id
    (properties () :type (repeat (cons symbol t))))
@@ -58,13 +58,15 @@
    ""
    (let* 
       (	    
-	 (test-id
+	 (how-to-run
 	    (emtt:explorable->how-to-run explorable))
+	 (test-id
+	    (emt:t:how->contents how-to-run))
 	 (has-run
 	    (member test-id (emt:testrun->has-run testrun))))
 
       (when (not has-run)
-	 (push test-id (emt:testrun->has-run testrun))
+	 (push how-to-run (emt:testrun->has-run testrun))
 	 (let*
 	    (
 	       (props
@@ -166,11 +168,13 @@ If RESTRAINED, the property list won't redo tests that passed"
 ;;;_  . emt:lch:run
 ;;;###autoload
 (defun emt:lch:run (what-to-run props &optional prefix receiver testrun-id)
-   "Run a single test"
+   "Run a single test.
+
+WHAT-TO-RUN is a list of symbols and strings, not an emt:t:how."
    (emtt:test-finder:top
       (list
 	 (emtt:make-explorable
-	    :how-to-run  what-to-run
+	    :how-to-run  (emt:t:->how what-to-run)
 	    :prestn-path prefix  ;;Default is the empty list.
 	    :properties  '()))
       (or testrun-id

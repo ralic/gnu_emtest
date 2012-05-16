@@ -86,8 +86,6 @@
 		     (list
 			;;Tester info
 			(emt:view:make-suite
-			   ;;:how-to-run
-			   ;;(satisfies emthow:hello-p)
 			   :children '()))))))
 	 (emt:doc "Response: WRITEME.")))
 

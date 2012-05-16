@@ -33,9 +33,19 @@
 (require 'emtest/types/prestn-path)
 
 ;;;_. Body
-
-;;;_ , emthow
-(deftype emthow () '(repeat t))
+;;;_ , emt:t:test-path
+(deftype emt:t:test-path ()
+   "Path to reach a specific test"
+   '(repeat t))
+;;;_ , emt:t:how
+(defstruct (emt:t:how
+	      (:copier nil)
+	      (:conc-name emt:t:how->)
+	      (:constructor emt:t:->how (contents)))
+   "How to run a given test"
+   (contents
+      :type emt:t:test-path
+      :doc "Path from tester root that will run a specific test"))
 
 ;;;_ , emtt:explorable (Full runnable)
 (defstruct (emtt:explorable
@@ -44,7 +54,7 @@
 	      (:constructor emtt:make-explorable))
    "All the information needed to specify how to run a test or suite."
    (how-to-run () 
-      :type emthow
+      :type emt:t:how
       :doc "What explorer to use for this.")
    
    (prestn-path () 
@@ -55,7 +65,7 @@
       :type (repeat (list symbol *))
       :doc "The properties that this explorable has when it's run")
    (aliases () 
-      :type (repeat emthow) 
+      :type (repeat emt:t:how) 
       :doc "A possibly empty list of other IDs that would launch the
       same thing")) 
 

@@ -256,6 +256,7 @@ is interned, prepended with \":\".
 
 If POSITIONAL? is t, each argument is simply recursively parsed first." )
 ;;;_  . emt:xp:foreign:stringtree-kvlist->explorable
+;; $$CHANGED
 ;; Special treatment for emtt:explorable because it contains
 ;; how-to-run in its fields and how-to-run is just a list of symbols.
 (defun emt:xp:foreign:stringtree-kvlist->explorable (&rest args)
@@ -493,7 +494,7 @@ slot (without ':', which will be added in reading)."
 			  ((name (first x)))
 			  (emtt:make-explorable
 			     :how-to-run  
-			     (list 'foreign name)
+			     (emt:t:->how (list 'foreign name))
 			     :prestn-path
 			     (list 'foreign name))))
 		  emt:xp:foreign:launchables))

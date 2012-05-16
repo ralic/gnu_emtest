@@ -166,7 +166,9 @@ which may not imply success of an assertion."
    "Explore explorable, given BUTTON."
    ;;$$IMPROVE ME Distinguish proplists we want to use.
    (emt:lch:run
-      (button-get button 'how-to-run)
+      ;; emt:lch:run wants just the contents, not the whole object.
+      (emt:t:how->contents
+	 (button-get button 'how-to-run))
       emt:lch:proplist:vanilla
       (button-get button 'prestn-path)))
 
@@ -211,8 +213,9 @@ which may not imply success of an assertion."
 	 (emt:view:suite->mark viewable)
 	 (not (emt:view:suite->mark viewable)))
       (emt:ind:set-prop
-	 (emtt:explorable->how-to-run
-	    (emt:view:suite->how-to-run viewable))
+	 (emt:t:how->contents
+	    (emtt:explorable->how-to-run
+	       (emt:view:suite->explorable viewable)))
 	 'user-says-rerun
 	 t)
       (emtvf:reprint-button button)))
@@ -329,7 +332,7 @@ Must be called in a `utidyv:top' context."
 		  (object
 		     (emt:view:suite->result suite))
 		  (explorable
-		     (emt:view:suite->how-to-run suite)))
+		     (emt:view:suite->explorable suite)))
 	       (etypecase object
 		  (null "A null viewable")
 		  (emt:testral:suite
@@ -345,9 +348,9 @@ Must be called in a `utidyv:top' context."
 			(emtvf:mapnodes children "No child suites")
 			grade-face
 			boring-p)))))
-	 (emt:view:how-to-run
-	    (emt:vw:how-to-run
-	       (emt:view:how-to-run->contents view-node)
+	 (emt:view:explorable
+	    (emt:vw:explorable
+	       (emt:view:explorable->contents view-node)
 	       name))
 	 
 	 (emt:view:note
@@ -388,9 +391,9 @@ OBJ must be a TESTRAL viewable (`emt:view:note')."
 	 `((w/face "Error in formatter: " emtvf:face:blowout) 
 	     (object ,err nil)
 	     "\n"))))
-;;;_  . emt:vw:how-to-run
-(defun emt:vw:how-to-run (obj name)
-   "Make a format form for a emt:view:how-to-run, which encases a emtt:explorable."
+;;;_  . emt:vw:explorable
+(defun emt:vw:explorable (obj name)
+   "Make a format form for a emt:view:explorable, which encases a emtt:explorable."
    (emtvf:outline-item-emformat
       (list 
 	 (emtvf:sym->suitename name)

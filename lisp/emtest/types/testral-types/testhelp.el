@@ -277,13 +277,13 @@
 	 ((type how-to-run))
 	 (item ((name test-1) ;;`name' seems redundant here now.
 		  (what-test test-1))
-	    '(suite test-1))
+	    (emt:t:->how '(suite test-1)))
 	 (item ((name test-2)
 		  (what-test test-2))
-	    '(suite test-2))
+	    (emt:t:->how '(suite test-2)))
 	 (item
 	    ((what-test index-1))
-	    '(indexed-clause first-suite 0)))
+	    (emt:t:->how '(indexed-clause first-suite 0))))
 
       (group
 	 ((type explorable))
@@ -292,15 +292,17 @@
 	 (item
 	    ((what-test index-1))
 	    (emtt:make-explorable
-	       :how-to-run  (emtg (type how-to-run)(what-test index-1))
-	       :prestn-path ()  ;;Empty presentation name
+	       :how-to-run  
+	       (emtg (type how-to-run)(what-test index-1))
+	       :prestn-path () ;;Empty presentation name
 	       :properties  ()
 	       :aliases     ()))
 	 
 	 (item
 	    ((what-test test-1))
 	    (emtt:make-explorable
-	       :how-to-run  (emtg (type how-to-run)(what-test test-1))
+	       :how-to-run  
+	       (emtg (type how-to-run)(what-test test-1))
 	       :prestn-path (emtg (type presentation-name)(what-test test-1))
 	       :properties  ()
 	       :aliases     ()))
@@ -308,7 +310,8 @@
 	 (item
 	    ((what-test test-2))
 	    (emtt:make-explorable
-	       :how-to-run  (emtg (type how-to-run)(what-test test-2))
+	       :how-to-run  
+	       (emtg (type how-to-run)(what-test test-2))
 	       :prestn-path (emtg (type presentation-name)(what-test test-2))
 	       :properties  ()
 	       :aliases     ())))

@@ -99,7 +99,7 @@ HOW must be a list."
 			  x
 			  (if show-avail
 			     (emtt:make-explorable
-				:how-to-run (list (car x))
+				:how-to-run (emt:t:->how (list (car x)))
 				;; Could use name here.
 				:prestn-path (list (car x))))))
 		  emt:exps:alist)))

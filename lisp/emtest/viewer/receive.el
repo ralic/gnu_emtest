@@ -103,12 +103,15 @@
 Stores it on receiver' alist, keyed by how to run it."
 
    (check-type receiver emtvr:data)
-   (destructuring-bind (how-to-run dummy suite) entry
+   (destructuring-bind (explorable dummy suite) entry
+      (check-type explorable emtt:explorable)
       (let*
 	 ( 
-	    (id (emtt:explorable->prestn-path how-to-run))
+	    (id (emtt:explorable->prestn-path explorable))
 	    (presentation-path (append prefix id))
-	    (key (emtt:explorable->how-to-run how-to-run)))
+	    (key (emtt:explorable->how-to-run explorable)))
+	 (check-type key emt:t:how)
+
 	 ;;Handle special case: If suite reports that it has disappeared,
 	 ;;remove it from alist and from tree.  (How from tree?)
 	 (if
@@ -152,7 +155,7 @@ Stores it on receiver' alist, keyed by how to run it."
 		     ((cell
 			 (emt:view:make-suite
 			    :id                key
-			    :how-to-run        how-to-run
+			    :explorable        explorable
 			    :presentation-path presentation-path
 			    :testrun-id        testrun-id
 			    :result            suite)))
