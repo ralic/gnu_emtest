@@ -109,7 +109,9 @@ Stores it on receiver' alist, keyed by how to run it."
 	 ( 
 	    (id (emtt:explorable->prestn-path how-to-run))
 	    (presentation-path (append prefix id))
-	    (key (emtt:explorable->how-to-run how-to-run)))
+	    (key (append 
+		    prefix
+		    (emtt:explorable->how-to-run how-to-run))))
 	 ;;Handle special case: If suite reports that it has disappeared,
 	 ;;remove it from alist and from tree.  (How from tree?)
 	 (if
