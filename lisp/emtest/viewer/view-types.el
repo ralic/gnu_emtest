@@ -40,10 +40,10 @@
 
 ;;;_ , Grade summary
 
-(defstruct (emt:grade:summary
-	      (:constructor emt:make-grade:summary)
+(defstruct (emt:view:grade-summary
+	      (:constructor emt:view:make-grade-summary)
 	      (:copier nil)
-	      (:conc-name emt:grade:summary->))
+	      (:conc-name emt:view:grade-summary->))
    "Class for summarized grades"
    (worst      nil :type symbol
       :doc "The symbol of the worst result-type in the grades.  
@@ -63,7 +63,7 @@ But if there were no cases, assertions, etc, `nil'."
 	      (:include emtvp:node))
    "The base viewable type.  We use this as the content element in
 pathtree nodes."
-   (sum-grades () :type emt:grade:summary
+   (sum-grades () :type emt:view:grade-summary
       :doc
       "Summarized grades from all subtrees.  They are summarized
 treewise, including any grades from this node."

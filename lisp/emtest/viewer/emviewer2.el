@@ -94,7 +94,7 @@
 			   (emt:view:suite->explorable obj)))
 		     'grade-says-rerun
 		     (case
-			(emt:grade:summary->worst
+			(emt:view:grade-summary->worst
 			   (emt:view:presentable->sum-grades obj))
 			(fail t)
 			((ok test-case) nil)

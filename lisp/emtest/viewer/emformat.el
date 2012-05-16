@@ -510,10 +510,10 @@ SYM should be a grade symbol, but this returns a valid object in any case."
 ;;;_   , emtvf:grade-boring
 (defun emtvf:grade-boring (obj)
    "Return non-nil if OBJ is all passing grades.
-OBJ must be a `emt:grade:summary'"
+OBJ must be a `emt:view:grade-summary'"
    (let*
       ((nobj (emtvr:->grade-summary obj))
-	 (worst (emt:grade:summary->worst nobj))
+	 (worst (emt:view:grade-summary->worst nobj))
 	 (info (emtvf:get-grade-info worst)))
       (not
 	 (emtvf:grade-fmt->fail-p info))))
@@ -521,11 +521,11 @@ OBJ must be a `emt:grade:summary'"
 ;;;_   , emtvf:grade-overall-face
 (defun emtvf:grade-overall-face (obj)
    "Return a face that hints at the overall quality of grades in OBJ.
-OBJ should be an `emt:grade:summary'."
+OBJ should be an `emt:view:grade-summary'."
 
    (let*
       ((nobj (emtvr:->grade-summary obj))
-	 (worst (emt:grade:summary->worst nobj))
+	 (worst (emt:view:grade-summary->worst nobj))
 	 (info (emtvf:get-grade-info worst)))
       (emtvf:grade-fmt->face info)))
 
@@ -541,7 +541,7 @@ SEPARATOR, if non-nil, is what separates the items."
 		 (funcall func 
 		    (emtvf:get-grade-info (first grade))
 		    (second grade)))
-	    (emt:grade:summary->grades nobj)))
+	    (emt:view:grade-summary->grades nobj)))
       separator))
 ;;;_  . Grade formatters
 ;;;_   , emtvf:sum-grades-short
@@ -550,7 +550,7 @@ SEPARATOR, if non-nil, is what separates the items."
    (let*
       (
 	 (nobj (emtvr:->grade-summary obj))
-	 (worst (emt:grade:summary->worst nobj)))
+	 (worst (emt:view:grade-summary->worst nobj)))
       
       (cond
 	 ((null worst)
@@ -580,7 +580,7 @@ SEPARATOR, if non-nil, is what separates the items."
    (let*
       (
 	 (nobj  (emtvr:->grade-summary obj))
-	 (worst (emt:grade:summary->worst nobj))
+	 (worst (emt:view:grade-summary->worst nobj))
 	 (successes
 	    (emtvf:map-grades
 	       #'(lambda (info count)

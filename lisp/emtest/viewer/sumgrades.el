@@ -39,10 +39,10 @@
    "Change OBJ object into a grade summary.
 OBJ may be a grade symbol or already be a summary."
    (etypecase obj 
-      (emt:grade:summary obj)
+      (emt:view:grade-summary obj)
       (emt:testral:grade-type
 	 (let
-	    ((obj-aux (emt:make-grade:summary)))
+	    ((obj-aux (emt:view:make-grade-summary)))
 	    (emtvr:add-grades obj-aux obj)
 	    obj-aux))))
 ;;;_  . emtvr:sym->severity
@@ -56,7 +56,7 @@ OBJ may be a grade symbol or already be a summary."
    
    (let*
       ((grade-list
-	  (emt:grade:summary->grades sums))
+	  (emt:view:grade-summary->grades sums))
 	 (apair
 	    (assq sym grade-list)))
       (if apair
@@ -65,28 +65,28 @@ OBJ may be a grade symbol or already be a summary."
 	 ;;Otherwise record it
 	 (push
 	    (list sym count)
-	    (emt:grade:summary->grades sums)))
+	    (emt:view:grade-summary->grades sums)))
       (when
 	 (>
 	    (emtvr:sym->severity sym)
-	    (emtvr:sym->severity (emt:grade:summary->worst sums)))
+	    (emtvr:sym->severity (emt:view:grade-summary->worst sums)))
 	 (setf 
-	    (emt:grade:summary->worst sums)
+	    (emt:view:grade-summary->worst sums)
 	    sym))))
 
 
 ;;;_  . emtvr:add-grades
 (defun emtvr:add-grades (sums a)
    "Add A to grade summary SUMS and return SUMS
-SUMS must be a `emt:grade:summary'.
+SUMS must be a `emt:view:grade-summary'.
 A may be a grade symbol, a grade summary, or nil."
-   (check-type sums emt:grade:summary)
+   (check-type sums emt:view:grade-summary)
    (etypecase a
       (null sums)
       (symbol
 	 (emtvr:add-one-grade sums a 1))
-      (emt:grade:summary
-	 (dolist (grade (emt:grade:summary->grades a))
+      (emt:view:grade-summary
+	 (dolist (grade (emt:view:grade-summary->grades a))
 	    (emtvr:add-one-grade sums 
 	       (first grade) 
 	       (second grade)))))
@@ -100,9 +100,9 @@ A may be a grade symbol, a grade summary, or nil."
 	  (reduce
 	     #'emtvr:add-grades
 	     grades
-	     :initial-value (emt:make-grade:summary))))
+	     :initial-value (emt:view:make-grade-summary))))
       
-      (check-type all emt:grade:summary)
+      (check-type all emt:view:grade-summary)
       all))
 
 
