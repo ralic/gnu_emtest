@@ -112,7 +112,7 @@
 	 (emt:assert
 	    (equal
 	       (emt:xp:foreign:stringtree->object
-		  '("how-to-run" ("symbol" "a") ("symbol" "b")))
+		  '("path" ("symbol" "a") ("symbol" "b")))
 	       (emt:run:->how '(prefix-el-1 prefix-el-2 a b))))))
    )
 
@@ -133,7 +133,7 @@
       (emt:assert
 	 (equal
 	    (emt:xp:foreign:object->stringtree (emt:run:->how '(a b)))
-	    '("how-to-run" ("symbol" "a") ("symbol" "b")))))
+	    '("path" ("symbol" "a") ("symbol" "b")))))
 
    )
 
@@ -168,7 +168,7 @@
       (emt:assert
 	 (equal
 	    (emt:xp:foreign:encode-TESTRAL (emt:run:->how '(a b)))
-	    "(10:how-to-run(6:symbol1:a)(6:symbol1:b))"))))
+	    "(4:path(6:symbol1:a)(6:symbol1:b))"))))
 
 (emt:deftest-3
    ((of 'emt:xp:foreign:decode-to-TESTRAL))
@@ -178,7 +178,7 @@
 	 (emt:assert
 	    (equal
 	       (emt:xp:foreign:decode-to-TESTRAL
-		  "(10:how-to-run(6:symbol1:a)(6:symbol1:b))")
+		  "(4:path(6:symbol1:a)(6:symbol1:b))")
 	       (emt:run:->how '(prefix-el-1 prefix-el-2 a b)))))))
 
 ;;;_. Footers

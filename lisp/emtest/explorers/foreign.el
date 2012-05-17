@@ -30,6 +30,7 @@
 ;;;_ , Requires
 
 (require 'tq)
+(require 'cl)
 (require 'emtest/types/testral-types)
 
 
@@ -190,33 +191,37 @@ NAME should be the nickname of some launchable"
 (defun emt:xp:foreign:read-buffer-csexp-single ()
    ""
    
-   (if
-      (looking-at "[0-9]*:")
-      (let*
-	 (  (start (match-beginning 0))
-	    (end (match-end 0))
-	    ;; First we read how many chars to read - careful not
-	    ;; to include ":"
-	    (digit-str (buffer-substring start (1- end)))
-	    (num-chars (read digit-str))
-	    (end-of-read  (+ end num-chars))
-	    ;; Then we read the string itself
-	    (str (buffer-substring end end-of-read)))
-	 (goto-char end-of-read)
-	 str)
+   (cond
+      ;; If we're reading past the end of the buffer, we got nothing.
+      ((eobp)
+	 (throw 'emt:xp:foreign:csexp-NOTHING nil))
+      ((looking-at "[0-9]*:")
+	 (let*
+	    (  (start (match-beginning 0))
+	       (end (match-end 0))
+	       ;; First we read how many chars to read - careful not
+	       ;; to include ":"
+	       (digit-str (buffer-substring start (1- end)))
+	       (num-chars (read digit-str))
+	       (end-of-read  (+ end num-chars))
+	       ;; Then we read the string itself
+	       (str (buffer-substring end end-of-read)))
+	    (goto-char end-of-read)
+	    str))
 	 
-      (case (prog1
-	       (char-after)
-	       ;; Don't move past end of buffer, in case we're reading
-	       ;; the last char in the buffer.
-	       (unless (eobp) (forward-char)))
+      (t
+	 (case (prog1
+		  (char-after)
+		  ;; Don't move past end of buffer, in case we're reading
+		  ;; the last char in the buffer.
+		  (unless (eobp) (forward-char)))
 	 
-	 (?\( 
-	    (emt:xp:foreign:read-buffer-csexp-loop))
-	 (?\)
-	    (throw 'emt:xp:foreign:csexp-EOL nil))
-	 ;; Read nothing for whitespace etc.
-	 (t (throw 'emt:xp:foreign:csexp-NOTHING nil)))))
+	    (?\( 
+	       (emt:xp:foreign:read-buffer-csexp-loop))
+	    (?\)
+	       (throw 'emt:xp:foreign:csexp-EOL nil))
+	    ;; Read nothing for whitespace etc.
+	    (t (throw 'emt:xp:foreign:csexp-NOTHING nil))))))
 ;;;_  . emt:xp:foreign:read-buffer-csexp
 (defun emt:xp:foreign:read-buffer-csexp (text)
    ""
