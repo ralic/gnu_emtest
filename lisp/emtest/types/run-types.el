@@ -55,7 +55,7 @@
    "All the information needed to specify how to run a test or suite."
    (how-to-run () 
       :type emt:run:how
-      :doc "What explorer to use for this.")
+      :doc "How to run this test.")
    
    (prestn-path () 
       :type emt:testral:prestn-path
