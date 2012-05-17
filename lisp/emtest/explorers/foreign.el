@@ -138,23 +138,24 @@ TESTER should be an element of emt:xp:foreign:current-testers."
 
 NAME should be the nickname of some launchable"
    
-   (let*
+   (let
       (
-	 (launchable
-	    (assoc name emt:xp:foreign:launchables))
 	 (tester (assoc name emt:xp:foreign:current-testers)))
       (if tester
 	 (emt:xp:foreign:revive-tester tester)
 	 ;; If it doesn't exist, make it.
-	 (progn
-	    (setq tester 
-	       (list 
-		  name
-		  (emt:xp:foreign:launchable->tq launchable)
-		  ;; No timer yet
-		  nil
-		  launchable))
-	    (push tester emt:xp:foreign:current-testers)))
+	 (let
+	    ((launchable
+		(assoc name emt:xp:foreign:launchables)))
+	    (when launchable
+	       (setq tester 
+		  (list 
+		     name
+		     (emt:xp:foreign:launchable->tq launchable)
+		     ;; No timer yet
+		     nil
+		     launchable))
+	       (push tester emt:xp:foreign:current-testers))))
       tester))
 
 ;;;_ , Related to stopping it a certain time after last Q.
