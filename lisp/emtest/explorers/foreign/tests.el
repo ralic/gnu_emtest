@@ -137,6 +137,27 @@
 
    )
 
+(emt:deftest-3
+   ((of 'emt:xp:foreign:stringtree-to-stringlist))
+   (nil
+      (emt:assert
+	 (equal
+	    (emt:xp:foreign:stringtree-to-stringlist 
+	       '(("a""b")"c"("d")))
+	    '("1"":""a"
+		"1"":""b"
+		"1"":""c"
+		"1"":""d")))))
+
+(emt:deftest-3
+   ((of 'emt:xp:foreign:stringtree-to-csexp))
+   (nil
+      (emt:assert
+	 (equal
+	    (emt:xp:foreign:stringtree-to-csexp
+	       '(("a""b")"c"("d")))
+	    "1:a1:b1:c1:d"))))
+
 ;;;_. Footers
 ;;;_ , Provides
 

@@ -227,6 +227,29 @@ NAME should be the nickname of some launchable"
 	 (catch 'emt:xp:foreign:csexp-NOTHING
 	    (emt:xp:foreign:read-buffer-csexp-single)))))
 ;;;_ , Csexp to text
+;;;_  . emt:xp:foreign:stringtree-to-stringlist
+(defun emt:xp:foreign:stringtree-to-stringlist (tree)
+   ""
+   
+   (typecase tree
+      (string 
+	 (list
+	    (prin1-to-string (length tree))
+	    ":"
+	    tree))
+      (cons
+	 (apply #'append
+	    (mapcar
+	       #'emt:xp:foreign:stringtree-to-stringlist
+	       tree)))))
+
+;;;_  . emt:xp:foreign:stringtree-to-csexp
+(defun emt:xp:foreign:stringtree-to-csexp (tree)
+   ""
+   (apply #'concat
+      (emt:xp:foreign:stringtree-to-stringlist tree)))
+
+
 ;;;_ , Stringtree to obj
 ;;;_  . emt:xp:foreign:ctor-alist
 
