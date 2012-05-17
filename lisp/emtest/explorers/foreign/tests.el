@@ -158,6 +158,14 @@
 	       '(("a""b")"c"("d")))
 	    "1:a1:b1:c1:d"))))
 
+(emt:deftest-3
+   ((of 'emt:xp:foreign:encode-TESTRAL))
+   (nil
+      (emt:assert
+	 (equal
+	    (emt:xp:foreign:encode-TESTRAL (emt:run:->how '(a b)))
+	    "10:how-to-run6:symbol1:a6:symbol1:b"))))
+
 ;;;_. Footers
 ;;;_ , Provides
 

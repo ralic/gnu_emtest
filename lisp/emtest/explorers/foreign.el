@@ -440,11 +440,10 @@ slot (without ':', which will be added in reading)."
 ;;;_ , emt:xp:foreign:encode-TESTRAL
 (defun emt:xp:foreign:encode-TESTRAL (raw-question)
    ""
-   ;; Enclose question.
-   ;; emt:xp:foreign:object->stringtree
-   ;; stringtree->csexp
-   ;; Punt for now
-   "()")
+   (emt:xp:foreign:stringtree-to-csexp
+      (emt:xp:foreign:object->stringtree
+	 raw-question)))
+
 ;;;_ , emt:xp:foreign:decode-to-TESTRAL
 (defun emt:xp:foreign:decode-to-TESTRAL (text)
    "Convert answer to csexp and thence to object."
@@ -452,7 +451,8 @@ slot (without ':', which will be added in reading)."
    (let*
       ((stringtree (emt:xp:foreign:read-buffer-csexp text))
 	 (object
-	    (emt:xp:foreign:stringtree->object stringtree)))))
+	    (emt:xp:foreign:stringtree->object stringtree)))
+      object))
 
 ;;;_ , The explorer proper
 ;;;_  . emt:xp:foreign:report-results
@@ -508,7 +508,8 @@ slot (without ':', which will be added in reading)."
 	    (terminating-regex (third tester)))
 	 
 	 (tq-enqueue tq 
-	    (emt:xp:foreign:encode-TESTRAL raw-question)
+	    (emt:run:->how
+	       (emt:xp:foreign:encode-TESTRAL raw-question))
 	    terminating-regex
 	    (list how-to-prefix report-f tester)
 	    #'emt:xp:foreign:report-results t))
