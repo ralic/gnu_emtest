@@ -273,7 +273,7 @@ NAME should be the nickname of some launchable"
        (report     emt:testral:make-report          nil)
        (explorable emt:run:make-explorable          nil)
 
-       (how-to-run emt:xp:foreign:stringlist->how t)
+       (path emt:xp:foreign:stringlist->how t)
        )
    
    
@@ -344,16 +344,16 @@ ARGS are simple values."
        (symbolp  "symbol"  t emt:xp:foreign:singleval-stringtreer)
        ;; We don't treat grade etc as a case, it's treated as symbol
        
-       (emt:testral:suite-p        "suite"    struct emt:testral:suite)
-       (emt:testral:note-p         "note"     struct emt:testral:note)
-       (emt:testral:runform-list-p "runforms" struct emt:testral:runform-list)
-       (emt:testral:note-list-p    "notes"    struct emt:testral:note-list)
+       (emt:testral:suite-p        "suite"      struct emt:testral:suite)
+       (emt:testral:note-p         "note"       struct emt:testral:note)
+       (emt:testral:runform-list-p "runforms"   struct emt:testral:runform-list)
+       (emt:testral:note-list-p    "notes"      struct emt:testral:note-list)
        (emt:testral:report-p       "report"     struct emt:testral:report)
-       (emt:run:explorable-p          "explorable" struct emt:run:explorable)
+       (emt:run:explorable-p       "explorable" struct emt:run:explorable)
 
-       ;; We print the whole contents list; presumably it was
-       ;; truncated right before we got here.
-       (emt:run:how-p                "how-to-run" t      emt:run:how->contents)
+       ;; We print the whole path; internal path should be truncated
+       ;; off before we get here.
+       (emt:run:how-p                "path" t      emt:run:how->contents)
        )
    "Alist of the stringtree-ers of foreign-able types, for outgoing objects.
 
@@ -517,6 +517,7 @@ slot (without ':', which will be added in reading)."
 	    terminating-regex
 	    (list how-to-prefix report-f tester)
 	    #'emt:xp:foreign:report-results t))
+      
       
 
       ;; List foreigns that we could run, from customization list.
