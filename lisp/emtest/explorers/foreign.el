@@ -32,6 +32,7 @@
 (require 'tq)
 (require 'cl)
 (require 'emtest/types/testral-types)
+(require 'emtest/types/run-types)
 
 
 ;;;_. Body
@@ -110,7 +111,7 @@ Each element is of the form \(name tq timer launchable\)" )
 	    0)
 	 (error
 	    "No live process"))
-      (tq-create proc)))
+      (emt:csx:tq:create proc)))
 ;;;_ , emt:xp:foreign:launchable->tq
 (defun emt:xp:foreign:launchable->tq (launchable)
    "Make a transaction queue appropriate to LAUNCHABLE"
@@ -169,7 +170,61 @@ NAME should be the nickname of some launchable"
 
 ;; Timer should just check tq every so often, and check that it got
 ;; some answer in the meantime.
-;;;_ , Utility
+;;;_ , Overriding parts of tq
+
+(defun emt:csx:tq:create (process)
+  "Create and return a transaction queue communicating with PROCESS.
+PROCESS should be a subprocess capable of sending and receiving
+streams of bytes.  It may be a local process, or it may be connected
+to a tcp server on another machine."
+  (let ((tq (cons nil (cons process
+			    (generate-new-buffer
+			     (concat " emt:csx:tq:temp-"
+				     (process-name process)))))))
+    (buffer-disable-undo (tq-buffer tq))
+    (set-process-filter process
+			`(lambda (proc string)
+			   (emt:csx:tq:filter ',tq string)))
+    tq))
+
+(defun emt:csx:tq:filter (tq string)
+  "Append STRING to the TQ's buffer; then process the new data."
+  (let ((buffer (tq-buffer tq)))
+    (when (buffer-live-p buffer)
+      (with-current-buffer buffer
+	(goto-char (point-max))
+	(insert string)
+	(emt:csx:tq:process-buffer tq)))))
+
+(defun emt:csx:tq:process-buffer (tq)
+  "Check TQ's buffer for the regexp at the head of the queue."
+  (let ((buffer (tq-buffer tq)))
+    (when (buffer-live-p buffer)
+      (set-buffer buffer)
+      (if (= 0 (buffer-size)) ()
+	(if (tq-queue-empty tq)
+	    (let ((buf (generate-new-buffer "*spurious*")))
+	      (copy-to-buffer buf (point-min) (point-max))
+	      (delete-region (point-min) (point))
+	      (pop-to-buffer buf nil)
+	      (error "Spurious communication from process %s, see buffer %s"
+		     (process-name (tq-process tq))
+		     (buffer-name buf)))
+	  (goto-char (point-min))
+	   ;; If we didn't read a whole object, we'll throw to here
+	   ;; and not try again until we receive more.
+	  (catch 'emt:xp:foreign:csexp-EOL
+	     (catch 'emt:xp:foreign:csexp-NOTHING
+		(let ((answer (emt:xp:foreign:read-buffer-csexp-single)))
+		   (delete-region (point-min) (point))
+		   (unwind-protect
+		      (condition-case nil
+			 (funcall (tq-queue-head-fn tq)
+			    (tq-queue-head-closure tq)
+			    answer)
+			 (error nil))
+		      (tq-queue-pop tq))
+		   (emt:csx:tq:process-buffer tq)))))))))
 
 ;;;_ , Text to Csexp
 ;;;_  . emt:xp:foreign:read-buffer-csexp-loop
@@ -212,6 +267,7 @@ NAME should be the nickname of some launchable"
       (t
 	 (case (prog1
 		  (char-after)
+		  ;; $$ NO LONGER NEED CHECK
 		  ;; Don't move past end of buffer, in case we're reading
 		  ;; the last char in the buffer.
 		  (unless (eobp) (forward-char)))
@@ -222,10 +278,10 @@ NAME should be the nickname of some launchable"
 	       (throw 'emt:xp:foreign:csexp-EOL nil))
 	    ;; Read nothing for whitespace etc.
 	    (t (throw 'emt:xp:foreign:csexp-NOTHING nil))))))
-;;;_  . emt:xp:foreign:read-buffer-csexp
-(defun emt:xp:foreign:read-buffer-csexp (text)
-   ""
 
+;;;_  . emt:xp:foreign:csexp->stringtree
+(defun emt:xp:foreign:csexp->stringtree (text)
+   ""
    (with-temp-buffer
       (insert text)
       (goto-char 1)
@@ -459,21 +515,21 @@ slot (without ':', which will be added in reading)."
    "Convert answer to csexp and thence to object."
 
    (let*
-      ((stringtree (emt:xp:foreign:read-buffer-csexp text))
+      ((stringtree (emt:xp:foreign:csexp->stringtree text))
 	 (object
 	    (emt:xp:foreign:stringtree->object stringtree)))
       object))
 
 ;;;_ , The explorer proper
 ;;;_  . emt:xp:foreign:report-results
-(defun emt:xp:foreign:report-results (passed-object answer)
+(defun emt:xp:foreign:report-results (passed-object stringtree)
    "Report the results when we get an answer"
    
    (destructuring-bind
       (*how-to-prefix* report-f tester) passed-object
       (funcall report-f
 	 (let
-	    ((object (emt:xp:foreign:decode-to-TESTRAL answer)))
+	    ((object (emt:xp:foreign:stringtree->object stringtree)))
 	    ;; Suite returns are passed to the viewer, in a report
 	    ;; that our caller fills out from this info (testrun-id,
 	    ;; newly-pending).  In the future, other types of return
@@ -497,8 +553,11 @@ slot (without ':', which will be added in reading)."
 			   :governor 'doc
 			   :value    (list
 					(concat 
+					   ;; Careful, this is not a
+					   ;; string, it's a
+					   ;; stringtree.
 					   "Got non-suite answer "
-					   answer)))))
+					   stringtree)))))
 		  :grade 'blowout)))
 	 ;; Could schedule any tests a suite returns, depending on a flag.
 	 '())))
@@ -518,7 +577,10 @@ slot (without ':', which will be added in reading)."
 	    (terminating-regex (third tester)))
 
 	 (tq-enqueue tq 
-	    (emt:xp:foreign:encode-TESTRAL (emt:run:->how raw-question))
+	    (concat
+	       (emt:xp:foreign:encode-TESTRAL (emt:run:->how
+						 raw-question))
+	       "\n")
 	    terminating-regex
 	    (list how-to-prefix report-f tester)
 	    #'emt:xp:foreign:report-results t))
