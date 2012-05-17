@@ -170,6 +170,17 @@
 	    (emt:xp:foreign:encode-TESTRAL (emt:run:->how '(a b)))
 	    "(10:how-to-run(6:symbol1:a)(6:symbol1:b))"))))
 
+(emt:deftest-3
+   ((of 'emt:xp:foreign:decode-to-TESTRAL))
+   (nil
+      (let
+	 ((*how-to-prefix* '(prefix-el-1 prefix-el-2)))
+	 (emt:assert
+	    (equal
+	       (emt:xp:foreign:decode-to-TESTRAL
+		  "(10:how-to-run(6:symbol1:a)(6:symbol1:b))")
+	       (emt:run:->how '(prefix-el-1 prefix-el-2 a b)))))))
+
 ;;;_. Footers
 ;;;_ , Provides
 
