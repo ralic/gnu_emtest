@@ -237,11 +237,15 @@ NAME should be the nickname of some launchable"
 	    (prin1-to-string (length tree))
 	    ":"
 	    tree))
-      (cons
-	 (apply #'append
-	    (mapcar
-	       #'emt:xp:foreign:stringtree-to-stringlist
-	       tree)))))
+      (cons ;; A typename
+	 (cons ;; An operation
+	    "("
+	    (append
+	       (apply #'append
+		  (mapcar
+		     #'emt:xp:foreign:stringtree-to-stringlist
+		     tree))
+	       '(")"))))))
 
 ;;;_  . emt:xp:foreign:stringtree-to-csexp
 (defun emt:xp:foreign:stringtree-to-csexp (tree)
@@ -506,10 +510,9 @@ slot (without ':', which will be added in reading)."
 	    (tester (emt:xp:foreign:get-tester launchable-name))
 	    (tq (second tester))
 	    (terminating-regex (third tester)))
-	 
+
 	 (tq-enqueue tq 
-	    (emt:run:->how
-	       (emt:xp:foreign:encode-TESTRAL raw-question))
+	    (emt:xp:foreign:encode-TESTRAL (emt:run:->how raw-question))
 	    terminating-regex
 	    (list how-to-prefix report-f tester)
 	    #'emt:xp:foreign:report-results t))

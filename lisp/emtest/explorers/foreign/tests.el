@@ -143,11 +143,15 @@
       (emt:assert
 	 (equal
 	    (emt:xp:foreign:stringtree-to-stringlist 
-	       '(("a""b")"c"("d")))
-	    '("1"":""a"
-		"1"":""b"
-		"1"":""c"
-		"1"":""d")))))
+	       "a")
+	    '("1"":""a"))))
+   (nil
+      (emt:assert
+	 (equal
+	    (emt:xp:foreign:stringtree-to-stringlist 
+	       '("a"))
+	    '("(""1"":""a"")"))))
+   )
 
 (emt:deftest-3
    ((of 'emt:xp:foreign:stringtree-to-csexp))
@@ -156,7 +160,7 @@
 	 (equal
 	    (emt:xp:foreign:stringtree-to-csexp
 	       '(("a""b")"c"("d")))
-	    "1:a1:b1:c1:d"))))
+	    "((1:a1:b)1:c(1:d))"))))
 
 (emt:deftest-3
    ((of 'emt:xp:foreign:encode-TESTRAL))
@@ -164,7 +168,7 @@
       (emt:assert
 	 (equal
 	    (emt:xp:foreign:encode-TESTRAL (emt:run:->how '(a b)))
-	    "10:how-to-run6:symbol1:a6:symbol1:b"))))
+	    "(10:how-to-run(6:symbol1:a)(6:symbol1:b))"))))
 
 ;;;_. Footers
 ;;;_ , Provides
