@@ -144,20 +144,20 @@ PROPS is the property list of the form."
 	 ;;Otherwise, empty list.
 	 '())))
 
-;;;_     , emt:debug-on-entry
+;;;_     , emtest:debug-on-entry
 ;;$$IMPROVE ME  Make the interface much more specific.
 ;;;###autoload
-(defun emt:debug-on-entry (&rest r)
+(defun emtest:debug-on-entry (&rest r)
    "Debug all test clauses on entry."
    
    (interactive)
    (setq emti:debug-p t))
 
-;;;_     , emt:cancel-debug-on-entry
+;;;_     , emtest:cancel-debug-on-entry
 ;;$$IMPROVE ME  Make the interface volunteer only currently debugged
 ;;runnables.
 ;;;###autoload
-(defun emt:cancel-debug-on-entry (&rest r)
+(defun emtest:cancel-debug-on-entry (&rest r)
    ""
    
    (interactive)
