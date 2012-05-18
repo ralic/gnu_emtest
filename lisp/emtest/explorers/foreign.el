@@ -205,12 +205,6 @@ NAME should be the nickname of some launchable"
 		  (emt:xp:foreign:launchable->tq tester)
 		  (push (cons name tester) emt:xp:foreign:current-testers)
 		  tester))))))
-;;;_ , emt:csx:tq:send
-(defun emt:csx:tq:send (process question)
-   "An alias for process-send-string"
-
-   (process-send-string process question))
-
 ;;;_ , emt:xp:foreign:send-tester-q 
 (defun emt:xp:foreign:send-tester-q (tester question-object)
    "Send QUESTION-OBJECT to TESTER.
@@ -255,7 +249,7 @@ to a tcp server on another machine."
      process))
 
 (defun emt:csx:tq:filter (process string callback closure)
-  "Append STRING to the TQ's buffer; then process the new data."
+  "Append STRING to the PROCESS's buffer; then process the new data."
   (let ((buffer (process-buffer process)))
     (when (buffer-live-p buffer)
       (with-current-buffer buffer
@@ -264,7 +258,8 @@ to a tcp server on another machine."
 	(emt:csx:tq:process-buffer process callback closure)))))
 
 (defun emt:csx:tq:process-buffer (process callback closure)
-  "Check PROCESS's buffer for the regexp at the head of the queue."
+  "Check PROCESS's buffer for a complete object.
+If there is one, call CALLBACK with CLOSURE and the object."
   (let ((buffer (process-buffer process)))
     (when (buffer-live-p buffer)
        (set-buffer buffer)
@@ -282,7 +277,12 @@ to a tcp server on another machine."
 			 (error nil)))
 		   (emt:csx:tq:process-buffer process callback closure))))))))
 
-;;;_  . "enque" will now just send.
+;;;_ , emt:csx:tq:send
+(defun emt:csx:tq:send (process question)
+   "An alias for process-send-string"
+
+   (process-send-string process question))
+
 
 ;;;_ , Text to Csexp
 ;;;_  . emt:xp:foreign:read-buffer-csexp-loop
