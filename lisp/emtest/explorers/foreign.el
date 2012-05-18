@@ -205,7 +205,23 @@ NAME should be the nickname of some launchable"
 		  (emt:xp:foreign:launchable->tq tester)
 		  (push (cons name tester) emt:xp:foreign:current-testers)
 		  tester))))))
+;;;_ , emt:csx:tq:send
+(defun emt:csx:tq:send (tq question)
+   "An alias for process-send"
 
+   (process-send-string (tq-process tq) question))
+
+;;;_ , emt:xp:foreign:send-tester-q 
+(defun emt:xp:foreign:send-tester-q (tester question-object)
+   "Send QUESTION-OBJECT to TESTER.
+QUESTION-OBJECT must be an `emt:run:how'"
+   
+   ;; $$Move the reviving into here.
+   (emt:csx:tq:send
+      (emt:xp:foreign:tester->proc tester)
+      (concat
+	 (emt:xp:foreign:encode-TESTRAL question-object)
+	 "\n")))
 
 ;;;_ , Related to stopping it a certain time after last Q.
 
@@ -618,21 +634,10 @@ slot (without ':', which will be added in reading)."
 	    (raw-question (cddr test-id))
 	    (tester
 	       (emt:xp:foreign:get-tester 
-		  launchable-name how-to-prefix report-f))
-	    (tq (emt:xp:foreign:tester->proc tester))
-	    (terminating-regex "Goosefeathers"))
-
-	 ;; $$ENCAP ME
-	 (process-send-string 
-	    (tq-process tq) 
-	    (concat
-	       (emt:xp:foreign:encode-TESTRAL (emt:run:->how
-						 raw-question))
-	       "\n")))
+		  launchable-name how-to-prefix report-f)))
+	 (emt:xp:foreign:send-tester-q tester
+	    (emt:run:->how raw-question)))
       
-      
-      
-
       ;; List foreigns that we could run, from customization list.
       (funcall report-f
 	 (emt:testral:make-suite
