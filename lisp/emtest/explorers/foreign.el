@@ -172,7 +172,9 @@ TESTER should be an `emt:xp:foreign:tester'."
    (let
       ((process (emt:xp:foreign:tester->proc tester)))
       (unless
-	 (buffer-live-p (process-buffer process))
+	 (and 
+	    process
+	    (buffer-live-p (process-buffer process)))
 	 (emt:xp:foreign:launchable->tq tester))))
 
 ;;;_ , emt:xp:foreign:get-tester
