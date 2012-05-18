@@ -203,13 +203,13 @@ to a tcp server on another machine."
       (set-buffer buffer)
       (if (= 0 (buffer-size)) ()
 	(if (tq-queue-empty tq)
-	    (let ((buf (generate-new-buffer "*spurious*")))
+	   (let ((buf (generate-new-buffer "*spurious*")))
 	      (copy-to-buffer buf (point-min) (point-max))
 	      (delete-region (point-min) (point))
 	      (pop-to-buffer buf nil)
 	      (error "Spurious communication from process %s, see buffer %s"
-		     (process-name (tq-process tq))
-		     (buffer-name buf)))
+		 (process-name (tq-process tq))
+		 (buffer-name buf)))
 	  (goto-char (point-min))
 	   ;; If we didn't read a whole object, we'll throw to here
 	   ;; and not try again until we receive more.
@@ -267,10 +267,7 @@ to a tcp server on another machine."
       (t
 	 (case (prog1
 		  (char-after)
-		  ;; $$ NO LONGER NEED CHECK
-		  ;; Don't move past end of buffer, in case we're reading
-		  ;; the last char in the buffer.
-		  (unless (eobp) (forward-char)))
+		  (forward-char))
 	 
 	    (?\( 
 	       (emt:xp:foreign:read-buffer-csexp-loop))
@@ -533,13 +530,14 @@ slot (without ':', which will be added in reading)."
 	    ;; Suite returns are passed to the viewer, in a report
 	    ;; that our caller fills out from this info (testrun-id,
 	    ;; newly-pending).  In the future, other types of return
-	    ;; could be accepted just informationally.
+	    ;; could be accepted just informationally: "goodbye",
+	    ;; "tester-info".
 
 	    (if
 	       (emt:testral:suite-p object)
 	       object
 	       (emt:testral:make-suite
-		  :contents '()
+		  :contents
 		  (emt:testral:make-note-list
 		     :notes 
 		     (list
@@ -548,16 +546,19 @@ slot (without ':', which will be added in reading)."
 			   :parent-id nil
 			   :grade     'failed
 			   :relation 'trace
-			   ;; Use `doc' because there's no more
-			   ;; specific one.
-			   :governor 'doc
+			   :governor 'error-raised
 			   :value    (list
-					(concat 
-					   ;; Careful, this is not a
-					   ;; string, it's a
-					   ;; stringtree.
-					   "Got non-suite answer "
-					   stringtree)))))
+					"Got a non-suite answer"))
+			(emt:testral:make-note
+			   :id 	"0"
+			   :parent-id nil
+			   :grade     nil
+			   :relation 'trace
+			   :governor 'parameter
+			   :value    (list
+					"Response"
+					stringtree))
+			))
 		  :grade 'blowout)))
 	 ;; Could schedule any tests a suite returns, depending on a flag.
 	 '())))
