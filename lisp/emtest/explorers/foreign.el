@@ -86,7 +86,11 @@
 
 ;;;_ , Structure
 
-(defstruct emt:xp:foreign:tester
+(defstruct (emt:xp:foreign:tester
+	      (:copier nil)
+	      (:conc-name emt:xp:foreign:tester->)
+	      (:constructor emt:xp:foreign:make-tester))
+   
    "Description of a running foreign tester"
    (name "Unknown" 
       :type string
