@@ -94,8 +94,8 @@
 Each element is of the form \(name tq timer launchable\)" )
 
 ;;;_ , emt:xp:foreign:make-tq
-;; Could share this with expect.el
-(defun emt:xp:foreign:make-tq (exec+args shell proc-base-name)
+;; $$RENAME ME emt:xp:foreign:start-process or emt:csx:start-process
+(defun emt:xp:foreign:make-tq (exec+args shell proc-base-name callback closure)
    ""
    (let* 
       ((proc 
@@ -113,13 +113,20 @@ Each element is of the form \(name tq timer launchable\)" )
 	    "No live process"))
       (emt:csx:tq:create proc)))
 ;;;_ , emt:xp:foreign:launchable->tq
-(defun emt:xp:foreign:launchable->tq (launchable)
+;; $$RENAME emt:xp:foreign:launchable->process
+(defun emt:xp:foreign:launchable->tq (launchable callback closure)
    "Make a transaction queue appropriate to LAUNCHABLE"
    
-   (emt:xp:foreign:make-tq (second launchable) (fourth launchable) "foreign"))
+   (emt:xp:foreign:make-tq 
+      (second launchable) 
+      (fourth launchable) 
+      "foreign"
+      callback
+      closure))
+
 
 ;;;_ , emt:xp:foreign:revive-tester
-(defun emt:xp:foreign:revive-tester (tester)
+(defun emt:xp:foreign:revive-tester (tester callback closure)
    "Make sure the tq of TESTER is alive.
 
 TESTER should be an element of emt:xp:foreign:current-testers."
@@ -131,11 +138,11 @@ TESTER should be an element of emt:xp:foreign:current-testers."
 	 ;; don't make timers yet).
 	 (when (timerp timer) (cancel-timer timer))
 	 (setf (second tester) 
-	    (emt:xp:foreign:launchable->tq launchable)))))
+	    (emt:xp:foreign:launchable->tq launchable callback closure)))))
 
 ;;;_ , emt:xp:foreign:get-tester
 
-(defun emt:xp:foreign:get-tester (name)
+(defun emt:xp:foreign:get-tester (name callback closure)
    "Get the tester for name.
 
 NAME should be the nickname of some launchable"
@@ -144,16 +151,17 @@ NAME should be the nickname of some launchable"
       (
 	 (tester (assoc name emt:xp:foreign:current-testers)))
       (if tester
-	 (emt:xp:foreign:revive-tester tester)
+	 (emt:xp:foreign:revive-tester tester callback closure)
 	 ;; If it doesn't exist, make it.
 	 (let
 	    ((launchable
 		(assoc name emt:xp:foreign:launchables)))
 	    (when launchable
 	       (setq tester 
+		  ;; Encap me.
 		  (list 
 		     name
-		     (emt:xp:foreign:launchable->tq launchable)
+		     (emt:xp:foreign:launchable->tq launchable callback closure)
 		     ;; No timer yet
 		     nil
 		     launchable))
@@ -225,6 +233,8 @@ to a tcp server on another machine."
 			 (error nil))
 		      (tq-queue-pop tq))
 		   (emt:csx:tq:process-buffer tq)))))))))
+
+;;;_  . "enque" will now just send.
 
 ;;;_ , Text to Csexp
 ;;;_  . emt:xp:foreign:read-buffer-csexp-loop
@@ -573,7 +583,10 @@ slot (without ':', which will be added in reading)."
 	    (launchable-name (second test-id))
 	    (how-to-prefix (list (car test-id) launchable-name))
 	    (raw-question (cddr test-id))
-	    (tester (emt:xp:foreign:get-tester launchable-name))
+	    (tester
+	       (emt:xp:foreign:get-tester launchable-name
+		  #'emt:xp:foreign:report-results 
+		  (list how-to-prefix report-f nil)))
 	    (tq (second tester))
 	    (terminating-regex (third tester)))
 
