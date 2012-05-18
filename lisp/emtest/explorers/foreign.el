@@ -94,7 +94,7 @@
    
    "Description of a running foreign tester"
 
-   ;; This will get :type process after we switch over.
+   ;; This will get :type (or null process) after we switch over.
    (proc ()
       
       )
@@ -140,22 +140,32 @@ Each element is of the form \(string . emt:xp:foreign:tester\)." )
 	    "No live process"))
       (emt:csx:tq:create proc callback closure)))
 ;;;_ , emt:xp:foreign:launchable->tq
-;; $$RENAME emt:xp:foreign:launchable->process
-;; $$THIN MY INTERFACE will only require launchable, and set proc.
-(defun emt:xp:foreign:launchable->tq (launchable callback closure)
-   "Make a transaction queue appropriate to LAUNCHABLE"
-   
-   (emt:xp:foreign:make-tq 
-      (second launchable) 
-      (fourth launchable) 
-      "foreign"
-      callback
-      closure))
+;; $$RENAME emt:xp:foreign:launch-tester
+(defun emt:xp:foreign:launchable->tq (tester)
+   "Launch TESTER.
+TESTER must be a emt:xp:foreign:tester."
+
+   ;; Cancel any timer that was running wrt it.  (Even though we
+   ;; don't make timers yet).
+   ;;(when (timerp timer) (cancel-timer timer))   
+   (let*
+      ((launchable
+	  (emt:xp:foreign:tester->launchable tester))
+	 (tq-now-process
+	    (emt:xp:foreign:make-tq 
+	       (second launchable) 
+	       (fourth launchable) 
+	       "foreign"
+	       #'emt:xp:foreign:report-results
+	       tester)))
+      
+      (setf (emt:xp:foreign:tester->proc tester) 
+	 tq-now-process)))
+
 
 
 ;;;_ , emt:xp:foreign:revive-tester
-;; $$THIN MY INTERFACE will only require tester, and set proc.
-(defun emt:xp:foreign:revive-tester (tester callback closure)
+(defun emt:xp:foreign:revive-tester (tester)
    "Make sure the tq of TESTER is alive.
 
 TESTER should be an `emt:xp:foreign:tester'."
@@ -163,11 +173,7 @@ TESTER should be an `emt:xp:foreign:tester'."
       ((tq (emt:xp:foreign:tester->proc tester)))
       (unless
 	 (buffer-live-p (tq-buffer tq))
-	 ;; Cancel any timer that was running wrt it.  (Even though we
-	 ;; don't make timers yet).
-	 (when (timerp timer) (cancel-timer timer))
-	 (setf (emt:xp:foreign:tester->proc tester) 
-	    (emt:xp:foreign:launchable->tq launchable callback closure)))))
+	 (emt:xp:foreign:launchable->tq tester))))
 
 ;;;_ , emt:xp:foreign:get-tester
 
@@ -182,27 +188,21 @@ NAME should be the nickname of some launchable"
 	 (tester (assoc name emt:xp:foreign:current-testers)))
       (if tester
 	 (progn
-	    (emt:xp:foreign:revive-tester tester callback 
-	       tester)
+	    (emt:xp:foreign:revive-tester tester)
 	    tester)
 	 ;; If it doesn't exist, make it.
 	 (let
 	    ((launchable
 		(assoc name emt:xp:foreign:launchables)))
 	    (when launchable
-	       
 	       (let
 		  ((tester 
 		      (emt:xp:foreign:make-tester
-			 ;; :timer nil
+			 ;; We make it with no timer and no proc.
 			 :launchable launchable
 			 :prefix prefix
 			 :report-f report-f)))
-		  ;; $$ MAKE MY INTERFACE NEATER
-		  (setf
-		     (emt:xp:foreign:tester->proc tester)
-		     (emt:xp:foreign:launchable->tq launchable
-			callback tester))
+		  (emt:xp:foreign:launchable->tq tester)
 		  (push (cons name tester) emt:xp:foreign:current-testers)
 		  tester))))))
 
