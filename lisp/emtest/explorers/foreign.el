@@ -89,6 +89,8 @@
 (defvar emt:xp:foreign:current-testers
    '()
    ;; For now, timer is not used.
+   ;; We will add how-to-prefix and report-f
+   ;; This will become the callback data.
    "Alist of current foreign processes.  
 
 Each element is of the form \(name tq timer launchable\)" )
@@ -111,7 +113,7 @@ Each element is of the form \(name tq timer launchable\)" )
 	    0)
 	 (error
 	    "No live process"))
-      (emt:csx:tq:create proc)))
+      (emt:csx:tq:create proc callback closure)))
 ;;;_ , emt:xp:foreign:launchable->tq
 ;; $$RENAME emt:xp:foreign:launchable->process
 (defun emt:xp:foreign:launchable->tq (launchable callback closure)
@@ -180,7 +182,7 @@ NAME should be the nickname of some launchable"
 ;; some answer in the meantime.
 ;;;_ , Overriding parts of tq
 
-(defun emt:csx:tq:create (process)
+(defun emt:csx:tq:create (process callback closure)
   "Create and return a transaction queue communicating with PROCESS.
 PROCESS should be a subprocess capable of sending and receiving
 streams of bytes.  It may be a local process, or it may be connected
@@ -192,19 +194,21 @@ to a tcp server on another machine."
     (buffer-disable-undo (tq-buffer tq))
     (set-process-filter process
 			`(lambda (proc string)
-			   (emt:csx:tq:filter ',tq string)))
+			   (emt:csx:tq:filter ',tq string
+			      ',callback ',closure)))
+     
     tq))
 
-(defun emt:csx:tq:filter (tq string)
+(defun emt:csx:tq:filter (tq string callback closure)
   "Append STRING to the TQ's buffer; then process the new data."
   (let ((buffer (tq-buffer tq)))
     (when (buffer-live-p buffer)
       (with-current-buffer buffer
 	(goto-char (point-max))
 	(insert string)
-	(emt:csx:tq:process-buffer tq)))))
+	(emt:csx:tq:process-buffer tq callback closure)))))
 
-(defun emt:csx:tq:process-buffer (tq)
+(defun emt:csx:tq:process-buffer (tq callback closure)
   "Check TQ's buffer for the regexp at the head of the queue."
   (let ((buffer (tq-buffer tq)))
     (when (buffer-live-p buffer)
@@ -232,7 +236,7 @@ to a tcp server on another machine."
 			    answer)
 			 (error nil))
 		      (tq-queue-pop tq))
-		   (emt:csx:tq:process-buffer tq)))))))))
+		   (emt:csx:tq:process-buffer tq callback closure)))))))))
 
 ;;;_  . "enque" will now just send.
 
