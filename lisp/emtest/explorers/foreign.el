@@ -140,7 +140,7 @@ Each element is of the form \(string . emt:xp:foreign:tester\)." )
 	    "No live process"))
       (emt:csx:tq:create proc callback closure)))
 ;;;_ , emt:xp:foreign:launchable->tq
-;; $$RENAME emt:xp:foreign:launch-tester
+;; $$RENAME emt:xp:foreign:launch-tester or emt:csx:launch-tester
 (defun emt:xp:foreign:launchable->tq (tester)
    "Launch TESTER.
 TESTER must be a emt:xp:foreign:tester."
@@ -249,19 +249,11 @@ to a tcp server on another machine."
   "Check TQ's buffer for the regexp at the head of the queue."
   (let ((buffer (tq-buffer tq)))
     (when (buffer-live-p buffer)
-      (set-buffer buffer)
-      (if (= 0 (buffer-size)) ()
-	(if (tq-queue-empty tq)
-	   (let ((buf (generate-new-buffer "*spurious*")))
-	      (copy-to-buffer buf (point-min) (point-max))
-	      (delete-region (point-min) (point))
-	      (pop-to-buffer buf nil)
-	      (error "Spurious communication from process %s, see buffer %s"
-		 (process-name (tq-process tq))
-		 (buffer-name buf)))
+       (set-buffer buffer)
+       (unless (= 0 (buffer-size))
 	  (goto-char (point-min))
-	   ;; If we didn't read a whole object, we'll throw to here
-	   ;; and not try again until we receive more.
+	  ;; If we didn't read a whole object, we'll throw to here
+	  ;; and not try again until we receive more.
 	  (catch 'emt:xp:foreign:csexp-EOL
 	     (catch 'emt:xp:foreign:csexp-NOTHING
 		(let ((answer (emt:xp:foreign:read-buffer-csexp-single)))
@@ -269,9 +261,8 @@ to a tcp server on another machine."
 		   (unwind-protect
 		      (condition-case nil
 			 (funcall callback closure answer)
-			 (error nil))
-		      (tq-queue-pop tq))
-		   (emt:csx:tq:process-buffer tq callback closure)))))))))
+			 (error nil)))
+		   (emt:csx:tq:process-buffer tq callback closure))))))))
 
 ;;;_  . "enque" will now just send.
 
@@ -636,6 +627,7 @@ slot (without ':', which will be added in reading)."
 	       (emt:xp:foreign:encode-TESTRAL (emt:run:->how
 						 raw-question))
 	       "\n")
+	    ;; All obsolescent
 	    terminating-regex
 	    (list how-to-prefix report-f tester)
 	    #'emt:xp:foreign:report-results t))
