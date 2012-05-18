@@ -180,11 +180,14 @@ TESTER should be an `emt:xp:foreign:tester'."
 (defun emt:xp:foreign:get-tester (name how-to-prefix report-f)
    "Get the tester for name.
 
-NAME should be the nickname of some launchable"
+NAME must be a string, the nickname of some launchable.
+HOW-TO-PREFIX should be a list of symbols.
+REPORT-F must be a function that accepts a TESTRAL suite object and
+reports it."
    
    (let
       (  
-	 (tester (assoc name emt:xp:foreign:current-testers)))
+	 (tester (cdr (assoc name emt:xp:foreign:current-testers))))
       (or tester
 	 ;; If it doesn't exist, make it.
 	 (let
