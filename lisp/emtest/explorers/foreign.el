@@ -92,11 +92,8 @@
 	      (:constructor emt:xp:foreign:make-tester))
    
    "Description of a running foreign tester"
-   (name "Unknown" 
-      :type string
-      :doc  "The name of the launchable used.  See
-`emt:xp:foreign:launchables'")
-   ;; This will get :type process
+
+   ;; This will get :type process after we switch over.
    (proc ()
       
       )
@@ -104,7 +101,7 @@
       :type (or null timer)
       :doc "A timer to shut the process down after inactivity")
    (launchable ()
-      :doc "The launchable itself")
+      :doc "The launchable.  See`emt:xp:foreign:launchables'")
    (prefix ()
       :type emt:run:test-path
       :doc "The prefix to prepend to how-to-run fields when reading input")
@@ -120,7 +117,7 @@
 
    "Alist of current possibly-running foreign testers.
 
-Each element is a emt:xp:foreign:tester, qv." )
+Each element is of the form \(string . emt:xp:foreign:tester\)." )
 
 ;;;_ , emt:xp:foreign:make-tq
 ;; $$RENAME ME emt:xp:foreign:start-process or emt:csx:start-process
@@ -158,26 +155,29 @@ Each element is a emt:xp:foreign:tester, qv." )
 (defun emt:xp:foreign:revive-tester (tester callback closure)
    "Make sure the tq of TESTER is alive.
 
-TESTER should be an element of emt:xp:foreign:current-testers."
-   
-   (destructuring-bind (name tq timer launchable) tester
+TESTER should be an `emt:xp:foreign:tester'."
+   (let
+      ((tq (emt:xp:foreign:tester->proc)))
       (unless
 	 (buffer-live-p (tq-buffer tq))
 	 ;; Cancel any timer that was running wrt it.  (Even though we
 	 ;; don't make timers yet).
 	 (when (timerp timer) (cancel-timer timer))
-	 (setf (second tester) 
+	 (setf (emt:xp:foreign:tester->proc tester) 
 	    (emt:xp:foreign:launchable->tq launchable callback closure)))))
 
 ;;;_ , emt:xp:foreign:get-tester
 
-(defun emt:xp:foreign:get-tester (name callback closure)
+(defun emt:xp:foreign:get-tester (name how-to-prefix report-f)
    "Get the tester for name.
 
 NAME should be the nickname of some launchable"
    
    (let
-      (
+      (  (callback
+	    #'emt:xp:foreign:report-results)
+	 (closure
+	    (list how-to-prefix report-f nil))
 	 (tester (assoc name emt:xp:foreign:current-testers)))
       (if tester
 	 (emt:xp:foreign:revive-tester tester callback closure)
@@ -187,14 +187,15 @@ NAME should be the nickname of some launchable"
 		(assoc name emt:xp:foreign:launchables)))
 	    (when launchable
 	       (setq tester 
-		  ;; Encap me.
-		  (list 
-		     name
+		  (emt:xp:foreign:make-tester
+		     :proc 
 		     (emt:xp:foreign:launchable->tq launchable callback closure)
-		     ;; No timer yet
-		     nil
-		     launchable))
-	       (push tester emt:xp:foreign:current-testers))))
+		     ;; :timer nil
+		     :launchable launchable
+		     :prefix prefix
+		     :report-f report-f
+		     ))
+	       (push (cons name tester) emt:xp:foreign:current-testers))))
       tester))
 
 ;;;_ , Related to stopping it a certain time after last Q.
@@ -613,11 +614,10 @@ slot (without ':', which will be added in reading)."
 	    (how-to-prefix (list (car test-id) launchable-name))
 	    (raw-question (cddr test-id))
 	    (tester
-	       (emt:xp:foreign:get-tester launchable-name
-		  #'emt:xp:foreign:report-results 
-		  (list how-to-prefix report-f nil)))
-	    (tq (second tester))
-	    (terminating-regex (third tester)))
+	       (emt:xp:foreign:get-tester 
+		  launchable-name how-to-prefix report-f))
+	    (tq (emt:xp:foreign:tester->proc tester))
+	    (terminating-regex "Goosefeathers"))
 
 	 (tq-enqueue tq 
 	    (concat
