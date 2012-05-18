@@ -94,10 +94,10 @@
    
    "Description of a running foreign tester"
 
-   ;; This will get :type (or null process) after we switch over.
    (proc ()
-      
-      )
+       :type (or null process)
+      :doc "The process running the foreign tester")
+   
    (timer () 
       :type (or null timer)
       :doc "A timer to shut the process down after inactivity")
@@ -170,9 +170,9 @@ TESTER must be a emt:xp:foreign:tester."
 
 TESTER should be an `emt:xp:foreign:tester'."
    (let
-      ((tq (emt:xp:foreign:tester->proc tester)))
+      ((process (emt:xp:foreign:tester->proc tester)))
       (unless
-	 (buffer-live-p (process-buffer (tq-process tq)))
+	 (buffer-live-p (process-buffer process))
 	 (emt:xp:foreign:launchable->tq tester))))
 
 ;;;_ , emt:xp:foreign:get-tester
@@ -206,10 +206,10 @@ NAME should be the nickname of some launchable"
 		  (push (cons name tester) emt:xp:foreign:current-testers)
 		  tester))))))
 ;;;_ , emt:csx:tq:send
-(defun emt:csx:tq:send (tq question)
-   "An alias for process-send"
+(defun emt:csx:tq:send (process question)
+   "An alias for process-send-string"
 
-   (process-send-string (tq-process tq) question))
+   (process-send-string process question))
 
 ;;;_ , emt:xp:foreign:send-tester-q 
 (defun emt:xp:foreign:send-tester-q (tester question-object)
@@ -240,33 +240,32 @@ QUESTION-OBJECT must be an `emt:run:how'"
 PROCESS should be a subprocess capable of sending and receiving
 streams of bytes.  It may be a local process, or it may be connected
 to a tcp server on another machine."
-  (let* (
-	   (buffer (generate-new-buffer
-		      (concat " emt:csx:tq:temp-"
-			 (process-name process))))
-	   (tq (cons nil (cons process buffer))))
+  (let (
+	  (buffer (generate-new-buffer
+		     (concat " emt:csx:tq:temp-"
+			(process-name process)))))
      
-     (set-process-buffer (tq-process tq) buffer)
-     (buffer-disable-undo (process-buffer (tq-process tq)))
+     (set-process-buffer process buffer)
+     (buffer-disable-undo buffer)
      (set-process-filter process
 	`(lambda (proc string)
-	    (emt:csx:tq:filter ',tq string
+	    (emt:csx:tq:filter proc string
 	       ',callback ',closure)))
      
-     tq))
+     process))
 
-(defun emt:csx:tq:filter (tq string callback closure)
+(defun emt:csx:tq:filter (process string callback closure)
   "Append STRING to the TQ's buffer; then process the new data."
-  (let ((buffer (process-buffer (tq-process tq))))
+  (let ((buffer (process-buffer process)))
     (when (buffer-live-p buffer)
       (with-current-buffer buffer
 	(goto-char (point-max))
 	(insert string)
-	(emt:csx:tq:process-buffer tq callback closure)))))
+	(emt:csx:tq:process-buffer process callback closure)))))
 
-(defun emt:csx:tq:process-buffer (tq callback closure)
-  "Check TQ's buffer for the regexp at the head of the queue."
-  (let ((buffer (process-buffer (tq-process tq))))
+(defun emt:csx:tq:process-buffer (process callback closure)
+  "Check PROCESS's buffer for the regexp at the head of the queue."
+  (let ((buffer (process-buffer process)))
     (when (buffer-live-p buffer)
        (set-buffer buffer)
        (unless (= 0 (buffer-size))
@@ -281,7 +280,7 @@ to a tcp server on another machine."
 		      (condition-case nil
 			 (funcall callback closure answer)
 			 (error nil)))
-		   (emt:csx:tq:process-buffer tq callback closure))))))))
+		   (emt:csx:tq:process-buffer process callback closure))))))))
 
 ;;;_  . "enque" will now just send.
 
