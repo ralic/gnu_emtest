@@ -183,13 +183,9 @@ TESTER should be an `emt:xp:foreign:tester'."
 NAME should be the nickname of some launchable"
    
    (let
-      (  (callback
-	    #'emt:xp:foreign:report-results)
+      (  
 	 (tester (assoc name emt:xp:foreign:current-testers)))
-      (if tester
-	 (progn
-	    (emt:xp:foreign:revive-tester tester)
-	    tester)
+      (or tester
 	 ;; If it doesn't exist, make it.
 	 (let
 	    ((launchable
@@ -202,15 +198,14 @@ NAME should be the nickname of some launchable"
 			 :launchable launchable
 			 :prefix prefix
 			 :report-f report-f)))
-		  (emt:xp:foreign:launchable->tq tester)
 		  (push (cons name tester) emt:xp:foreign:current-testers)
 		  tester))))))
 ;;;_ , emt:xp:foreign:send-tester-q 
 (defun emt:xp:foreign:send-tester-q (tester question-object)
    "Send QUESTION-OBJECT to TESTER.
 QUESTION-OBJECT must be an `emt:run:how'"
-   
-   ;; $$Move the reviving into here.
+
+   (emt:xp:foreign:revive-tester tester)
    (emt:csx:tq:send
       (emt:xp:foreign:tester->proc tester)
       (concat
@@ -227,7 +222,7 @@ QUESTION-OBJECT must be an `emt:run:how'"
 
 ;; Timer should just check tq every so often, and check that it got
 ;; some answer in the meantime.
-;;;_ , Overriding parts of tq
+;;;_ , Make and manage an object-reading process
 
 (defun emt:csx:tq:create (process callback closure)
   "Create and return a transaction queue communicating with PROCESS.
