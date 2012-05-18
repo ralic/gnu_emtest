@@ -622,15 +622,14 @@ slot (without ':', which will be added in reading)."
 	    (tq (emt:xp:foreign:tester->proc tester))
 	    (terminating-regex "Goosefeathers"))
 
-	 (tq-enqueue tq 
+	 ;; $$ENCAP ME
+	 (process-send-string 
+	    (tq-process tq) 
 	    (concat
 	       (emt:xp:foreign:encode-TESTRAL (emt:run:->how
 						 raw-question))
-	       "\n")
-	    ;; All obsolescent
-	    terminating-regex
-	    (list how-to-prefix report-f tester)
-	    #'emt:xp:foreign:report-results t))
+	       "\n")))
+      
       
       
 
