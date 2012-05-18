@@ -183,7 +183,7 @@ NAME should be the nickname of some launchable"
       (if tester
 	 (progn
 	    (emt:xp:foreign:revive-tester tester callback 
-	       (list how-to-prefix report-f tester))
+	       tester)
 	    tester)
 	 ;; If it doesn't exist, make it.
 	 (let
@@ -202,8 +202,7 @@ NAME should be the nickname of some launchable"
 		  (setf
 		     (emt:xp:foreign:tester->proc tester)
 		     (emt:xp:foreign:launchable->tq launchable
-			callback
-			(list how-to-prefix report-f tester)))
+			callback tester))
 		  (push (cons name tester) emt:xp:foreign:current-testers)
 		  tester))))))
 
@@ -569,53 +568,52 @@ slot (without ':', which will be added in reading)."
 
 ;;;_ , The explorer proper
 ;;;_  . emt:xp:foreign:report-results
-(defun emt:xp:foreign:report-results (passed-object stringtree)
+(defun emt:xp:foreign:report-results (tester stringtree)
    "Report the results when we get an answer"
-   
-   (destructuring-bind
-      (*how-to-prefix* report-f tester) passed-object
-      (funcall (emt:xp:foreign:tester->report-f tester)
-	 (let*
-	    ((object 
-		(let
-		   ((*how-to-prefix* 
-		       (emt:xp:foreign:tester->prefix tester)))
-		   (emt:xp:foreign:stringtree->object stringtree))))
-	    ;; Suite returns are passed to the viewer, in a report
-	    ;; that our caller fills out from this info (testrun-id,
-	    ;; newly-pending).  In the future, other types of return
-	    ;; could be accepted just informationally: "goodbye",
-	    ;; "tester-info".
+   (funcall (emt:xp:foreign:tester->report-f tester)
+      (let*
+	 ((object 
+	     (let
+		((*how-to-prefix* 
+		    (emt:xp:foreign:tester->prefix tester)))
+		(emt:xp:foreign:stringtree->object stringtree))))
 
-	    (if
-	       (emt:testral:suite-p object)
-	       object
-	       (emt:testral:make-suite
-		  :contents
-		  (emt:testral:make-note-list
-		     :notes 
-		     (list
-			(emt:testral:make-note
-			   :id 	"0"
-			   :parent-id nil
-			   :grade     'failed
-			   :relation 'trace
-			   :governor 'error-raised
-			   :value    (list
-					"Got a non-suite answer"))
-			(emt:testral:make-note
-			   :id 	"0"
-			   :parent-id nil
-			   :grade     nil
-			   :relation 'trace
-			   :governor 'parameter
-			   :value    (list
-					"Response"
-					stringtree))
-			))
-		  :grade 'blowout)))
-	 ;; Could schedule any tests a suite returns, depending on a flag.
-	 '())))
+	 ;; Suite returns are passed to the viewer, in a report
+	 ;; that our caller fills out from this info (testrun-id,
+	 ;; newly-pending).  In the future, other types of return
+	 ;; could be accepted just informationally: "goodbye",
+	 ;; "tester-info".  But now that we're async, we may be
+	 ;; passing more around.
+
+	 (if
+	    (emt:testral:suite-p object)
+	    object
+	    (emt:testral:make-suite
+	       :contents
+	       (emt:testral:make-note-list
+		  :notes 
+		  (list
+		     (emt:testral:make-note
+			:id 	"0"
+			:parent-id nil
+			:grade     'failed
+			:relation 'trace
+			:governor 'error-raised
+			:value    (list
+				     "Got a non-suite answer"))
+		     (emt:testral:make-note
+			:id 	"0"
+			:parent-id nil
+			:grade     nil
+			:relation 'trace
+			:governor 'parameter
+			:value    (list
+				     "Response"
+				     stringtree))
+		     ))
+	       :grade 'blowout)))
+      ;; Could schedule any tests a suite returns, depending on a flag.
+      '()))
 
 ;;;_  . emt:xp:foreign
 ;;;###autoload
