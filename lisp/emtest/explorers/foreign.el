@@ -132,12 +132,13 @@ Each element is of the form \(string . emt:xp:foreign:tester\)." )
 		#'start-process)
 	     proc-base-name nil exec+args)))
       (unless
-	 ;;0 status means a live process
+	 ;;0 status means a live process.  But that doesn't seem to
+	 ;;work as advertised.
 	 (equal
 	    (process-exit-status proc)
 	    0)
 	 (error
-	    "No live process"))
+	    "Could not start a process for %s" exec+args))
       (emt:csx:tq:create proc callback closure)))
 ;;;_ , emt:xp:foreign:launchable->tq
 ;; $$RENAME emt:xp:foreign:launch-tester or emt:csx:launch-tester
@@ -171,9 +172,14 @@ TESTER must be a emt:xp:foreign:tester."
 TESTER should be an `emt:xp:foreign:tester'."
    (let
       ((process (emt:xp:foreign:tester->proc tester)))
+      ;; Launchables might flag whether to restart it - for now,
+      ;; assume yes.
       (unless
 	 (and 
 	    process
+	    (memq 
+	       (process-status process)
+	       '(run open listen))
 	    (buffer-live-p (process-buffer process)))
 	 (emt:xp:foreign:launchable->tq tester))))
 
@@ -629,6 +635,7 @@ slot (without ':', which will be added in reading)."
 (defun emt:xp:foreign (test-id props-unused path report-f)
    ""
    (if (cdr test-id)
+      ;; $$IMPROVE ME Turn errors here into reports.
       (let* 
 	 (
 	    (launchable-name (second test-id))
