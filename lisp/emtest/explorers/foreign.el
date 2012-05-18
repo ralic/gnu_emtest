@@ -84,16 +84,39 @@
    
    :group 'emtest)
 
+;;;_ , Structure
+
+(defstruct emt:xp:foreign:tester
+   "Description of a running foreign tester"
+   (name "Unknown" 
+      :type string
+      :doc  "The name of the launchable used.  See
+`emt:xp:foreign:launchables'")
+   ;; This will get :type process
+   (proc ()
+      
+      )
+   (timer () 
+      :type (or null timer)
+      :doc "A timer to shut the process down after inactivity")
+   (launchable ()
+      :doc "The launchable itself")
+   (prefix ()
+      :type emt:run:test-path
+      :doc "The prefix to prepend to how-to-run fields when reading input")
+   (report-f #'ignore
+      :type function
+      :doc "The function that is to report the results"))
+
 
 ;;;_ , Alist of foreign testers currently running
 (defvar emt:xp:foreign:current-testers
    '()
    ;; For now, timer is not used.
-   ;; We will add how-to-prefix and report-f
-   ;; This will become the callback data.
-   "Alist of current foreign processes.  
 
-Each element is of the form \(name tq timer launchable\)" )
+   "Alist of current possibly-running foreign testers.
+
+Each element is a emt:xp:foreign:tester, qv." )
 
 ;;;_ , emt:xp:foreign:make-tq
 ;; $$RENAME ME emt:xp:foreign:start-process or emt:csx:start-process
@@ -231,9 +254,7 @@ to a tcp server on another machine."
 		   (delete-region (point-min) (point))
 		   (unwind-protect
 		      (condition-case nil
-			 (funcall (tq-queue-head-fn tq)
-			    (tq-queue-head-closure tq)
-			    answer)
+			 (funcall callback closure answer)
 			 (error nil))
 		      (tq-queue-pop tq))
 		   (emt:csx:tq:process-buffer tq callback closure)))))))))
