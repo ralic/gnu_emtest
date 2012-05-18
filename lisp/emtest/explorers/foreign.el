@@ -60,6 +60,7 @@
 		   :value ""
 		   :tag "arg"
 		   :help-echo "An argument when invoking the executable")))
+	  ;; $$OBSOLETE
 	  (string
 	     :value "EndOfAnswer"
 	     :tag "terminating regex"
@@ -140,6 +141,7 @@ Each element is of the form \(string . emt:xp:foreign:tester\)." )
       (emt:csx:tq:create proc callback closure)))
 ;;;_ , emt:xp:foreign:launchable->tq
 ;; $$RENAME emt:xp:foreign:launchable->process
+;; $$THIN MY INTERFACE will only require launchable, and set proc.
 (defun emt:xp:foreign:launchable->tq (launchable callback closure)
    "Make a transaction queue appropriate to LAUNCHABLE"
    
@@ -152,12 +154,13 @@ Each element is of the form \(string . emt:xp:foreign:tester\)." )
 
 
 ;;;_ , emt:xp:foreign:revive-tester
+;; $$THIN MY INTERFACE will only require tester, and set proc.
 (defun emt:xp:foreign:revive-tester (tester callback closure)
    "Make sure the tq of TESTER is alive.
 
 TESTER should be an `emt:xp:foreign:tester'."
    (let
-      ((tq (emt:xp:foreign:tester->proc)))
+      ((tq (emt:xp:foreign:tester->proc tester)))
       (unless
 	 (buffer-live-p (tq-buffer tq))
 	 ;; Cancel any timer that was running wrt it.  (Even though we
@@ -176,27 +179,34 @@ NAME should be the nickname of some launchable"
    (let
       (  (callback
 	    #'emt:xp:foreign:report-results)
-	 (closure
-	    (list how-to-prefix report-f nil))
 	 (tester (assoc name emt:xp:foreign:current-testers)))
       (if tester
-	 (emt:xp:foreign:revive-tester tester callback closure)
+	 (progn
+	    (emt:xp:foreign:revive-tester tester callback 
+	       (list how-to-prefix report-f tester))
+	    tester)
 	 ;; If it doesn't exist, make it.
 	 (let
 	    ((launchable
 		(assoc name emt:xp:foreign:launchables)))
 	    (when launchable
-	       (setq tester 
-		  (emt:xp:foreign:make-tester
-		     :proc 
-		     (emt:xp:foreign:launchable->tq launchable callback closure)
-		     ;; :timer nil
-		     :launchable launchable
-		     :prefix prefix
-		     :report-f report-f
-		     ))
-	       (push (cons name tester) emt:xp:foreign:current-testers))))
-      tester))
+	       
+	       (let
+		  ((tester 
+		      (emt:xp:foreign:make-tester
+			 ;; :timer nil
+			 :launchable launchable
+			 :prefix prefix
+			 :report-f report-f)))
+		  ;; $$ MAKE MY INTERFACE NEATER
+		  (setf
+		     (emt:xp:foreign:tester->proc tester)
+		     (emt:xp:foreign:launchable->tq launchable
+			callback
+			(list how-to-prefix report-f tester)))
+		  (push (cons name tester) emt:xp:foreign:current-testers)
+		  tester))))))
+
 
 ;;;_ , Related to stopping it a certain time after last Q.
 
@@ -564,9 +574,13 @@ slot (without ':', which will be added in reading)."
    
    (destructuring-bind
       (*how-to-prefix* report-f tester) passed-object
-      (funcall report-f
-	 (let
-	    ((object (emt:xp:foreign:stringtree->object stringtree)))
+      (funcall (emt:xp:foreign:tester->report-f tester)
+	 (let*
+	    ((object 
+		(let
+		   ((*how-to-prefix* 
+		       (emt:xp:foreign:tester->prefix tester)))
+		   (emt:xp:foreign:stringtree->object stringtree))))
 	    ;; Suite returns are passed to the viewer, in a report
 	    ;; that our caller fills out from this info (testrun-id,
 	    ;; newly-pending).  In the future, other types of return
