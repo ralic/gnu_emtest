@@ -322,7 +322,7 @@ Must be called in a `utidyv:top' context."
 	    (emt:fmt:grade-overall-face grades))
 	 (grades-sum
 	    (emt:fmt:sum-grades-short grades))
-	 (boring-p 
+	 (grades-boring-p 
 	    (emt:fmt:grade-boring grades)))
       
       (etypecase suite
@@ -332,7 +332,12 @@ Must be called in a `utidyv:top' context."
 		  (object
 		     (emt:view:suite->result suite))
 		  (explorable
-		     (emt:view:suite->explorable suite)))
+		     (emt:view:suite->explorable suite))
+		  (boring-p
+		     (and 
+			grades-boring-p
+			(not (emt:view:suite->mark suite)))))
+	       
 	       (etypecase object
 		  (null "A null viewable")
 		  (emt:testral:suite
