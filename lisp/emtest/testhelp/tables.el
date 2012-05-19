@@ -45,8 +45,17 @@
    ;; knowing the row)
    rows)
 
+;;;_ , Constant
 (defconst emt:tab:N/A (list) 
    "Symbol provided to mean `no entry'." )
+
+;;;_ , emt:tab:table helpers
+(defun emt:tab:sym->index (table sym)
+   ""
+   (let
+      ((cell (assq sym (emt:tab:table->sym-alist table))))
+      (when cell (cdr cell))))
+
 (defun emt:tab:--set-rows-to-self (table)
    ""
    (mapcar
@@ -55,13 +64,12 @@
 	      (aref row 1)
 	      table))
       (emt:tab:table->rows table)))
-
-(defun emt:tab:sym->index (table sym)
+;;;_ , Row helpers
+(defsubst emt:tab:row->table (row)
    ""
-   (let
-      ((cell (assq sym (emt:tab:table->sym-alist table))))
-      (when cell (cdr cell))))
+   (aref row 1))
 
+;;;_ , Building a table
 
 (defmacro emt:tab:make (docstring definition &rest rows)
    "Define a table of type `emt:tab:table'"
@@ -120,32 +128,24 @@
 	       (emt:tab:--set-rows-to-self table)
 	       table))))
 
-(defun emt:tab (x &rest args)
-   ""
-   (destructuring-bind
-      (table row name)
-      (etypecase x
-	 (emt:tab:table
-	    (list
-	       x
-	       (car args)
-	       (cadr args)))
-	 
-	 
-	 
-	 )
+;;;_ , Accessing a table
 
-      )
-   ;; If we got a table, args are primary key value and column-tag,
-   ;; but if we got a row, arg is column-tag and we get table from
-   ;; row.
+(defun emt:tab (row sym)
+   "Return the column of ROW corresponding to SYM.
+
+ROW must be a row of a table made by `emttab:make'"
    (let*
-      ()
-      
-      ))
+      ((table (emt:tab:row->table row))
+	(index (emt:tab:sym->index table sym)))
+      (if index
+	 (aref row index)
+	 (error "No such column label: %s" sym))))
+
+
+;;;_ , emt:tab:for-each-row
 
 (defmacro emt:tab:for-each-row (table var-sym &rest body)
-   ""
+   "Evaluate BODY once for each row of TABLE with VAR-SYM bound to the row."
 
    (let*
       ()
