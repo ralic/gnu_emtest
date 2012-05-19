@@ -77,11 +77,16 @@
    ;; For now, slot is exactly a symbol.  Later it can allow
    ;; defaults and initialization forms.
 
-   ;; Also allow the keys:
-   ;; :no-define: it's just a constructed aux& argument
-   ;; :persist-id: like :no-define but define the slot as persisting.
+   ;; $$TODO Also allow the slot keys:
+   ;; :default A default value if value isn't given.  This is BOA.
+   ;; :no-define: can't be passed, it's a constructed aux& argument
+   ;; :persist-id: like :no-define but define the slot as persisting,
+   ;; wrt the field labelled as primary-key
    ;; :primary-key which will be used by persist-id and should be
-   ;; unique (unenforced)
+   ;; unique (unenforced).  Eventually we may allow selecting rows by
+   ;; it (emt:tab:row-by-name)
+
+
    ;; Process slot definitions, creating various list objects.
    (destructuring-bind (sym-alist proc-args proc-body)
       (loop
@@ -153,42 +158,6 @@ ROW must be a row of a table made by `emttab:make'"
 	       ,@body)))
       
       `(mapcar ,lam (emt:tab:table->rows table))))
-
-
-(emt:deftest-3
-   ((of 'emt:tab:make))
-   (nil
-      (let
-	 ((table
-	     (emt:tab:make
-		"My table of data for my test"
-		(input result)
-		("Trivial example" :input 0 :result 0)
-		("More complex example" :input 10 :result 20))))
-	 (emt:doc "Situation: We have a table.  We look at it in
-   various ways.")
-
-	 (emt:doc "Operation: Loop thru it.")
-	 (emt:tab:for-each-row table i
-	    (emt:doc "Check: Value is one of ours.")
-	    (emt:assert
-	       (member
-		  (emt:tab i 'input)
-		  '(0 10)))
-	    (emt:assert
-	       (member
-		  (emt:tab i 'result)
-		  '(0 20)))
-	    (emt:doc "Operation: Use the values in a little test.")
-	    (emt:doc "Result: the values correspond within rows")
-	    (emt:assert
-	       (equal
-		  (* 2 (emt:tab i 'input))
-		  (emt:tab i 'result))))
-	 
-
-	 )))
-
 
 ;;;_. Footers
 ;;;_ , Provides
