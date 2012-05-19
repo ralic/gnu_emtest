@@ -165,20 +165,29 @@ which may not imply success of an assertion."
 (defun emt:fmt:button-explore-func (button)
    "Explore explorable, given BUTTON."
    ;;$$IMPROVE ME Distinguish proplists we want to use.
-   (emt:lch:run
-      ;; emt:lch:run wants just the contents, not the whole object.
-      (emt:run:how->contents
-	 (button-get button 'how-to-run))
-      emt:lch:proplist:vanilla
-      (button-get button 'prestn-path)))
+   (let
+      ((viewable
+	  (button-get button 'viewable)))
+      ;; Set the mark on viewable because user probably wants to see
+      ;; the results.
+      (if (emt:view:suite-p viewable)
+	 (setf (emt:view:suite->mark viewable) t))
+      ;; Run it.
+      (emt:lch:run
+	 ;; emt:lch:run wants just the contents, not the whole object.
+	 (emt:run:how->contents
+	    (button-get button 'how-to-run))
+	 emt:lch:proplist:vanilla
+	 (button-get button 'prestn-path))))
 
 ;;;_   , emt:fmt:button-to-explore
-(defun emt:fmt:button-to-explore (explorable text)
+(defun emt:fmt:button-to-explore (viewable explorable text)
    "Make a button to explore EXPLORABLE."
    (when explorable
       `(button ,text 
 	  action ,#'emt:fmt:button-explore-func
 	  help-echo "Rerun this test"
+	  viewable ,viewable
 	  how-to-run  ,(emt:run:explorable->how-to-run  explorable)
 	  prestn-path ,(emt:run:explorable->prestn-path explorable))))
 ;;;_   , emt:fmt:viewable->mark-text
@@ -343,16 +352,15 @@ Must be called in a `utidyv:top' context."
 			      (list
 				 (emt:fmt:button-toggle-mark view-node)
 				 (emt:fmt:sym->suitename name)
-				 (emt:fmt:button-to-explore explorable "[RUN]")
+				 (emt:fmt:button-to-explore 
+				    view-node explorable "[RUN]")
 				 grades-sum))
 			   " ")
 			(emt:fmt:mapnodes children "No child suites")
 			grade-face
 			boring-p)))))
 	 (emt:view:explorable
-	    (emt:vw:explorable
-	       (emt:view:explorable->contents view-node)
-	       name))
+	    (emt:vw:explorable view-node name))
 	 
 	 (emt:view:note
 	    (emt:vw:note view-node))
@@ -399,7 +407,9 @@ OBJ must be a TESTRAL viewable (`emt:view:note')."
       (list 
 	 (emt:fmt:sym->suitename name)
 	 " "
-	 (emt:fmt:button-to-explore obj "[RUN]"))
+	 (emt:fmt:button-to-explore obj 
+	    (emt:view:explorable->contents obj)
+	    "[RUN]"))
       nil
       'emt:view:face:dormant))
 
