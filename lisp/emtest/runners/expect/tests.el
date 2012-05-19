@@ -36,9 +36,9 @@
 (defconst emtest/runners/expect:th:surrounders 
    '()
    "The normal surrounders for emtest/runners/expect tests" )
-;;;_ , emtr:expect
+;;;_ , emt:xp:expect:expect
 (emt:deftest-3
-   ((of 'emtr:expect))
+   ((of 'emt:xp:expect:expect))
    ;;A simple test, which should just pass.
 
    (expect ;;The governor.

@@ -179,7 +179,7 @@ WHAT-TO-RUN is a list of symbols and strings, not an emt:run:how."
 	    :properties  '()))
       (or testrun-id
 	 (prin1-to-string (incf emt:lch:testrun-counter)))
-      (or receiver emtl:receiver-f)
+      (or receiver emt:top:receiver-f)
       props))
 ;;;_  . emt:lch:run-explist
 ;;$$WRITE ME

@@ -42,9 +42,9 @@
 ;;;_ , Structures
 ;;Other data may be added here, such as for variables that cases
 ;;carry around.
-(defstruct (emtr:expect-data
-	      (:conc-name emtr:expect-data->)
-	      (:constructor emtr:make-expect-data))
+(defstruct (emt:xp:expect:data
+	      (:conc-name emt:xp:expect:data->)
+	      (:constructor emt:xp:expect:make-expect-data))
    "Data telling us how to run the interaction sequence"
    tq
    report-f
@@ -56,51 +56,51 @@
       "The parent note id of the current interaction")
    append-newline)
 
-;;;_  . emtr:interact-predata
-(defstruct (emtr:interact-predata
-	      (:conc-name emtr:interact-predata->)
-	      (:constructor emtr:make-interact-predata))
+;;;_  . emt:xp:expect:interact-predata
+(defstruct (emt:xp:expect:interact-predata
+	      (:conc-name emt:xp:expect:interact-predata->)
+	      (:constructor emt:xp:expect:make-interact-predata))
    "Data telling us how to run one interaction"
    question
    form
    timeout)
 ;;;_ , Configuration
-(defconst emtr:expect-max-running 1
+(defconst emt:xp:expect:max-running 1
    "Maximum number of expect interactions allowed to run at once" )
 ;;;_ , Variables
 
-(defvar emtr:expect-num-running 0 
+(defvar emt:xp:expect:num-running 0 
    "Number of expect interactions currently running" )
-(defvar emtr:expect-queue '()
+(defvar emt:xp:expect:queue '()
    "Queue of expect interactions that are waiting till something finishes" )
 
 ;;;_ , Utility
-;;;_  . emtr:with-testral
-(defmacro emtr:with-testral (obj &rest body)
+;;;_  . emt:xp:expect:with-testral
+(defmacro emt:xp:expect:with-testral (obj &rest body)
    "Evaluate BODY in a testral context defined by OBJ.
-OBJ must evaluate to an `emtr:expect-data'."
+OBJ must evaluate to an `emt:xp:expect:data'."
    
    `(emtt:testral:continued-with
-      (emtr:expect-data->testral-obj ,obj)
+      (emt:xp:expect:data->testral-obj ,obj)
       ,@body))
 
 ;;;_ , Support
-;;;_  . emtr:expect-cb
-(defun emtr:expect-cb (data raw-answer)
+;;;_  . emt:xp:expect:cb
+(defun emt:xp:expect:cb (data raw-answer)
    "Callback for tq-enqueue"
    (when (first data)
       (emtt:testral:continued-with (second data)
 	 (emth:protect&trap
 	    aborted-p
 	    (emtt:testral:with-parent-id
-	       (emtr:expect-data->interaction-id (third data))
+	       (emt:xp:expect:data->interaction-id (third data))
 	       (let*
 		  (  (endpos
 			(progn
 			   (string-match 
 			      (concat 
 				 (regexp-quote 
-				    (emtr:expect-data->prompt 
+				    (emt:xp:expect:data->prompt 
 				       (third data)))
 				 "$")
 			      raw-answer)
@@ -116,14 +116,14 @@ OBJ must evaluate to an `emtr:expect-data'."
 
    (ignore-errors
       (cancel-timer
-	 (emtr:expect-data->timer (third data))))
-   (emtr:expect-start-next (third data)))
+	 (emt:xp:expect:data->timer (third data))))
+   (emt:xp:expect:start-next (third data)))
 
-;;;_  . emtr:expect-timer-cb
-(defun emtr:expect-timer-cb (data question)
+;;;_  . emt:xp:expect:timer-cb
+(defun emt:xp:expect:timer-cb (data question)
    ""
    (ignore-errors
-      (emtr:with-testral data
+      (emt:xp:expect:with-testral data
 	 (emtt:testral:add-note
 	    "problem"
 	    'ungraded
@@ -131,42 +131,42 @@ OBJ must evaluate to an `emtr:expect-data'."
 	    '(timeout))))
    
    ;;Pop tq
-   (tq-queue-pop (emtr:expect-data->tq data))
+   (tq-queue-pop (emt:xp:expect:data->tq data))
 
-   ;;$$IMPROVE ME  Optionally start another. `emtr:expect-start-next'
-   (emtr:expect-done data))
+   ;;$$IMPROVE ME  Optionally start another. `emt:xp:expect:start-next'
+   (emt:xp:expect:done data))
 
-;;;_  . emtr:expect-done
-(defun emtr:expect-done (data)
+;;;_  . emt:xp:expect:done
+(defun emt:xp:expect:done (data)
    "Finish an expect session"
    
-   (decf emtr:expect-num-running)
+   (decf emt:xp:expect:num-running)
    ;;Report results
-   (funcall (emtr:expect-data->report-f data)
+   (funcall (emt:xp:expect:data->report-f data)
       (emt:testral:make-suite
 	 :contents
-	 (emtr:with-testral data
+	 (emt:xp:expect:with-testral data
 	    (emtt:testral:note-list))
 	 :grade 'test-case))
    ;;Close tq
-   (tq-close (emtr:expect-data->tq data))
-   (when emtr:expect-queue
+   (tq-close (emt:xp:expect:data->tq data))
+   (when emt:xp:expect:queue
       (let
-	 ((args (pop emtr:expect-queue)))
-	 (apply #'emtr:expect args))))
+	 ((args (pop emt:xp:expect:queue)))
+	 (apply #'emt:xp:expect:expect args))))
 
-;;;_  . emtr:expect-start-next
-(defun emtr:expect-start-next (data)
+;;;_  . emt:xp:expect:start-next
+(defun emt:xp:expect:start-next (data)
    ""
    
    (if
-      (emtr:expect-data->pending data)
+      (emt:xp:expect:data->pending data)
       (let
 	 ((next
-	     (pop (emtr:expect-data->pending data)))
+	     (pop (emt:xp:expect:data->pending data)))
 	    timer)
 	 (ignore-errors
-	    (emtr:with-testral data
+	    (emt:xp:expect:with-testral data
 	       (let* 
 		  ((id (emtt:testral:new-id)))
 		  ;;Make a scope note for the next interaction
@@ -178,48 +178,48 @@ OBJ must evaluate to an `emtr:expect-data'."
 		     (emtt:testral:add-note "param" nil
 			'parameter
 			'question
-			(emtr:interact-predata->question next)))
+			(emt:xp:expect:interact-predata->question next)))
 		  ;;Store its parent note id
-		  (setf (emtr:expect-data->interaction-id data) id))))
+		  (setf (emt:xp:expect:data->interaction-id data) id))))
 	 
 	 ;;$$ENCAP ME.
 	 (setf
-	    (emtr:expect-data->timer data)
+	    (emt:xp:expect:data->timer data)
 	    (run-at-time 
-	       (emtr:interact-predata->timeout next)
+	       (emt:xp:expect:interact-predata->timeout next)
 	       nil
-	       #'emtr:expect-timer-cb
+	       #'emt:xp:expect:timer-cb
 	       data
-	       (emtr:interact-predata->question next)))
+	       (emt:xp:expect:interact-predata->question next)))
 
-	 (tq-enqueue (emtr:expect-data->tq data)
+	 (tq-enqueue (emt:xp:expect:data->tq data)
 	    (let
-	       ((ques (emtr:interact-predata->question next)))
-	       (if (emtr:expect-data->append-newline data)
+	       ((ques (emt:xp:expect:interact-predata->question next)))
+	       (if (emt:xp:expect:data->append-newline data)
 		  (concat ques "\n")
 		  ques))
-	    (emtr:expect-data->prompt data)
+	    (emt:xp:expect:data->prompt data)
 	    (list 
-	       (emtr:interact-predata->form next) 
-	       (emtr:expect-data->testral-obj data)
+	       (emt:xp:expect:interact-predata->form next) 
+	       (emt:xp:expect:data->testral-obj data)
 	       data)
-	    #'emtr:expect-cb
+	    #'emt:xp:expect:cb
 	    nil))
       
       ;;Otherwise we're done.
-      (emtr:expect-done data)))
+      (emt:xp:expect:done data)))
 
 
 
 
-;;;_  . emtr:expect-form->predata
-(defun emtr:expect-form->predata (form)
-   "Return an `emtr:interact-predata' made from FORM.
+;;;_  . emt:xp:expect:form->predata
+(defun emt:xp:expect:form->predata (form)
+   "Return an `emt:xp:expect:interact-predata' made from FORM.
 If impossible, return nil instead"
    (declare (special timeout))
    (case (car form)
       ((t)
-	 (emtr:make-interact-predata
+	 (emt:xp:expect:make-interact-predata
 	    :question (second form)
 	    :form 
 	    (let* 
@@ -248,13 +248,13 @@ If impossible, return nil instead"
 
 
 ;;;_ , Entry point (for clause explorer)
-;;;_  . emtr:expect
+;;;_  . emt:xp:expect:expect
 ;;;###autoload
-(defun emtr:expect (props form report-f)
+(defun emt:xp:expect:expect (props form report-f)
    "Run a test-case on external program and report the result."
    (if
-      (>= emtr:expect-num-running emtr:expect-max-running)
-      (push (list props form report-f) emtr:expect-queue)
+      (>= emt:xp:expect:num-running emt:xp:expect:max-running)
+      (push (list props form report-f) emt:xp:expect:queue)
       (let
 	 ((con
 	     (emtt:testral:make-continuing props)))
@@ -268,19 +268,19 @@ If impossible, return nil instead"
 			   (second (assq 'exec+args form-parms))))
 		     (dummy
 			(when (null exec+args)
-			   (error "emtr:expect: no exec+args given")))
+			   (error "emt:xp:expect:expect: no exec+args given")))
 		     (dummy
 			(when (not (stringp (car exec+args)))
-			   (error "emtr:expect: exec is not a string")))
+			   (error "emt:xp:expect:expect: exec is not a string")))
 		     (dummy
 			(when (not (file-name-absolute-p (car exec+args)))
-			   (error "emtr:expect: path to exec is not absolute")))
+			   (error "emt:xp:expect:expect: path to exec is not absolute")))
 		     (prompt
 			(eval
 			   (second (assq 'prompt    form-parms))))
 		     (dummy
 			(when (null prompt)
-			   (error "emtr:expect: no prompt set")))
+			   (error "emt:xp:expect:expect: no prompt set")))
 		     (shell
 			;;Defaults to nil
 			(eval
@@ -304,7 +304,7 @@ If impossible, return nil instead"
 			      (process-exit-status proc)
 			      0)
 			   (error
-			      "emtr:expect: No live process")))
+			      "emt:xp:expect:expect: No live process")))
 		     (tq
 			(tq-create proc))
 		     
@@ -312,10 +312,10 @@ If impossible, return nil instead"
 			(emtt:testral:continued-with con
 			   (delq nil
 			      (mapcar
-				 #'emtr:expect-form->predata
+				 #'emt:xp:expect:form->predata
 				 (cdr form)))))
 		     (data
-			(emtr:make-expect-data
+			(emt:xp:expect:make-expect-data
 			   :tq tq
 			   :report-f report-f
 			   ;;Timer is not set now, it will be set when we
@@ -331,8 +331,8 @@ If impossible, return nil instead"
 		  
 	       
 		  ;;Start the testing
-		  (incf emtr:expect-num-running)
-		  (emtr:expect-start-next data)))
+		  (incf emt:xp:expect:num-running)
+		  (emt:xp:expect:start-next data)))
 	 
 	    (when err
 	       (funcall report-f
@@ -352,7 +352,7 @@ If impossible, return nil instead"
 
 ;;;_ , Register it
 ;;;###autoload (eval-after-load 'emtest/main/all-runners
-;;;###autoload '(emt:runner:add 'expect #'emtr:expect
+;;;###autoload '(emt:runner:add 'expect #'emt:xp:expect:expect
 ;;;###autoload   "Expect script runner"))
 
 ;;;_. Footers

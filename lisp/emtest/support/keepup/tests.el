@@ -51,8 +51,8 @@
 	       (eq bar 'old-value))
 	    (emt:doc "Operation: Redefine function `foo'.")
 	    (defun foo () 'new-value)
-	    (emt:doc "Operation: Call emtd:update-for-sym manually.")
-	    (emtd:update-for-sym 'foo)
+	    (emt:doc "Operation: Call emt:def:update-for-sym manually.")
+	    (emt:def:update-for-sym 'foo)
 	    (emt:doc "Result: bar now has the new value.")
 	    (emt:assert
 	       (eq bar 'new-value))))))
@@ -60,8 +60,8 @@
 ;;;_ , emt:keep-up-to-date-x
 (put 'emt:keep-up-to-date-x 'emt:test-thru
    'emt:keep-up-to-date)
-;;;_ , emtd:update-for-sym
-(put 'emtd:update-for-sym 'emt:test-thru
+;;;_ , emt:def:update-for-sym
+(put 'emt:def:update-for-sym 'emt:test-thru
    'emt:keep-up-to-date)
 
 

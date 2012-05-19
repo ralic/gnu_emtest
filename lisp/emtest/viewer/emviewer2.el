@@ -55,7 +55,7 @@
 (defun emt:vw:top:pathtree-cb (obj tree)
    "Callback to handle dirty flags, that `pathree' gets."
    (check-type obj emt:view:presentable)
-   (check-type tree emtvp)
+   (check-type tree pathtree)
 
    (pathtree:util:handle-dirty obj
       (cond
@@ -133,13 +133,13 @@
 	 emt:vw:top:report-buffer 
 	 (generate-new-buffer
 	    emt:vw:top:report-buffer-name)))
-   (emtvo:setup-if-needed #'emt:vw:top:pathtree-cb #'ignore))
+   (emt:vw:og:setup-if-needed #'emt:vw:top:pathtree-cb #'ignore))
 
 ;;;_ , Static printing functions
 ;;;_  . emt:vw:top:print-all
 (defun emt:vw:top:print-all (top-node)
    "Format and print the whole report."
-   (pathtree:freshen emtvo:pathtree)
+   (pathtree:freshen emt:vw:og:pathtree)
    (with-current-buffer emt:vw:top:report-buffer
       (let
 	 ((inhibit-read-only t))
@@ -174,7 +174,7 @@
    ""
    (check-type report emt:testral:report)
    (emt:vw:top:setup-if-needed)
-   (emtvo:receive report)
+   (emt:vw:og:receive report)
    (incf emt:vw:top:tests-outstanding
       (-
 	 (emt:testral:report->newly-pending report)
@@ -183,7 +183,7 @@
    
    (when
       (equal emt:vw:top:tests-outstanding 0)
-      (emt:vw:top:print-all (emtvo:get-root))
+      (emt:vw:top:print-all (emt:vw:og:get-root))
       (pop-to-buffer emt:vw:top:report-buffer)))
 
 

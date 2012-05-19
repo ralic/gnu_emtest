@@ -90,7 +90,7 @@ GOV-SYMBOL should be a symbol."
     'ungraded
    'error-raised
     'unrecognized-governor
-    (emtd:clause->governor clause))
+    (emt:def:clause->governor clause))
 
 ;;;_. Footers
 ;;;_ , Provides

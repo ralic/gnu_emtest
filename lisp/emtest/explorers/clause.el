@@ -107,9 +107,9 @@
    "Explore one clause in Emtest.
 This is the heart of Emtest exploration: A test itself."
    (funcall 
-      (emt:runner:get-func (emtd:clause->governor clause))
+      (emt:runner:get-func (emt:def:clause->governor clause))
       props 
-      (emtd:clause->form clause)
+      (emt:def:clause->form clause)
       report-f))
 
 ;;;_  . emt:xp:clause:literal
@@ -136,8 +136,8 @@ This is the heart of Emtest exploration: A test itself."
    ;; have no names it'd accomplish little.
    (if (emt:xp:clause:run-p test-id props)
       (destructuring-bind (suite-sym clause-index) (cdr test-id)
-	 (emtd:update-for-sym suite-sym)
-	 (emtd:destructure-suite-3 suite-sym
+	 (emt:def:update-for-sym suite-sym)
+	 (emt:def:destructure-suite-3 suite-sym
 	    (emt:xp:clause 
 	       (nth clause-index clause-list)
 	       props

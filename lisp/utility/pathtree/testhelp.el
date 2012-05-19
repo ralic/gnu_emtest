@@ -60,19 +60,19 @@
       (:copier nil))
    name path parent children data)
 (emtm:define-struct-governor 
-   (emtvp
+   (pathtree
       (:constructor pathtree:make)
-      (:conc-name emtvp->)
+      (:conc-name pathtree->)
       (:copier nil))
    root)
 ;;;_ , pathtree:th:type-correct-p Type checker
 (defun pathtree:th:type-correct-p (tree)
-   "Return non-nil just if the tree is a type-correct emtvp"
+   "Return non-nil just if the tree is a type-correct pathtree"
    (and
-      (typep tree 'emtvp)
+      (typep tree 'pathtree)
       (pathtree:th:subtree-typecorrect-p
-	 (emtvp->root tree)
-	 (emtvp->type tree))))
+	 (pathtree->root tree)
+	 (pathtree->type tree))))
 
 ;;;_ , pathtree:th:subtree-typecorrect-p
 (defun pathtree:th:subtree-typecorrect-p (node type)
@@ -163,8 +163,8 @@ Store data about X on the list `*nodes-freshened*'.  Then clean up
 ;;;_  . pathtree:th:skeleton
 (defun pathtree:th:skeleton (tree)
    "Return a skeleton of TREE"
-   (check-type tree emtvp)
-   (pathtree:th:skeleton-recurse (emtvp->root tree)))
+   (check-type tree pathtree)
+   (pathtree:th:skeleton-recurse (pathtree->root tree)))
 
 ;;;_  . pathtree:th:skeleton-recurse
 (defun pathtree:th:skeleton-recurse (node)

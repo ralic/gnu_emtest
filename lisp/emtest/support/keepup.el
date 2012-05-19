@@ -77,8 +77,8 @@ FORM-LIST should be a list of forms that each define something."
        (emt:keep-up-to-date-x ',sym-list ',form-list)
        ,@form-list))
 
-;;;_  . emtd:update-for-sym
-(defun emtd:update-for-sym (sym)
+;;;_  . emt:def:update-for-sym
+(defun emt:def:update-for-sym (sym)
    "Update any keep-up-to-date definitions for SYM."
 
    (let

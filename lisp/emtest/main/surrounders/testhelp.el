@@ -32,8 +32,8 @@
 
 
 ;;;_. Body
-;;;_ , emtts:th:insulate
-(defmacro emtts:th:insulate (&rest body)
+;;;_ , emt:sur:th:insulate
+(defmacro emt:sur:th:insulate (&rest body)
    ""
    
    `(progn ,@body))

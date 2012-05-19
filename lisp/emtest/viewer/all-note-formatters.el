@@ -36,28 +36,28 @@
 ;;;_. Body
 ;;;_ , Collecting formatters
 
-;;;_  . emt:vw:note-alist
-(defvar emt:vw:note-alist 
+;;;_  . emt:vw:note:alist
+(defvar emt:vw:note:alist 
    '()
    "Alist from governor symbol to format function" )
 ;;;_  . emt:vw:note:add-gov
 (defun emt:vw:note:add-gov (gov-symbol formatter)
    "Register FORMATTER governed by GOV-SYMBOL."
    (utim:new-apair 
-      gov-symbol formatter emt:vw:note-alist))
+      gov-symbol formatter emt:vw:note:alist))
 
-;;;_  . emt:vw:note-get-formatter
-(defun emt:vw:note-get-formatter (gov-symbol)
+;;;_  . emt:vw:note:get-formatter
+(defun emt:vw:note:get-formatter (gov-symbol)
    "Get a relevant formatter function for GOV-SYMBOL.
 Should not fail.
 GOV-SYMBOL must be a symbol."
    (utim:assq-value
       gov-symbol 
-      emt:vw:note-alist
-      #'emt:vw:note-formatter-fallback))
+      emt:vw:note:alist
+      #'emt:vw:note:formatter-fallback))
 ;;;_ , Special formatters
-;;;_  . emt:vw:note-formatter-fallback
-(defun emt:vw:note-formatter-fallback (obj &rest r)
+;;;_  . emt:vw:note:formatter-fallback
+(defun emt:vw:note:formatter-fallback (obj &rest r)
    ""
    (list "No formatter found for governor "
       (symbol-name 

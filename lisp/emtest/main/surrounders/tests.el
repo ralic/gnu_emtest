@@ -35,10 +35,10 @@
 
 ;;;_. Body
 
-;;;_ , emts:add-surrounders
+;;;_ , emt:sur:add-surrounders
 
 ;;Do not use surrounders in this test - bootstrapping issue.
-(emt:deftest-3 emts:add-surrounders
+(emt:deftest-3 emt:sur:add-surrounders
    (nil
       (progn
 	 (emt:doc
@@ -47,7 +47,7 @@
 	    "Result: The original form.")
 	 (emt:assert
 	    (equal
-	       (emts:add-surrounders 'foo '() '())
+	       (emt:sur:add-surrounders 'foo '() '())
 	       'foo))))
    
    (nil
@@ -58,7 +58,7 @@
 	    "Result: Form is surrounded by that protector.")
 	 (emt:assert
 	    (equal
-	       (emts:add-surrounders 'foo '((progn)) '())
+	       (emt:sur:add-surrounders 'foo '((progn)) '())
 	       '(progn foo)))))
 
    (nil
@@ -69,7 +69,7 @@
 	    "Result: More complicated form is correctly surrounded.")
 	 (emt:assert
 	    (equal
-	       (emts:add-surrounders 
+	       (emt:sur:add-surrounders 
 		  '(let (a b) foo) 
 		  '((progn))
 		   '())
@@ -82,7 +82,7 @@
 	    "Result: Form is correctly surrounded.")
 	 (emt:assert
 	    (equal
-	       (emts:add-surrounders 
+	       (emt:sur:add-surrounders 
 		  'foo
 		  '((let (a b)))
 		   '())
@@ -96,7 +96,7 @@
 	    "Result: Form is surrounded by all three in order, first outermost.")
 	 (emt:assert
 	    (equal
-	       (emts:add-surrounders 
+	       (emt:sur:add-surrounders 
 		  'foo 
 		  '((progn) (save-excursion) (with-temp-buffer))
 		   '())

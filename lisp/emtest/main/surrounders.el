@@ -35,9 +35,9 @@
 
 ;;;_. Body
 ;;;_ , test surrounders
-;;;_  . emtts:always-surrounders
+;;;_  . emt:sur:always-surrounders
 
-(defconst emtts:always-surrounders 
+(defconst emt:sur:always-surrounders 
    '(
        ;;$$WRITE ME
        ;;emtt:message-trap
@@ -45,7 +45,7 @@
        (with-temp-buffer)
        ;;$$WRITE ME as a function, responding to properties.
        ;;(with-timeout 1.0)
-       emtts:with-debugging
+       emt:sur:with-debugging
 
        ;;Add other *standard* ones here.  
        )
@@ -56,37 +56,27 @@ installations lest it affect results.
 
 Error-trapping does not go here because that is an inherent part of
 emtest tester." )
-;;;_  . emtts:extra-surrounders
-(defvar emtts:extra-surrounders
+;;;_  . emt:sur:extra-surrounders
+(defvar emt:sur:extra-surrounders
    '()
    "Non-standard surrounders added by helper modules as they are loaded." )
 
-;;;_  . emtts:set-surrounder
-(defun emtts:set-surrounder (surrounder &optional where)
+;;;_  . emt:sur:set-surrounder
+(defun emt:sur:set-surrounder (surrounder &optional where)
    "Add SURROUNDER to emtest's surrounders for this session.
 WHERE is a dummy argument for now, eventually it will allow them to be
 placed first or last."
    
-   (pushnew surrounder emtts:extra-surrounders))
-;;;_  . emtts:clear-surrounder
-(defun emtts:clear-surrounder (filter)
+   (pushnew surrounder emt:sur:extra-surrounders))
+;;;_  . emt:sur:clear-surrounder
+(defun emt:sur:clear-surrounder (filter)
    "Remove surrounders that match FILTER.
 Not implemented yet."
    
    (error "Not implemented yet"))
 
-;;;_  . Place form within test-protectors
-'  ;;OBSOLETE
-(defun emtts:surround (form protectors)
-   ""
-   (let
-      ((rv-protectors (reverse protectors)))
-      
-      (dolist (i rv-protectors form)
-	 (setq form (list i form)))))
-
-;;;_  . emts:add-surrounders
-(defun emts:add-surrounders (form surrounders props)
+;;;_  . emt:sur:add-surrounders
+(defun emt:sur:add-surrounders (form surrounders props)
    "Add SURROUNDERS around FORM.
 SURROUNDERS is a list whose elements must each be either:
  * A list.
@@ -114,29 +104,29 @@ PROPS is a property list."
 	       (append surrounder-1 (list form)))))))
 
 
-;;;_   , emtts:get-surrounders
-(defun emtts:get-surrounders (props)
+;;;_   , emt:sur:get-surrounders
+(defun emt:sur:get-surrounders (props)
    "Return a list of the appropriate surrounders for a form.
 PROPS is the property list of the form."
    (append
-      emtts:always-surrounders
-      emtts:extra-surrounders
+      emt:sur:always-surrounders
+      emt:sur:extra-surrounders
       (utim:get-properties :surrounders props)))
 
 
 ;;;_   , Some surrounders and surrounder-makers
 ;;;_    . Allow debugging
-;;;_     , emti:debug-p
-(defvar emti:debug-p nil 
+;;;_     , emt:sur:debug-p
+(defvar emt:sur:debug-p nil 
    "Debug all tests on entry" )
 
-;;;_     , emtts:with-debugging
-(defun emtts:with-debugging (props)
+;;;_     , emt:sur:with-debugging
+(defun emt:sur:with-debugging (props)
    "Surrounder-maker, enable debug in the form if appropriate."
    ;;Will probably use (utim:get-properties :debug props) instead
    ;;eventually. 
    (let
-      ((debug-p emti:debug-p))
+      ((debug-p emt:sur:debug-p))
       (if debug-p
 	 '(let
 	     (  (debug-on-signal t)
@@ -151,7 +141,7 @@ PROPS is the property list of the form."
    "Debug all test clauses on entry."
    
    (interactive)
-   (setq emti:debug-p t))
+   (setq emt:sur:debug-p t))
 
 ;;;_     , emtest:cancel-debug-on-entry
 ;;$$IMPROVE ME  Make the interface volunteer only currently debugged
@@ -161,7 +151,7 @@ PROPS is the property list of the form."
    ""
    
    (interactive)
-   (setq emti:debug-p nil))
+   (setq emt:sur:debug-p nil))
 
 
 ;;;_       , Tests

@@ -47,10 +47,10 @@
 (emt:deftest-3 emth:trap-errors
    (nil
       (progn
-	 (emt:doc "Shows: Works with `emtts:surround'.")
+	 (emt:doc "Shows: Works with `emt:sur:surround'.")
 	 (equal
 	    (eval
-	       (emts:add-surrounders 12
+	       (emt:sur:add-surrounders 12
 		  '((emth:trap-errors))
 		  nil))
 	    12)))

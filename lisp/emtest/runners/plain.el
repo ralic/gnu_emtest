@@ -43,9 +43,9 @@
       (let
 	 ( 
 	    (form-1
-	       (emts:add-surrounders 
+	       (emt:sur:add-surrounders 
 		  (car form) 
-		  (emtts:get-surrounders props)
+		  (emt:sur:get-surrounders props)
 		  props)))
 	 (emth:protect&trap
 	    aborted-p

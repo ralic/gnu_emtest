@@ -32,22 +32,22 @@
 
 ;;;_. Body
 ;;;_ , Constants
-(defconst emtt:version "4.6" 
+(defconst emt:top:version "4.6" 
    "Current version of Emtest" )
 
 ;;;_ , Customizations
 (defgroup emtest ()
    "Customization for Emtest testhelp"
-   :package-version `(emtest . ,emtt:version)
+   :package-version `(emtest . ,emt:top:version)
    :group 'development
    :group 'programming)
 
 ;;;_  . Viewer/display configuration
 
-;;;_   , emtl:receiver-f
+;;;_   , emt:top:receiver-f
 ;;Cheat for now: Always know to use emviewer2.  Later use a
 ;;customizable variable.
-(defconst emtl:receiver-f
+(defconst emt:top:receiver-f
    #'emt:vw:top:tester-cb
    "Which viewer to use to display results" )
 

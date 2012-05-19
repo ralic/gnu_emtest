@@ -188,7 +188,7 @@ could be, such as when a note-list hasn't been expanded."
 ;;;_  . emt:pth:collect-testral-2
 (defun emt:pth:collect-testral-2  (node tree)
    "Put NODE's TESTRAL notes or runform-list under it in pathtree TREE."
-   (check-type tree emtvp)
+   (check-type tree pathtree)
    (check-type node pathtree:node)
    (when (emt:view:suite-p node)
       (let
@@ -213,7 +213,7 @@ could be, such as when a note-list hasn't been expanded."
    "Put viewables for RUNFORM-LIST under NODE in TREE."
    (mapcar
       #'(lambda (runform)
-	   (emtvo:receive-cb 
+	   (emt:vw:og:receive-cb 
 	      (emt:run:explorable->prestn-path runform)
 	      (emt:view:make-explorable :contents runform)))
       (emt:testral:runform-list->els runform-list)))

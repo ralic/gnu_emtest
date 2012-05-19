@@ -52,10 +52,10 @@
    (dirty-flags ()
       :type (repeat symbol)))
 
-;;;_   , emtvp
-(defstruct (emtvp
+;;;_   , pathtree
+(defstruct (pathtree
 	      (:constructor pathtree:make)
-	      (:conc-name emtvp->)
+	      (:conc-name pathtree->)
 	      (:copier nil))
    "A pathtree object"
    (root ()         :type pathtree:node)
@@ -102,13 +102,13 @@ Must be derived from `pathtree:node'.")
 (defun pathtree:find-node (tree path make-empty-node)
    "Find a node at path PATH in TREE.
 Make intervening nodes if they don't exist.
-TREE must be a `emtvp'.
+TREE must be a `pathtree'.
 PATH must be a list of `pathtree:name-type'."
    
-   (check-type tree emtvp)
+   (check-type tree pathtree)
    (check-type path (repeat pathtree:name-type))
    (pathtree:find-node-under-node
-      tree path (emtvp->root tree) make-empty-node))
+      tree path (pathtree->root tree) make-empty-node))
 
 ;;;_    . pathtree:find-node-under-node
 (defun pathtree:find-node-under-node (tree path node make-empty-node)
@@ -116,11 +116,11 @@ PATH must be a list of `pathtree:name-type'."
 The return value is suitable as a parent
 Make intervening nodes if they don't exist.  
 
-TREE must be a `emtvp'.
+TREE must be a `pathtree'.
 NODE must be a `pathtree:node' or descendant.
 PATH must be a list of `pathtree:name-type'."
 
-   (check-type tree   emtvp)
+   (check-type tree   pathtree)
    (check-type path   (repeat pathtree:name-type))
    (check-type node   pathtree:node)
    
@@ -163,7 +163,7 @@ Error if OLD-NODE is the root or otherwise unparented."
 
 To stitch NEW-CHILD in we set name, parent, and dirty-flags, but
 don't otherwise alter it."
-   (check-type tree   emtvp)
+   (check-type tree   pathtree)
    (check-type parent pathtree:node)
    (check-type name   pathtree:name-type)
    
@@ -185,7 +185,7 @@ don't otherwise alter it."
 ;;;_    . pathtree:remove-child
 (defun pathtree:remove-child (tree parent child)
    "Remove child CHILD of PARENT and return it."
-   (check-type tree   emtvp)
+   (check-type tree   pathtree)
    (check-type parent pathtree:node)
    (check-type child  pathtree:node)
       
@@ -205,19 +205,19 @@ FLAG says what type of dirtiness is marked"
        (pushnew flag
 	  (pathtree:node->dirty-flags node))
        (push node
-	  (emtvp->dirty tree))))
+	  (pathtree->dirty tree))))
 
 ;;;_  . pathtree:freshen
 (defun pathtree:freshen (tree)
    ""
    ;;This call empties the dirty list too.
    (pending:do-all
-      (emtvp->dirty tree)
+      (pathtree->dirty tree)
       #'(lambda (el tree)
 	   "Call the cleaner callback.  No-op if there are no dirty-flags."
 	   (if
 	      (pathtree:node->dirty-flags el)
-	      (funcall (emtvp->node-dirtied tree) el tree)
+	      (funcall (pathtree->node-dirtied tree) el tree)
 	      '()))
       (list tree)
       #'(lambda (unprocessed &rest args)

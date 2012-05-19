@@ -36,8 +36,8 @@
 
 ;;;_. Body
 
-;;;_  . emtd:make-prop-eval-form
-(emt:deftest-3 emtd:make-prop-eval-form
+;;;_  . emt:def:make-prop-eval-form
+(emt:deftest-3 emt:def:make-prop-eval-form
    (nil
       (progn
 	 (emt:doc "Shows: Makes a form that evals as expected.")
@@ -45,14 +45,14 @@
 	    (emt:assert
 	       (equal
 		  (eval
-		     (emtd:make-prop-eval-form
+		     (emt:def:make-prop-eval-form
 			'(four
 			    (+ 2 2))))
 		  '(four 4)))
 	    (emt:assert
 	       (equal
 		  (eval
-		     (emtd:make-prop-eval-form
+		     (emt:def:make-prop-eval-form
 			'(four-form
 			    '(+ 2 2))))
 		  '(four-form
@@ -73,7 +73,7 @@
 	       (nil
 		  (progn 12)))
 	    (emt:doc "Response: Destructuring finds the expected clauses.")
-	    (emtd:destructure-suite-3 'dummy-sym
+	    (emt:def:destructure-suite-3 'dummy-sym
 	       (emt:assert
 		  (=
 		     (length clause-list)
@@ -81,7 +81,7 @@
 	       (let*
 		  ((clause (car clause-list)))
 		  (equal 
-		     (car (emtd:clause->form clause)) 
+		     (car (emt:def:clause->form clause)) 
 		     '(progn 12)))
 	       t))))
    (nil
@@ -98,7 +98,7 @@
 	       (nil
 		  (progn 12)))
 	    (emt:doc "Response: Destructuring finds the expected properties.")
-	    (emtd:destructure-suite-3 'dummy-sym
+	    (emt:def:destructure-suite-3 'dummy-sym
 	       (emt:assert
 		  (equal
 		     (assoc 'db-id props)
@@ -119,7 +119,7 @@
 	    (emt:doc "Situation: A test is defined with no clauses")
 	    (emt:deftest-3 dummy-sym)
 	    (emt:doc "Response: Destructuring finds clauses as the empty list.")
-	    (emtd:destructure-suite-3 'dummy-sym
+	    (emt:def:destructure-suite-3 'dummy-sym
 	       (emt:assert
 		  (=
 		     (length clause-list)

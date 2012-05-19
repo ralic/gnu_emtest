@@ -48,7 +48,7 @@ Response: The value of the `db-id' property is used as backend."
 	    ((of 'dummy-sym) 
 	       (db-id "my-db"))
 	    (() (progn ())))
-	 (emtd:destructure-suite-3 'dummy-sym
+	 (emt:def:destructure-suite-3 'dummy-sym
 	    (let* ((emt:testral:*properties* props)
 		     (placeholder (emt:persist 'id-0)))
 	       (assert

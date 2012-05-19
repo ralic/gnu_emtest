@@ -43,12 +43,12 @@
 
 ;;;_. Body
 ;;;_ , Testhelp
-;;;_  . emtvo:tester-cb
-(defun emtvo:tester-cb (report)
+;;;_  . emt:vw:og:tester-cb
+(defun emt:vw:og:tester-cb (report)
    "A callback for tester.  It only goes as far as the pathtree, no further."
    (check-type report emt:testral:report)
-   (emtvo:setup-if-needed #'ignore #'ignore)
-   (emtvo:receive report))
+   (emt:vw:og:setup-if-needed #'ignore #'ignore)
+   (emt:vw:og:receive report))
 
 ;;;_  . Struct governors for pattern-match
 ;;Are in pathtree testhelp
@@ -60,24 +60,24 @@
 	 ;;$$SHARE ME - factor `emt:vw:top:ts:with-mock-viewer' in
 	 ;;emviewer2/testhelp.el to share this insulation.
 	 '((let
-	      (emtvo:receiver emtvo:pathtree)))))
+	      (emt:vw:og:receiver emt:vw:og:pathtree)))))
    (nil
       (progn
 	 (emt:doc "Operation: Send just a hello.")
 	 (emtl:th:hello
-	    #'emtvo:tester-cb)
+	    #'emt:vw:og:tester-cb)
 	 (emt:doc "Validate:  We have set up.")
 	 (emt:doc "Validate:  We have received some result objects.")
-	 (emt:assert (identity emtvo:receiver))
-	 (emt:assert (identity emtvo:pathtree))
+	 (emt:assert (identity emt:vw:og:receiver))
+	 (emt:assert (identity emt:vw:og:pathtree))
 	 (emt:doc "Validate: Tree is the right type all thru it")
 	 (emt:assert
-	    (pathtree:th:type-correct-p emtvo:pathtree))
+	    (pathtree:th:type-correct-p emt:vw:og:pathtree))
 	 (emt:doc "Response: The results occur exactly in expected
    positions in the tree.")
 	 (emt:assert
 	    (emtm 
-	       emtvo:pathtree
+	       emt:vw:og:pathtree
 	       (pathtree:make 
 		  :root
 		  ;;Pathtree's root
@@ -98,20 +98,20 @@
 	 (emt:doc "Operation: Launch a library, which will launch its suites")
 	 (emt:library
 	    (emtg (type lib-path))
-	    #'emtvo:tester-cb)
+	    #'emt:vw:og:tester-cb)
 
 	 (emt:doc "Validate:  We have set up.")
 	 (emt:doc "Validate:  We have received some result objects.")
-	 (emt:assert (identity emtvo:receiver))
-	 (emt:assert (identity emtvo:pathtree))
+	 (emt:assert (identity emt:vw:og:receiver))
+	 (emt:assert (identity emt:vw:og:pathtree))
 	 (emt:doc "Validate: Tree is the right type all thru it")
 	 (emt:assert
-	    (pathtree:th:type-correct-p emtvo:pathtree))
+	    (pathtree:th:type-correct-p emt:vw:og:pathtree))
 	 (emt:doc "Response: The results occur exactly in expected
    positions in the tree.")
 	 (emt:assert
 	    (emtm 
-	       emtvo:pathtree
+	       emt:vw:og:pathtree
 	       (pathtree:make 
 		  :root
 		  ;;Pathtree's root
@@ -139,20 +139,20 @@
 	 (emt:doc "Operation: Launch a library, which will launch its suites")
 	 (emt:library
 	    (emtg (type lib-path))
-	    #'emtvo:tester-cb)
+	    #'emt:vw:og:tester-cb)
 
 	 (emt:doc "Validate:  We have set up.")
 	 (emt:doc "Validate:  We have received some result objects.")
-	 (emt:assert (identity emtvo:receiver))
-	 (emt:assert (identity emtvo:pathtree))
+	 (emt:assert (identity emt:vw:og:receiver))
+	 (emt:assert (identity emt:vw:og:pathtree))
 	 (emt:doc "Validate: Tree is the right type all thru it")
 	 (emt:assert
-	    (pathtree:th:type-correct-p emtvo:pathtree))
+	    (pathtree:th:type-correct-p emt:vw:og:pathtree))
 	 (emt:doc "Response: The results occur exactly in expected
    positions in the tree.")
 	 (emt:assert
 	    (emtm 
-	       emtvo:pathtree
+	       emt:vw:og:pathtree
 	       (pathtree:make 
 		  :root
 		  ;;Pathtree's root

@@ -59,11 +59,11 @@
 	    (push
 	       (pathtree:th:make-derived-node :name "a" :dirty-flags
 		  '(new))
-	       (emtvp->dirty tree))
+	       (pathtree->dirty tree))
 	    (pathtree:freshen tree)
 	    (assert
 	       (null
-		  (emtvp->dirty tree))
+		  (pathtree->dirty tree))
 	       t)
 	    (assert
 	       (equal
@@ -86,7 +86,7 @@
 	    (pathtree:freshen tree)
 	    (assert
 	       (emtm
-		  (emtvp->root tree)
+		  (pathtree->root tree)
 		  (pathtree:th:make-derived-node :name "" :children
 		     (list
 			(pathtree:th:make-derived-node :name "a" :children nil :data
@@ -110,7 +110,7 @@
 	    (pathtree:freshen tree)
 	    (assert
 	       (emtm
-		  (emtvp->root tree)
+		  (pathtree->root tree)
 		  (pathtree:th:make-derived-node :name "" :children
 		     (list
 			(pathtree:th:make-derived-node :name "a" :children
@@ -145,7 +145,7 @@
 	    (pathtree:freshen tree)
 	    (assert
 	       (emtm
-		  (emtvp->root tree)
+		  (pathtree->root tree)
 		  (pathtree:th:make-derived-node :name "" :children
 		     (list
 			(pathtree:th:make-derived-node :name "a" :children
@@ -179,7 +179,7 @@
 	    (pathtree:freshen tree)
 	    (assert
 	       (emtm
-		  (emtvp->root tree)
+		  (pathtree->root tree)
 		  (pathtree:th:make-derived-node :name "" :children
 		     (list
 			(pathtree:th:make-derived-node :name "a" :children nil :data
@@ -216,7 +216,7 @@ The other element remains.")
 	    (pathtree:freshen tree)
 	    '(assert
 		(emtm
-		   (emtvp->root tree)
+		   (pathtree->root tree)
 		   (pathtree:th:make-derived-node :name "" :children
 		      (list
 			 (pathtree:th:make-derived-node :name "a" :children
@@ -263,7 +263,7 @@ The other element remains.")
 	     (pathtree:freshen tree)
 	     (assert
 		(emtm
-		   (emtvp->root tree)
+		   (pathtree->root tree)
 		   (pathtree:th:make-derived-node :name "" :children nil :data "default-data"))
 		t)
 	     t)))
@@ -288,7 +288,7 @@ The other element remains.")
 	     (pathtree:freshen tree)
 	     (assert
 		(emtm
-		   (emtvp->root tree)
+		   (pathtree->root tree)
 		   (pathtree:th:make-derived-node :name "" :children
 		      (list
 			 (pathtree:th:make-derived-node :name "a" :children

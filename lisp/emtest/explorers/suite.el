@@ -80,8 +80,8 @@ Does nothing if the buffer is not in a known lisp mode."
 	    (suite-sym
 	       (second test-id)))
       
-	 (emtd:update-for-sym suite-sym)
-	 (emtd:destructure-suite-3 suite-sym
+	 (emt:def:update-for-sym suite-sym)
+	 (emt:def:destructure-suite-3 suite-sym
 	    (let
 	       (  
 		  (rv-list-to-run '()))
@@ -96,7 +96,7 @@ Does nothing if the buffer is not in a known lisp mode."
 			   (list (format "Clause %d" n)))
 			;;Each clause has the properties of the suite
 			;;(and for now, only those).  `props' comes from
-			;;`emtd:destructure-suite-3', not from arglist.
+			;;`emt:def:destructure-suite-3', not from arglist.
 			:properties props)
 		     rv-list-to-run))
 

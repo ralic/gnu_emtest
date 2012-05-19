@@ -61,8 +61,8 @@
    "Equivalent to `progn' just if emtest is available."
    (cons 'progn body))
 
-;;;_ , emtd:make-prop-eval-form
-(defun emtd:make-prop-eval-form (spec)
+;;;_ , emt:def:make-prop-eval-form
+(defun emt:def:make-prop-eval-form (spec)
    ""
    
    (destructuring-bind (sym val-form) spec
@@ -100,15 +100,15 @@
 		'(load-file-name ,(or load-file-name buffer-file-name))
 		,@(if props
 		     (mapcar
-			#'emtd:make-prop-eval-form
+			#'emt:def:make-prop-eval-form
 			props)
 		     ())))
 	  
 	  (put ,of-what 'emt:suite ',clauses))))
 
-;;;_  . emtd:destructure-suite-3
+;;;_  . emt:def:destructure-suite-3
 
-(defmacro emtd:destructure-suite-3 (suite &rest body)
+(defmacro emt:def:destructure-suite-3 (suite &rest body)
    "Run BODY with the contents of SUITE bound as indicated.
 SUITE must be a symbol naming a test suite.
 
@@ -124,10 +124,10 @@ SUITE must be a symbol naming a test suite.
        
        ,@body))
 
-;;;_  . emtd:clause->governor
-(defalias 'emtd:clause->governor 'car)
-;;;_  . emtd:clause->form
-(defalias 'emtd:clause->form     'cdr)
+;;;_  . emt:def:clause->governor
+(defalias 'emt:def:clause->governor 'car)
+;;;_  . emt:def:clause->form
+(defalias 'emt:def:clause->form     'cdr)
 
 ;;;_. Footers
 ;;;_ , Provides

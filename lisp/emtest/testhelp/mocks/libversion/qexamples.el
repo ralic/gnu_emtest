@@ -42,7 +42,7 @@
 ;;This is unprotected, but I can unload a feature if the global state
 ;;gets messed up.
 
-;;If we automate this, use `emtts:th:insulate' from surrounders
+;;If we automate this, use `emt:sur:th:insulate' from surrounders
 ;;testhelp and `emtmv:th:surrounders' from libversion testhelp.  And a
 ;;test-definition insulator?
 (progn
@@ -69,7 +69,7 @@ have set up tester to use old version in test forms.")
    ;;Set tester to use that module.
    ;;$$IMPROVE ME This should be provided by libversion.  It should
    ;;also emt:doc that old version is being used.
-   (emtts:set-surrounder
+   (emt:sur:set-surrounder
       '(emtmv:with-version 'old nil))
    
 

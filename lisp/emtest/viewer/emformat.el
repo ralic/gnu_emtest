@@ -383,7 +383,7 @@ OBJ must be a TESTRAL viewable (`emt:view:note')."
       (let
 	 ((note (emt:view:note->contents obj)))
 	 (apply 
-	    (emt:vw:note-get-formatter 
+	    (emt:vw:note:get-formatter 
 	       (emt:testral:note->governor note))
 	    obj
 	    (emt:testral:note->value note)))
