@@ -32,7 +32,7 @@
 
 ;;;_. Body
 ;;;_ , Constants
-(defconst emtt:version "4.5" 
+(defconst emtt:version "4.6" 
    "Current version of Emtest" )
 
 ;;;_ , Customizations
