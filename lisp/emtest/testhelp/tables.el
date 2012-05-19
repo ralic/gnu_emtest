@@ -79,9 +79,13 @@
 
    ;; $$TODO Also allow the slot keys:
    ;; :default A default value if value isn't given.  This is BOA.
+
    ;; :no-define: can't be passed, it's a constructed aux& argument
-   ;; :persist-id: like :no-define but define the slot as persisting,
-   ;; wrt a column key and the row name (from docstring).
+
+   ;; :unique-id: Like :no-define but just defines a unique id varying
+   ;; by both column (from slot name and unique key argument) and row
+   ;; (from name), which `emt:eq-persist-p' can use.  Preferred over
+   ;; syntactically requiring table to provide a unique key.
 
    ;; Eventually we may allow selecting rows by name
    ;; (emt:tab:row-by-name)
