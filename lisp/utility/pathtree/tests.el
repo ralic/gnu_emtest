@@ -322,6 +322,19 @@ The element is now gone; only its parent remains.")
 	     '(assert)
 	     t))))
 
+(emt:deftest-3
+   ((of 'pathtree:name-lessp))
+   (nil
+      (emt:assert
+	 (eq
+	    (pathtree:name-lessp "1" 2)
+	    (not (pathtree:name-lessp 2 "1")))))
+   (nil
+      (emt:assert
+	 (eq
+	    (pathtree:name-lessp 1 2)
+	    (not (pathtree:name-lessp 2 1))))))
+
 ;;;_. Footers
 ;;;_ , Provides
 

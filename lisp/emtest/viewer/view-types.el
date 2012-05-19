@@ -60,7 +60,8 @@ But if there were no cases, assertions, etc, `nil'."
 (defstruct (emt:view:presentable
 	      (:constructor emt:view:make-presentable)
 	      (:conc-name emt:view:presentable->)
-	      (:include pathtree:node))
+	      (:include pathtree:node
+		 (sort-children #'pathtree:name-lessp)))
    "The base viewable type.  We use this as the content element in
 pathtree nodes."
    (sum-grades () :type emt:view:grade-summary
@@ -112,16 +113,16 @@ treewise, including any grades from this node."
 
 ;;;_  . Notes in viewable form.
 (defstruct (emt:view:note
-	    (:constructor emt:view:make-note)
-	    (:conc-name emt:view:note->)
+	      (:constructor emt:view:make-note)
+	      (:conc-name emt:view:note->)
 	      (:include emt:view:presentable))
    ""
    (contents () :type emt:testral:note))
 
 ;;;_  . Note placeholder
 (defstruct (emt:view:note-placeholder
-	    (:constructor emt:view:make-note-placeholder)
-	    (:conc-name emt:view:note-placeholder->)
+	      (:constructor emt:view:make-note-placeholder)
+	      (:conc-name emt:view:note-placeholder->)
 	      (:include emt:view:presentable))
    "A blank note-like placeholder, not associated with a TESTRAL note")
 

@@ -139,6 +139,7 @@ could be, such as when a note-list hasn't been expanded."
 			 (list 
 			    (emt:testral:note->id note)
 			    (emt:view:make-note
+			       :name (emt:testral:note->id note)
 			       :contents note)
 			    '()))
 		    list-of-notes))))
@@ -181,7 +182,9 @@ could be, such as when a note-list hasn't been expanded."
 	       ;;$$IMPROVE ME If there's a `emt:view:note-placeholder', replace
 	       ;;it with this one.
 	       (pathtree:add-child
-		  tree parent nil child t))))))
+		  tree parent 
+		  (emt:view:presentable->name child )
+		  child t))))))
 
 ;;;_ , TESTRAL suites
 

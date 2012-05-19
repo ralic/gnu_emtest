@@ -39,7 +39,10 @@
 ;;;_   , pathtree:name-type
 (deftype pathtree:name-type ()
    '(or null string symbol integer))
+
 ;;;_   , pathtree:node
+;; `pathtree:node' is not constructed as such, derived types from it
+;; are constructed and inserted.
 (defstruct (pathtree:node
 	      (:constructor pathtree:make-node)
 	      (:conc-name pathtree:node->)
@@ -50,7 +53,11 @@
    (children () 
       :type (repeat pathtree:node))
    (dirty-flags ()
-      :type (repeat symbol)))
+      :type (repeat symbol))
+
+   (sort-children 'by-arrival
+      :type (or function (member by-arrival))
+      :doc "Function to compare nodes, for ordering them"))
 
 ;;;_   , pathtree
 (defstruct (pathtree
@@ -80,9 +87,26 @@ Must be derived from `pathtree:node'.")
       :type (repeat pathtree:node)
       :doc "Dirty-list of nodes that want updating via NODE-DIRTIED"))
 
-;;;_  . Functions
+
+;;;_  . Functions servicing pathtree:name-type
 ;;;_   , pathtree:name=
 (defalias 'pathtree:name= 'equal)
+
+;;;_   , pathtree:name-lessp
+(defun pathtree:name-lessp (a b)
+   "A comparison function that works on any `pathtree:name-type'.
+Intended for use in records derived from `pathtree:node'"
+   (etypecase a
+      (integer
+	 (if (integerp b) 
+	    (< a b)
+	    t))
+      ((or string symbol)
+	 (if (or (stringp b) (symbolp b))
+	    (string-lessp a b)
+	    nil))))
+
+;;;_  . Pathtree functions
 ;;;_   , pathtree:make-pathtree
 ;;$$CHANGE MY ARGLIST Replace make-node and root-name with ROOT.
 (defun pathtree:make-pathtree (node-dirtied make-node type &optional root-name)
@@ -158,6 +182,7 @@ Error if OLD-NODE is the root or otherwise unparented."
 
 ;;;_    . pathtree:add-child
 ;;$$RETHINK MY ARGLIST don't take `name', caller should set it.
+;;$$RETHINK MY ARGLIST Remove prepend, use parent's field
 (defun pathtree:add-child (tree parent name new-child &optional prepend)
    "Add node NEW-CHILD at the end of PARENT's children.
 
