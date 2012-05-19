@@ -81,10 +81,10 @@
    ;; :default A default value if value isn't given.  This is BOA.
    ;; :no-define: can't be passed, it's a constructed aux& argument
    ;; :persist-id: like :no-define but define the slot as persisting,
-   ;; wrt the field labelled as primary-key
-   ;; :primary-key which will be used by persist-id and should be
-   ;; unique (unenforced).  Eventually we may allow selecting rows by
-   ;; it (emt:tab:row-by-name)
+   ;; wrt a column key and the row name (from docstring).
+
+   ;; Eventually we may allow selecting rows by name
+   ;; (emt:tab:row-by-name)
 
 
    ;; Process slot definitions, creating various list objects.
@@ -148,16 +148,18 @@ ROW must be a row of a table made by `emttab:make'"
 
 
 ;;;_ , emt:tab:for-each-row
-
+;; $$ IMPROVE ME  Make this capture errors and collect notes, emtest style.
 (defmacro emt:tab:for-each-row (table var-sym &rest body)
    "Evaluate BODY once for each row of TABLE with VAR-SYM bound to the row."
    
    (let
       ((lam 
 	  `#'(lambda (,var-sym)
-	       ,@body)))
+		(emth:trap-errors ,@body))))
       
-      `(mapcar ,lam (emt:tab:table->rows table))))
+      `(progn
+	  (require 'emtest/testhelp/standard) ;; For `emth:trap-errors'
+	  (mapcar ,lam (emt:tab:table->rows table)))))
 
 ;;;_. Footers
 ;;;_ , Provides
