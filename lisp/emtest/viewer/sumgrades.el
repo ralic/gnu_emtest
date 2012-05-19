@@ -70,9 +70,12 @@ OBJ may be a grade symbol or already be a summary."
 	 (>
 	    (emt:grd:sym->severity sym)
 	    (emt:grd:sym->severity (emt:view:grade-summary->worst sums)))
-	 (setf 
-	    (emt:view:grade-summary->worst sums)
-	    sym))))
+	 (setf (emt:view:grade-summary->worst sums) sym)
+	 (when
+	    (emt:fmt:grade-fmt->fail-p 
+	       (emt:fmt:get-grade-info sym))
+	    (setf (emt:view:grade-summary->alert sums) t)))))
+
 
 
 ;;;_  . emt:grd:add
