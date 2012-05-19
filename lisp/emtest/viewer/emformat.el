@@ -401,14 +401,15 @@ OBJ must be a TESTRAL viewable (`emt:view:note')."
 	     (object ,err nil)
 	     "\n"))))
 ;;;_  . emt:vw:explorable
-(defun emt:vw:explorable (obj name)
+(defun emt:vw:explorable (view-node name)
    "Make a format form for a emt:view:explorable, which encases a emt:run:explorable."
    (emt:fmt:outline:item-emformat
       (list 
 	 (emt:fmt:sym->suitename name)
 	 " "
-	 (emt:fmt:button-to-explore obj 
-	    (emt:view:explorable->contents obj)
+	 (emt:fmt:button-to-explore 
+	    view-node 
+	    (emt:view:explorable->contents view-node)
 	    "[RUN]"))
       nil
       'emt:view:face:dormant))
