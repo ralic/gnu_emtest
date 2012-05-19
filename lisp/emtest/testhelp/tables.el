@@ -56,8 +56,14 @@
 	      table))
       (emt:tab:table->rows table)))
 
+(defun emt:tab:sym->index (table sym)
+   ""
+   (let
+      ((cell (assq sym (emt:tab:table->sym-alist table))))
+      (when cell (cdr cell))))
 
-(defmacro emt:tab:define (docstring definition &rest rows)
+
+(defmacro emt:tab:make (docstring definition &rest rows)
    "Define a table of type `emt:tab:table'"
 
    ;; For now, slot is exactly a symbol.  Later it can allow
@@ -84,7 +90,10 @@
 	     (eval
 		`(function*
 		    (lambda
-		       (row-docstring &key ,@proc-args)
+		       ;; The first object passed becomes the actual
+		       ;; argument list.
+		       ((row-docstring &key ,@proc-args))
+		       ;; Rows are vectors in the following format:
 		       (vector 
 			  ;; 0 - a symbol indentifying it as some type
 			  ;; of row.
@@ -111,27 +120,72 @@
 	       (emt:tab:--set-rows-to-self table)
 	       table))))
 
-'
-(emt:tab:define
-   "My table of data for my test"
-   ;; Structure is similar to defstruct
-   (input
-      result)
-   ("Trivial example" :input 0 :result 0)
-   ("More complex example" :input 10 :result 20))
-
 (defun emt:tab (x &rest args)
    ""
-   
-   (interactive)
-   ;; If we got a table, args are row and column-tag, but if we got a
-   ;; row, arg is column-tag and we get table from 
+   (destructuring-bind
+      (table row name)
+      (etypecase x
+	 (emt:tab:table
+	    (list
+	       x
+	       (car args)
+	       (cadr args)))
+	 
+	 
+	 
+	 )
+
+      )
+   ;; If we got a table, args are primary key value and column-tag,
+   ;; but if we got a row, arg is column-tag and we get table from
+   ;; row.
    (let*
       ()
       
       ))
 
-;; Print it out?
+(defmacro emt:tab:for-each-row (table var-sym &rest body)
+   ""
+
+   (let*
+      ()
+      
+      ))
+
+(emt:deftest-3
+   ((of 'emt:tab:make))
+   (nil
+      (let
+	 ((table
+	     (emt:tab:make
+		"My table of data for my test"
+		(input result)
+		("Trivial example" :input 0 :result 0)
+		("More complex example" :input 10 :result 20))))
+	 (emt:doc "Situation: We have a table.  We look at it in
+   various ways.")
+
+	 (emt:doc "Operation: Loop thru it.")
+	 (emt:tab:for-each-row table i
+	    (emt:doc "Check: Value is one of ours.")
+	    (emt:assert
+	       (member
+		  (emt:tab i 'input)
+		  '(0 10)))
+	    (emt:assert
+	       (member
+		  (emt:tab i 'result)
+		  '(0 20)))
+	    (emt:doc "Operation: Use the values in a little test.")
+	    (emt:doc "Result: the values correspond within rows")
+	    (emt:assert
+	       (equal
+		  (* 2 (emt:tab i 'input))
+		  (emt:tab i 'result))))
+	 
+
+	 )))
+
 
 ;;;_. Footers
 ;;;_ , Provides
