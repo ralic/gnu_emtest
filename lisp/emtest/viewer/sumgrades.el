@@ -86,6 +86,10 @@ A may be a grade symbol, a grade summary, or nil."
       (symbol
 	 (emt:grd:add-one-grade sums a 1))
       (emt:view:grade-summary
+	 (when
+	    (emt:view:grade-summary->alert a)
+	    (setf (emt:view:grade-summary->alert sums) t))
+	 
 	 (dolist (grade (emt:view:grade-summary->grades a))
 	    (emt:grd:add-one-grade sums 
 	       (first grade) 
@@ -93,17 +97,21 @@ A may be a grade symbol, a grade summary, or nil."
    sums)
 
 ;;;_  . emt:grd:combine
-(defun emt:grd:combine (grades)
+(defun emt:grd:combine (grades &optional alert)
    "Combine the list GRADES into one entry"
    (let
       ((all
 	  (reduce
 	     #'emt:grd:add
 	     grades
-	     :initial-value (emt:view:make-grade-summary))))
+	     :initial-value 
+	     (emt:view:make-grade-summary
+		:alert alert))))
       
       (check-type all emt:view:grade-summary)
+      
       all))
+
 
 
 ;;;_. Footers

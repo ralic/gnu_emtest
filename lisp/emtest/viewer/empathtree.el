@@ -46,7 +46,7 @@
       (emt:testral:note-list->notes note-list)))
 ;;;_  . emt:pth:grd:summarize-suite+notes
 ;;UNUSED but held ready if we change to dynamic reprinting.
-(defun emt:pth:grd:summarize-suite+notes (s)
+(defun emt:pth:grd:summarize-suite+notes (s &optional alert)
    "Return a summary grade for a suite node and its notes
 Intended for suites whose notes haven't been placed on pathtree"
    
@@ -59,7 +59,9 @@ Intended for suites whose notes haven't been placed on pathtree"
 	    (emt:grd:combine
 	       (cons
 		  own-grade
-		  (emt:pth:grd:notelist-raw contents))))
+		  (emt:pth:grd:notelist-raw contents))
+	       alert))
+	 
 	 (t own-grade))))
 
 ;;;_  . emt:pth:grd:node-proper
@@ -101,11 +103,17 @@ could be, such as when a note-list hasn't been expanded."
 
 	 ;;Accessor
 	 (own-grade
-	    (emt:pth:grd:node-proper node)))
+	    (emt:pth:grd:node-proper node))
+	 (alert
+	    (typecase node
+	       (emt:view:suite (emt:view:suite->mark node))
+	       (t nil))))
+      
       (emt:grd:combine
 	 (cons
 	    own-grade
-	    childrens-grade))))
+	    childrens-grade)
+	 alert)))
 
 ;;;_  . emt:pth:grd:cache-subtree-grade
 (defun emt:pth:grd:cache-subtree-grade (node)

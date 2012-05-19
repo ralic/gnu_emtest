@@ -50,6 +50,9 @@
 If there were no failures etc, `ok'.
 But if there were no cases, assertions, etc, `nil'."
       )
+   (alert      nil :type boolean
+      :doc "Non-nil if user probably wants to see this")
+   
    (grades     ()  
       :type
       (repeat (cons symbol integer))))
@@ -69,7 +72,7 @@ pathtree nodes."
       "Summarized grades from all subtrees.  They are summarized
 treewise, including any grades from this node."
       )
-   ;;This relates to a display
+   ;;This relates to a display and is nearly obsolete.
    (list ()))
 
 ;;;_  . Suite in tree (as by emviewer)

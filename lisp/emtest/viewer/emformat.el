@@ -322,7 +322,7 @@ Must be called in a `utidyv:top' context."
 	    (emt:fmt:grade-overall-face grades))
 	 (grades-sum
 	    (emt:fmt:sum-grades-short grades))
-	 (grades-boring-p 
+	 (boring-p 
 	    (emt:fmt:grade-boring grades)))
       
       (etypecase suite
@@ -332,11 +332,7 @@ Must be called in a `utidyv:top' context."
 		  (object
 		     (emt:view:suite->result suite))
 		  (explorable
-		     (emt:view:suite->explorable suite))
-		  (boring-p
-		     (and 
-			grades-boring-p
-			(not (emt:view:suite->mark suite)))))
+		     (emt:view:suite->explorable suite)))
 	       
 	       (etypecase object
 		  (null "A null viewable")
@@ -513,6 +509,8 @@ SYM should be a grade symbol, but this returns a valid object in any case."
       emt:fmt:grade-fmt-default))
 ;;;_  . Grade helpers
 ;;;_   , emt:fmt:grade-boring
+;; $$IMPROVE ME: Push most functionality out to sumgrades and just
+;; look at the alert field.
 (defun emt:fmt:grade-boring (obj)
    "Return non-nil if OBJ is all passing grades.
 OBJ must be a `emt:view:grade-summary'"
@@ -521,7 +519,9 @@ OBJ must be a `emt:view:grade-summary'"
 	 (worst (emt:view:grade-summary->worst nobj))
 	 (info (emt:fmt:get-grade-info worst)))
       (not
-	 (emt:fmt:grade-fmt->fail-p info))))
+	 (or
+	    (emt:view:grade-summary->alert nobj)
+	    (emt:fmt:grade-fmt->fail-p info)))))
 
 ;;;_   , emt:fmt:grade-overall-face
 (defun emt:fmt:grade-overall-face (obj)
