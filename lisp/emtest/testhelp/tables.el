@@ -146,11 +146,14 @@ ROW must be a row of a table made by `emttab:make'"
 
 (defmacro emt:tab:for-each-row (table var-sym &rest body)
    "Evaluate BODY once for each row of TABLE with VAR-SYM bound to the row."
-
-   (let*
-      ()
+   
+   (let
+      ((lam 
+	  `#'(lambda (,var-sym)
+	       ,@body)))
       
-      ))
+      `(mapcar ,lam (emt:tab:table->rows table))))
+
 
 (emt:deftest-3
    ((of 'emt:tab:make))
