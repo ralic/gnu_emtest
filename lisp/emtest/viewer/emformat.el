@@ -509,19 +509,11 @@ SYM should be a grade symbol, but this returns a valid object in any case."
       emt:fmt:grade-fmt-default))
 ;;;_  . Grade helpers
 ;;;_   , emt:fmt:grade-boring
-;; $$IMPROVE ME: Push most functionality out to sumgrades and just
-;; look at the alert field.
 (defun emt:fmt:grade-boring (obj)
    "Return non-nil if OBJ is all passing grades.
 OBJ must be a `emt:view:grade-summary'"
-   (let*
-      ((nobj (emt:grd:->grade-summary obj))
-	 (worst (emt:view:grade-summary->worst nobj))
-	 (info (emt:fmt:get-grade-info worst)))
-      (not
-	 (or
-	    (emt:view:grade-summary->alert nobj)
-	    (emt:fmt:grade-fmt->fail-p info)))))
+   (not
+      (emt:view:grade-summary->alert (emt:grd:->grade-summary obj))))
 
 ;;;_   , emt:fmt:grade-overall-face
 (defun emt:fmt:grade-overall-face (obj)
