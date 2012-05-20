@@ -70,7 +70,7 @@
    (aref row 1))
 
 ;;;_ , Building a table
-
+;;;###autoload 
 (defmacro emt:tab:make (docstring definition &rest rows)
    "Define a table of type `emt:tab:table'"
 
