@@ -15,79 +15,149 @@ versions become available.
 ** Body
 *** Setup
 
-Unarchive it in your emacs-site-lisp directory. (This already sets it
-up) 
-Run the self-tests
+ * Unarchive it in your emacs-site-lisp directory (This sets it up)
+ * Alternatively, if you have elinstall, just load the file
+   do-elinstall.el in the emtest/lisp/ directory and it will install
+   it.
 
 *** Overview of use
 
-You write tests.  They go either 
- * into the same file as the code being tested
- * into some file ending in ".el" in a directory named "t/".  I'll
-   make this more precise later on.
+ * Use emtest:insert to help write tests (See [[id:dee60008-a11d-448d-9ce1-e39899d771bf][Editor help]])
+ * Load tests, with `eval-buffer' or `eval-defun' (C-M-x) or
+   `load-file' or any of the other usual ways.
+ * Run tests by:
+   * Use M-x emtest to run tests top-down.
+   * Or use M-x emtest:defun-at-point to test
+   * There are others.
 
 *** Writing tests
 **** Editor help
+     :PROPERTIES:
+     :ID:       dee60008-a11d-448d-9ce1-e39899d771bf
+     :END:
 
-The command rtest:insert is your friend.
+The command emtest:insert is your friend.  It will prompt you for what
+sort of thing to insert.
+
+ * test :: The major one.  This inserts a test form with one
+           do-nothing clause.
+ * assertion :: Insert a check form (`emt:assert')
+ * clause :: Insert a test clause.  Put the point in a test form,
+             before or after any other clause.
+ * db-id :: Insert a database id property for a test.  Put point in a
+            test-form's property list (the part starting with =((of
+            NAME) *point*)).  Then you must replace "$$WRITEME" with
+            the name of a file to be used as database.
+ * example-def :: Insert an example definition.  Now it makes a table,
+                  not a tagname definition.
+ * examples-dir :: Insert a definition of an examples directory, to be
+                   expanded safely.
+ * persister :: Insert an assertion that fetches a value from a
+                database.  You must give the test a db-id property for
+                this to work.
+ * prop-test-thru :: Insert an annotation that means to test a named
+                     function thru another function's suite.  This is
+                     less useful nowadays.
+ * require-tp :: Insert a `require'-like statement specifically for
+                 the testpoint module.  You'll want to do this in
+                 source files that use testpoint.
+ * requires :: Intended for files that mix test and source code.
+               Insert a `require'-like statement that provides dummies
+               if emtest is not present.
+ * testpoint :: Insert a testpoint in source code.
+ * testpoint-control :: Insert a testpoint form in a test.
+ * with-buf :: Insert a statement that calls its body in a mock
+               buffer.
 
 **** Format
-**** Location
 
-Tests go
+The test format is a list of:
+ * The symbol =emt:deftest-3=
+ * Either
+   * A symbol, usually naming a function the test pertains to
+   * A list of properties
+ * Zero or more test clauses, each being a list of
+   * A symbol
+   * One or more additional elements defining a test.
 
- * into the same file as the code being tested
- * into some file ending in ".el" in a directory named "t/".  
+The symbol names a particular test-runner, but you'll generally want
+to use `nil'.  You can comment out a test with a single-quote - that
+works like giving it the symbol `quote'.
 
-"t/" must be in your load-path or in a directory associated with a
-project.
+When using `nil', there will be just one additional element, which is
+simply a form that is run as the test.
 
+***** Example
+
+Here is an example test, annotated with the meanings of its parts.
+
+#+BEGIN_SRC emacs-lisp
+  (emt:deftest-3
+     ;; The list of properties.  This test relates to the function
+     ;; `emt:xp:foreign:struct-stringtreer' 
+     ((of 'emt:xp:foreign:struct-stringtreer))
+     ;; A clause.  It's a normal test, governed by `nil'
+     (nil
+        ;; The form.  It's an assertion, but it could be any elisp form.
+        ;; The test report will note whether this check succeeded.
+        (emt:assert
+           ;; The assertion to be checked.  It's just normal elisp.
+           (equal
+              (emt:xp:foreign:struct-stringtreer
+                 'emt:testral:suite
+                 (emt:testral:make-suite
+                    :contents '()
+                    :grade 'ok))
+              '(("contents" ("list")) ("grade" ("symbol" "ok"))))))
+     ;; Another clause.  Now there are two clause in this suite.
+     (nil
+        ;; The form.  This time we do some prelimminary stuff before
+        ;; checking anything.
+        (let
+           ((*how-to-prefix* '(prefix-el-1 prefix-el-2)))
+           (emt:doc "Here's a docstring.  It will appear in the test results.")
+           ;; Another check.
+           (emt:assert
+              (equal
+                 (emt:xp:foreign:stringtree->object
+                    '("path" ("symbol" "a") ("symbol" "b")))
+                 (emt:run:->how '(prefix-el-1 prefix-el-2 a b)))))))
+#+END_SRC
+
+**** Running foreign
+
+To run the "foreign" explorer, you first need to customize
+`emt:xp:foreign:launchables'.  
+
+ * Point the filename at an executable that reads TESTRAL from stdin
+   and writes TESTRAL to stout, all in Rivest-style canonical sexps.
+ * Add any command-line arguments to be given to the executable
+ * You can set a timeout in seconds but that doesn't work yet.
+ * The terminating regular expression is no longer meaningful.  It was
+   used when foreign worked thru tq, which it no longer does.
+
+Then run `M-x emtest' and click the [RUN] button for "foreign".
+
+*** Where to put tests
+
+Tests can go into any elisp file.  It doesn't have to be the same file
+as the code that's being tested, though it can be.
+
+Myself, I put a package's support files into subdirectories with
+canonical names:
+
+ * tests :: tests themselves
+ * examples ::  A directory of ordinary files used in tests.
+ * testhelp :: Test helpers.  Ie, functions that would belong in "foo"
+   library except that their only purpose is to help foo's callers
+   test foo-related things.
+   * Test data.  A sub-type of test helper; should be grouped with it.
+ * typeextras :: Type extras.  Eg type predicates.  These generally
+   use deep-type-checker.el, so should be separate.
+ * pcomplete :: editing help via pcomplete.
+ * editing :: General editing help
 
 *** Running tests
 
-The command emt:defun-at-point is your friend.
+The command emtest:defun-at-point is your friend.
 * Notes
-** Test graphical interactivity in these stages	    :advice:testinteractives:
-
-When you test graphical interactive functionality, there's a danger of
-getting enmeshed in the details of the interface.  Then when the
-interface adds widgets, changes layout, or w/e, the test starts
-failing even though there's nothing properly wrong.  And then even if
-you fix the test, you have to change all the playbacks.
-
-To avoid this pain, keep these types of testing separate:
-
- * Functionality :: What the interface is supposed to make happen.
-                    Test this by invoking it directly without user
-                    interaction.  You may have to redesign some
-                    functions to allow this.
-
- * Presentation :: What is shown to the user, possibly after some
-		   functionality has run.
-
-		   Test that presentation is the same as a "gold
-		   standard" functionality.  When it isn't, that's a
-		   bad test or a manual test (depending on whether
-		   manual interaction is enabled).  Emtest's "persist"
-		   functionality supports this.
-		   
-
- * Interaction :: How the user makes specific things happen.  This
-                  should done by playbacks.  Again, when they're not
-                  available it's a bad test or a manual test.
-
-		  This is more demanding than the other types, because
-		  the test sometimes needs to know the identities of
-		  components, and because the test must be robust
-		  against running out of {keystrokes, clicks, w/e}
-
-		  Emtest's "keystuffer" functionality will support
-		  this.
-		   
- * Access to components :: Last and least, can the user in fact
-      interact with every components they are expected to use?  Again
-      this can be done largely by playback; when the presentation
-      changes, that's a bad test or a manual test.
-
-      NB, this is not a test of the interface engine, but of the
-      specific components & layout being used.
