@@ -29,6 +29,8 @@ versions become available.
    * Use M-x emtest to run tests top-down.
    * Or use M-x emtest:defun-at-point to test
    * There are others.
+ * If emtest gets confused or stops working, use `emtest:reset'.  This
+   often happens in development because I changed its own code.
 
 *** Writing tests
 **** Editor help
@@ -71,7 +73,7 @@ sort of thing to insert.
 
 **** Format
 
-The test format is a list of:
+A test suite is a list of:
  * The symbol =emt:deftest-3=
  * Either
    * A symbol, usually naming a function the test pertains to
@@ -81,15 +83,15 @@ The test format is a list of:
    * One or more additional elements defining a test.
 
 The symbol names a particular test-runner, but you'll generally want
-to use `nil'.  You can comment out a test with a single-quote - that
-works like giving it the symbol `quote'.
+to use `nil'.  For `nil', there will be just one additional element,
+which is simply a form that is run as the test.
 
-When using `nil', there will be just one additional element, which is
-simply a form that is run as the test.
+You can also comment out a test with a single-quote.
 
 ***** Example
 
-Here is an example test, annotated with the meanings of its parts.
+Here is an example test suite, annotated with the meanings of its
+parts.
 
 #+BEGIN_SRC emacs-lisp
   (emt:deftest-3
@@ -124,10 +126,46 @@ Here is an example test, annotated with the meanings of its parts.
                  (emt:run:->how '(prefix-el-1 prefix-el-2 a b)))))))
 #+END_SRC
 
-**** Running foreign
+**** Running the expect runnable
 
-To run the "foreign" explorer, you first need to customize
-`emt:xp:foreign:launchables'.  
+You can also use Emtest like expect; at least, like when "expect" runs
+tests, not so much when it does logins etc.
+
+You can turn a session with some program into a test:
+ * To automatically test that it still produces the right output.
+ * To start writing from a nearly-correct sequence instead of from
+   scratch.
+ 
+How:
+ * Run the target program in eshell.
+ * Put point at the beginning of the transcript.
+ * M-x emtest:get-expect-from-transcript
+   * It will prompt you for the prompt the target program gives.
+ * It will put a test form onto the kill ring.  Visit your test code
+   file and yank it.
+
+Some differences:
+ * The clauses will begin with `expect' instead of `nil'.
+ * Next they will have a list of properties, usually including:
+   * exec+args :: what to run
+   * shell :: whether to run thru shell (to glob files or w/e)
+   * prompt :: The prompt, like above.
+   * timeout :: How soon to time out
+   * append-newline :: Whether to append a newline to outputs
+ * Next a list of interactions
+   * Each usually begins with `t'
+   * Then a string to be sent to the target program
+   * Then zero or more forms.  These are evaluated after the target
+     program sends a response, with `answer' bound to that response.
+     They may use emt:assert and any other elisp.
+
+You will often want the first interaction to be (t "") to clear out
+an initial banner that doesn't match the prompt.
+
+**** Running foreign testers
+
+To run the a foreign tester, you first need to customize
+`emt:xp:foreign:launchables'.
 
  * Point the filename at an executable that reads TESTRAL from stdin
    and writes TESTRAL to stout, all in Rivest-style canonical sexps.
@@ -137,6 +175,9 @@ To run the "foreign" explorer, you first need to customize
    used when foreign worked thru tq, which it no longer does.
 
 Then run `M-x emtest' and click the [RUN] button for "foreign".
+
+At this writing, only my other project does this, and thus far doesn't
+do much.  But the functionality is here.
 
 *** Where to put tests
 
@@ -159,5 +200,192 @@ canonical names:
 
 *** Running tests
 
-The command emtest:defun-at-point is your friend.
+Two basic ways:
+ * emtest :: Brings up the report buffer.  It has buttons, each a way
+             of exploring tests.  You do need to have tests loaded.
+             Nothing you can press will load them for you.
+
+ * Context-sensitive testing commands
+   * emtest:defun-at-point :: Point is on a `defun' or other
+        definition or on a test suite.  Run the test suite relating to
+        that function, if any.
+   * emtest:library :: Run all the tests relating to a given library.
+   * emtest:fileset :: Run all the tests relating to a given fileset
+   * emtest:fileset-all :: Like above, but force rerunning each.
+   * emtest:sexp-at-point :: Read the sexp at point and run it as a
+        test clause.  Less useful.
+   * emtest:eval-expression :: Evaluate an expression as a test.
+        Barely useful at all.
+
+
+
+*** Some conventions I find helpful
+
+**** Test objects with canonical meanings
+
+I found that if certain objects have consistent canonical meanings, it
+makes tests easier to understand at a glance.  I use:
+
+ * 12 :: A value to be tested against, or an object that correctly
+         matches it.
+ * 144, 1728 :: Other correct values, as needed
+ * 13 :: An object that does not correctly match something.
+
+**** Style for test docstrings 
+***** Why
+
+Test docstrings without a consistent style are a mess.  
+
+Test docstrings without a consistent style are harder to read, because
+they surprise you in ways that have nothing to do with their meaning.
+
+Docstrings without a consistent style are also harder to construct.
+You might not think so right away, because it takes some attention to
+learn the style and start using it.  But once you know it, it's easier
+to use it each time than to invent a way to describe each new test.
+
+And because the style below is well tuned for tests, it can help you
+think about what the test is doing.
+
+***** Form
+
+The simplest form of the docstrings is:
+
+: "TYPE: Description."
+
+where TYPE is one of the types listed below.  Example:
+
+ : "Shows: It wraps the examples as expected."
+
+Usually a docstring consists of several of the simple forms.  Example:
+
+ : "Situation: A form that returns non-nil.
+ : Response: Collect a passing grade."
+
+If two or more descriptions follow the same type, the type need only
+appear once.  Example:
+
+ : "Situation: Suite has two clauses defined.  
+ : Full exploration is enabled."
+
+***** Canonical types
+****** About types
+
+The canonical types are slightly slippery and overlapping.  That's
+accepted.  They exist to efficiently describe common testing
+situations, not to taxonomize them.
+
+****** List of canonical types
+
+   * Situation :: What the situation is before the function in
+                  question is called or the operation
+   * Param :: A subtype of "Situation". It focusses on some specific
+              parameter being passed to a function.  To be used when
+              that parameter markedly affects the function's expected
+              or potential behavior.
+
+   * Operation :: A function whose behavior is being tested is called.
+                  This type is *not* used when the function call is
+                  obvious; that's unmarked.
+
+		  Examples of testing situations it is intended for:
+
+     * Several functions normally operate on this sort of situation at
+       this level.
+     * There is a single function of interest, but its behavior is so
+       heterogeneous that it makes sense to focus on its different
+       operations.
+     * *Not* when there is only one function of interest and it's
+       called in essentially the expected way.
+   * Behavior :: A function's behavior.  Used in these ways:
+     * To describe a function's behavior abstractly, while other
+       documentation describes its effects concretely.
+     * To describe the behavior of a marked operation (as opposed to
+       an unmarked operation)
+     * As "Behavior: As usual" to express still behaving normally even
+       in a particular situation (Described separately by "Situation"
+       or "Param")
+
+   * Afterwards :: Describe the intended situation after the operation
+                   has run.  Specifically about inspecting a situation
+                   and not a return value or error signalled.
+
+   * Response :: Abbreviates Unmarked Operation + (Behavior or
+                 Afterwards).  Used when it doesn't create ambiguity
+                 about what is being described.
+
+     * Part of the most common pattern, Situation/Response.
+
+   * Shows :: What the test demonstrates.  Intended for two
+              situations:
+       * When a test is so simple that it cannot reasonably be
+         documented as situation/response or other patterns.  Used
+         alone.
+       * When other patterns apply but do not sufficiently describe
+         what the test is demonstrating.  Used in conjunction with
+         other docs.
+   * Proves :: *Deprecated*; use "Shows" instead.  I used to use this
+               until I realized that it's misleading.  Tests don't
+               prove correctness, they show correct behavior.  It's a
+               subtle point but one well worth keeping in mind.
+   * Not tested :: A placeholder, usually for "Response".  Used when
+                   test would have ideally checked some condition, but
+                   that wasn't done for whatever reason.
+   * Simple :: (New, untested) Indicates that a certain situation is
+               realized by a simple means and might not be realized so
+               simply in practice.
+
+***** Abstract and concrete
+
+Often a test wants to be described on two levels: The abstract level
+of what it proves, and the concrete level of the given example.
+
+I just use a hyphen in between abstract and concrete descriptions.
+
+I also tried "ie, ..." there.
+
+***** Avoidance
+
+Haven't entirely settled on a way to express negative conditions, like
+still behaving right even in a situation where there's a particular
+potential for bad behavior.  Eg, testing a list operation on a
+circular list.
+
+Perhaps
+ * "Behavior: As usual"
+ * "Behavior: Same"
+
+***** Use of examples
+
+Haven't settled on a way of describing "Behaves this way under
+multiple examples".  However, the old tagnames module inserted a note
+for each example, so it may not be an issue.
+
+
+*** Code organization
+
+**** Directories in Emtest
+
+Plan of lisp directories for Emtest: 
+ * emtest ::
+   * runner :: The test runner in Elisp
+   * testhelp :: code not required in emtest but useful in writing
+                 tests in Elisp
+     * Note "standard", which should probably be loaded more
+       aggressively than the others.  
+       * Perhaps whenever define is loaded, but let's keep 'em separate
+         to leave some flexibility.
+   * testhelp/mocks :: Mocks of specific functionality
+   * common :: Code shared by viewer and Elisp tester.
+   * viewer :: Formatting & display code specific to Emtest
+   * editing :: Help for writing and editing elisp tests in emacs.
+     * When the editing is specific to some file FOO, it should go in
+       FOO/editing.el 
+   * persistence :: Code dealing with persistence
+ * viewers :: Libraries that provide viewer functionality
+ * utility :: Generally useful support code originally developed for
+                Emtest.
+ * docs :: Documentation, such as it is.
+
+
 * Notes
