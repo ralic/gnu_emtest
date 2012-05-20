@@ -55,6 +55,7 @@
 	  emt:ed:insert:example-def
 	  emt:ed:insert:testpoint
 	  emt:ed:insert:testpoint-control
+	  emt:ed:insert:assertion
 	  ))
 
    "Skeletons related to emtest" )
@@ -214,11 +215,12 @@ function."
       ((id (utiuid:generate "xmp")))
       (pp
 	 `(defconst ,(intern id)
-	     (emtg:define+ 
-		((tag value) list)
-		items-start-here))
+	     (emt:tab:make "The table's docstring"
+		(slot-definitions)
+		replace-me-with-the-first-row))
 	 
 	 (current-buffer))))
+
 ;;;_  . emt:ed:insert:testpoint
 (defun emt:ed:insert:testpoint ()
    ""
@@ -242,6 +244,15 @@ function."
       (insert "\n;;Clauses are tp, tp*, tp-reached, mock*, and finally\n")
       (pp '(emtp:eval t )
 	 (current-buffer))))
+
+;;;_  . emt:ed:insert:assertion
+(defun emt:ed:insert:assertion ()
+   ""
+   
+   (interactive)
+   (pp '(emt:assert (equal replace-me replace-me-too))
+	 (current-buffer)))
+
 ;;;_. Footers
 ;;;_ , Provides
 
